@@ -9,9 +9,7 @@ import fi.hu.cs.ttk91.TTK91NoStdInData;
     what it should be reading as various inputs during its run. */
 public class Application implements TTK91Application {
     /** This array contains the code to the application; one command
-	per line. The MemoryLine objects may contain either only the
-	integers, or both the integer and the corresponding 
-	symbolic command. The initial FP value can be calculated from 
+	per line. The initial FP value can be calculated from 
 	code.length - 1. If the code area is empty, this field contains 
 	a zero-length array. */
     private MemoryLine[] code;
