@@ -14,4 +14,11 @@ package fi.hu.cs.ttk91;
  */
 public class TTK91NoStdInData extends TTK91RuntimeException {
 
+    String error;
+    public TTK91NoStdInData(String s){
+	error=s;
+    }
+    public String toString(){
+	return error;
+    }
 }
