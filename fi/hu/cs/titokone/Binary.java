@@ -223,7 +223,7 @@ public class Binary {
 	@return An application instance corresponding to the binary. 
 	@throws ParseException If the binary contents are not 
 	syntatically correct. */
-    //TODO Symboltableen muutokset uupuvat
+    
     public Application toApplication() throws ParseException {
        
 	BinaryInterpreter bini=new BinaryInterpreter();

@@ -48,7 +48,7 @@ public class BinaryInterpreter extends Interpreter {
 	the opcode is unknown, the memory address mode faulty or the
 	register ids do not point to real registers,
 	BinaryInterpreter.GARBLE is returned. */
-    //TODO siivousta ja tarkistuksia
+
     public String binaryToString(int binaryCommand) {
 	int command = binaryCommand;
        	
@@ -61,14 +61,14 @@ public class BinaryInterpreter extends Interpreter {
 	    return GARBLE;
 	if(getMemoryModeFromBinary(command)==null)
 	    return GARBLE;
-	//System.out.println("mm "+getMemoryModeFromBinary(command));
+
 	Integer param = (Integer)parameters.get(opcode);
 	
 	switch(param.intValue()){
 	case 0:{ // No parameters
 	    return s;
 	}
-	case 1:{ // TODO Hmmh, rekisterit vai vain toinen?
+	case 1:{ // not used
 	    return s;
 	}
 	case 2:{ //SP and register
@@ -80,7 +80,7 @@ public class BinaryInterpreter extends Interpreter {
 	    s+=" "+getFirstRegisterFromBinary(command);
 	    return s;
 	}
-	case 4:{ //address only TODO Not used?
+	case 4:{ //address only
 	    String mem = getMemoryModeFromBinary(command);
 
 	    if (mem.equals(null))
@@ -198,12 +198,7 @@ public class BinaryInterpreter extends Interpreter {
       */
     public String getOpCodeFromBinary(int binaryCommand) {
 	int command = binaryCommand; 
-	/*if (command == 0)  //if command is zero, then return nop
-	    return "0";
-	//then check if command has no operation code
-	if (command > 0 && command < 16777216)
-	return null;*/
-	
+			
 	//get opcode and get its name and return it
 	Integer opcode = new Integer(command >> 24);
 	if(commands.get(opcode)!=null){
@@ -295,15 +290,6 @@ public class BinaryInterpreter extends Interpreter {
 	
 	i=binaryToInt(binaryString,true);
 
-
-
-	/*	
-	if (i>=32768){
-	    i=i-32768;
-	    i=i*(-1);
-		
-	}
-	*/
 	String s = "" + i;
 	return s;
 
@@ -315,7 +301,7 @@ public class BinaryInterpreter extends Interpreter {
 	@return String representation of a said Int.
       */
     public String intToBinary(long value, int bits) {
-/* TODO if bits too few, i.e. 10,2 then result is "11" */
+
 	char[] returnValue = new char[bits];
 	boolean wasNegative = false;
 
@@ -351,27 +337,27 @@ public class BinaryInterpreter extends Interpreter {
 	@return Int value of a Binary.
 	*/
     public int binaryToInt(String binaryValue, boolean signIncluded) {
-/* TODO ! returns 0 when error! exception perhaps? */
+
 	boolean isNegative = false;
 	int value = 0;
 
 	if (signIncluded) { 
-		if (binaryValue.charAt(0) == '1') { 
-			isNegative = true; 
-			binaryValue = binaryValue.replace('1', '2');
-			binaryValue = binaryValue.replace('0', '1');
-			binaryValue = binaryValue.replace('2', '0');
-		}
+	    if (binaryValue.charAt(0) == '1') { 
+		isNegative = true; 
+		binaryValue = binaryValue.replace('1', '2');
+		binaryValue = binaryValue.replace('0', '1');
+		binaryValue = binaryValue.replace('2', '0');
+	    }
 	}
 		
 	for (int i = 0; i < binaryValue.length(); ++i) {
-		if (binaryValue.charAt(binaryValue.length() - 1 -i) == '1') {
-			value = value + (int)Math.pow(2.0, i * 1.0);	
-		} else {
-			if (binaryValue.charAt(binaryValue.length() - 1 -i) != '0') {
-				return 0;
-			}
-		}		
+	    if (binaryValue.charAt(binaryValue.length() - 1 -i) == '1') {
+		value = value + (int)Math.pow(2.0, i * 1.0);	
+	    } else {
+		if(binaryValue.charAt(binaryValue.length()-1-i)!='0') {
+		    return 0;
+		}
+	    }		
 	}
 
 	if (isNegative) {
