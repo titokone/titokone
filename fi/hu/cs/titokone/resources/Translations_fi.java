@@ -102,6 +102,8 @@ public class Translations_fi extends ListResourceBundle {
       {"{0} defined as {1}.", 
        "Asetukselle {0} määriteltiin arvoksi {1}."},	// 449
       {"Invalid DEF operation.", "Epäkelpo DEF-komento."}, // 454
+      //ADDED 26.4. OLLi
+      {"Missing referred label {0}.", "Käytetty muistiviite {0} puuttuu."}, //662
       {"{0} --> {1} ({2}) ", "{0} --> {1} ({2})"}, // symb --> bin (:-sep. bin); 650
 
       // Class: Control

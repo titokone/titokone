@@ -109,6 +109,9 @@ public class Translations extends ListResourceBundle {
       {"Found variable {0}.", null},			// 419 and 436
       {"{0} defined as {1}.", null},			// 449
       {"Invalid DEF operation.", null},			// 454
+      //ADDED 26.4. OLLI
+      {"Missing referred label {0}.", null},		//662
+      
       {"{0} --> {1} ({2}) ", null}, // symb --> bin (:-sep. bin); 650
 
       // Class: Control
