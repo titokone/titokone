@@ -66,7 +66,12 @@ public class RunInfo extends DebugInfo{
     private int aluResult;
     private int SRbit;
     private boolean compareResult;
-    
+   
+    private boolean conditionalJump;
+    private int whichSRBit;
+    private boolean SRStatus;
+
+
     private boolean externalOperation;
     private int device;
     private int value;
@@ -101,6 +106,12 @@ public class RunInfo extends DebugInfo{
     
     public void setOUT(int device, int value){}
     
+
+    public void setConditionalJump(int whichBit, boolean status){}
+
+    public boolean returnConditionalJump(){}
+    public int returnWhichBit(){}
+    public boolean returnBit(){}
 
     /** This method tells GUIBrain what kind of operation happened.
         @returns int value which represents operation type.*/
@@ -147,7 +158,16 @@ public class RunInfo extends DebugInfo{
 
     public int returnALUResult(){}
 
+
+    /** This method tells GUIBrain that if a compare operation was made.
+	@return boolean telling if operation was made.
+    */
     public boolean returnCompareOP(){}
+
+    /** This method returns both which SR bit was set and what is new value.
+	0 represents false and 1 true.
+	@return An integer array containing which SR bit was changed and it's
+	new value.*/
     public int[] returnCompareResult(){}
 
    

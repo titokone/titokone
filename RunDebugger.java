@@ -40,7 +40,7 @@ public class Debugger{
 			   int newPC, int oldSP, int newSP, int oldFP,
 			   int newFP){ }
 
-/*-------- Memoryfetch types ---------*/
+
 
     public void memoryFetchType(int i){ }
     public void numberOfFetches(int i){ }
@@ -54,8 +54,8 @@ public class Debugger{
     public void selfChangingCode(int lineNumber, int binary, 
 				 String newContents){}
 
-    public void noOperation(){}
-
+    public void setNoOperation(){}
+    
     public void setValueAtADDR(int value){}
 
     public void setChangedRegisters(int[][] registers){}
@@ -70,8 +70,8 @@ public class Debugger{
 
     public void setOUT(int device, int value){}
 
-
-
+    public void setConditionalJump(int whichSR, boolean status){}
+    
 
 
 
