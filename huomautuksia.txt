@@ -14,11 +14,13 @@ Control      SR 23.3.   compile-metodin parametrinä TTK91Source, ei Source.
                         vain kun käyttäjä valitsee oman kielitiedoston.
                         loadSettingsFileContents heittää IOExceptionin, 
                         samoin setDefaultStdIn ja setDefaultStdOut.
-                        setDefaultStdIn tai myöhemmin load() heittävät
+                        setDefaultStdIn heittää
                         lisäksi ParseExceptionin, jos stdin-tiedoston 
-                        sisältö ei tyydytä, *sen jälkeen* kun ovat 
-                        tehneet kaiken muun. (Eli exceptionin voi 
+                        sisältö ei tyydytä, *sen jälkeen* kun on
+                        tehnyt kaiken muun. (Eli exceptionin voi 
                         ignoroida jos lystää/näyttää varoituksen.)
+                        Sama load()illa, mutta se heittää TTK91NoStdInDatan
+                        ParseExceptionin/IOExceptionin sijaan.
                         Control tarvitsee oletusstdinin ja stdoutin 
                         konstruktorissaan.
                         openSource(File):n pitää käyttötapauksen mukaan 
