@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 /** Control class offers the extenal interface to titokone. Using the methods of this class
     one can compile and emulate an exection process of a ttk91-program from a text file
     or straight from a string object, which contain symbolic ttk91 machine code, A complete
@@ -11,6 +13,8 @@
 */
 
 import java.text.ParseException;
+import java.io.File;
+import fi.hu.cs.ttk91.*;
 
 public class Control implements TTK91Core {
     
@@ -40,7 +44,7 @@ public class Control implements TTK91Core {
         @param source The source code to be compiled.
         @return The binary executable code.
     */
-    public TTK91Application compile(CompileSource source) throws TTK91Exception, TTK91CompileException { }
+    public TTK91Application compile(Source source) throws TTK91Exception, TTK91CompileException { }
  
  
     
@@ -119,7 +123,7 @@ public class Control implements TTK91Core {
     /** This loads a line of code into titokone's memory.
         @return Returns the LoadInfo object of the operation.
     */
-    public LoadInfo loadLine() throws TTK91LoadtimeException { }
+    public LoadInfo loadLine() { }
 
 
 

@@ -1,6 +1,6 @@
 package fi.hu.cs.titokone;
 
-import fi.hu.cs.ttk91.TTK91Cpu;
+import fi.hu.cs.ttk91.*;
 
 /** This class represents the processor. It can be told to run for one
     command cycle at a time. */
@@ -118,7 +118,7 @@ This field has the current instruction being processed
 
 
  */
-    public RunInfo runLine() throws TTK91RunTimeException{}
+    public RunInfo runLine() throws TTK91RuntimeException{}
 
 
 /** Returns the value of given registerID
