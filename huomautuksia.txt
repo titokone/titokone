@@ -35,3 +35,6 @@ CompileInfo  AT 24.3.	entiset return-metodit on nyt get-alkuisia. Myös DC:n ja D
 			metodit ovat muuttuneet. Nyt getDCaddress() ja getDCname()
 			sama DS:lle. getMemory on korvattu getDatalla ja getInstructionsilla.
 
+Interpreter SH 24.3     Lisätty komentojen parametrimääreitä ja muutettu  
+                        vastaavasti niitä commandData taulukossa
+
