@@ -908,11 +908,14 @@ public class Compiler {
 
 /* preprosessing */
 
-	line = line.trim();
+	
 	line = line.toLowerCase();
 	line = line.replace('\t',' ');
 	fieldEnd = line.indexOf(";");
 	if (fieldEnd != -1) { line = line.substring(0, fieldEnd); }
+	
+	//OLLI: 26.4., trim viimeiseksi preprocessingissa, käännös menee nyt läpi
+	line = line.trim();
 	
 /* LABEL opcode value */
 	fieldEnd = line.indexOf(" ");
