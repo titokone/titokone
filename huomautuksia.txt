@@ -23,5 +23,8 @@ Control      SR 23.3.   compile-metodin parametrinä TTK91Source, ei Source.
                         konstruktorissaan.
                         openSource(File):n pitää käyttötapauksen mukaan 
                         palauttaa lähdekoodi stringinä, oli void.
+                        Lisätty insertStdinToApplication, lisätty
+                        ParseException loadin heitettäviin (koska se
+                        tunkee applicationiin sitä STDIN-dataa samalla).
 
 CompileInfo  AT 23.3.	SetMemoryLine-metodin parametri value on String, ei int.
