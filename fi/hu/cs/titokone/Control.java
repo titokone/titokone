@@ -269,7 +269,7 @@ public class Control implements TTK91Core {
 	// infinitely. 
 	if(steps < 0) 
 	  return;
-	counter = 0;
+	counter = 1;
 	// We then always run at least one step; 0 steps would mean "run 
 	// infinitely".
 	do {
