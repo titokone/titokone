@@ -75,7 +75,7 @@ public class FileHandler {
 	0              area, the latter also being the initial value of SP;
 	0              then follow the contents of the data area in order)
 	___symboltable___
-	luku 10        (only local symbols are included, eg. =HALT is 
+	luku 10        (only local symbols are included, eg. HALT is 
 	summa 11        considered built-in)
 	___end___
 	</pre>
