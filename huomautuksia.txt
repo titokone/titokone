@@ -27,5 +27,6 @@ Control      SR 23.3.   compile-metodin parametrinä TTK91Source, ei Source.
                         ParseException ja IOException loadin 
                         heitettäviin (koska se
                         tunkee applicationiin sitä STDIN-dataa samalla).
+                        Lisätty saveBinary() ja saveBinary(File).
 
 CompileInfo  AT 23.3.	SetMemoryLine-metodin parametri value on String, ei int.
