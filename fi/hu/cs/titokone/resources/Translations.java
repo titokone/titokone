@@ -252,6 +252,8 @@ public class Translations extends ListResourceBundle {
       {"Not a language file", null},    
       {"Cannot overwrite {0}", null},   
       {"Default stdin file set to {0}", null},    
+      {"Stdout file {0} cannot be written to.", null},
+      {"Stdout file {0} cannot be found.", null},
       {"Default stdout file set to {0}", null},    
       {"Error while emptying {0}", null},    
       {"Overwrite?", null},    
