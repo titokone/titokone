@@ -4,6 +4,8 @@ import fi.hu.cs.ttk91.TTK91CompileSource;
 import java.util.logging.Logger;
 import java.util.ResourceBundle;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -61,6 +63,23 @@ public class FileHandler {
 	IOExceptions is FileNotFoundException. */
     public StringBuffer loadSettings(File settingsFile) throws IOException {
 	return loadFileContentsToString(settingsFile);
+    }
+
+    /** This function loads a settings input stream to a StringBuffer. 
+	@param settingsStream An input stream to read the contents 
+	from. 
+	@return A StringBuffer containing the stream's contents, 
+	linebreaks unmodified, or null if the settingsStream was null. 
+	@throws IOException If an I/O error occurs while reading or 
+	closing the stream. */
+    public StringBuffer loadSettings(InputStream settingsStream) 
+	throws IOException {
+	StringBuffer result;
+	BufferedReader reader;
+	if(settingsStream == null)
+	    return null;
+	reader = new BufferedReader(new InputStreamReader(settingsStream));
+	return loadReaderContentsToString(reader);
     }
 
     /** This method saves settings data from a StringBuffer to a file.
@@ -191,28 +210,38 @@ public class FileHandler {
 	}
     }
 
-    /* This function is a private assistant method for FileHandler and
+    /** This function is a private assistant method for FileHandler and
        it loads the contents of the given file into a string and returns
        that string. It may throw an IOException in case of a read error.
     */
     private StringBuffer loadFileContentsToString(File loadFile) 
 	throws IOException {
-
-	//long loadFileLength = loadFile.length(); 
 	BufferedReader loadFileContents = 
 	    new BufferedReader(new FileReader(loadFile));
+
+	return loadReaderContentsToString(loadFileContents);
+    }
+
+    /** This function is a private assistant method, which loads the 
+	contents of a given reader into a string and returns that string.
+	The lines will be read using .readLine() and recombined with 
+	\ns.
+	@throws IOException If an I/O error occurs while reading the file.
+    */
+    private StringBuffer loadReaderContentsToString(BufferedReader reader) 
+	throws IOException {
 	StringBuffer result;
 	String line = "";
-	
+
 	result = new StringBuffer("");
 	// readLine() returns null when the end of the stream has been
 	// reached.
 	while(line != null) {
 	    result.append(line);
-	    line = loadFileContents.readLine();
+	    line = reader.readLine();
 	    if(line != null) line += "\n"; // (Result-str is internally used.)
 	}
-	loadFileContents.close();
+	reader.close();
 	return result;
     }
 
