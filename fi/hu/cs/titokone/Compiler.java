@@ -1,3 +1,8 @@
+/*
+Ensimm‰isell‰ kierroksella jos tulee dc tai ds niin tehd‰‰n symbol found ja finalizing first 
+roundissa sitten tulee definingdc ja definingds.y
+*/
+
 package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.TTK91CompileException;
@@ -58,7 +63,7 @@ public class Compiler {
 	the finished application. 
 	@param source The symbolic source code to be compiled. */
     public void compile(String source) { }
-//java.util.StringTokenizerill‰ se riveiksi jne.
+//java.STring.split();
 
     /** This function goes through one line of the code. On the first round, it
 	gathers the symbols and their definitions to a symbol table and conducts 

@@ -18,9 +18,18 @@ public class CompileDebugger {
      * debugger when its different methods are called.*/
     private String comments;
 
+/*----------- Constructor -----------*/
 
+    /** This is the only constructor for CompileDebugger. It is called
+	when compiler is created.*/
+    public CompileDebugger() {
 
-    /*------- Compiler instructions -----------*/
+	
+
+    }
+
+/*----------- Compiler instructions -----------*/
+
     /** This method tells that an EQU was found and it is added to the 
 	symboltable.
 	@param name String containing name of the symbol.
@@ -123,14 +132,6 @@ public class CompileDebugger {
 
     }
     
-    /** This is the only constructor for CompileDebugger. It is called
-	when compiler is created.*/
-    public CompileDebugger() {
-
-
-    }
-
-
     /** This method tells debugger that first round of compilation is
 	in progress and the line compiled is empty. It creates
 	CompileInfo-object and sets its phase to 1 and lineEmpty to true.
@@ -217,7 +218,7 @@ public class CompileDebugger {
     }
   
 
-   /** This method returns the created CompileInfo-object. It sets
+    /** This method returns the created CompileInfo-object. It sets
     comments in the CompileInfo and then returns it.*/
     public CompileInfo lineCompiled() {
 

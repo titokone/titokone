@@ -21,7 +21,6 @@ public class CompileInfo extends DebugInfo {
   /** This field hold the contents of a compiled line. */
   private String lineContents;
  
-
   /** This array contains codelines after first round. */
   String[] memory;
 
@@ -83,28 +82,45 @@ public class CompileInfo extends DebugInfo {
      */
   private boolean definingDS; 
   private boolean definingDC;
-  /** This field holds the value that represents the size of an area DS reserved. */
-  private int dsSize; 
-  /** This field holds the initial value of a DC constant. */
-  private int dcValue; 
+
+  /** This field holds the name of the DS defined. */
+  private int dsName; 
+
+  /** This field holds the name of the DC defined. */
+  private int dcName; 
+
   /** This field holds the address of a DS. */
   private int dsAddress;
+
   /** This field holds the address of a DC. */
   private int dcAddress;
-  
+ 
+/*---------- Constructor ----------*/
+ 
     /** This is normal constructor for CompileInfo. It sets initial values for
 	phase, lineNumber and lineContents.
 	@param phase Short indicating which phase is going on.
 	@param lineNumber Integer value of the current line number.
 	@param lineContents String containing symbolic command.
     */
-  public CompileInfo(short phase, int lineNumber, String lineContents) {}
+  public CompileInfo(short phase, int lineNumber, String lineContents) {
+
+	this.phase = phase;
+	this.lineNumber = lineNumber;
+	this.lineContents = lineContents;
+  }
   
     /** This constructor is used when no actual line is compiled but other
 	actions are made like setting DC or DS.
 	@param phase short indicating which phase is going on.
     */
-  public CompileInfo(short phase) {}
+  public CompileInfo(short phase) {
+ 	this.phase = phase;
+  }
+
+
+/*---------- set-methods ----------*/
+
     
     /** This method sets lineEmpty value to true. */
     public void setLineEmpty(){
@@ -166,16 +182,16 @@ public class CompileInfo extends DebugInfo {
 	lineBinary = binary;
     }
 
-    public void setDefiningDS(int ADDR, int size) { 
+    public void setDefiningDS(int ADDR, String name) { 
 	definingDS = true; 
-   	dsSize = size;
 	dsAddress = ADDR;
+	dsName = name;
     }
 
-    public void setDefiningDC(int ADDR, int value) { 
+    public void setDefiningDC(int ADDR, String name) { 
 	definingDS = true; 
-	dcValue = value;
 	dcAddress = ADDR;
+	dcName = name;
     }
 
 
@@ -210,6 +226,9 @@ public class CompileInfo extends DebugInfo {
     public void setMemory(String[] memory) {
 	this.memory = memory;	
     }
+
+
+/*---------- get-methods ----------*/
 
     /** This message tells that an empty line or line containing only 
 	whitespaces was compiled.
@@ -301,18 +320,24 @@ public class CompileInfo extends DebugInfo {
 	return definingDC;
     } 
 
-    /** This method returns the value of DC.
-	@return An integer containing value of DC.
-    */
-    public int getDCvalue() {
-	return dcValue;
+    /** This method returns the address of a DC defined. */
+    public int getDCaddress() { 
+	return dcAddress;
     }
 
-    /** This method returns the value of DS.
-	@return An integer containing value of DS.
-    */
-    public int getDSsize() {
-	return dsSize;
+    /** This method returns the address of a DS defined. */
+    public int getDSaddress() { 
+	return dsAddress;
+    }
+  
+    /** This method returns the name of the DC defined. */
+    public String getDCname() { 
+	return dcName;
+    }
+
+    /** This method returns the name of the DS defined. */
+    public String getDSname() { 
+	return dsName;
     }
 
     /** This method returns true if field finalFinal is set.
