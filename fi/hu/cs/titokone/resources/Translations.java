@@ -186,7 +186,7 @@ public class Translations extends ListResourceBundle {
       
       // Class: GUIBrain 
       {"Main path not found! (Trying to locate etc/settings.cfg.) " +
-       "...exiting.", null}, //exception opening etc/settings.cfg
+       "...exiting.", null}, 
       {"I/O error while reading settings file: {0}", null}, 
       {"Parse error in settings file.", null},
       {"Titokone out of memory: {0}", null},
@@ -208,9 +208,24 @@ public class Translations extends ListResourceBundle {
       {"K91 source", null},  
       {"Class file", null},
 
-      // Class: GUICompileSettingsDialog - not processed yet - TODO
+      // Class: GUICompileSettingsDialog
+      // (Set compiling options already defined in GUI.)
+      {"Apply", null},
+      {"Close", null},
+      {"Compile line by line", null},
+      {"Show comments", null},
+      {"Set compiling options", null},
+      // Pause whenever a comment occurs & show extra comments while compiling
+      // represented in JOptionPane.
 
-      // Class: GUIRunSettingsDialog - not processed yet - TODO
+      // Class: GUIRunSettingsDialog 
+      // (Set running options already defined in GUI, as are Apply and Close.)
+      {"Execute line by line", null},
+      {"Show comments", null},
+      {"Show animation", null},
+      // (execute code line by line, show extra comments while executing
+      // and show animation while executing are represented in JOptionPane.
+
       // Class: GUIThreader, no messages.
       // Class: Interpreter, no messages.
       // Class: InvalidDefinitionException, no messages.
