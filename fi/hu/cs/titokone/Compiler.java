@@ -1,9 +1,8 @@
 /*
-Ensimm‰isell‰ kierroksella jos tulee dc tai ds niin tehd‰‰n symbol found ja finalizing first 
-roundissa sitten tehd‰‰n symbolitaulu (String[][]) joka palautetaan compileInfossa.
-
-jos m‰‰ritell‰‰n label niin sit‰ ei voi m‰‰ritell‰ en‰‰ miksik‰‰n muuksi, vaan tulee poikkeus.
+ public Application(MemoryLine[] code, MemoryLine[] data, SymbolTable symbols) {
 */
+
+
 
 package fi.hu.cs.titokone;
 
@@ -68,9 +67,33 @@ public class Compiler {
     /** This array contains the data. */
     private String[] data;
 
+// Second Round
+
+    /**	This field holds the Memoryline objects for the code. These are passed to the 
+	Application constructor at the end of the compile process, and are gathered
+	during the second round from first round commands in code-array
+     */
+    private MemoryLine[] codeMemoryLines;
+
+    /** This field holds the Memoryline objects for the data area. Much like the code
+	part, this is gathered during the second round and passed to the Application
+	when getApplication() method is called.
+     */
+    private MemoryLine[] dataMemoryLines;
+
+    /**	This value tells if all the lines are processed twice and getApplication 
+	can be run.
+     */
+    private boolean compileFinished;
+
     /** This field contains the CompileDebugger instance to inform of any compilation
 	happenings. */
     private CompileDebugger compileDebugger;
+
+    /**	This field contains the SymbolicInterpreter instance to use as part of the compilation.
+     */
+    private SymbolicInterpreter symbolicInterpreter;
+
 
 /*---------- Constructor ----------*/
 
@@ -78,6 +101,7 @@ public class Compiler {
 	CompileDebugger. */
     public Compiler() {
 	compileDebugger = new CompileDebugger();
+	symbolicInterpreter = new SymbolicInterpreter();
     }
 
     /** This function initializes transforms a symbolic source code into an 
@@ -87,6 +111,7 @@ public class Compiler {
 	@param source The symbolic source code to be compiled. */
     public void compile(String source) { 
 	firstRound = true;
+	compileFinished = false;
 	this.source = splitALine(source);
 
 	nextLine = 0;
@@ -142,11 +167,11 @@ public class Compiler {
 		if (nextLine == code.size()) {
 			// TODO create application;
 			compileDebugger.finalPhase();
-			info =  compileDebugger.lineCompiled();
-			return info;
+			compileFinished = true;
+			return null;
 		} else {
-//			compileDebugger.secondPhase(nextLine, source[nextLine], );
-			info = secondRoundProcess((String)code.get(nextLine));
+			compileDebugger.secondPhase(nextLine, source[nextLine]);
+			info = secondRoundProcess((String)code.get(nextLine), nextLine);
 			++nextLine;
 			return info;
 		}
@@ -154,10 +179,17 @@ public class Compiler {
     }
 
 
-// TODO
-//    /** This method returns the readily-compiled application if the compilation
-//	is complete, or null otherwise. */
-//    public Application getApplication() { }
+    /** This method returns the readily-compiled application if the compilation
+	is complete, or null otherwise. */
+    public Application getApplication() throws TODOException {
+	if (compileFinished) {
+		dataMemoryLines = new MemoryLine[data.length];
+		for (int i = 0; i < data.length; ++i) {
+			dataMemoryLines[i] = new MemoryLine(data[i], "");
+		}
+		SymbolTable st = new SymbolTable();
+	} else { return new (); }
+    }
 
     /** This function transforms a binary command number to a MemoryLine 
 	containing both the binary and the symbolic command corresponding 
@@ -206,7 +238,8 @@ public class Compiler {
 		lineTemp = parseLine(line);
 		if (lineTemp == null) { 
 // not a valid command
-			throw new TTK91CompileException(); 
+			comment = new Message("").toString();
+			throw new TTK91CompileException(comment); 
 		} else {
 
 			if (lineTemp[1].equals("")) {
@@ -221,7 +254,8 @@ public class Compiler {
 				
 					if (invalidLabels.containsKey(lineTemp[0])) {
 // not a valid label			
-						throw new TTK91CompileException();
+						comment = new Message("").toString();
+						throw new TTK91CompileException(comment);
 					} else {
 						invalidLabels.put(lineTemp[0], null);
 
@@ -276,7 +310,9 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 		boolean atLeastOneNonNumber = false;
 
 		if (invalidLabels.containsKey(lineTemp[0])) {
-			throw new TTK91CompileException();
+// not a valid label
+			comment = new Message("").toString();
+			throw new TTK91CompileException(comment);
 		}
 
 		for (int i = 0; i < lineTemp[0].length(); ++i) {
@@ -292,10 +328,12 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 
 		if (atLeastOneNonNumber == false || allCharsValid == false) { 
 // not a valid label;
-			throw new TTK91CompileException(); 
+			comment = new Message("").toString();
+			throw new TTK91CompileException(comment); 
 		} else {
 			if (invalidLabels.containsKey(lineTemp[0])) {
-				throw new TTK91CompileException();
+				comment = new Message("").toString();
+				throw new TTK91CompileException(comment); 
 			} 
 
 			if (lineTemp[1].equalsIgnoreCase("ds")) {
@@ -303,10 +341,12 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 				try {
 					intValue = Integer.parseInt(lineTemp[2]);	
 				} catch(NumberFormatException e) {	
-					throw new TTK91CompileException(); 
+					comment = new Message("").toString();
+					throw new TTK91CompileException(comment);
 				}	
 				if (intValue < 0 || intValue > MAXINT) {
-					throw new TTK91CompileException(); 
+					comment = new Message("").toString();
+					throw new TTK91CompileException(comment); 
 				}
 			}
 
@@ -316,11 +356,13 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 					try {
 						intValue = Integer.parseInt(lineTemp[2]);	
 					} catch(NumberFormatException e) {	
-						throw new TTK91CompileException(); 
+						comment = new Message("").toString();
+						throw new TTK91CompileException(comment); 
 					}	
 
 					if (intValue < MININT || intValue > MAXINT) {
-						throw new TTK91CompileException(); 
+						comment = new Message("").toString();
+						throw new TTK91CompileException(comment); 
 					}
 				}
 			}
@@ -378,7 +420,8 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 					compileDebugger.foundDEF(lineTemp[0], lineTemp[2]);
 // TODO					compileDebugger.setComment();
 				} else {
-					throw new TTK91CompileException(); 
+					comment = new Message("").toString();
+					throw new TTK91CompileException(comment); 
 				}			
 			}
 		}		
@@ -482,6 +525,9 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 		newSymbolTable[i] = (String[])symbolTable.get(i);
 	}
 
+// prepare for the second round.
+	codeMemoryLines = new MemoryLine[newCode.length];
+
 	compileDebugger.finalFirstPhase(newCode, data, newSymbolTable);
 	return compileDebugger.lineCompiled();	
 
@@ -523,22 +569,30 @@ Basic functionality: (Trim between each phase.)
 
 // check if variable is set!
 
-	int variableAsInt = 0;
+	int addressAsInt = 0;
+	int lineAsBinary;
+	String comment;
 	String[] symbolTableEntry;
 	String[] lineTemp = parseLine(line);
 	if (!lineTemp[4].equals("")) {
 		try { 
-			Integer.parseInt(lineTemp[4]); 
+			addressAsInt = Integer.parseInt(lineTemp[4]); 
 		} catch (NumberFormatException e) {
 			symbolTableEntry = (String[])symbolTable.get(Integer.parseInt((String)symbols.get(lineTemp[4])));
 			if (symbolTableEntry[1].equals("")) {
-				throw new TTK91CompileException();
+				comment = new Message("").toString();
+				throw new TTK91CompileException(comment);
 			}
-			variableAsInt = Integer.parseInt((String)symbolTableEntry[1]);
+			addressAsInt = Integer.parseInt((String)symbolTableEntry[1]);
 		}
 	}
 
-
+	lineAsBinary = symbolicInterpreter.stringToBinary(
+			lineTemp[1], lineTemp[2], lineTemp[3], addressAsInt + "", lineTemp[5]);
+	compileDebugger.setBinary(lineAsBinary);
+	codeMemoryLines[nextLine] = new MemoryLine(lineAsBinary, line);
+	
+// TODO comments
 
 	return compileDebugger.lineCompiled();
     }
@@ -555,8 +609,6 @@ Basic functionality: (Trim between each phase.)
 	String secondRegister = "";
 	String address = "";
 	
-	SymbolicInterpreter symbolicInterpreter = new SymbolicInterpreter();
-
 	String[] parsedLine;	
 	String wordTemp = "";
 	int nextToCheck = 0;	// for looping out the spacing

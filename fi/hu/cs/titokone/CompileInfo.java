@@ -74,29 +74,6 @@ public class CompileInfo extends DebugInfo {
       we are still going through DS and DC commands. */
   private boolean finalFinal;
 
-  public static final int SP_POS = 0;
-  public static final int FP_POS = 1;
-  /** This array contains the initial values of SP and FP, positioned
-      according to SP_POS and FP_POS. */
-  private int[] initPointers;
-
-    /** These fields tells GUIBrain if compiler is setting DC or DS values.
-     */
-  private boolean definingDS; 
-  private boolean definingDC;
-
-  /** This field holds the name of the DS defined. */
-  private String dsName; 
-
-  /** This field holds the name of the DC defined. */
-  private String dcName; 
-
-  /** This field holds the address of a DS. */
-  private int dsAddress;
-
-  /** This field holds the address of a DC. */
-  private int dcAddress;
- 
 /*---------- Constructor ----------*/
  
     /** This is normal constructor for CompileInfo. It sets initial values for
@@ -112,13 +89,12 @@ public class CompileInfo extends DebugInfo {
   }
   
     /** This constructor is used when no actual line is compiled but other
-	actions are made like setting DC or DS.
+	actions are made like finalizing the rounds.
 	@param phase short indicating which phase is going on.
     */
   public CompileInfo(short phase) {
  	this.phase = phase;
   }
-
 
 /*---------- set-methods ----------*/
 
@@ -183,31 +159,10 @@ public class CompileInfo extends DebugInfo {
 	lineBinary = binary;
     }
 
-    public void setDefiningDS(int ADDR, String name) { 
-	definingDS = true; 
-	dsAddress = ADDR;
-	dsName = name;
-    }
-
-    public void setDefiningDC(int ADDR, String name) { 
-	definingDS = true; 
-	dcAddress = ADDR;
-	dcName = name;
-    }
-
     /** This method sets the boolean field finalFinal to true.
      */
     public void setFinal() {
 	finalFinal = true;
-    }
-
-    /** This method sets the initial SP and FP pointers to given values.
-	@param SP Initial value of SP.
-	@param FP Initial value of FP.
-    */
-    public void setInitPointers(int SP, int FP) {
-	initPointers[SP_POS] = SP;
-	initPointers[FP_POS] = FP;
     }
 
     /** This method sets given line to given value.
@@ -238,7 +193,6 @@ public class CompileInfo extends DebugInfo {
     public void setSymbolTable(String[][] symbolTable) {
 	this.symbolTable = symbolTable;
     }
-
 
 /*---------- get-methods ----------*/
 
@@ -320,51 +274,11 @@ public class CompileInfo extends DebugInfo {
 	return labelValue;
     } 
 
-    /** This method tells GUIBrain that compiler is setting DS area.
-     */
-    public boolean getDefiningDS() {
-	return definingDS;
-    } 
-
-    /** This methot tells GUIBrain that compiler is setting DC.
-     */
-    public boolean getDefiningDC() {
-	return definingDC;
-    } 
-
-    /** This method returns the address of a DC defined. */
-    public int getDCaddress() { 
-	return dcAddress;
-    }
-
-    /** This method returns the address of a DS defined. */
-    public int getDSaddress() { 
-	return dsAddress;
-    }
-  
-    /** This method returns the name of the DC defined. */
-    public String getDCname() { 
-	return dcName;
-    }
-
-    /** This method returns the name of the DS defined. */
-    public String getDSname() { 
-	return dsName;
-    }
-
     /** This method returns true if field finalFinal is set.
 	@return Boolean.
     */
     public boolean getFinalPhase() {
 	return finalFinal;
-    }
-
-    /** This method returns initial SP and FP pointers in an interger array
-	where first value is SP and second is FP.
-	@return An integer array.
-    */
-    public int[] getInitPointers() {
-	return initPointers;
     }
 
     /** This method returns codelines of the memory after compiler has finished first 
@@ -384,7 +298,6 @@ public class CompileInfo extends DebugInfo {
     public String[] getData() {
 	return data;
     }
-
 
     /**	This method returns the symboltable gathered during the first round.
 	@return Array representing the symboltable. Each entry has 2 values.

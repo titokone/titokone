@@ -45,19 +45,6 @@ public class CompileDebugger {
 	info.setSymbolName(name);
     }
 
-    /** This method tells where data area for given DS is in the
-	memory. This method is used when compiles has checked all
-	lines in the first phase and has called firstPhase()
-	method. This method sets definingDS field in CompileInfo to
-	true and then sets corresponding fields.
-	@param name String containing name of the symbol.
-	@param size Int containing the size of DS
-	@param ADDR Starting address of the segment..
-    */
-    public void reserveDS(String name, int size, int ADDR) {
-// TODO deprecated?
-    }
- 
     /** This method tells debugger that a DC compiler instruction was found
 	and it is added to the symboltable. 
 	@param name String containing name of the symbol.
@@ -67,19 +54,6 @@ public class CompileDebugger {
     public void foundDC(String name) {
    	info.setSymbolFound();
 	info.setSymbolName(name);
-    }
-
-    /** This method tells where given DC is located in the
-	memory. This method is used when compiles has checked all
-	lines in the first phase and has called firstPhase()
-	method. This method sets definingDC field in CompileInfo to
-	true and then sets corresponding fields.
-	@param name String containing name of the symbol.
-	@param value Int containing the value.
-	@param ADDR Address of the DC.
-    */
-    public void reserveDC(String name, int value, int ADDR) {
-// TODO deprecated?
     }
 
     /** This Method  tells debugger that a symbol was used as an 
@@ -179,16 +153,12 @@ public class CompileDebugger {
 //	info.setSymbolFound();
 //	info.setSymbolName(name, value);
     }
-    
-    /** This method tells debugger that first round of compilation is
-	in progress and the line compiled is empty. It creates
-	CompileInfo-object and sets its phase to 1 and lineEmpty to true.
-	@param lineNumber Number of the compiled line.
-	@param lineEmpty True if line was empty.
-    */
-    public void firstPhase(int lineNumber, boolean lineEmpty) {
 
-    } 
+    /**	This method sets the compiled value of a line during
+	the second round of compilation.     */
+    public void setBinary(int binary) {
+	info.setLineBinary(binary);
+    }
     
     /** This method tells debugger that first round of compilation is
     in progres and line wasn't empty. It creates CompileInfo object
@@ -197,7 +167,7 @@ public class CompileDebugger {
     @param lineContents String containing the symbolic command.
     */
     public void firstPhase(int lineNumber, String lineContents) {
-
+	info = new CompileInfo(CompileInfo.FIRST_ROUND, lineNumber, lineContents);
     } 
 
     /** This method is used when all lines are checked in the first
@@ -205,37 +175,35 @@ public class CompileDebugger {
     labels. 
     */
     public void firstPhase() {
-
+	info = new CompileInfo(CompileInfo.FINALIZING_FIRST_ROUND);
     }
     
     /** This method is used when all DC and DS are defined and
-    compiler is ready to move to the second phase. Compiler tells
-    debugger what are code lines and then what is dataArea in memory
-    and what it contains. GUIBrain then redraws GUI and writes
-    codelines leaving binary cells empty. Then it draws data area
-    where number of first data line is codeArea.length
-    @param codeArea String array containing codelines.
-    @param dataArea String array containing data.
-    @param symbolTable 2-dimensional String array containing the symbol table.
+    	compiler is ready to move to the second phase. Compiler tells
+    	debugger what are code lines and then what is dataArea in memory
+    	and what it contains. GUIBrain then redraws GUI and writes
+    	codelines leaving binary cells empty. Then it draws data area
+    	where number of first data line is codeArea.length
+    	@param codeArea String array containing codelines.
+    	@param dataArea String array containing data.
+    	@param symbolTable 2-dimensional String array containing the symbol table.
     */
     public void finalFirstPhase(String[] codeArea, String[] dataArea, String[][] symbolTable) {
-
 	info.setInstructions(codeArea);
 	info.setData(dataArea);
 	info.setSymbolTable(symbolTable);
-
     }
 
     /**	This method sets the comment to the compileInfo. 
     */
-    public void setComments(String message, String[] parameters) {
-
+    public void setComments(String message) {
+	info.setComments(message);
     }
 
     /**	This method sets the status info to the compileInfo. 
     */
-    public void setStatusMessage(String message, String[] parameters) {
-
+    public void setStatusMessage(String message) {
+	info.setStatusMessage(message);
     }
 
     /** This method tells debugger that the second round of
@@ -248,38 +216,17 @@ public class CompileDebugger {
     @param IR String containing binary command splitted into parts
     which are presented as integers.
     */
-    public void secondPhase(int lineNumber, String lineContents, int binary, String IR) {
-
-
+    public void secondPhase(int lineNumber, String lineContents) {
+	info = new CompileInfo(CompileInfo.SECOND_ROUND, lineNumber, lineContents);
     }
 
     /** This method tells debugger that final phase of compilation is
     in progress. It creates CompileInfo object and sets its phase to 4.
     */
     public void finalPhase() {
-
+	info = new CompileInfo(CompileInfo.FINALIZING);
     }
     
-    /** This method sets the initial values of SP and FP.
-	@param sp Value of the SP,
-	@param fp Value of the FP.
-    */
-    public void setInitPointers(int sp, int fp) {
-
-
-    }
-    
-    /** This method sets given memorylines to the given values. It is
-	used in the finalizing first phase of compilation. Compiler
-	uses it to tell GUIBrain  
-	@param lines An int array where first cell is linenumber and second
-	is the new value.
-    */
-    public void setMemoryline(int[][] lines) {
-
-    }
-  
-
     /** This method returns the created CompileInfo-object. It sets
     comments in the CompileInfo and then returns it.*/
     public CompileInfo lineCompiled() {
