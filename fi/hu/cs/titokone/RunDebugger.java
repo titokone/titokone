@@ -1,5 +1,7 @@
 package fi.hu.cs.titokone;
 
+import java.util.LinkedList;
+
 /** This class produces objects describing what has changed due to the last
     command having been run. */
 public class RunDebugger{ 
@@ -57,6 +59,8 @@ public class RunDebugger{
     private String comments;
     /** This field represents the status of the program */
     private String statusMessage;
+    /** List of changed memory lines */
+    private LinkedList changedMemoryLines = new LinkedList();
     
         
     /** This constructor initializes the RunDebugger. After initialization it
@@ -78,16 +82,13 @@ public class RunDebugger{
      @param oldFP value of the old FP.
      @param newFP value of the old FC.
     */
-    public void cycleStart(String lineContents,
-			   int newPC, int newSP, int newFP){ 
-	
-					   			   
-		this.info = new RunInfo(lineContents, oldPC, newPC, oldSP, newSP,
+    public void cycleStart(String lineContents, int newPC, int newSP, int newFP){ 
+		info = new RunInfo(lineContents, oldPC, newPC, oldSP, newSP,
 		                   oldFP, newFP);
 		
-		this.oldPC = newPC;
-		this.oldFP = newFP;
-		this.oldSP = newSP;	   
+		oldPC = newPC;
+		oldFP = newFP;
+		oldSP = newSP;	   
     }
 
     
@@ -127,7 +128,7 @@ public class RunDebugger{
 			break;
 			
 			case STACK_OPERATION:
-				this.info.setOperation("Stack-operation");
+				this.info.setOperation("Stack operation");
 			break;
 		
 			case SVC_OPERATION:
@@ -167,8 +168,7 @@ public class RunDebugger{
 	@param binary Binary value written.
 	@param newContents String containing possible new symbolic command.
     */
-    public void selfChangingCode(int lineNumber, int binary, 
-				 String newContents) {
+    public void selfChangingCode(int lineNumber, int binary, String newContents) {
 		this.info.setChangedCodeAreaData(linenumber, binary, newContents);
     }
 
@@ -193,9 +193,11 @@ public class RunDebugger{
 	First cell contains number of the line and second the new value..
 	@param lines Array containing new values.
     */
-    // TO DO: Arto kaipasi myös symbolista esitystä, syötetäänkö debuggerille object-taulukko?
-    public void setChangedMemoryLines(int[][] lines){
-    
+    public void addChangedMemoryLine(int row, MemoryLine changedMemoryLine){
+        Object[] entry = new Object[2];
+        entry[0] = new Integer(row);
+        entry[1] = changedMemoryLine;
+        changedMemoryLines.add (entry);
     }
     
     /** This method sets the result of ALU operation. 
@@ -219,7 +221,6 @@ public class RunDebugger{
     */
     public void setIN(int deviceNumber, int value){
     	switch(deviceNumber) {
-	    	
 	    	case KBD:
 	    		this.info.setIN("Keyboard", KBD, value);
 	    	break;
@@ -227,10 +228,7 @@ public class RunDebugger{
 	    	case STDIN:
 	    		this.infosetIN("Standard input", STDIN, value);
 	    	break;
-	    		
     	}
-    	
-    	
     }
 
     /** This method tells debugger that something was written to the given
@@ -286,8 +284,8 @@ public class RunDebugger{
         @return RunInfo of the current line
     */
     public RunInfo cycleEnd() {
-	 return this.info;
+        info.setChangedMemoryLines (changedMemoryLines);
+        changedMemoryLines = new LinkedList();
+        return info;
     }
-
-  
 }
