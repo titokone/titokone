@@ -885,10 +885,12 @@ public class Compiler {
 		}
 
 		if (opcode.length() > 0) {
+		    // original line [LL]
 				//			if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
+		    // Modified to support "NOT". It's here because it takes only one param like command "JUMP" [LL]
 			if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J' || opcode.toLowerCase().equals("not") ) {
 				// Opcode matches jneg/jzer/jpos or the negations 
-				// jnneg/jnzer/jnpos. // or opcode is 'not' 
+				// jnneg/jnzer/jnpos. // or opcode is 'NOT' [LL]
 				if(opcode.toLowerCase().matches("j" + "n?" + 
 							"((neg)|(zer)|(pos))") ||
 					 opcode.toLowerCase().equals("not") ) {
@@ -899,6 +901,7 @@ public class Compiler {
 						throw new TTK91CompileException(comment);
 					}
 				} 
+				// modified to support "NOT". With "NOT" only one reg is expected, no addresses [LL]
 				if ( ( (!opcode.toLowerCase().equals("not")) && ( addressingMode.equals("=") || address.equals("") ) ) ) {
 					comment = new Message("Compilation failed: {0}",
 							new Message("address expected."
@@ -929,8 +932,6 @@ public class Compiler {
 						} else {
 							if (firstRegister.equals("") || 
 									(address.equals("") && secondRegister.equals(""))) {
-							    // TÄHÄN PYSÄHTYY NOT-käännös [LL]
-									// Ei enää, koska rinnastin NOT:n J-perheen käskyjen kanssa
 								comment = new Message("Compilation failed: {0}",
 										new Message("address or 1 register expected."
 											).toString()).toString();
