@@ -1,7 +1,9 @@
 /* Huomautukset:
     Lisäsin COMMENTED, LINE_BY_LINE ja ANIMATED kentät.
-    Poistin parametrin speed, menuSetRunningOptions() ja menuSetCompilingOptions() -metodeista
-*/
+    Poistin parametrin speed menuSetRunningOptions() ja menuSetCompilingOptions() -metodeista
+    Lisäsin kentän sleeping
+    Lisäsin metodin public void waitForContinueTask()
+    */
 
 package fi.hu.cs.titokone;
 
@@ -41,7 +43,7 @@ private __stupid_Control control;
   
     
 private __stupid_Settings currentSettings;
-private __stupid_GUI gui;  
+private GUI gui;  
 
 private File settingsFile;
 
@@ -60,11 +62,16 @@ public static final int ANIMATED = 4;
 private boolean interruptSent;
 
 
+/* This field is set true, when a method sets itself to wait for a continue
+   command from GUI. GUI calls continueTask() method to set this field back
+   to false.
+*/
+private boolean sleeping;
 
 /** This constructor sets up the GUIBrain instance. It calls private
     initialization functions, including findAvailableLanguages(). 
 */
-public GUIBrain(__stupid_GUI gui) { 
+public GUIBrain(GUI gui) { 
   
   control = new __stupid_Control();
   this.gui = gui;
@@ -91,7 +98,7 @@ private String parseSuffix(File f) {
     }
   }
   
-  return filename.substring(i);
+  return filename.substring(i+1);
 }
 
 
@@ -104,6 +111,7 @@ public void menuOpenFile(File openedFile) {
   String suffix = parseSuffix(openedFile);
   __stupid_LoadInfo loadinfo;
   
+  System.out.println(suffix);
   if (suffix.equals("b91")) {
     try {
       control.openBinary(openedFile);
@@ -120,9 +128,15 @@ public void menuOpenFile(File openedFile) {
       return;
     }
     
-    gui.updateStatusLine(loadinfo.getStatusMessage());
+    System.out.println(loadinfo.getStatusMessage());
+    gui.updateStatusBar(loadinfo.getStatusMessage());
     gui.updateReg(__stupid_GUI.SP, loadinfo.getSP());
     gui.updateReg(__stupid_GUI.FP, loadinfo.getFP());
+    
+    String[][] symbolsAndValues = loadinfo.getSymbolTable();
+    gui.insertSymbolTable(symbolsAndValues);
+    
+    gui.addComment(loadinfo.getComments());
     
     int binaryCommands[] = loadinfo.getBinaryCommands();
     String symbolicCommands[] = loadinfo.getSymbolicCommands();
@@ -131,7 +145,15 @@ public void menuOpenFile(File openedFile) {
       line[i] = i;
     }
     
-    gui.insertToCodeTable(line, binaryCommands, symbolicCommands);
+    gui.insertToInstructionsTable(line, binaryCommands, symbolicCommands);
+    
+    int data[] = loadinfo.getData();
+    line = new int[data.length];
+    for (int i=0 ; i<line.length ; i++) {
+      line[i] = binaryCommands.length + i;
+    }
+    
+    gui.insertToDataTable(line, data);
     
     gui.setGUIView(3);
   
@@ -141,7 +163,7 @@ public void menuOpenFile(File openedFile) {
   
   }
   else if (suffix.equals("k91")) {
-    String k91Source;
+    String k91Source = "";
     try {
       k91Source = control.openSource(openedFile);
     }
@@ -149,7 +171,12 @@ public void menuOpenFile(File openedFile) {
       //TODO: Mitä tehdään kun tulee IOException
     }
     
-    //gui. //TODO: Tee loppuun
+    String[] src = k91Source.split("\n|\r|\r\n");
+    gui.insertToCodeTable(src);
+    gui.updateStatusBar("Opened a new k91 source file");
+    gui.setGUIView(2);
+    
+    
   }
   else {
     // TODO: Mitä tehdään kun tiedoston pääte ei ole "k91" tai "b91"
@@ -169,10 +196,10 @@ public void menuRun() {
   __stupid_RunInfo runinfo;
   int runmode = currentSettings.getIntValue(__stupid_Settings.RUN_MODE);
   
-  gui.disable(__stupid_GUI.GUI_RUN_COMMAND);
-  gui.enable(__stupid_GUI.GUI_STOP_COMMAND);
+  gui.disable(__stupid_GUI.RUN_COMMAND);
+  gui.enable(__stupid_GUI.STOP_COMMAND);
   
-  runLine();
+  runinfo = control.runLine();
   
   while (interruptSent == false) {
     if ((runmode & LINE_BY_LINE) != 0) {   // If program is set to run line by line then
@@ -201,8 +228,8 @@ public void menuCompile() {
   __stupid_CompileInfo compileinfo;
   int compilemode = currentSettings.getIntValue(__stupid_Settings.COMPILE_MODE);
   
-  gui.disable(__stupid_GUI.GUI_COMPILE_COMMAND);
-  gui.enable(__stupid_GUI.GUI_STOP_COMMAND);
+  gui.disable(__stupid_GUI.COMPILE_COMMAND);
+  gui.enable(__stupid_GUI.STOP_COMMAND);
   
   compileinfo = control.compileLine();
 
@@ -211,7 +238,9 @@ public void menuCompile() {
     int phase = compileinfo.getPhase();
 
     if (phase == __stupid_CompileInfo.FIRST_ROUND) {
+      
       if (compileinfo.symbolFound()) {
+      	
       	String symbolName = compileinfo.getSymbolName();
       	int symbolValue = 0;
       	if (compileinfo.getSymbolDefined()) {
@@ -248,8 +277,8 @@ public void menuCompile() {
 		      dataLineNumber[j] = j+i;
 	      }
 
-  	    gui.updateInstructionsTable(instructionsLineNumber, newInstructionsContents);
-  	    gui.updateDataTable(dataLineNumber, newDataContents);
+  	    gui.insertToInstructionsTable(instructionsLineNumber, newInstructionsContents);
+  	    gui.insertToDataTable(dataLineNumber, newDataContents);
   	    gui.setGUIView(3);
 	    }
     }
@@ -259,23 +288,14 @@ public void menuCompile() {
 
 	
     if ( ((compilemode & PAUSED) != 0) && compileinfo.getComments().equals("") ) {
-      gui.enable(__stupid_GUI.GUI_CONTINUE_COMMAND);
-      gui.enable(__stupid_GUI.GUI_CONTINUE_WITHOUT_PAUSES_COMMAND);
-      try {
-        wait();                             // the thread pauses to wait for a call of notify()
-      }
-      catch (InterruptedException e) {
-      //jaajaa
-      }
-      gui.disable(__stupid_GUI.GUI_CONTINUE_COMMAND);
-      gui.disable(__stupid_GUI.GUI_CONTINUE_WITHOUT_PAUSES_COMMAND);
+      gui.enable(__stupid_GUI.CONTINUE_COMMAND);
+      gui.enable(__stupid_GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
+      waitForContinueTask();
+      gui.disable(__stupid_GUI.CONTINUE_COMMAND);
+      gui.disable(__stupid_GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
     }
     compileinfo = control.compileLine();
   }
-
-
-
-
 }
 
 
@@ -305,25 +325,37 @@ public void menuInterrupt() { }
 
 
 public void menuSetLanguage(String language) { 
-  control.setLanguage(language);
+  
+  if (availableLanguages.containsKey(language)) {
+    
+    Translator.setLocale((Locale)availableLanguages.get(language));  
+    currentSettings.setValue(__stupid_Settings.UI_LANGUAGE, language);
+    control.saveSettings(currentSettings.toString(), settingsFile);
+  }
 }
 
 
 
 public void menuSetStdIn(File stdinFile) {
   control.setDefaultStdIn(stdinFile);
+  currentSettings.setValue(__stupid_Settings.STDIN_PATH, stdinFile.getPath());
+  control.saveSettings(currentSettings.toString(), settingsFile);
 }
 
 
 
 public void menuSetStdOut(File stdoutFile) {
   control.setDefaultStdOut(stdoutFile);
+  currentSettings.setValue(__stupid_Settings.STDOUT_PATH, stdoutFile.getPath());
+  control.saveSettings(currentSettings.toString(), settingsFile);
 }
 
 
 
 public void menuSetMemorySize(int newSize) {
   control.changeMemorySize(newSize);
+  currentSettings.setValue(__stupid_Settings.MEMORY_SIZE, newSize);
+  control.saveSettings(currentSettings.toString(), settingsFile);
   gui.setGUIView(1);
 }
 
@@ -377,7 +409,20 @@ public void menuManual() {}
 /** This method corresponds to some user input saying that a long,
     commented task can continue. 
 */
-public void continueTask() {}
+public void continueTask() {
+  sleeping = false;
+  return;
+}
+
+
+public void waitForContinueTask() {
+  
+  sleeping = true;
+  while (sleeping) {
+    //do nothing at all, just wait until continueTask() changes sleeping to false.
+  }
+  return;
+}
 
 
 

@@ -74,8 +74,15 @@ public StringBuffer loadSettings(File settingsFile) throws IOException {
 private boolean testAccess(File accessedFile, int accessType) throws IOException {
 
   if(accessedFile.exists() == false) {
-    String msg = accessedFile.getName() + " not found.";
-    throw new FileNotFoundException(new Message(msg).toString());
+    
+    if (accessType == WRITE_ACCESS || accessType == APPEND_ACCESS) {
+      accessedFile.createNewFile();
+    }
+    else {
+      String msg = accessedFile.getName() + " not found.";
+      //throw new FileNotFoundException(new Message(msg).toString());
+      throw new FileNotFoundException();
+    }
   }
   
   if(accessType == READ_ACCESS && accessedFile.canRead() == false) {
@@ -131,8 +138,9 @@ private void saveStringToFile(String str, File saveFile) throws IOException {
   catch (IOException e) {
     //throw IOException(new Message("Error while writing into file " + saveFile.getName() + ".").toString());
     //TODO: Perkele kun ei saa toimimaan tota IOException(String)-h‰ss‰kk‰‰
-    //throw IOException();
+    throw new IOException();
   }
+  saveFileWriter.close();
 }
 
 
@@ -146,10 +154,10 @@ private void saveStringToFile(String str, File saveFile) throws IOException {
 	@param filename The identifier of the file to save to.
 	@throws IOException If an I/O error occurs, eg. the directory 
 	the file should be in does not exist or we cannot write to it. */
-public void saveSettings(StringBuffer settingsData, File settingsFile) throws IOException {
+public void saveSettings(String settingsData, File settingsFile) throws IOException {
   
   testAccess(settingsFile, WRITE_ACCESS);
-  saveStringToFile(new String(settingsData), settingsFile);
+  saveStringToFile(settingsData, settingsFile);
 }
 
     /** This function loads a Binary from a binary .b91 file and

@@ -1,3 +1,13 @@
+/* TODO:
+    updateStatusLine(String str) updates the status line by replacing its contents with str
+    
+    updateReg(int reg, int value) updates reg with a new value
+    
+    disable(int)
+    
+    insertToCodeTable(int[], int[], String[])
+*/
+
 package fi.hu.cs.titokone;
 
 import java.awt.*;
@@ -26,22 +36,32 @@ import javax.swing.table.*;
 
 public class GUI extends JFrame implements ActionListener {
   
-  
+        GUIBrain guibrain;
+        
+        JPanel leftPanel;
         JPanel  upperRightPanel;
         JPanel  lowerRightPanel;
         
         JTableX codeTable;
+        Object[] codeTableIdentifiers = {"", ""};
+        
         JTableX instructionsTable;
+        Object[] instructionsTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
         JTableX dataTable;
+        Object[] dataTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
         JScrollPane codeTableScrollPane;
         JScrollPane instructionsTableScrollPane;
         JScrollPane dataTableScrollPane;
         JSplitPane dataAndInstructionsTableSplitPane;   
         
         JTableX registersTable;
+        Object[] registersTableIdentifiers = {"", ""};
         JScrollPane registersTableScrollPane;
         
         JTableX symbolTable;
+        Object[] symbolTableIdentifiers = {"", ""};
+        
+        HashMap symbolsHashMap; // This has symbol name as key and its row in the symbol table as value
         
         JTextArea outputTextArea;
         JLabel enterNumberLabel;
@@ -55,11 +75,35 @@ public class GUI extends JFrame implements ActionListener {
         JButton continueToEndButton;
         JButton stopButton;
         
+        JLabel statusBar;
+        
         JMenuItem compileMenuItem;
 	      JMenuItem runMenuItem;
-	      JMenuItem stopMenuItem;
+	      JMenuItem continueMenuItem;
+        JMenuItem continueToEndMenuItem;
+        JMenuItem stopMenuItem;
+	      
+	      JList commentList;
 	      
 	      String[][] codeTableContents;
+	      
+	      public static final short R0 = 0,
+        	                        R1 = 1,
+        	                        R2 = 2,
+        	                        R3 = 3,
+        	                        R4 = 4,
+        	                        R5 = 5,   // r5 == sp
+        	                        R6 = 6,   // r6 == fp
+        	                        SP = 5,   // ^^
+        	                        FP = 6;   // ^^
+
+        public static final short COMPILE_COMMAND = 0,
+                                  RUN_COMMAND = 1,
+                                  STOP_COMMAND = 2,
+                                  CONTINUE_COMMAND = 3,
+                                  CONTINUE_WITHOUT_PAUSES_COMMAND = 4;
+
+	      
         
 private JFileChooser openFileDialog;
 
@@ -80,15 +124,17 @@ public void actionPerformed(ActionEvent e) { }
 
 public GUI() {
   
-  setTitle("Kälidemo");
+  setTitle("Titokone");
   openFileDialog = new JFileChooser();
   this.setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
   this.setCompileOptionsDialog = new GUICompileSettingsDialog(this, false);
-  
+  guibrain = new GUIBrain(this);
+  symbolsHashMap = new HashMap();
+          
   initGUI();
   
   addWindowListener( new WindowAdapter () {
-		public void windowClosing(WindowEvent tapahtuma) {
+		public void windowClosing(WindowEvent e) {
 			
 			System.exit(0);
 		}
@@ -118,7 +164,7 @@ private void initGUI() {
   
   insertMenuBar(this);
   
-    
+  
   codeTable = prepareCodeTable();
   codeTableScrollPane = insertTableToScrollPane(codeTable);
   
@@ -130,31 +176,27 @@ private void initGUI() {
   
   dataAndInstructionsTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionsTableScrollPane, dataTableScrollPane);
   dataAndInstructionsTableSplitPane.setOneTouchExpandable(true);
-       
+  
+  statusBar = new JLabel();
+  commentList = new JList(new DefaultListModel());
+  symbolTable = new JTableX(new DefaultTableModel(new String[] {"",""}, 0));
+  registersTableScrollPane = prepareRegistersTableScrollPane();
+        
+         
   setGUIView(1);
-  setGUIView(2);
-  /*addRowToCodeTable("", "Jaahas");
-  addRowToCodeTable("", "Jaahah56h4hu4u5nej5j53j65s");
-  addRowToCodeTable("", "Jaaha321515555432523gewrs");
-  addRowToCodeTable("", "Jaaha543gj429 tg95nt53hyu6h386uhu3985hg09hg53m9s");
-  addRowToCodeTable("", "Jaahas");
-  addRowToCodeTable("", "Jaaha543s");*/
-  setGUIView(3);
   
-  addRowToInstructionsTable("0","24372932","LOAD R1, =100");
-  addRowToInstructionsTable("1","65463464","Alku: STORE R1, R2");
-  
-  //instructionsTable.selectRow(1,true);
 }
 
 
-private void setGUIView(int view) {
+public void setGUIView(int view) {
   
-  JPanel leftPanel = new JPanel(new BorderLayout());
-  JPanel upperRightPanel = new JPanel(new BorderLayout());
-  JPanel lowerRightPanel = new JPanel(new BorderLayout());
+  
      
   getContentPane().removeAll();
+  
+  leftPanel = new JPanel(new BorderLayout());
+  upperRightPanel = new JPanel(new BorderLayout());
+  lowerRightPanel = new JPanel(new BorderLayout());
   
   if (view == 1) {
     // nothing is done 
@@ -168,7 +210,6 @@ private void setGUIView(int view) {
   
   
     
-    registersTableScrollPane = prepareRegistersTableScrollPane();
     
     upperRightPanel.add(registersTableScrollPane, BorderLayout.WEST);
     
@@ -176,9 +217,7 @@ private void setGUIView(int view) {
     
     
     JPanel symbolTablePanel = new JPanel();
-    //JTable symbolTable = new JTable(new SymbolTableModel());
-    symbolTable = new JTableX(new DefaultTableModel(new String[] {"",""}, 0));
-    
+  
     JScrollPane symbolTableScrollPane = new JScrollPane(symbolTable);
     
     symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
@@ -228,7 +267,6 @@ private void setGUIView(int view) {
     
     //String[] joo = {"KJ odottaa syötettä laitteelta KBD","...","...","...","...","...","...","...","...","...","...","jne"};
     
-    JList commentList = new JList();
     JScrollPane commentListScrollPane = new JScrollPane(commentList);
     commentListScrollPane.setPreferredSize(new Dimension(1,50));
     
@@ -255,7 +293,6 @@ private void setGUIView(int view) {
     getContentPane().add( makeToolBar() , BorderLayout.NORTH);
     
     
-    JLabel statusBar = new JLabel("Status bar");
     
     statusBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
     getContentPane().add(statusBar, BorderLayout.SOUTH);
@@ -264,32 +301,25 @@ private void setGUIView(int view) {
     setInputFieldEnabled(false);
     
     if (view == 1) {
-      compileMenuItem.setEnabled(false);
-      runMenuItem.setEnabled(false);
-      stopMenuItem.setEnabled(false);
-      compileButton.setEnabled(false);
-      runButton.setEnabled(false);
+      disable(COMPILE_COMMAND);
+      disable(RUN_COMMAND);
+      disable(CONTINUE_COMMAND);
+      disable(CONTINUE_WITHOUT_PAUSES_COMMAND);
     }
     else if (view == 2) {
-      compileMenuItem.setEnabled(true);
-      runMenuItem.setEnabled(false);
-      stopMenuItem.setEnabled(false);
-      registersTable.setEnabled(false);
-      compileButton.setEnabled(true);
-      runButton.setEnabled(false);
+      enable(COMPILE_COMMAND);
+      disable(RUN_COMMAND);
+      disable(CONTINUE_COMMAND);
+      disable(CONTINUE_WITHOUT_PAUSES_COMMAND);
     }
     else if (view == 3) {
-      compileMenuItem.setEnabled(false);
-      runMenuItem.setEnabled(true);
-      stopMenuItem.setEnabled(false);
-      compileButton.setEnabled(false);
-      runButton.setEnabled(true);
+      disable(COMPILE_COMMAND);
+      enable(RUN_COMMAND);
+      disable(CONTINUE_COMMAND);
+      disable(CONTINUE_WITHOUT_PAUSES_COMMAND);
     }
     
-    continueButton.setEnabled(false);
-    continueToEndButton.setEnabled(false);
-    stopButton.setEnabled(false);
-  
+    
   
     validate();
   
@@ -388,8 +418,7 @@ private JToolBar makeToolBar() {
 
 private JTableX prepareCodeTable() {
  
-  String[] columnNames = {"",""};
-  JTableX codeTable = new JTableX(new DefaultTableModel(columnNames,0));
+  JTableX codeTable = new JTableX(new DefaultTableModel(codeTableIdentifiers ,0));
   codeTable.setFont(tableFont);
   codeTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
   codeTable.setEnabled(false);
@@ -403,103 +432,202 @@ private JTableX prepareCodeTable() {
 }
 
 
+public void updateStatusBar(String str) {
+  System.out.println(statusBar.getText());
+  statusBar.setText(str);
+  System.out.println(statusBar.getText());
+  statusBar.validate();
+}
 
-public void addRowToCodeTable(String rowNum, String str) {
+public void updateReg(int reg, int newValue) {
+  DefaultTableModel registersTableModel = (DefaultTableModel)registersTable.getModel(); 
+  registersTable.setValueAt(""+newValue, reg, 1);
+  registersTable.selectRow(reg);
+}
+
+
+public boolean insertToCodeTable(String[] src) {
   
-  DefaultTableModel tableModel = (DefaultTableModel)codeTable.getModel();
-  String[] data = {""+rowNum, ""+str};
-  tableModel.addRow(data);
+  int rows = src.length;
+  Object[][] tableContents = new Object[rows][2];
+  for (int i=0 ; i<rows ; i++) {
+    tableContents[i][0] = "";
+    tableContents[i][1] = src[i];
+  }
     
-  int nowAddedRowNumber = codeTable.getRowCount() - 1;
-  int column0Width = codeTable.getColumnModel().getColumn(0).getWidth();
-  int column1Width = codeTable.getColumnModel().getColumn(1).getWidth();
+  DefaultTableModel codeTableModel = (DefaultTableModel)codeTable.getModel(); 
+  codeTableModel.setDataVector(tableContents, codeTableIdentifiers);
   
-  if (column0Width < codeTable.getTextLength(nowAddedRowNumber, 0)) {
-    codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 0));   
-  }
+
+  codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getMaxTextLengthInColumn(0));   
+  codeTable.getColumnModel().getColumn(1).setPreferredWidth(codeTable.getMaxTextLengthInColumn(1));   
   
-  if (column1Width < codeTable.getTextLength(nowAddedRowNumber, 1)) {
-    codeTable.getColumnModel().getColumn(1).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 1));
+  return true;
+}
+
+public boolean insertToInstructionsTable(int[] lineNum, int[] binaryCommand, String[] symbolicCommand) {
+  
+  if (lineNum.length != binaryCommand.length || lineNum.length != symbolicCommand.length) {
+    return false;
   }
-  codeTable.getRootPane().validate();
+  int rows = lineNum.length;
+  DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
+  Object[][] tableContents = new Object[rows][3];
+  for (int i=0 ; i<rows ; i++) {
+    tableContents[i][0] = ""+lineNum[i];
+    tableContents[i][1] = ""+binaryCommand[i];
+    tableContents[i][2] = symbolicCommand[i];
+  }
+  instructionsTableModel.setDataVector(tableContents, instructionsTableIdentifiers);
+  return true;
+}
+
+public boolean insertToInstructionsTable(int[] lineNum, String[] symbolicCommand) {
+  int[] empty = new int[lineNum.length];
+  return insertToInstructionsTable(lineNum, empty, symbolicCommand);
+}
+
+
+//public boolean insertToDataTable(int[] lineNum, int[] binaryCommand, String[] symbolicCommand) {
+public boolean insertToDataTable(int[] lineNum, int[] data) {
+  
+  if (lineNum.length != data.length) {
+    return false;
+  }
+  int rows = lineNum.length;
+  DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
+  Object[][] tableContents = new Object[rows][3];
+  for (int i=0 ; i<rows ; i++) {
+    tableContents[i][0] = ""+lineNum[i];
+    tableContents[i][1] = ""+data[i];
+    //tableContents[i][2] = symbolicCommand[i];
+  }
+  dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
+  return true;
 }
 
 
 
-public void addRowToInstructionsTable(String rowNum, String code, String symbolic) {
+public boolean insertToDataTable(int[] lineNum, String[] symbolicCommand) {
+  int[] empty = new int[lineNum.length];
+  //return insertToDataTable(lineNum, empty, symbolicCommand);
+  return true;
+}
+
+
+
+public boolean insertSymbolTable(String[][] symbolsAndValues) {
   
-  DefaultTableModel tableModel = (DefaultTableModel)instructionsTable.getModel();
-  String[] data = {""+rowNum, ""+code, ""+symbolic};
-  tableModel.addRow(data);
-    
-  /*int nowAddedRowNumber = codeTable.getRowCount() - 1;
-  int column0Width = codeTable.getColumnModel().getColumn(0).getWidth();
-  int column1Width = codeTable.getColumnModel().getColumn(1).getWidth();
-  
-  if (column0Width < codeTable.getTextLength(nowAddedRowNumber, 0)) {
-    codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 0));   
+  if (symbolsAndValues[0].length != 2) {
+    return false;
   }
   
-  if (column1Width < codeTable.getTextLength(nowAddedRowNumber, 1)) {
-    codeTable.getColumnModel().getColumn(1).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 1));
-  }*/
-  instructionsTable.getRootPane().validate();
-} 
-
-
-
-public void addRowToDataTable(String rowNum, String code, String symbolic) {
+  int numOfSymbols = symbolsAndValues.length;
   
-  DefaultTableModel tableModel = (DefaultTableModel)dataTable.getModel();
-  String[] data = {""+rowNum, ""+code, ""+symbolic};
-  tableModel.addRow(data);
-    
-  /*int nowAddedRowNumber = codeTable.getRowCount() - 1;
-  int column0Width = codeTable.getColumnModel().getColumn(0).getWidth();
-  int column1Width = codeTable.getColumnModel().getColumn(1).getWidth();
+  DefaultTableModel symbolTableModel = (DefaultTableModel)symbolTable.getModel(); 
+  Object[][] tableContents = new Object[numOfSymbols][2];
+  for (int i=0 ; i<numOfSymbols ; i++) {
+    tableContents[i][0] = symbolsAndValues[i][0];
+    tableContents[i][1] = symbolsAndValues[i][1];
+  }
+  symbolTableModel.setDataVector(tableContents, symbolTableIdentifiers);
+  return true;
+}
+
+
+public boolean updateRowInSymbolTable(String symbolName, int symbolValue) {
+  Integer row = (Integer)symbolsHashMap.get(symbolName);
+  DefaultTableModel symbolTableModel = (DefaultTableModel)symbolTable.getModel(); 
+  if (row != null) {
+    row = (Integer)symbolsHashMap.get(symbolName);
+    symbolTableModel.setValueAt(""+symbolValue, row.intValue(), 1);
   
-  if (column0Width < codeTable.getTextLength(nowAddedRowNumber, 0)) {
-    codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 0));   
+  }
+  else {
+    DefaultTableModel tableModel = (DefaultTableModel)symbolTable.getModel();
+    String[] data = {symbolName, ""+symbolValue};
+    tableModel.addRow(data);
+  
+    row = new Integer(symbolTable.getRowCount());
+    symbolsHashMap.put(symbolName, row);
   }
   
-  if (column1Width < codeTable.getTextLength(nowAddedRowNumber, 1)) {
-    codeTable.getColumnModel().getColumn(1).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 1));
-  }*/
-  dataTable.getRootPane().validate();
-} 
+  symbolTable.selectRow(row.intValue());
+  return true;
+}
 
-    
+
+public void addComment(String comment) {
+  DefaultListModel commentListModel = (DefaultListModel)commentList.getModel();
+  commentListModel.addElement(comment);
+}
+
+
+public void setEnabled(short command, boolean b) {
+  switch (command) {
+    case RUN_COMMAND:
+      runMenuItem.setEnabled(b);
+      runButton.setEnabled(b);
+      break;
+    case STOP_COMMAND:
+      stopMenuItem.setEnabled(b);
+      stopButton.setEnabled(b);
+      break;
+    case COMPILE_COMMAND:
+      compileMenuItem.setEnabled(b);
+      compileButton.setEnabled(b);
+      break;
+    case CONTINUE_COMMAND:
+      continueMenuItem.setEnabled(b);
+      continueButton.setEnabled(b);
+      break;
+    case CONTINUE_WITHOUT_PAUSES_COMMAND:
+      continueToEndMenuItem.setEnabled(b);
+      continueToEndButton.setEnabled(b);
+      break;
+  }
+}
+
+      
+
+
+public void enable(short command) {
+  setEnabled(command, true);
+}
+  
+public void disable(short command) {
+  setEnabled(command, false);
+}
+  
+  
 
 private JTableX prepareInstructionsTable() {
   
-  //JTableX instructionsTable = new JTableX(new InstructionsTableModel());
+  /* This instructionsTable_TEMP is just a temporary JTableX that is used for
+     preparing the return value.
+  */
+  JTableX instructionsTable_TEMP = new JTableX(new DefaultTableModel(instructionsTableIdentifiers,0));
   
-  String[] columnNames = {"Line", "Code", "Symbolic instruction"};
-  JTableX instructionsTable = new JTableX(new DefaultTableModel(columnNames,0));
+  instructionsTable_TEMP.setFont(tableFont);
   
-  instructionsTable.setFont(tableFont);
-  
-  instructionsTable.setEnabled(false);
-  instructionsTable.getColumnModel().getColumn(0).setMinWidth(20);
-  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+  instructionsTable_TEMP.setEnabled(false);
+  instructionsTable_TEMP.getColumnModel().getColumn(0).setMinWidth(20);
+  instructionsTable_TEMP.getColumnModel().getColumn(0).setPreferredWidth(20);
    
-  return instructionsTable; 
+  return instructionsTable_TEMP; 
 }
 
 
 
 private JTableX prepareDataTable() {
  
-  //JTable dataTable = new JTable(new DataTableModel());
+  JTableX dataTable_TEMP = new JTableX(new DefaultTableModel(dataTableIdentifiers,0));
   
-  String[] columnNames = {"Line", "Code", "Symbolic instruction"};
-  JTableX dataTable = new JTableX(new DefaultTableModel(columnNames,0));
+  dataTable_TEMP.setEnabled(false);
+  dataTable_TEMP.setFont(tableFont);
+  dataTable_TEMP.setRowSelectionAllowed(false);
   
-  dataTable.setEnabled(false);
-  dataTable.setFont(tableFont);
-  dataTable.setRowSelectionAllowed(false);
-  
-  return dataTable;
+  return dataTable_TEMP;
 }
 
 
@@ -511,7 +639,7 @@ private JScrollPane prepareRegistersTableScrollPane() {
     { {"R0",""}, {"R1",""}, {"R2",""}, {"R3",""}, {"R4",""}, 
       {"SP",""}, {"FP",""}, {"PC",""}, {"IR",""}};
   
-  registersTable = new JTableX(new DefaultTableModel(regTableContents, new String[] {"",""}));
+  registersTable = new JTableX(new DefaultTableModel(regTableContents, registersTableIdentifiers));
   JScrollPane registersScrollPane = new JScrollPane(registersTable);
   
   registersScrollPane.setPreferredSize(new Dimension(150, 150));
@@ -539,7 +667,6 @@ private JScrollPane insertTableToScrollPane(JTable tbl) {
 }
 
 
-
 private void insertMenuBar(JFrame destFrame) {
 
   JMenuBar  mainMenuBar = new JMenuBar();
@@ -547,6 +674,8 @@ private void insertMenuBar(JFrame destFrame) {
 	JMenuItem openFile    = fileMenu.add("Open");
 	compileMenuItem       = fileMenu.add("Compile");
 	runMenuItem           = fileMenu.add("Run");
+	continueMenuItem      = fileMenu.add("Continue");
+	continueToEndMenuItem = fileMenu.add("Continue without interruptions");
 	stopMenuItem          = fileMenu.add("Stop");
 	JMenuItem eraseMem    = fileMenu.add("Erase memory");
 	JMenuItem quit        = fileMenu.add("Exit");
@@ -591,22 +720,32 @@ private void insertMenuBar(JFrame destFrame) {
   
   		int rv = openFileDialog.showOpenDialog(null);
   		if (rv == JFileChooser.APPROVE_OPTION) {
-  		  System.out.println(openFileDialog.getSelectedFile().getName());
-  		  System.out.println(openFileDialog.getSelectedFile().exists());
+  		  //System.out.println(openFileDialog.getSelectedFile().getName());
+  		  //System.out.println(openFileDialog.getSelectedFile().exists());
+  		  new GUIThreader(GUIThreader.TASK_OPEN_FILE, guibrain, openFileDialog.getSelectedFile()).run();
   		}
-  	} } );
-
+  	} 
+  });
+  
+  compileMenuItem.addActionListener( new ActionListener() {
+  	public void actionPerformed(ActionEvent e) {						
+      new GUIThreader(GUIThreader.TASK_COMPILE, guibrain).run();
+    }
+  });
+  
   setCompileOptions.addActionListener( new ActionListener() {
 		public void actionPerformed(ActionEvent e) {						
 
 			setCompileOptionsDialog.setVisible(true);
-		} } );
+		} 
+  });
 
   setRunningOptions.addActionListener( new ActionListener() {
 		public void actionPerformed(ActionEvent e) {						
 
 			setRunningOptionsDialog.setVisible(true);
-		} } );
+		} 
+  });
 
 }
 }

@@ -9,8 +9,9 @@ import javax.swing.table.*;
 public class JTableX extends JTable {
   
 
-protected int selectedRow;
-protected boolean isRowSelected = false;
+//protected int selectedRow;
+protected int[] selectedRows = { 0 };
+protected boolean areRowsSelected = false;
 
 
 
@@ -67,27 +68,39 @@ public int getMaxTextLengthInColumn(int column) {
 /** Sets the column at index col to selected or deselected
     based on the value of select.
 */
-public void selectRow(int row, boolean select) {
-    this.selectedRow = row;
-    this.isRowSelected = select;
+public void selectRow(int row) {
+    this.selectedRows = new int[1];
+    selectedRows[0] = row;
+    this.areRowsSelected = true;
 }
 
+public void selectRows(int[] rows) {
+    this.selectedRows = rows;
+    this.areRowsSelected = true;
+}
+
+
+public void unselectAllRows() {
+  this.areRowsSelected = false;
+}
 
 
 /** This method returns whether a particular cell is selected or not.
 */
 public boolean isCellSelected(int row, int column) throws IllegalArgumentException {
   
-  //override the method for the column set in setSelect()
-  if (selectedRow == row){
-      if (isRowSelected)
+  for (int i=0 ; i<selectedRows.length ; i++) {
+    if (selectedRows[i] == row){
+      if (areRowsSelected) {
         return true;
-      else
+      }
+      else {
         return false;
-  } else {
-      //return super.isCellSelected(row, column);
-      return false;
+      }
+    }
   }
+  return false;
+}
 }
 
-}
+

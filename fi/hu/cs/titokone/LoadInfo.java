@@ -1,3 +1,7 @@
+/* Huomautukset:
+      Lisäsin metodin public String[][] getSymbolTable()
+*/
+
 package fi.hu.cs.titokone;
 
 /**This class provides info about the loading of a program. It has the
@@ -13,7 +17,7 @@ public class LoadInfo extends DebugInfo {
  /** 
    This field contains the symbotable
  */
-  private SymbolTable symbols;
+  private SymbolTable symbolTable;
 
 
   /** This field contains the contents of the data area after the loading
@@ -35,11 +39,11 @@ public class LoadInfo extends DebugInfo {
      @param statusMessage Message to GUI to be displayed at the status bar.
     */ 
   public LoadInfo(MemoryLine[] codeArea, MemoryLine[] dataArea, 
-                  SymbolTable symbols, int initSP, int initFP, String statusMessage) { 
+                  SymbolTable symbolTable, int initSP, int initFP, String statusMessage) { 
   
     this.codeArea = codeArea;
     this.dataArea = dataArea;
-    this.symbols = symbols;
+    this.symbolTable = symbolTable;
     this.initSP = initSP;
     this.initFP = initFP;
     this.statusMessage = statusMessage;
@@ -74,6 +78,19 @@ public class LoadInfo extends DebugInfo {
     }
     return retInt;
   }
+  
+  
+  public String[][] getSymbolTable() {
+    String[] symbols = symbolTable.getAllSymbols();
+    String[][] symbolsValues = new String[symbols.length][2];
+    for (int i = 0 ; i < symbols.length ; i++) {
+      symbolsValues[i][0] = symbols[i];
+      symbolsValues[i][1] = symbolTable.getSymbolValue(symbols[i]);
+    }
+    return symbolsValues;
+  }
+    
+      
 
   /**@return The value of the Stack pointer (SP) after the program is loaded into memory.
     */
