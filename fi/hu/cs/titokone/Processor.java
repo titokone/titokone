@@ -138,8 +138,7 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Initializes processor with new program
-    set FP and SP, PC = 0  and return RunInfo
-    @return RunInfo created by RunDebugger. */
+    set FP and SP, PC = 0.  */
     public void runInit(int initSP, int initFP) {
         // TODO RunInfo-olion generointi
         status = TTK91Cpu.STATUS_STILL_RUNNING;
