@@ -1,4 +1,4 @@
-package fi.helsinki.cs.titokone;
+package fi.hu.cs.titokone;
 
 /** This class represents a situation where a symboltable has been
     queried for a symbol it does not contain. */

@@ -1,4 +1,4 @@
-package fi.helsinki.cs.titokone;
+package fi.hu.cs.titokone;
 
 import java.util.ResourceBundle;
 import java.util.Locale;
@@ -72,4 +72,9 @@ public class Translator {
 	setLocale(Locale) can be used. */
     public static void setLocale(Locale newLocale, 
 				 ResourceBundle translations) {}
+
+    /** This method returns the resource bundle in use.
+	@return The resource bundle set to correspond to the current 
+	locale. */
+    public static ResourceBundle getResourceBundle() {}
 }

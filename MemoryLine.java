@@ -1,4 +1,4 @@
-package fi.helsinki.cs.titokone;
+package fi.hu.cs.titokone;
 
 /** This class represents one slot in the TTK-91 computer's memory. It 
     contains both the integer value stored in the memory as well as 

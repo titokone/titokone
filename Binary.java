@@ -1,4 +1,4 @@
-package fi.helsinki.cs.titokone;
+package fi.hu.cs.titokone;
 
 import java.text.ParseException;
 

@@ -1,6 +1,6 @@
-package fi.helsinki.cs.titokone;
+package fi.hu.cs.titokone;
 
-import fi.helsinki.cs.ttk91.TTK91CompileSource;
+import fi.hu.cs.ttk91.TTK91CompileSource;
 
 /** This class represents source code. It contains the source as a delimited
     string. */

@@ -1,4 +1,4 @@
-package fi.helsinki.cs.titokone;
+package fi.hu.cs.titokone;
 
 /** This class represents a translatable message to the user. It uses
     the Translator class statically to deal with the actual translation. */
