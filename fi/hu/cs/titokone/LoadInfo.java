@@ -9,20 +9,20 @@ code area and the data area as a MemoryLine array. The code is in its
 numeric form as well as a list of symbolic operation codes with comments and
 symbols in place, if known. LoadInfo also stores the values of FP and 
 SP.*/
-public class LoadInfo extends __stupid_DebugInfo {
+public class LoadInfo extends DebugInfo {
   /** This field contains the contents of the code area after the loading
       is complete. */
-  private __stupid_MemoryLine[] codeArea;
+  private MemoryLine[] codeArea;
 
  /** 
    This field contains the symbotable
  */
-  private __stupid_SymbolTable symbolTable;
+  private SymbolTable symbolTable;
 
 
   /** This field contains the contents of the data area after the loading
       is complete. */
-  private __stupid_MemoryLine[] dataArea;
+  private MemoryLine[] dataArea;
   /** This field contains the value to be stored to the SP register. */
   private int initSP;
   /** This field contains the value to be stored to the FP register. */
@@ -38,15 +38,16 @@ public class LoadInfo extends __stupid_DebugInfo {
      @param initFP The initial value of FP
      @param statusMessage Message to GUI to be displayed at the status bar.
     */ 
-  public LoadInfo(__stupid_MemoryLine[] codeArea, __stupid_MemoryLine[] dataArea, 
-                  __stupid_SymbolTable symbolTable, int initSP, int initFP, String statusMessage) { 
+  public LoadInfo(MemoryLine[] codeArea, MemoryLine[] dataArea, 
+                  SymbolTable symbolTable, int initSP, int initFP, 
+		  String statusMessage) { 
   
     this.codeArea = codeArea;
     this.dataArea = dataArea;
     this.symbolTable = symbolTable;
     this.initSP = initSP;
     this.initFP = initFP;
-    super.setStatusMessage(statusMessage);
+    setStatusMessage(statusMessage); // Defined in DebugInfo.
   }
   
   /**@return String array that contains the symbolic operation codes.
@@ -85,7 +86,7 @@ public class LoadInfo extends __stupid_DebugInfo {
     String[][] symbolsValues = new String[symbols.length][2];
     for (int i = 0 ; i < symbols.length ; i++) {
       symbolsValues[i][0] = symbols[i];
-      symbolsValues[i][1] = ""+symbolTable.getSymbolValue(symbols[i]);
+      symbolsValues[i][1] = ""+symbolTable.getSymbol(symbols[i]);
     }
     return symbolsValues;
   }
