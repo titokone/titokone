@@ -1,4 +1,9 @@
+package fi.hu.cs.titokone;
+
 import java.util.Locale;
+import java.io.File;
+import java.util.Hashtable;
+
 
 
 
@@ -20,7 +25,7 @@ public class GUIBrain {
 	    English names like "Finnish" or "English (GB)" as keys and 
 	    the locales corresponding to the languages as values. 
 	*/
-  private HashTable availableLanguages;
+  private Hashtable availableLanguages;
     
     
     
