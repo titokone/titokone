@@ -107,15 +107,15 @@ public class BinaryInterpreter extends Interpreter {
 	    return s;
 	    }
 	case 6:{//Full with less fetches
-
+	    
 	    String mem = getMemoryModeFromBinary(command);
-
+	    /*
 	    if (mem.equals("="))  //HACK, Some commands use less fetches
 		mem = "";         //so ordinary transformation doesn't work
 	    else{
 		if (mem.equals(""))
 		    mem="@";
-	    }
+		    }*/
 	    if (mem==null)
 		return GARBLE;
 	   
@@ -155,12 +155,13 @@ public class BinaryInterpreter extends Interpreter {
 	}
 	case 8:{ //Address with less fetches
 	    String mem = getMemoryModeFromBinary(command);
+	    /*
 	    if (mem.equals("="))  //HACK, Some commands use less fetches
 		mem = "";         //so ordinary transformation doesn't work
 	    else {
 		if (mem.equals(""))
 		mem="@";
-	    }
+		}*/
 	    if (mem==null)
 		return GARBLE;
 
@@ -241,15 +242,29 @@ public class BinaryInterpreter extends Interpreter {
 	int command = binaryCommand;
 	int i = command >> 19;
 	i = i & 3;
-	if (i==0)
-	    return "=";
-	if (i==1)
-	    return "";
-	if (i==2)
-	    return "@";
+	String operationCode = getOpCodeFromBinary(binaryCommand);
+	Integer opcode = new Integer(operationCode);
+	Integer params = (Integer)parameters.get(opcode);
 	
+	if(params.intValue()==6||params.intValue()==8){
+	    if (i==0)
+		return "";
+	    if (i==1)
+		return "@";
+	    if(i==2||i==3)
+		return null;
+	}	
+	else{
+	    if (i==0)
+		return "=";
+	    if (i==1)
+		return "";
+	    
+	    if (i==2)
+		return "@";
+	}    
 	return null;
-
+	
     }
 
     /** If a command has second register value, this function returns it
@@ -278,9 +293,10 @@ public class BinaryInterpreter extends Interpreter {
     public String getAddressFromBinary(int binaryCommand) {
 	int command = binaryCommand;
 	int i = command & 65535;
+	
 	Integer opcode = new Integer(getOpCodeFromBinary(command));
 	String mem = getMemoryModeFromBinary(binaryCommand);
-	Integer param = (Integer)parameters.get(opcode);
+	/*Integer param = (Integer)parameters.get(opcode);
 	
 	//Check if operation has less memoryfetches
 	switch(param.intValue()){
@@ -305,6 +321,7 @@ public class BinaryInterpreter extends Interpreter {
 	default: {}
 
 	}
+	*/
 	if (i>=32768&&mem.equals("=")){
 	 
 	    i=i-32768;
