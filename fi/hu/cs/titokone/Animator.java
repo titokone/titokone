@@ -13,7 +13,7 @@ import fi.hu.cs.ttk91.TTK91Cpu;
 
 /** This class takes care of the animation window. It digs the 
     needed information from a RunInfo instance. */
-public class Animator extends JPanel {
+public class Animator extends JPanel implements Runnable {
     
   	private final static File backgroundImageFile = new File("animator.gif");
     private final static Font textFont = new Font ("Arial", Font.BOLD, 16);
@@ -154,6 +154,18 @@ public class Animator extends JPanel {
     
     /** String presentation of status register. */
     private String SR_String = "";
+    
+    /** If this is true, animation will be executed without repaitings and delays. */
+    private boolean executeAnimationImmediately = false;
+    
+    /** Is animation currently running. */
+    private boolean isAnimating = false;
+    
+    /** Thread, that runs animation. */
+    private Thread animationThread;
+    
+    /** RunInfo object of currently running animation. */
+    private RunInfo info;
 
     private BufferedImage backgroundImage, doubleBuffer;
     private int pointX=-1, pointY=-1;
@@ -202,14 +214,13 @@ public class Animator extends JPanel {
         // draw double buffer to frame
         g.drawImage (doubleBuffer, 0,0, getWidth(), getHeight(), null);
     }
-
-    /** This method produces an animation of a command based on 
-    the information in the RunInfo parameter.
-    @param info A RunInfo to base the animation on. */
-    public void animate(RunInfo info) {
+    
+    /** Animation is done in this run method. animate method awakes new thread
+        with this run method.
+    */
+    public void run() {
         // Information about command cycle:
         // http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
-
         currentCommand = "";        
         
         // animate instruction fetch
@@ -235,6 +246,7 @@ public class Animator extends JPanel {
         if (opcode == 0) {
             comment1 = new Message ("No-operation command completed.").toString();
             pause();
+            isAnimating = executeAnimationImmediately = false;
             return;
         }
         
@@ -444,6 +456,42 @@ public class Animator extends JPanel {
                 value[i] = regs[i];
             break;
         }
+        isAnimating = executeAnimationImmediately = false;
+    }
+    
+    /** Stops currently running animation if there is one. The rest of the animation is done
+        without delays and this method returns after current animation is done and new values
+        are updated.
+    */
+    public void stopAnimation() {
+        if (!isAnimating) return;
+        
+        executeAnimationImmediately = true;
+        animationThread.interrupt();
+        while (isAnimating) {
+            try {
+                Thread.sleep (10);
+            }
+            catch (InterruptedException e) {}
+        }
+    }
+    
+    public boolean isAnimationRunning() {
+        return isAnimating;
+    }
+
+    /** This method produces an animation of a command based on 
+    the information in the RunInfo parameter. Animation is set to run only if 
+    there is no animation currently running. 
+    @param info A RunInfo to base the animation on. 
+    @return Returns false, if there is already an animation running. */
+    public boolean animate(RunInfo info) {
+        if (isAnimating) return false;  // cannot do two animations at the same time
+        isAnimating = true;
+        this.info = info;
+        animationThread = new Thread(this);
+        animationThread.start();
+        return true;
     }
     
     /** Initalizes animation.
@@ -481,7 +529,11 @@ public class Animator extends JPanel {
         @param to Where is the value going to be transported.
         @param newValue New value replaces the old value in destination. */
     private void animateAnEvent(int from, int to, int newValue) {
-        
+        if (executeAnimationImmediately) {
+            value[to] = newValue;
+            return;
+        }
+            
         // form the route
         int routeLength = routeToBus[from].length +routeToBus[to].length;
         int[] route = new int[routeLength];
@@ -509,7 +561,10 @@ public class Animator extends JPanel {
                 repaint();
                 try {
                     Thread.sleep(delay);
-                } catch (Exception e) {}
+                } catch (InterruptedException e) {
+                    value[to] = newValue;
+                    return;
+                }
             }
         }
         pointX = pointY = -1;
@@ -522,6 +577,8 @@ public class Animator extends JPanel {
     }
     
     private void pause() {
+        if (executeAnimationImmediately) return;
+        
         repaint();
         //try {Thread.sleep(3000);} catch (Exception e) {}
     }
@@ -545,12 +602,16 @@ public class Animator extends JPanel {
         runDebugger.setValueAtADDR (666);
         runDebugger.runCommand (27787365);
         a.animate (runDebugger.cycleEnd());
+        
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
         
+
         runDebugger.cycleStart (0, "NOP");
         runDebugger.setOperationType (RunDebugger.NO_OPERATION);
         runDebugger.runCommand (0);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "LOAD R2, @10(R1)");
@@ -559,6 +620,7 @@ public class Animator extends JPanel {
         runDebugger.setSecondFetchValue (1000);
         runDebugger.runCommand (38862858);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "COMP R0, @30");
@@ -566,6 +628,7 @@ public class Animator extends JPanel {
         runDebugger.runCommand (521142302);
         runDebugger.setCompareResult (0);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "JZER R2, 100");
@@ -573,6 +636,7 @@ public class Animator extends JPanel {
         runDebugger.setNewPC (32);
         runDebugger.runCommand (574619748);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "IN R7, 10(R1)");
@@ -580,6 +644,7 @@ public class Animator extends JPanel {
         runDebugger.setIN (1, 75);
         runDebugger.runCommand (65601546);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "OUT R3, =0");
@@ -587,6 +652,7 @@ public class Animator extends JPanel {
         runDebugger.setOUT (0, -1);
         runDebugger.runCommand (73400320);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "ADD R6, =20");
@@ -594,12 +660,14 @@ public class Animator extends JPanel {
         runDebugger.setALUResult (20);
         runDebugger.runCommand (297795604);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "LOAD R1, =100");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.runCommand (35651684);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "CALL R3, 40(R1)");
@@ -607,6 +675,7 @@ public class Animator extends JPanel {
         runDebugger.runCommand (828440616);
         runDebugger.setNewPC (140);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "EXIT SP, =4");
@@ -615,6 +684,7 @@ public class Animator extends JPanel {
         runDebugger.setNewPC (5);
         runDebugger.setRegisters (new int[] {0,0,0,0,0,0,-6,100});
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "COMP R0, @30");
@@ -622,12 +692,14 @@ public class Animator extends JPanel {
         runDebugger.runCommand (521142302);
         runDebugger.setCompareResult (2);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "PUSH R6, 100(R4)");
         runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
         runDebugger.runCommand (869007460);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "POP R6, R6");
@@ -635,6 +707,7 @@ public class Animator extends JPanel {
         runDebugger.runCommand (885391360);
         runDebugger.setRegisters (new int[] {1, 2,3,4,5,6,99,8});
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
 
 
@@ -643,6 +716,7 @@ public class Animator extends JPanel {
         runDebugger.setRegisters (new int[] {107,106,105,104,103,102,101,100});
         runDebugger.runCommand (905969664);
         a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
      }
 }
