@@ -53,7 +53,7 @@ public class RunInfo extends DebugInfo{
     /** This field contains the value of ALU-operation */
     private int aluResult;
     /** This field contains the representation which bit has the value true after comparing 
-          0 - less, 1 - greater, 2 - equal 
+          0 - greater, 1 - equal, 2 - less 
     */
     //TO DO: Bittien tila säilyy vertailun jälkeen, päivitetäänkö ainoastaan muutokset GUIBRAINILLE? Jos ylipäänsä tarvitaan...
     private int srBit;
