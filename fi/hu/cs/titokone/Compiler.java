@@ -8,7 +8,6 @@ jos määritellään label niin sitä ei voi määritellä enää miksikään muuksi, vaan t
 package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.TTK91CompileException;
-import java.util.StringTokenizer;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -516,69 +515,33 @@ Basic functionality: (Trim between each phase.)
 	=, Rj/addr or @ (00, 01 or 10)
 	if addr(Ri) or Rj(Ri)(0 to 7)
 	convert address (16bit)
-	check if the rest is fine (empty of starts with ;)
+	check if the rest is fine (empty or starts with ;)
 
 	Store both formats to a data array (symbolic and binary).
 */
-	boolean allOk = false;
-	String[] parsedLine = parseLine(line);
-	if (parsedLine == null) {
-		throw new TTK91CompileException();
-	} else {
-		if (parsedLine[1].equalsIgnoreCase("nop")) {
-			allOk = true;
-		}
 
-		if (parsedLine[1].equalsIgnoreCase("store") || 
-					parsedLine[1].equalsIgnoreCase("load") ) {
-			if (parsedLine[4].equals("")) {
-// STORE must have an address (not just r2)
+
+// check if variable is set!
+
+	int variableAsInt = 0;
+	String[] symbolTableEntry;
+	String[] lineTemp = parseLine(line);
+	if (!lineTemp[4].equals("")) {
+		try { 
+			Integer.parseInt(lineTemp[4]); 
+		} catch (NumberFormatException e) {
+			symbolTableEntry = (String[])symbolTable.get(Integer.parseInt((String)symbols.get(lineTemp[4])));
+			if (symbolTableEntry[1].equals("")) {
 				throw new TTK91CompileException();
 			}
-			allOk = true;
+			variableAsInt = Integer.parseInt((String)symbolTableEntry[1]);
 		}
-		
-		if (parsedLine[1].equalsIgnoreCase("pop")) {
-			if (!parsedLine[4].equals("") || parsedLine[5].equals("")) {
-				 throw new TTK91CompileException();
-			}
-			allOk = true;
-		}
-
-		if (parsedLine[1].equalsIgnoreCase("jump")) {
-			if (parsedLine[4].equals("") && parsedLine[5].equals("")) {
-				throw new TTK91CompileException();
-			} else { allOk = true; }
-		}
-	
-		if ("jneg-jzer-jpos-jnneg-jnzer-jnpos".indexOf(parsedLine[1]) != -1) {
-			 if (parsedLine[4].length() > 0 && parsedLine[5].equals("")) {
-                                throw new TTK91CompileException();
-                        } else { allOk = true; }
-		}
-		
-		if ("jles-jequ-jgre-jnles-jnequ-jngre".indexOf(parsedLine[1]) != -1) {
-			 if (parsedLine[4].equals("") && parsedLine[5].equals("")) {
-                                throw new TTK91CompileException();
-                        } else { allOk = true; }
-		}
-	
-// other commands require first register, and address of second register
-		if (!allOk) {
-			if (parsedLine[2].equals("") || 
-				(parsedLine[4].equals("") && parsedLine[5].equals(""))) {
-				throw new TTK91CompileException();
-			} else { allOk = true; }
-                }
-	
-// check variables!
-		
-
 	}
+
+
+
 	return compileDebugger.lineCompiled();
-
     }
-
 
     /**	This method parses a String and tries to find a label, opCode and all the 
 	other parts of a Command line.
@@ -610,7 +573,7 @@ Basic functionality: (Trim between each phase.)
 	fieldEnd = symbolicOpcode.indexOf(" ");
 	if (fieldEnd == -1) { 
 		wordTemp = symbolicOpcode.substring(nextToCheck);
-		fieldEnd = symbolicOpcode.length();  
+		fieldEnd = symbolicOpcode.length() -1;  
 	} else {
 		wordTemp = symbolicOpcode.substring(nextToCheck, fieldEnd);
 	}
@@ -633,7 +596,7 @@ Basic functionality: (Trim between each phase.)
 			return null;
 		}
 		label = wordTemp;
-		nextToCheck = fieldEnd + 1;	
+		nextToCheck = fieldEnd;	
 		while (symbolicOpcode.charAt(nextToCheck) == ' ') { ++nextToCheck; }
 
 		fieldEnd = symbolicOpcode.indexOf(" ", nextToCheck);
@@ -713,14 +676,36 @@ Basic functionality: (Trim between each phase.)
 
 	if (opcode.length() > 0) {
 		if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
+			if ("jneg-jzer-jpos-jnneg-jnzer-jnpos".indexOf(opcode.toLowerCase()) != -1) {
+				if (firstRegister.equals("")) return null;
+			} 
 			if (addressingMode.equals("=") || address.equals("")) return null;	
+		} else {
+			if (opcode.equalsIgnoreCase("nop")) {
+
+			} else {
+
+				if (opcode.equalsIgnoreCase("pop")) {
+					if (addressingMode.equals("@") || 
+				addressingMode.equals("=") || !address.equals("")) 
+						return null;	
+				} else {
+					if (firstRegister.equals("") || 
+							(address.equals("") && secondRegister.equals(""))) 
+						return null;
+				}
+			}
 		}
 	}	
 
 	if (addressingMode.equals("=") && address.equals("")) return null;
-	if (opcode.equalsIgnoreCase("load") && address.equals("")) return null;
 	if (opcode.equalsIgnoreCase("store") && address.equals("")) return null;
 	if (opcode.equalsIgnoreCase("store") && addressingMode.equals("=")) return null;
+
+	if (opcode.equals("") && (!label.equals("") || !firstRegister.equals("") || !addressingMode.equals("") || 
+!address.equals("") || !secondRegister.equals(""))) {
+		return null;
+	}
 
 	parsedLine = new String[6];
 	parsedLine[0] = label.trim();
