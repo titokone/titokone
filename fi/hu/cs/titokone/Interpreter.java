@@ -33,7 +33,7 @@ public class Interpreter {
 	{"NOP", new Integer(0), NONE},
         {"STORE", new Integer(1), FULL_LESS_FETCHES},
         {"LOAD", new Integer(2), FULL},
-        {"IN", new Integer(3), REG_DEVICE},	//I guess you could have KBD stored in
+        {"IN", new Integer(3), REG_DEVICE}, //I guess you could have KBD stored in
 	                                //some weird way
         {"OUT", new Integer(4), REG_DEVICE},
         {"ADD", new Integer(17), FULL},
@@ -67,7 +67,7 @@ public class Interpreter {
         {"EXIT", new Integer(50), FULL},
         {"PUSH", new Integer(51), FULL},
         {"POP",  new Integer(52), SP_REG},	
-        {"PUSHR", new Integer(53), SP_ONLY},	//not sure, would be odd tho
+        {"PUSHR", new Integer(53), SP_ONLY},	//not sure, would be odd though
         {"POPR",  new Integer(54), SP_ONLY},	//same with this one.
         {"SVC", new Integer(112), SVC}
     };
