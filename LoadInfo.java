@@ -7,6 +7,13 @@ public class LoadInfo extends DebugInfo {
   /** This field contains the contents of the code area after the loading
       is complete. */
   private MemoryLine[] codeArea;
+
+ /** 
+   This field contains the symbotable
+ */
+  private SymbolTable symbols;
+
+
   /** This field contains the contents of the data area after the loading
       is complete. */
   private MemoryLine[] dataArea;
@@ -20,12 +27,13 @@ public class LoadInfo extends DebugInfo {
   /**
      @param codeArea Has the opcodes as MemoryLine array
      @param dataArea Has the data part as MemoryLine array
+     @param symbols has the symboltable 
      @param initSP The initial value of SP
      @param initFP The initial value of FP
      @param statusMessage Message to GUI to be displayed at the status bar.
     */ 
   public LoadInfo(MemoryLine[] codeArea, MemoryLine[] dataArea, 
-		  int initSP, int initFP, String statusMessage) { }
+                  SymbolTable symbols, int initSP, int initFP, String statusMessage) { }
   
   /**@return String array that contains the symbolic operation codes.
    */
