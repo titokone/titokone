@@ -5,6 +5,12 @@ public class Logthing {
 	// Mahdollista my√∂s sanoa getLoggerille kakkosparametrin√§
 	// resourcebundle, jonka perusteella lokiviestit voidaan k√§√§nt√§√§.
 	// Em√§loggeri.
+        // K‰yt‰nnˆss‰ k‰ytt‰k‰‰ luokissanne 
+        // Logger.getLogger(this.getClass().getPackage()-metodia, jonka per‰‰n saa 
+        // lis‰t‰ halutessaan . + luokan nimen jos haluaa mahdollisesti erikoista
+        // lokik‰sittely‰ juuri kyseiselle luokalle (ks. alla logomatic: 
+        // fi.hu.cs.titokone.gui). - esimerkiksi ett‰ tietoa ei kirjoitetakaan samaan
+        // paikkaan kuin muiden lokitietoja.
 	Logger logtopus = Logger.getLogger("fi.hu.cs.titokone");
 	// Ei l√§hetet√§ emoille, koska sitten ne kirjoittaa h√∂lm√∂√§ 
 	// oletusoutputtia jota ei haluta. Sen sijaan kaikki meid√§n
