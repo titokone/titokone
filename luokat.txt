@@ -26,11 +26,11 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	AssariUI.java
 2	Binary.java						SH 20.3
 2	BinaryInterpreter.java					SH 20.3
-0	CompileConstants.java
+5	CompileConstants.java                   AT              (suunnittelija)
 2	CompileDebugger.java					AT 21.3.
 2	CompileInfo.java					AT 21.3.
 2	Compiler.java						AT 21.3.
-2	Control.java                            AÅ              SR 
+2	Control.java                            AÅ              SR 26.3.
 3	DebugInfo.java				OA              OA 25.3.
 0	Debugger.java
 2	FileHandler.java					AÅ
@@ -50,12 +50,12 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 1	Processor.java                                          SY 21.3
 3	RandomAccessMemory.java                 ?               SY 19.3
 3	Registers.java                          SY              SY 19.3
-0	ResourceLoadFailedException.java
+5	ResourceLoadFailedException.java        SR              SR 17.3.        SR 27.3.
 2	RunDebugger.java			OA
 2	RunInfo.java				OA
-3	Settings.java                           SR              SR 19.3.
+5	Settings.java                           SR              SR 19.3.        SR 27.3.
 0	Source.java						SH 20.3
 3	SymbolTable.java                        ?               SY 20.3
 2	SymbolicInterpreter.java				AT 21.3.
 2	Titokone.java						AÅ
-5	Translator.java                         SR              SR 26.3.      SR 27.3.
+5	Translator.java                         SR              SR 26.3.        SR 27.3.
