@@ -74,8 +74,7 @@ public class SymbolTable {
 	throws InvalidDefinitionException {
         if(!definitions.containsKey(key))
             throw new InvalidDefinitionException(new Message("Definition " + 
-							     key + " not " +
-							     "found.").toString());
+							              "{0} not found.", key).toString());
         return (String) definitions.get(key);
     }
 
