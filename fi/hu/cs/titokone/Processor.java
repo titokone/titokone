@@ -188,7 +188,6 @@ public class Processor implements TTK91Cpu {
 
     @return RunInfo created by RunDebugger. */
     public RunInfo runLine() throws TTK91RuntimeException{
-    
         if (status == TTK91Cpu.STATUS_SVC_SD) return null;
         // if last command set status to ABNORMAL_EXIT repeat that command
         if (status == TTK91Cpu.STATUS_ABNORMAL_EXIT)
@@ -234,7 +233,7 @@ public class Processor implements TTK91Cpu {
                 status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
                 throw new TTK91BadAccessMode(new Message(Processor.BAD_ACCESS_MODE_MESSAGE).toString());
             }
-
+            
             if (opcode == 0) nop();
             else if (opcode >= 1 && opcode <= 4) transfer (opcode, Rj, M, ADDR, param);
             else if (opcode >= 17 && opcode <= 27) alu (opcode, Rj, param);
@@ -511,23 +510,17 @@ public class Processor implements TTK91Cpu {
             break;
             
             case 53 : // PUSHR
-            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R0));      // PUSH R0
-            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R1));      // PUSH R1
-            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R2));      // PUSH R2
-            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R3));      // PUSH R3
-            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R4));      // PUSH R4
-            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R5));      // PUSH R5
-            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R6)+1);    // PUSH R6
+            for (int i=0; i < 7; i++) {
+                regs.setRegister (Rj, regs.getRegister(Rj) +1);
+                writeToMemory (regs.getRegister (Rj), regs.getRegister (TTK91Cpu.REG_R0 +i));
+            }
             break;
             
             case 54 : // POPR
-            stack(52, Rj, TTK91Cpu.REG_R6, param);   // POP R6
-            stack(52, Rj, TTK91Cpu.REG_R5, param);   // POP R5
-            stack(52, Rj, TTK91Cpu.REG_R4, param);   // POP R4
-            stack(52, Rj, TTK91Cpu.REG_R3, param);   // POP R3
-            stack(52, Rj, TTK91Cpu.REG_R2, param);   // POP R2
-            stack(52, Rj, TTK91Cpu.REG_R1, param);   // POP R1
-            stack(52, Rj, TTK91Cpu.REG_R0, param);   // POP R0
+            for (int i=0; i < 7; i++) {
+                regs.setRegister (TTK91Cpu.REG_R6 -i, ram.getValue (regs.getRegister (Rj)));
+                regs.setRegister (Rj, regs.getRegister(Rj) -1);
+            }
             break;
         }
     }
