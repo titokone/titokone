@@ -115,7 +115,7 @@ public class FileHandler {
 	@param filename The file to save the given string to.
 	@throws IOException If an I/O error occurs, eg. the given
 	file cannot be written to. 
-	@deprecated This method is not used in practice, as appending the
+	This method is not used in practice, as appending the
 	data one line at a time has been found to be more convenient. */
     //public void saveStdOut(String contents, File stdoutFile) 
     //	throws IOException {
