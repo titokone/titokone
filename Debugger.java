@@ -1,5 +1,9 @@
-/** This class produces objects describing what has changed due to the last
-    command having been run. */
+/** This class is parent class for RunDebugger and CompileDebugger which
+    produces info object what was done.
+*/
+
+// HYVIN kesken edelleen
+
 public class Debugger extends Translatable{ 
     // define methods like 'ALU happened, parameters x, y, z' and
     // a 'command cycle complete', which returns the delta object for 
