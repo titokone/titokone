@@ -12,7 +12,6 @@ public class Debugger extends Translatable{
     /** This method tells debugger that a new cycle has been started. It initiates parameter values and stores old PC and IR. */
     public void cycleStart(int oldPC, int newPC, int IR, int SP, int FP, String commandname){ }
 
-
 /*-------- Memoryfetch types ---------*/
 // joitain vielä puutuu
     public void memoryFetchType(int i){ }
@@ -24,43 +23,22 @@ public class Debugger extends Translatable{
 	/** This method tells debugger that direct memoryfetch was made. */
     public void direct(int register, int where, int value){ }
     
-	public void directRegister(int toregister, int fromregister, int where, int value){ }
+    public void directRegister(int toregister, int fromregister, int where, int value){ }
 
     public void indirectRegister(int toregister, int fromregister, int  ...){ }
-	/** This method tells debugger that an indexed direct memoryfetch was used. */
+    
+    /** This method tells debugger that an indexed direct memoryfetch was used. */
     public void indexedDirect(int toregister, int index, int where, int value){ }
 
-	/** This method tells debugger that an indexed direct from register memoryfetch was used. */
+    /** This method tells debugger that an indexed direct from register memoryfetch was used. */
     public void indexedDirectRegister(int toregister, int index, int fromregister, int where, int value){ }
  	
-	/** This method tells debugger that an indirect memoryfetch was used. */
+    /** This method tells debugger that an indirect memoryfetch was used. */
     public void indirect(int toregister, int first, int second, int value){ }
    
-	/** This method tells debugger that an indexed indirect memoryfetch was used. */
+    /** This method tells debugger that an indexed indirect memoryfetch was used. */
     public void indexedIndirect(int toregister, int index, int first, int second, int value){ }
 
-/*------- Compiler instructions -----------*/
-
-	/** This method tells debugger that a DS compiler instruction was found. */
-    public void foundDS(String name, int ADDR, int size){ }
-
-	/** This method tells debugger that a DC compiler instruction was found. */
-    public void foundDC(String name, int ADDR, int value){ }
-
-	/** This method tells debugger that a DC compiler instruction was found. */
-    public void foundDS(String name, int ADDR){ }
-
-	/** This method tells debugger that a DC compiler instruction was found. */
-    public void foundEQU(String name, int value){ }
-
-	/** This method informs debugger what was compiled.
-	 @param symbolic symbolic command line.
-	 @param numeric Numeric representation of command.
-	 @param machinecommand line as an integer.
-	 @param comment */
-    public void compiledLine(String symbolic, String numeric, int machinecommand, String comment){ }
-
-    
 	
 
     /* ---- Running --- */  
