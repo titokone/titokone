@@ -82,7 +82,7 @@ were doing once it becomes possible. */
 
 
 
-  public void menuSetLanguage(String language) 
+  public void menuSetLanguage(String language) { }
 
 
 

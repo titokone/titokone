@@ -58,14 +58,14 @@ public class Control implements TTK91Core {
         attached to the current Processor object.
         @return The reference to the RandomAccessMemory object.
     */
-    public TTK91Memory getMemory();
+    public TTK91Memory getMemory() { }
  
     
     
     /** Returns a reference to the Processor object.
         @return The reference to the Processor object.
     */
-    public TTK91Cpu getCpu();
+    public TTK91Cpu getCpu() { }
     
     
     
@@ -89,13 +89,13 @@ public class Control implements TTK91Core {
         @param powerOfTwo Implies the total size of memory which is 2^powerOfTwo.
                           Legitimate values are 9,...,16.
     */
-    public void changeMemorySize(int powerOfTwo);
+    public void changeMemorySize(int powerOfTwo) { }
     
     
     
     /** Erases the memory ie. fills it with zeros.
     */
-    public void eraseMemory();
+    public void eraseMemory() { }
     
     
     
@@ -103,7 +103,7 @@ public class Control implements TTK91Core {
         hasn't yet been compiled to binary code.
         @return Returns CompileInfo object of the last line compiled.
     */
-    public CompileInfo compileLine() throws TTK91CompileException;
+    public CompileInfo compileLine() throws TTK91CompileException { }
     
     
     
@@ -111,14 +111,14 @@ public class Control implements TTK91Core {
         memory. 
         @Return Returns RunInfo object of the last line executed.
     */
-    public RunInfo runLine() throws TTK91RuntimeException;
+    public RunInfo runLine() throws TTK91RuntimeException { }
     
     
     
     /** This loads a line of code into titokone's memory.
         @return Returns the LoadInfo object of the operation.
     */
-    public LoadInfo loadLine() throws TTK91LoadtimeException;
+    public LoadInfo loadLine() throws TTK91LoadtimeException { }
 
 
 
@@ -127,7 +127,7 @@ public class Control implements TTK91Core {
         GUI menu.
         @param language The language in which the messages will be shown.
     */
-    public void setLanguage(String language);
+    public void setLanguage(String language) { }
     
     
     
@@ -135,7 +135,7 @@ public class Control implements TTK91Core {
         operations will be read.
         @param stdinFile The stdin file.
     */
-    public void setSTDIN(File stdinFile);
+    public void setSTDIN(File stdinFile) { }
     
     
     
@@ -143,7 +143,7 @@ public class Control implements TTK91Core {
         operations will be written.
         @param stdoutFile The stdout file..
     */
-    public void setSTDOUT(File stdoutFile);
+    public void setSTDOUT(File stdoutFile) { }
     
     
     
@@ -151,14 +151,14 @@ public class Control implements TTK91Core {
         This method just passes the file to FileHandler.
         @param openedFile The file.
     */
-    public void openFile(File openedFile);
+    public void openFile(File openedFile) { }
     
     
     
     /** This is called when GUIBrain want's to know the current settings.
         @return The Settings object, which includes all the current settings.
     */
-    public Settings getSettings();
+    public Settings getSettings() { }
     
     
 
@@ -180,36 +180,16 @@ public class Control implements TTK91Core {
     /** RunLine() calls this, when the processor wants to write a value to CRT.
         @param inputValue The input to CRT.  
     */
-    private void writeToCRT(int inputValue);
+    private void writeToCRT(int inputValue) { }
     
     
     
     /** RunLine() calls this, when the processor wants to write a value to StdOut.
         @param inputValue The inpuit to StdOut.
     */
-    private void writeToStdOut(int inputValue);
+    private void writeToStdOut(int inputValue) { }
     
     
     
-    
-    /** 
-        @param 
-    */
-    public void ();
-
-
-
-    /** 
-        @param 
-    */
-    public void ();
-
-
-
-    /** 
-        @param 
-    */
-    public void ();     
-   
     
 }
