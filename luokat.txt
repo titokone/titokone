@@ -47,7 +47,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	Loader.java						AÅ
 5	MemoryLine.java                         SY              SY 18.3.        SY 4.4.
 3	Message.java                                            SY 20.3
-1	Processor.java                                          SY 21.3
+4	Processor.java                                          SY 21.3
 3	RandomAccessMemory.java                                 SY 19.3
 3	Registers.java                          SY              SY 19.3
 5	ResourceLoadFailedException.java        SR              SR 17.3.        SR 27.3.
