@@ -705,6 +705,7 @@ public class Compiler {
 	String wordTemp = "";
 	int nextToCheck = 0;	// for looping out the spacing
 	int fieldEnd = 0;	// searches the end of a field (' ', ',')
+	boolean spaceBetweenMemorymodeAndAddress = false;
 
 
 	fieldEnd = symbolicOpcode.indexOf(";");
@@ -720,7 +721,7 @@ public class Compiler {
 	}
 
 
-	String[] lineAsArray = symbolicOpcode.split("[ \t]+");
+	String[] lineAsArray = symbolicOpcode.split("[ \t,]+");
 	int lineAsArrayIndex = 0;
 
 
@@ -770,6 +771,10 @@ public class Compiler {
 		lineAsArray[lineAsArrayIndex].charAt(0) == '@') {
 
 		addressingMode = "" + lineAsArray[lineAsArrayIndex].charAt(0);
+		if (lineAsArray[lineAsArrayIndex].length() == 1) {	
+			spaceBetweenMemorymodeAndAddress = true;
+			++lineAsArrayIndex;
+		}
 
 	    } else { addressingMode = ""; }
 	}
@@ -782,10 +787,16 @@ public class Compiler {
 	               lineAsArray[lineAsArrayIndex].indexOf("(")) {
 			 return null;
 		   } else {
-			address = lineAsArray[lineAsArrayIndex].substring(
+			if (spaceBetweenMemorymodeAndAddress) {
+			   address = lineAsArray[lineAsArrayIndex].substring(
+				0, lineAsArray[lineAsArrayIndex].indexOf("(")
+                           ); 
+			} else {
+			   address = lineAsArray[lineAsArrayIndex].substring(
 				addressingMode.length(), 
 				lineAsArray[lineAsArrayIndex].indexOf("(") 
-			);
+  			   );
+			}
 			secondRegister = lineAsArray[lineAsArrayIndex].substring(
                                 lineAsArray[lineAsArrayIndex].indexOf("(") + 1,
 				lineAsArray[lineAsArrayIndex].indexOf(")")
@@ -796,8 +807,13 @@ public class Compiler {
                     	}
 		   }
 		} else {
-		   address = lineAsArray[lineAsArrayIndex].substring(addressingMode.length());
+		   if (spaceBetweenMemorymodeAndAddress) {
+		      address = lineAsArray[lineAsArrayIndex];
+		   } else {
+		      address = lineAsArray[lineAsArrayIndex].substring(addressingMode.length());
+		   }
 		}
+		++lineAsArrayIndex;
 	}
 
 	if (symbolicInterpreter.getRegisterId(address) != -1) {
@@ -805,7 +821,7 @@ public class Compiler {
 	    address = "";
         }
 	
-	
+	if (lineAsArrayIndex < lineAsArray.length) { return null; }
 
 	if (opcode.length() > 0) {
 	    if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
