@@ -707,14 +707,16 @@ public class Compiler {
 	symbolicOpcode = symbolicOpcode.toLowerCase();
 	symbolicOpcode = symbolicOpcode.trim();
 
-	String[] lineAsArray = symbolicOpcode.split("[ \t]+");
-	int lineAsArrayIndex = 0;
-
-	if (lineAsArrayIndex == lineAsArray.length) { 
+	if (symbolicOpcode.length() == 0) { 
 		parsedLine = new String[6];
 		for (int i = 0; i < parsedLine.length; ++i) parsedLine[i] = "";
 		return parsedLine; 
 	}
+
+
+	String[] lineAsArray = symbolicOpcode.split("[ \t]+");
+	int lineAsArrayIndex = 0;
+
 
 /* label */
 	wordTemp = lineAsArray[lineAsArrayIndex];
