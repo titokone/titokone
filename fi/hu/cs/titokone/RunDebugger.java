@@ -42,7 +42,20 @@ public class RunDebugger{
     public static final short STDIN = 6;
     /** constant short for STDOUT-device */
     public static final short STDOUT = 7;
+
     
+    /** constant String for comment line memory addressing */
+    private static final String DIRECT = "direct";
+    /** constant String for comment line memory addressing */
+    private static final String DIRECT_ADDRESSING = "direct addressing";
+    /** constant String for comment line memory addressing */
+    private static final String INDIRECT_ADDRESSING = "indirect addressing";
+    /** String for memory part of comment */    
+    private String memoryComment;
+    /** String array for the comment message */
+    private String[] parameters = new String[3];
+    
+        
     /** Runinfo for each command line of the program */
     private RunInfo info;
     /** List of changed memory lines */
@@ -60,7 +73,8 @@ public class RunDebugger{
         @param lineContents String containing symbolic command.
     */
     public void cycleStart(int lineNumber, String lineContents){ 
-        info = new RunInfo(lineNumber, lineContents);
+        this.parameters[1] = lineContents;
+	info = new RunInfo(lineNumber, lineContents);
     }
 
     // TO DO: Sini, miten kielikäännökset syötetään, mikä muoto täällä?  Tarvitaanko operaatioiden String-esitystä
@@ -123,6 +137,25 @@ public class RunDebugger{
         info.setADDR (ADDR);
         info.setNumberOfFetches (M);
         info.setColonString (opcode + ":" + Rj + ":" + M + ":" + Ri + ":" + ADDR);
+    	
+	switch(M) {
+	   case 0:
+	   	memoryComment = DIRECT;
+           break;
+	   
+	   case 1:
+	        memoryComment = DIRECT_ADDRESSING;
+           break;
+	   
+	   case 2:
+	   	memoryComment = INDIRECT_ADDRESSING;
+	   break;
+	   	
+	}
+	
+	this.parameters[0] = opcode + ":" + Rj + ":" + M + ":" + Ri + ":" + ADDR + " ";
+        this.parameters[2] = "R" + Ri;
+    
     }
     
     /** This method tells debugger what value was found from the ADDR part of 
@@ -239,6 +272,14 @@ public class RunDebugger{
         }
     }
     
+    /**
+   	Sets the comment message of the current RunInfo. 
+   */
+       
+    private void setComments() {
+    	info.setComments = new Message("{0}{1} Indexing {2}, "+ memoryComment, parameters).toString();
+    }
+    
     /** Sets value of new PC. 
         @param newPC Value of new PC. */
     public void setNewPC (int newPC) {
@@ -249,7 +290,8 @@ public class RunDebugger{
         after the line is executed
         @return RunInfo of the current line. */
     public RunInfo cycleEnd() {
-        info.setChangedMemoryLines (changedMemoryLines);
+        this.setComments();
+	info.setChangedMemoryLines (changedMemoryLines);
         info.setCompareOperation (compareBit);
         changedMemoryLines = new LinkedList();
         return info;
