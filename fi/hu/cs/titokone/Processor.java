@@ -52,6 +52,11 @@ public class Processor implements TTK91Cpu {
     }
 
 
+/** Returns the memory attached to the processor. */
+    public TTK91Memory getMemory() {
+       return ram;
+    }
+
 /** Initializes processor with new program
     set FP and SP, PC = 0  and return RunInfo
     @return RunInfo created by RunDebugger. */
