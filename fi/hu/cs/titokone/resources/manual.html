@@ -33,8 +33,8 @@
 <h2><a name="general">1. Overview</a></h2> 
 
 <p>
-Titokone on konekielisimulaattori, jonka tarkoituksena on n‰ytt‰‰, kuinka symbolisen
-konekielen suoritus etenee yksinkertaisella prosessorilla. 
+Titokone is an assembler simulator, which is intended to show how symbolic assembly language is executed
+in a simple processor.
 
 * kun kuvaillaan koodin‰kym‰‰, siin‰ pit‰‰ muistaa korostaa ett‰ muisti
 on yhten‰inen alue vaikka siit‰ onkin eristetty osa koodialueeksi. Myˆs
@@ -51,26 +51,26 @@ lienee hyv‰st‰.
  <td valign=top>
 <a href="manual1.html#gui" name="gui">
 <img src="screenEnglish0.jpg" title="Basic view of the system" 
-  alt="J‰rjestelm‰n perusn‰kym‰, jossa eri osiot numeroitu">
+  alt="Basic view">
 </a>
 </td>
 
  <td>
 <ol>
-     <li> Valikot </li>
-     <br />
+     <li> Menus </li>
+     <br>
      <li> Code window </li>
-     <br />
+     <br>
      <li> Status </li>
-     <br />
+     <br>
      <li> Display </li>
-     <br />
+     <br>
      <li> Keyboard input </li>
-     <br />
+     <br>
      <li> Symbol table </li>
-     <br />
+     <br>
      <li> Registers </li>
-     <br />
+     <br>
      <li> Comments </li>
 </ol>
 
@@ -82,258 +82,621 @@ lienee hyv‰st‰.
 
 
 
-<!-- Kuvaillaan k‰yttˆliittym‰n osat numeroittain: 1. valikot: hˆpˆhˆpˆ jne. -->
-<!-- Kunkin selityksest‰ viitteit‰ kohtiin, joissa sit‰ k‰ytet‰‰n. -->
 
-<img src="dialogit.jpg" title="Asetusdialogeja" 
-  alt="Kuvia asetusdialogeista, joissa mielenkiintoiset osiot numeroitu.">
+
 
 <h2><a name="doables">2. What you can do with the Titokone</a></h2> 
 
   <h3>2.1 Using Titokone </h3>
-<p> Titokone on toteutettu javalla ja se k‰ynnistet‰‰n jar-paketista. </p>
+<p> Titokone is programmed in Java and the program is started from the Java package. </p>
 
 
-<br />
+<br>
+
+
+
+<!-- OHJELMAN AVAAMINEN -->
+
+
 
 <table cellspacing=10>
 <tr>
   <td align=center>
+  <a name="avaa">
   <img src="1.jpg" title="Open button" 
   alt="Open button">
+  </a>
   </td>
 
 <td>
-  <h3>2.2 Opening a TTK-91-program</h3> 
+  <h3>2.2 Opening a TTK-91 file</h3> 
 </td>
 
 </tr>
 </table>
   
-<br />
+<br>
 
 <table cellspacing=10>
 <tr>
   
 <td valign=top>
-<img src="Fileopen.jpg" title="Open" 
-alt="Open">
+
+<img src="Fileopen.jpg" title="Open from menu" 
+alt="Open from menu">
+
 </td>
       
 <td valign=top>
 <p> 
-  Titokoneella pystyt‰‰n ajamaan kahden tyyppisi‰ 
-  ohjelmatiedostoja: symbolisessa muodossa olevia 
-  l‰hdekooditiedostoja ja bin‰‰ritiedostoja. 
-  L‰hdekooditiedostot   on ensin k‰‰nnett‰v‰, 
-  jotta niit‰ voidaan ajaa. K‰‰nnetty ohjelma tallentuu
-  automaattisesti oletushakemistoon bin‰‰rimuodossa. 
-  L‰hdekooditiedoston oletusp‰‰te   on K91 ja 
-  bin‰‰ritiedoston B91. Ohjelma avataan painamalla 
-  pikakuvaketta tai valitsemalla tiedostovalikosta 
-  kohta 'avaa'. 
+  Open a new file pressing the <a href="1.jpg">compile-icon</a> or
+  choose File -->  Open from the menu. <a href="#file">File dialog</a> is opened.
 </p>
 </td>
 
 </tr>
 </table>
 
-
 <table cellspacing=10>
 <tr>
   
 <td valign=top>
-<img src="File.jpg" title="File view" 
-alt="File view">
+<a name="file">
+<img src="File.jpg" title="File dialog" 
+alt="File dialog">
+</a>
 </td>
+<td valign=top>
+<p>
+File dialog shows the files of current directory by extension.
 
+
+Tiedoston‰kym‰ n‰ytt‰‰ nykyhakemiston tiedostot valitun p‰‰tteen mukaan. 
+N‰ytett‰v‰t tiedostotyypit erotellaan p‰‰tteen mukaan: k91-p‰‰te tarkoittaa l‰hdekooditiedostoa ja
+b91-p‰‰te bin‰‰ritiedostoa.
+</p>
+<ul><li>
+When file with k91-extension is opened, <a href="manual1.html#gui">source code view</a> is shown.
+Source code file has to be <a href="#compile">compiled</a> before <a href=#run>executing</a> the file.
+
+
+Avattaessa k91-p‰‰tteinen tiedosto, avautuu <a href="manual_fi1.html#gui">l‰hdekoodin‰kym‰</a> ruudulle.
+L‰hdekooditiedosto on <a href="#kaanna">k‰‰nnett‰v‰</a> ennen kuin se voidaan <a href="#aja">suorittaa</a>.
+</li>
+<br>
+<li>
+When file with b91-extension is opened, <a href="manual3.html#gui">runnable view</a> is shown.
+Binary file is already in machine language form, so it can be <a href="#run">executed</a> immediately.
+
+Avattaessa b91-p‰‰tteinen tiedosto, avautuu <a href="manual_fi3.html#gui">suoritusn‰kym‰</a> ruudulle.
+Bin‰‰ritiedosto on valmiiksi konekielimuodossa, joten se voidaan <a href="#aja">suorittaa</a> ilman k‰‰nt‰mist‰.
+</li>
+</ul>
+</td>
 </tr>
 </table>
+
+<br>
+
+
+
+
+<!-- LƒHDEKOODIN MUOKKAUS -->
+
+
+
+
+<table cellspacing=3>
+<tr>
+<td>  
+<img src="0.jpg" title="" 
+alt="">
+</td>
+<td>
+<a name="koodinmuokkaus">
+<h3> 2.3. Modifying source code </h3>
+</a>
+</td>
+</tr>
+</table>
+
+<p>Source code can be edited in Titokone: </p>
+<p>L‰hdekoodia on mahdollista muokata Titokoneessa seuraavasti: </p>
+<ul>
+<li> Open a k91-file. Avataan k91-p‰‰tteinen tiedosto. </li>
+<li> Doubleclick a line from the source with left mouse button, cursor appears on the line. Kaksoisklikataan l‰hdekoodin rivi‰ vasemmalla hiiren napilla, kursori ilmestyy riville. </li>
+<li> Modify the line as you want. Kirjoitetaan riville muutokset. </li>
+<li> Press enter to save changes. Vahvistetaan muutokset painamalla enteri‰. </li>
+<li> Modified source is saved to original file. Tehdyt muutokset tallettuvat alkuper‰iseen tiedostoon. </li>
+</ul>
+
+ 
+
+
   <!-- Voi olla k91 tai b91, viittaa vastaaviin 2.x-lukuihin -->
 
-<br />
+<br>
+
+
+
+
+<!-- OHJELMAN KƒƒNTƒMINEN-->
+
+
+
+
     
   <table cellspacing=10>
   <tr>
   
   <td>
   <img src="2.jpg" title="Compile" 
-  alt="Compile button">
+  alt="Picture of compile button">
   </td>
   
   <td>
-  <h3>2.3 Compiling TTK-91-program</h3> <!-- Ja mahd. tekstin muokkaus -->
+  <a name="compile">
+  <h3>2.4 Compiling TTK-91-source<h3> <!-- Ja mahd. tekstin muokkaus -->
+  </a>
   </td>
   
   </tr>
   </table>
-  
-  <br />
-  
+      
   <table cellspacing=10>
   <tr>
-  
+
   <td valign=top>
-  <img src="Filecompile.jpg" title="Compiling" 
-  alt="Compiling">
+  <img src="Filecompile.jpg" title="Compile from menu" 
+  alt="Picture of compile">
   </td>
   
   <td valign=top>
   <p>
-  K‰‰nt‰minen aloitetaan painamalla pikakuvaketta tai valitsemalla tiedostovalikosta  
-  kohta 'k‰‰nn‰'. K‰‰nt‰minen jatkuu k‰ytt‰j‰n asetusten(LINKKI / KTS kohta) mukaisesti;
-  joko pys‰hdellen tai kerralla loppuun asti k‰‰nt‰en. Jos k‰‰nt‰minen on pys‰htynyt tietylle
-  riville, k‰‰nt‰mist‰ jatketaan painamalla (KELAA).
+  
+  
+  Titokoneen k‰‰nnˆs on kaksivaiheinen: ensin tehd‰‰n syntaksitarkistus ja luodaan symbolitaulu. Toisella kierroksella muodostetaan objektikoodi.
+  K‰‰nt‰minen aloitetaan painamalla <a href="2.jpg">k‰‰nn‰-pikakuvaketta</a> tai valitsemalla valikosta Tiedosto --> K‰‰nn‰.
+  K‰‰nt‰minen toteutetaan <a href="#kaannosasetukset">k‰‰nnˆsasetusten</a> mukaisesti.
+  joko pys‰hdellen tai kerralla loppuun asti k‰‰nt‰en. 
+  </p>
   </td>
   </tr>
   </table>
   
-  <br />
-  <table>
+  <br>
+  <a name="kaantajantoiminnot">
+  <b>
+  Functions during the compiling
+  Toiminnot k‰‰nt‰misen aikana
+  </b>
+  </a>
+  
+  <table cellspacing=10>
   <tr>
    
-   <td valign=top>
-  <img src="4.jpg" title="Next" 
-  alt="Next button">
+  <td>
+  <img src="4.jpg" title="Rewind" 
+  alt="Picture of rewind button">
   </td>
-   <td valign=top><p> K‰‰nt‰mist‰ voi suorittaa askel kerrallaan, edeten seuraavaan tapahtumaan asti. </p>
+  <td><p> K‰‰nt‰mist‰ voi suorittaa askel kerrallaan, edeten seuraavaan <a href=#kaannostapahtumat> tapahtumaan </a> asti. </p>
   </td>
   </tr>
   
   <tr>
-   <td valign=top><img src="5.jpg" title="FF" 
-  alt="FF-button">
+  <td><img src="5.jpg" title="FF" 
+  alt="Picture of FF-button">
   </td>
   
-   <td valign=top><p> Halutessaan k‰ytt‰j‰ voi suorittaa k‰‰nnˆksen kerralla loppuun painamalla.</p>
+  <td><p> Halutessaan k‰ytt‰j‰ voi suorittaa k‰‰nnˆksen kerralla loppuun.</p>
   </td>
+  </tr>
+  
+  <tr>
+  <td><img src="6.jpg" title="STOP" 
+  alt="Picture of stop-button">
+  </td>
+  <td>
+  <p> K‰‰nnˆs voidaan pys‰ytt‰‰ painamalla stop-nappia.
+  </td>
+  </tr>
+  </table>
+  <br>
+  <a name="kaannostapahtumat">
+  <b> K‰‰nnˆksen tapahtumatyypit </b>
+  </a>
+  <p> Tapahtumatyypeill‰ tarkoitetaan k‰‰nt‰j‰n reagointia l‰hdekoodin sis‰ltˆˆn. Rivi‰ kommentoidaan tai riville pys‰hdyt‰‰n <a href=#kaannosasetukset>asetusten</a> mukaisesti.</p>
+  <p> First round:</p>
+  <ul>
+  <li> Ei tapahtumaa: jos rivi alkaa kommenttimerkill‰ (;), on tyhj‰ tai sis‰lt‰‰ k‰skyn NOP </li>
+  <li> Muuttujan m‰‰rittely: Jos rivilt‰ lˆytyy uusi muuttuja, se lis‰t‰‰n symbolitauluun. </li>
+  <li> Muuttujan k‰ytt‰minen: Jos rivin komennossa k‰ytet‰‰n muuttujaa, muuttuja lis‰t‰‰n symbolitauluun jos se ei siell‰ viel‰ ole. </li>
+  <li> Muistiviitteen lˆytyminen: Jos rivin alusta lˆytyy muistiviite,viite ja rivin numero lis‰t‰‰n symbolitauluun </li>
+  <li> K‰‰nnˆksen virhetilanne: k‰‰nnˆs keskeytet‰‰n, virheest‰ ilmoitetaan k‰ytt‰j‰lle ja jatka-painikkeella palaudutaan l‰hdekoodin‰kym‰‰n. </li>
+  <li> Ensimm‰isen k‰‰nnˆsvaiheen valmistuminen: onnistuneen ensimm‰isen kierroksen j‰lkeen <a href="manual_fi2.html#gui">objektikoodin‰kym‰</a> tuodaan esiin ja toinen kierros voi alkaa. </li> 
+  </ul>
+  <p> Second round: </p>
+  <ul> 
+  <li> Creating the object code: numerical form of current command is shown and shown in status bar. </li>
+  <li> Objektikoodin luonti: koodiriville tuodaan k‰skyn konekieliesitys ja k‰sky n‰ytet‰‰n alapalkin tilatiedoissa. </li>
+  <li> Toisen k‰‰nnˆsvaiheen valmistuminen: ohjelma <a href=#lataaminen>ladataan</a> muistiin.</li>
+  </ul>
+  <br>
+  
+  
+  
+  <!-- KƒƒNN÷SASETUKSET-->
+  
+  
+  
+  <table cellspacing=10>
+  <tr>
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td>
+  <a name="kaannosasetukset">
+  <h3>2.5 K‰‰nnˆsasetukset </h3>
+  </a>
+  </td>
+  </tr>
+  </table>
+  
+  
+  
+  
+  <table cellspacing=10>
+  <tr>
+  <td>
+  <img src="Tiedostomuokkaakaannos.jpg" title="K‰‰nnˆsasetukset valikosta" 
+  alt="K‰‰nnˆsasetukset valikosta">
+  </td>
+  <td valign=top>
+  <p>
+  K‰‰nnˆksen aikaisia asetuksia voi muuttaa valitsemalla valikosta Asetukset --> Muokkaa k‰‰nnˆsasetuksia.
+  </p>
+  </td>
+  
+  </tr>
+  <tr>
+  <td>
+  
+  <img src="Kaannosasetukset.jpg" title="K‰‰nnˆsasetukset" 
+  alt="K‰‰nnˆsasetukset">
+  
+  </td>
+  <td valign=top> 
+  <p>
+  K‰‰nnˆsasetuksilla voidaan vaikuttaa k‰‰nnˆksen etenemistapaan ja kommentointiin.
+  </p>
+  <ul>
+  <li>Jos 'Pys‰yt‰ k‰‰nt‰minen kommentin ilmestyess‰' on valittuna, k‰‰nnˆs etenee askelittain. K‰‰nnˆs j‰‰ odottamaan k‰ytt‰j‰lt‰ seuraavaa <a
+  href=#kaantajantoiminnot>toimintoa</a>.
+  </li>
+  <li>Jos 'N‰yt‰ lis‰kommentteja k‰‰nt‰misen kulusta' on valittuna, rivin k‰‰nt‰misest‰ ilmestyy lis‰kommentteja kommentti-ikkunaan.
+  
+  </ul>
+    
+  </td>
+  
+  </tr>
+  </table>
+  
+  <br>
+   
+  
+  
+  
+  
+  <!-- OHJELMAN LATAAMINEN-->
+  
+  
+  
+  
+  <table cellspacing=10>
+  <tr>
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td>
+  <h3><a name="lataaminen">2.6 TTK-91-ohjelman lataaminen</a></h3>
+  </td>
+  </tr>
+  </table>
+  
+  
+  <p> Ohjelman lataaminen tapahtuu automaattisesti </p>
+  <ul>
+  <li>K91-tiedoston <a href=#kaanna>k‰‰nt‰misen</a> valmistuessa.</li>
+  <li>B91-tiedoston <a href=#avaa>avaamisen</a> yhteydess‰ </li>
+  </ul>
+  <br>
+  
+  <!-- BINƒƒRIN TALLETTAMINEN-->
+  
+   <table cellspacing=10>
+  <tr>
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td>
+  <h3>2.7 TTK-91-ohjelman bin‰‰rin tallentaminen</h3>
+  </td>
+  </tr>
+  </table>
+    <!-- Tapahtuu j‰lleen "automaattisesti". Tallentuu sinne miss‰ 
+         l‰hdekoodikin, p‰‰tteell‰ .b91. -->
+  <br>
+  
+  
+   <!-- SUORITUS-->
+  
+  
+    
+  <table cellspacing=10>
+  <tr>
+  
+  <td>  
+  <a name="run">
+  <img src="3.jpg" title="Suorita" 
+  alt="Kuva suorita-painikkeesta">
+  </td>
+  </a>    
+  
+  <td>
+  <h3> 2.8 TTK-91-ohjelman suoritus</h3> <!-- Ja uudelleensuoritus -->
+  </td>
+  
+  </tr>
+  </table>
+     
+  
+  <table cellspacing=10>
+  <tr>
+  <td>  
+  <img src="Tiedostoaja.jpg" title="Aja valikosta" 
+  alt="Ohjelman suoritus valikosta">
+  </td>
+  <td valign=top> K91-tiedoston k‰‰nnˆksen tai b91-tiedoston avaamisen seurauksena ohjelma ladataan muistiin ja on valmis suoritettavaksi.<a href=manual_fi3.html#gui>
+  Suoritusn‰kym‰ss‰</a> koodi-ikkuna on jaettu kahteen osaan, koodi- ja data-alueeseen. On kuitenkin syyt‰ huomioida, ett‰ titokoneen muisti on todellisuudessa yhten‰inen alue; muistialueen jako kahteen osaan on toteutettu k‰ytett‰vyyssyist‰. Suoritus aloitetaan painamalla  <a href="3.jpg">suorita-pikakuvaketta</a>  tai valitsemalla valikosta Tiedosto --> Aja. Suoritus toteutetaan <a href=#suoritusasetukset>suoritusasetusten</a> mukaisesti joko pys‰hdellen tai kerralla loppuun asti suorittaen. </td>
   
   </tr>
   </table>
   <br>
   
-
-  
-  <p>
-  K‰‰nnˆs pys‰htyy, jos l‰hdekoodissa tapahtui virhe. Virheest‰ ilmoitetaan 
-  alapalkissa (STATUSBAR). 
-  
-  ON SYYTƒ KIRJOITTAA MY÷S TƒNNE: K‰yttˆohjeessa pit‰‰ mainita, ett‰ kunkin rivin muokkaus tulee voimaan
-  vasta, kun silt‰ rivilt‰ poistutaan; muuten k‰‰nt‰j‰ ei saa muokatun
-  rivin tietoja mukaansa. (Ja sitten ett‰ se tallentaa silloin ja tolloin
-  blahblah.)
-
-T‰h‰n liittyen: Olli, laita k‰yttˆohjeen "lis‰tt‰vi‰ juttuja"
--listallesi koodin muokkauksen toiminnan ohje. Eli se tallentaa koodin
-milloin tarkalleen, Arto? Ilmeisesti kun muutettu koodi laitetaan
-uudestaan k‰‰ntym‰‰n, mutta tapahtuuko sit‰ muulloinkin?
-
-  
-
-  </p>
-
-  <br />
+  <b> Toiminnot suorituksen aikana </b>
   
   <table cellspacing=10>
   <tr>
-  
-   <td valign=top>  
-  <img src="3.jpg" title="Run" 
-  alt="Run-button">
-  </td>
-   <td valign=top>
-  <h3>2.4 Executing TTK-91-program</h3> <!-- Ja uudelleensuoritus -->
-  </td>
-  
-  </tr>
-  </table>
    
-  <br />
-  
-  <table cellspacing=10>
-  <tr>
-  
-   <td valign=top>  
-  <img src="Filerun.jpg" title="Run" 
-  alt="Run">
-  </td>
-   <td valign=top> T‰t‰ nappia painamalla suoritetaan ohjelman ajaminen. </td>
-  
-  </tr>
-  </table>
-  
-  <h3><a name="lataaminen">2.5 Loading TTK-91-program</a></h3>
-
-      <!-- Tapahtuu "automaattisesti", miten voi saada ladattua uudelleen 
-           jos haluaa (esim. avaamalla automaattisesti tallennetun bin‰‰rin -->
-	   
-  <h3>2.6 Saving TTK-91 binary file</h3>
-
-    <!-- Tapahtuu j‰lleen "automaattisesti". Tallentuu sinne miss‰ 
-         l‰hdekoodikin, p‰‰tteell‰ .b91. -->
-
-  <h3>2.x Changing compiling options</h3>
-
-  <table>
-  <tr>
-  
   <td>
-  <img src="Compilingoptions.jpg" title="Compiling options" 
-  alt="Compiling options">
+  <img src="4.jpg" title="Kelaa" 
+  alt="Kuva kelaa-painikkeesta">
+  </td>
+  <td><p> Ohjelman ajaminen voidaan tehd‰ rivi kerrallaan.</p>
+  </td>
+  </tr>
+  
+  <tr>
+  <td><img src="5.jpg" title="FF" 
+  alt="Kuva FF-painikkeesta">
   </td>
   
+  <td><p> Halutessaan k‰ytt‰j‰ voi suorittaa ohjelman yhdell‰ napin painalluksella.</p>
+  </td>
+  </tr>
+  
+  <tr>
+  <td><img src="6.jpg" title="STOP" 
+  alt="Kuva stop-painikkeesta">
+  </td>
+  <td>
+  <p> Suoritus voidaan pys‰ytt‰‰ painamalla stop-nappia.
+  </td>
   </tr>
   </table>
+  <br>
   
-  <h3>2.x Erasing memory</h3> 
-   
-  <table>
+  
+  
+  
+  
+  <!-- SUORITUSASETUSTEN MUUTTAMINEN -->
+  
+  
+  
+  
+  <table cellspacing=10>
   <tr>
   
-   <td valign=top>
-  <img src="Erasememory.jpg" title="Erase memory" 
-  alt="Erase memory">
+  <td>  
+  <a name="suoritusasetukset">
+  <img src="0.jpg" title="" 
+  alt="">
+  </a>
   </td>
-  
-  
+  <td>
+  <h3>2.9 Suoritusasetukset </h3>
+  </td>
   </tr>
   </table>
+  
+  
+  <table cellspacing=10>
+  <tr>
+  <td>
+  <img src="Suoritusvalikko.jpg" title="Valikko suorita" 
+  alt="Suoritusasetukset valikosta">
+  </td>
+  <td valign=top>
+  <p> Suoritusasetuksia p‰‰see vaihtamaan valitsemalla valikosta Asetukset --> Muuta suoritusasetuksia </p>
+  
+  </td>
+  </tr>
+  <tr>  
+  <td rowspan=3>
+  <img src="Suoritusasetukset.jpg" title="Suoritusasetukset" 
+  alt="Suoritusasetukset">
+  </td>
+  <td>
+  <p> Suoritusasetukset ovat melko pitk‰lti vastaavat <a href=#kaannosasetukset>k‰‰nnˆsasetusten</a> kanssa; lis‰toimintona on animointi.
+  <ul>
+  <li> ohjelmakoodia voidaan suorittaa rivi kerrallaan </li>
+  <li> lis‰kommentteja voidaan n‰ytt‰‰ <a href="manual_fi3.html#gui">kommentti-ikkunassa(8)</a></li>
+  <li> animointi-ikkuna voidaan kytke‰ p‰‰lle tai pois </li>
+  </ul>
+  </td>
+  </tr>
+  </table>
+  
+  <p> Suoritusasetuksia on mahdollista muuttaa myˆs suoraan pikakuvakkeista:</p>
+  <table cellspacing=10>
+  <tr>
+  <td>
+  <img src="7.jpg" title="Riveitt‰in suoritus" 
+  alt="Riveitt‰in suoritus">
+  </td>
+  <td>
+  <p>   Riveitt‰in suorituksen kytkeminen p‰‰lle tai pois. </p>
+  </td> 
+  </tr>
+  <tr>
+  <td>
+  <img src="8.jpg" title="Suorituksen kommentointi" 
+  alt="Suorituksen kommentointi">
+  </td>
+  <td>
+  <p> Suorituksen lis‰kommentoinnin kytkeminen p‰‰lle tai pois. </p>
+  </td>
+  
+  </tr>
+  <tr>
+  <td>
+  <img src="9.jpg" title="Animointi" 
+  alt="Animointi">
+  </td>
+  <td>
+  <p> Animointi-ikkunan n‰ytt‰misen kytkeminen p‰‰lle tai pois. </p>
+  </td>
+  </tr>
+  </table>
+  <!---
+  <table>
+  <tr>
+  <td>
+  <img src="Animointi.jpg" title="Kuva animaattorista" 
+  alt="Kuva animaattorista">
+  </td>
+  </tr>
+  
+  </table> -->
+  
+  
+  
+  <!-- MUISTIN TYHJENTƒMINEN -->
+  
+  <table cellspacing=10>
+  <tr>
+  
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td>
+  <h3>2.10 Muistin tyhjent‰minen</h3> 
+  </td>
+  </tr>
+  </table>
+   
   <!-- Viimeist‰‰n t‰‰ll‰ maininta muistin pysymisest‰ samana ellei sit‰
        nollata. -->
-
-  <h3>2.x Changing the size of the memory</h3>
-
   <table>
   <tr>
   
-   <td valign=top>
-  <img src="Memory.jpg" title="Changing size of the memory" 
-  alt="Changing size of the memory">
+  <td>
+  <img src="Tyhjennamuisti.jpg" title="Muistin tyhjent‰minen" 
+  alt="Muistin tyhjent‰minen">
   </td>
+  <td valign=top>
+  <p> Titokoneen muistin voi tyhjent‰‰ valikosta valitsemalla <b>Tiedosto --> Tyhjenn‰ muisti</b>. Muistin tyhjent‰misen lis‰ksi toiminnolla voidaan tyhjent‰‰ l‰hdekoodin‰kym‰. 
+  Jos toimintoa k‰ytet‰‰n k‰‰nnˆs- tai ajovaiheessa, kyseinen toiminto keskeytyy ja ruudulle palautetaan <a href=#gui>alkun‰kym‰</a>, jossa rekisterit, symbolitaulu ja
+  koodin‰kym‰ on tyhjennetty. </p> 
   
+  </td>
   
   </tr>
   </table>
-  
-  <h3>2.x Language properties</h3>
+  <br>
+       
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td> 
+  <h3>2.11 Muistin koon vaihtaminen</h3>
+  </td>
+  </tr>
+  </table>
   
   <table>
   <tr>
   
   <td>
-  <img src="Setlanguage.jpg" title="Set language" 
-  alt="Set language">
+  <img src="Muisti.jpg" title="Muistin koon muuttaminen" 
+  alt="Muistin koon vaihtaminen valikosta">
   </td>
-  
+  <td valign=top>
+  <p> Titokoneen muistin kokoa on mahdollista muuttaa valitsemalla valikosta <b>Asetukset --> Aseta muistin koko</b>.
+  Muistin kokovaihtoehtoja on kahdeksan erilaista 512 rivist‰ 65536 riviin asti. Kun uusi muistin koko asetetaan, koodin‰kym‰ tyhjennet‰‰n
+  ja n‰kyville palautetaan <a href="manual_fi.html#gui">alkun‰kym‰</a>.</p>
+  </p>
+  </td>
   </tr>
   </table>
+  
+  
+  
+  <td>  
+  <a name="kielenvaihto">
+  <img src="0.jpg" title="" 
+  alt="">
+  </a>
+  </td>
+  <td>
+  <h3>2.12 K‰yttˆliittym‰n kielen vaihtaminen</h3>
+  </td>
+  </tr>
+  </table>
+  
+  <table>
+  <tr>
+  
+  <td>
+  <img src="Asetakieli.jpg" title="Kieliasetusten vaihtaminen" 
+  alt="Kieliasetukset">
+  </td>
+  <td>
+  <p>
+  Titokoneen k‰yttˆliittym‰ss‰ on mahdollista vaihtaa kieliasetuksia. Kieli valitaan valikosta <b>Asetukset --> Aseta kieli</b>. Oletuskielin‰ on suomi ja englanti.
+  Kielen voi vaihtaa suoraan lennosta, l‰hes riippumatta k‰yttˆliittym‰n muista toiminnoista. Myˆs <a href=#kielenlisays>uuden kielen lis‰‰minen</a> on mahdollista
+  Jos k‰ytt‰j‰ on m‰‰ritellyt oman kielitiedoston, se haetaan valitsemalla valikosta <b> Asetukset --> Aseta kieli --> Valitse tiedostosta...</b>. T‰m‰n j‰lkeen
+  k‰ytt‰j‰n on haettava luotu kielitiedosto ja avattava se. Jos kielitiedosto on oikeaa muotoa, kieli vaihtuu v‰littˆm‰sti. Jos tietyn tekstin k‰‰nnˆsvastine puuttuu
+  kielitiedostosta, k‰ytet‰‰n k‰yttˆliittym‰ss‰ oletuskielt‰, englantia, kyseisen sanan kohdalla.
+  
+  </p>
+  </td>
+  </tr>
+  </table>
+
  <!-- Jne, sopivassa j‰rjestyksess‰. -->
 
-<h2><a name="machinelanguage">3. The TTK-91 machine language</a></h2>
+<h2><a name="konekieli">3. TTK-91-konekieli</a></h2>
 <!-- T‰ss‰ voi mietti‰, haluaako toistaa tekstitiedoston speksin v‰h‰n 
      siistimm‰ss‰ formaatissa vaiko vain. Mietin, nyt p‰‰dyin t‰h‰n...
 -->
-
 <pre>
 ======================================================================
                    A SUMMARY OF TTK-91 COMMANDS

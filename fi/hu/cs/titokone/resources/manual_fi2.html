@@ -58,19 +58,19 @@ lienee hyvästä.
 <td>
 <ol>
      <li> Valikot </li>
-     <br />
-     <li> Koodin kääntäminen </li>
-     <br />
+     <br>
+     <li> Koodin käännösvaihe</li>
+     <br>
      <li> Tilatiedot </li>
-     <br />
+     <br>
      <li> Näyttö </li>
-     <br />
+     <br>
      <li> Näppäimistösyötteet </li>
-     <br />
+     <br>
      <li> Symbolitaulu </li>
-     <br />
+     <br>
      <li> Rekisterit </li>
-     <br />
+     <br>
      <li> Kommentti-ikkuna </li>
 </ol>
 
@@ -85,22 +85,48 @@ lienee hyvästä.
 <!-- Kuvaillaan käyttöliittymän osat numeroittain: 1. valikot: höpöhöpö jne. -->
 <!-- Kunkin selityksestä viitteitä kohtiin, joissa sitä käytetään. -->
 
-<img src="dialogit.jpg" title="Asetusdialogeja" 
-  alt="Kuvia asetusdialogeista, joissa mielenkiintoiset osiot numeroitu.">
 
 <h2><a name="toiminnot">2. Toiminnot</a></h2> <!-- mitä tällä voi tehdä? -->
 
-  <h3>2.1 Titokoneen käynnistäminen</h3>
+
+
+<!-- TITOKONEEN KÄYNNISTYS -->
+
+
+
+
+<table cellspacing=10>
+<tr>
+<td>  
+<img src="0.jpg" title="" 
+alt="">
+</td>
+<td>
+<h3>2.1 Titokoneen käynnistäminen</h3>
+</td>
+</tr>
+</table>
+
+
+
 <p> Titokone on toteutettu javalla ja se käynnistetään jar-paketista. </p>
 
 
-<br />
+<br>
+
+
+
+<!-- OHJELMAN AVAAMINEN -->
+
+
 
 <table cellspacing=10>
 <tr>
   <td align=center>
+  <a name="avaa">
   <img src="1.jpg" title="Avaa kuvakkeesta" 
   alt="Kuva avaa-painikkeesta">
+  </a>
   </td>
 
 <td>
@@ -110,37 +136,108 @@ lienee hyvästä.
 </tr>
 </table>
   
-<br />
+<br>
 
 <table cellspacing=10>
 <tr>
   
 <td valign=top>
+
 <img src="Tiedostoavaa2.jpg" title="Avaa valikosta" 
 alt="Kuva avaa-painikkeesta">
+
 </td>
       
 <td valign=top>
 <p> 
-  Titokoneella pystytään ajamaan kahden tyyppisiä 
-  ohjelmatiedostoja: symbolisessa muodossa olevia 
-  lähdekooditiedostoja ja binääritiedostoja. 
-  Lähdekooditiedostot   on ensin käännettävä, 
-  jotta niitä voidaan ajaa. Käännetty ohjelma tallentuu
-  automaattisesti oletushakemistoon binäärimuodossa. 
-  Lähdekooditiedoston oletuspääte   on K91 ja 
-  binääritiedoston B91. Ohjelma avataan painamalla 
-  pikakuvaketta tai valitsemalla tiedostovalikosta 
-  kohta 'avaa'. 
+  Uuden tiedoston avaaminen tapahtuu painamalla <a href="1.jpg">käännä-pikakuvaketta</a> tai
+  valitsemalla valikosta Tiedosto -->  Avaa. Valinnan seurauksena
+  avautuu <a href="#tiedosto">tiedostonäkymä</a>.
+
 </p>
 </td>
 
 </tr>
 </table>
 
+<table cellspacing=10>
+<tr>
+  
+<td valign=top>
+<a name="tiedosto">
+<img src="Tiedosto.jpg" title="Tiedostonäkymä" 
+alt="Tiedostonäkymä">
+</a>
+</td>
+<td valign=top>
+<p>
+Tiedostonäkymä näyttää nykyhakemiston tiedostot valitun päätteen mukaan. 
+Näytettävät tiedostotyypit erotellaan päätteen mukaan: k91-pääte tarkoittaa lähdekooditiedostoa ja
+b91-pääte binääritiedostoa.
+</p>
+<ul><li>
+Avattaessa k91-päätteinen tiedosto, avautuu <a href="manual_fi1.html#gui">lähdekoodinäkymä</a> ruudulle.
+Lähdekooditiedosto on <a href="#kaanna">käännettävä</a> ennen kuin se voidaan <a href="#aja">suorittaa</a>.
+</li>
+<br>
+<li>
+Avattaessa b91-päätteinen tiedosto, avautuu <a href="manual_fi3.html#gui">suoritusnäkymä</a> ruudulle.
+Binääritiedostoa on valmiiksi konekielimuodossa, joten se voidaan <a href="#aja">suorittaa</a> ilman kääntämistä.
+</li>
+</ul>
+</td>
+</tr>
+</table>
+
+<br>
+
+
+
+
+<!-- LÄHDEKOODIN MUOKKAUS -->
+
+
+
+
+<table cellspacing=3>
+<tr>
+<td>  
+<img src="0.jpg" title="" 
+alt="">
+</td>
+<td>
+<a name="koodinmuokkaus">
+<h3> 2.3. Lähdekoodin muokkaaminen </h3>
+</a>
+</td>
+</tr>
+</table>
+
+
+<p>Lähdekoodia on mahdollista muokata Titokoneessa seuraavasti: </p>
+<ul>
+<li> Avataan K91-päätteinen tiedosto. </li>
+<li> Kaksoisklikataan lähdekoodin riviä vasemmalla hiiren napilla, kursori ilmestyy riville. </li>
+<li> Kirjoitetaan riville muutokset. </li>
+<li> Vahvistetaan muutokset painamalla enteriä. </li>
+<li> Tehdyt muutokset tallettuvat alkuperäiseen tiedostoon. </li>
+</ul>
+
+ 
+
+
   <!-- Voi olla k91 tai b91, viittaa vastaaviin 2.x-lukuihin -->
 
-<br />
+<br>
+
+
+
+
+<!-- OHJELMAN KÄÄNTÄMINEN-->
+
+
+
+
     
   <table cellspacing=10>
   <tr>
@@ -151,17 +248,17 @@ alt="Kuva avaa-painikkeesta">
   </td>
   
   <td>
-  <h3>2.3 TTK-91-ohjelman kääntäminen</h3> <!-- Ja mahd. tekstin muokkaus -->
+  <a name="kaanna">
+  <h3>2.4 TTK-91-ohjelman kääntäminen</h3> <!-- Ja mahd. tekstin muokkaus -->
+  </a>
   </td>
   
   </tr>
   </table>
-  
-  <br />
-  
+      
   <table cellspacing=10>
   <tr>
-  
+
   <td valign=top>
   <img src="Tiedostokaanna.jpg" title="Kääntäminen valikosta" 
   alt="Kuva käännä-painikkeesta">
@@ -169,23 +266,30 @@ alt="Kuva avaa-painikkeesta">
   
   <td valign=top>
   <p>
-  Kääntäminen aloitetaan painamalla pikakuvaketta tai valitsemalla tiedostovalikosta  
-  kohta 'käännä'. Kääntäminen jatkuu käyttäjän asetusten(LINKKI / KTS kohta) mukaisesti;
-  joko pysähdellen tai kerralla loppuun asti kääntäen. Jos kääntäminen on pysähtynyt tietylle
-  riville, kääntämistä jatketaan painamalla (KELAA).
+  Titokoneen käännös on kaksivaiheinen: ensin tehdään syntaksitarkistus ja luodaan symbolitaulu. Toisella kierroksella muodostetaan objektikoodi.
+  Kääntäminen aloitetaan painamalla <a href="2.jpg">käännä-pikakuvaketta</a> tai valitsemalla valikosta Tiedosto --> Käännä.
+  Kääntäminen toteutetaan <a href="#kaannosasetukset">käännösasetusten</a> mukaisesti.
+  joko pysähdellen tai kerralla loppuun asti kääntäen. 
+  </p>
   </td>
   </tr>
   </table>
   
-  <br />
-  <table>
+  <br>
+  <a name="kaantajantoiminnot">
+  <b>
+  Toiminnot kääntämisen aikana
+  </b>
+  </a>
+  
+  <table cellspacing=10>
   <tr>
    
   <td>
   <img src="4.jpg" title="Kelaa" 
   alt="Kuva kelaa-painikkeesta">
   </td>
-  <td><p> Kääntämistä voi suorittaa askel kerrallaan, edeten seuraavaan tapahtumaan asti. </p>
+  <td><p> Kääntämistä voi suorittaa askel kerrallaan, edeten seuraavaan <a href=#kaannostapahtumat> tapahtumaan </a> asti. </p>
   </td>
   </tr>
   
@@ -194,74 +298,194 @@ alt="Kuva avaa-painikkeesta">
   alt="Kuva FF-painikkeesta">
   </td>
   
-  <td><p> Halutessaan käyttäjä voi suorittaa käännöksen kerralla loppuun painamalla.</p>
+  <td><p> Halutessaan käyttäjä voi suorittaa käännöksen kerralla loppuun.</p>
   </td>
+  </tr>
+  
+  <tr>
+  <td><img src="6.jpg" title="STOP" 
+  alt="Kuva stop-painikkeesta">
+  </td>
+  <td>
+  <p> Käännös voidaan pysäyttää painamalla stop-nappia.
+  </td>
+  </tr>
+  </table>
+  <br>
+  <a name="kaannostapahtumat">
+  <b> Käännöksen tapahtumatyypit </b>
+  </a>
+  <p> Tapahtumatyypeillä tarkoitetaan kääntäjän reagointia lähdekoodin sisältöön. Riviä kommentoidaan tai riville pysähdytään <a href=#kaannosasetukset>asetusten</a> mukaisesti.</p>
+  <p> Ensimmäinen kierros:</p>
+  <ul>
+  <li> Ei tapahtumaa: jos rivi alkaa kommenttimerkillä (;), on tyhjä tai sisältää käskyn NOP </li>
+  <li> Muuttujan määrittely: Jos riviltä löytyy uusi muuttuja, se lisätään symbolitauluun. </li>
+  <li> Muuttujan käyttäminen: Jos rivin komennossa käytetään muuttujaa, muuttuja lisätään symbolitauluun jos se ei siellä vielä ole. </li>
+  <li> Muistiviitteen löytyminen: Jos rivin alusta löytyy muistiviite,viite ja rivin numero lisätään symbolitauluun </li>
+  <li> Käännöksen virhetilanne: käännös keskeytetään, virheestä ilmoitetaan käyttäjälle ja jatka-painikkeella palaudutaan lähdekoodinäkymään. </li>
+  <li> Ensimmäisen käännösvaiheen valmistuminen: onnistuneen ensimmäisen kierroksen jälkeen <a href="manual_fi2.html#gui">objektikoodinäkymä</a> tuodaan esiin ja toinen kierros voi alkaa. </li> 
+  </ul>
+  <p> Toinen kierros: </p>
+  <ul> 
+  <li> Objektikoodin luonti: koodiriville tuodaan käskyn konekieliesitys ja käsky näytetään alapalkin tilatiedoissa. </li>
+  <li> Toisen käännösvaiheen valmistuminen: ohjelma <a href=#lataaminen>ladataan</a> muistiin.</li>
+  </ul>
+  <br>
+  
+  
+  
+  <!-- KÄÄNNÖSASETUKSET-->
+  
+  
+  
+  <table cellspacing=10>
+  <tr>
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td>
+  <a name="kaannosasetukset">
+  <h3>2.5 Käännösasetukset </h3>
+  </a>
+  </td>
+  </tr>
+  </table>
+  
+  
+  
+  
+  <table cellspacing=10>
+  <tr>
+  <td>
+  <img src="Tiedostomuokkaakaannos.jpg" title="Käännösasetukset valikosta" 
+  alt="Käännösasetukset valikosta">
+  </td>
+  <td valign=top>
+  <p>
+  Käännöksen aikaisia asetuksia voi muuttaa valitsemalla valikosta Asetukset --> Muokkaa käännösasetuksia.
+  </p>
+  </td>
+  
+  </tr>
+  <tr>
+  <td>
+  
+  <img src="Kaannosasetukset.jpg" title="Käännösasetukset" 
+  alt="Käännösasetukset">
+  
+  </td>
+  <td valign=top> 
+  <p>
+  Käännösasetuksilla voidaan vaikuttaa käännöksen etenemistapaan ja kommentointiin.
+  </p>
+  <ul>
+  <li>Jos 'Pysäytä kääntäminen kommentin ilmestyessä' on valittuna, käännös etenee askelittain. Käännös jää odottamaan käyttäjältä seuraavaa <a
+  href=#kaantajantoiminnot>toimintoa</a>.
+  </li>
+  <li>Jos 'Näytä lisäkommentteja kääntämisen kulusta' on valittuna, rivin kääntämisestä ilmestyy lisäkommentteja kommentti-ikkunaan.
+  
+  </ul>
+    
+  </td>
+  
+  </tr>
+  </table>
+  
+  <br>
+   
+  
+  
+  
+  
+  <!-- OHJELMAN LATAAMINEN-->
+  
+  
+  
+  
+  <table cellspacing=10>
+  <tr>
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td>
+  <h3><a name="lataaminen">2.6 TTK-91-ohjelman lataaminen</a></h3>
+  </td>
+  </tr>
+  </table>
+  
+  
+  <p> Ohjelman lataaminen tapahtuu automaattisesti </p>
+  <ul>
+  <li>K91-tiedoston <a href=#kaanna>kääntämisen</a> valmistuessa.</li>
+  <li>B91-tiedoston <a href=#avaa>avaamisen</a> yhteydessä </li>
+  </ul>
+  <br>
+  
+  <!-- BINÄÄRIN TALLETTAMINEN-->
+  
+   <table cellspacing=10>
+  <tr>
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td>
+  <h3>2.7 TTK-91-ohjelman binäärin tallentaminen</h3>
+  </td>
+  </tr>
+  </table>
+    <!-- Tapahtuu jälleen "automaattisesti". Tallentuu sinne missä 
+         lähdekoodikin, päätteellä .b91. -->
+  <br>
+  
+  
+   <!-- SUORITUS-->
+  
+  
+    
+  <table cellspacing=10>
+  <tr>
+  
+  <td>  
+  <a name="aja">
+  <img src="3.jpg" title="Suorita" 
+  alt="Kuva suorita-painikkeesta">
+  </td>
+  </a>    
+  
+  <td>
+  <h3> 2.8 TTK-91-ohjelman suoritus</h3> <!-- Ja uudelleensuoritus -->
+  </td>
+  
+  </tr>
+  </table>
+     
+  
+  <table cellspacing=10>
+  <tr>
+  <td>  
+  <img src="Tiedostoaja.jpg" title="Aja valikosta" 
+  alt="Ohjelman suoritus valikosta">
+  </td>
+  <td valign=top> K91-tiedoston käännöksen tai b91-tiedoston avaamisen seurauksena ohjelma ladataan muistiin ja on valmis suoritettavaksi.<a href=manual_fi3.html#gui>
+  Suoritusnäkymässä</a> koodi-ikkuna on jaettu kahteen osaan, koodi- ja data-alueeseen. On kuitenkin syytä huomioida, että titokoneen muisti on todellisuudessa yhtenäinen alue; muistialueen jako kahteen osaan on toteutettu käytettävyyssyistä. Suoritus aloitetaan painamalla  <a href="3.jpg">suorita-pikakuvaketta</a>  tai valitsemalla valikosta Tiedosto --> Aja. Suoritus toteutetaan <a href=#suoritusasetukset>suoritusasetusten</a> mukaisesti joko pysähdellen tai kerralla loppuun asti suorittaen. </td>
   
   </tr>
   </table>
   <br>
   
-
-  
-  <p>
-  Käännös pysähtyy, jos lähdekoodissa tapahtui virhe. Virheestä ilmoitetaan 
-  alapalkissa (STATUSBAR). 
-  
-  ON SYYTÄ KIRJOITTAA MYÖS TÄNNE: Käyttöohjeessa pitää mainita, että kunkin rivin muokkaus tulee voimaan
-  vasta, kun siltä riviltä poistutaan; muuten kääntäjä ei saa muokatun
-  rivin tietoja mukaansa. (Ja sitten että se tallentaa silloin ja tolloin
-  blahblah.)
-
-Tähän liittyen: Olli, laita käyttöohjeen "lisättäviä juttuja"
--listallesi koodin muokkauksen toiminnan ohje. Eli se tallentaa koodin
-milloin tarkalleen, Arto? Ilmeisesti kun muutettu koodi laitetaan
-uudestaan kääntymään, mutta tapahtuuko sitä muulloinkin?
-
-  
-
-  </p>
-
-  <br />
+  <b> Toiminnot suorituksen aikana </b>
   
   <table cellspacing=10>
-  <tr>
-  
-  <td>  
-  <img src="3.jpg" title="Suorita" 
-  alt="Kuva suorita-painikkeesta">
-  </td>
-  <td>
-  <h3>2.4 TTK-91-ohjelman suoritus</h3> <!-- Ja uudelleensuoritus -->
-  </td>
-  
-  </tr>
-  </table>
-  
-
-  
-  <br />
-  
-  <table cellspacing=10>
-  <tr>
-  
-  <td>  
-<img src="Tiedostoaja.jpg" title="Aja valikosta" 
-  alt="Ohjelman suoritus valikosta">
-
-  </td>
-  <td> Tätä nappia painamalla suoritetaan ohjelman ajaminen. </td>
-  
-  </tr>
-  </table>
-  
-  <table>
   <tr>
    
   <td>
   <img src="4.jpg" title="Kelaa" 
   alt="Kuva kelaa-painikkeesta">
   </td>
-  <td><p> Kääntämistä voi suorittaa askel kerrallaan, edeten seuraavaan tapahtumaan asti. </p>
+  <td><p> Ohjelman ajaminen voidaan tehdä rivi kerrallaan.</p>
   </td>
   </tr>
   
@@ -270,48 +494,162 @@ uudestaan kääntymään, mutta tapahtuuko sitä muulloinkin?
   alt="Kuva FF-painikkeesta">
   </td>
   
-  <td><p> Halutessaan käyttäjä voi suorittaa käännöksen kerralla loppuun painamalla.</p>
+  <td><p> Halutessaan käyttäjä voi suorittaa ohjelman yhdellä napin painalluksella.</p>
   </td>
+  </tr>
   
+  <tr>
+  <td><img src="6.jpg" title="STOP" 
+  alt="Kuva stop-painikkeesta">
+  </td>
+  <td>
+  <p> Suoritus voidaan pysäyttää painamalla stop-nappia.
+  </td>
+  </tr>
+  </table>
+  <br>
+  
+  
+  
+  
+  
+  <!-- SUORITUSASETUSTEN MUUTTAMINEN -->
+  
+  
+  
+  
+  <table cellspacing=10>
+  <tr>
+  
+  <td>  
+  <a name="suoritusasetukset">
+  <img src="0.jpg" title="" 
+  alt="">
+  </a>
+  </td>
+  <td>
+  <h3>2.9 Suoritusasetukset </h3>
+  </td>
   </tr>
   </table>
   
   
-  <br />
+  <table cellspacing=10>
+  <tr>
+  <td>
+  <img src="Suoritusvalikko.jpg" title="Valikko suorita" 
+  alt="Suoritusasetukset valikosta">
+  </td>
+  <td valign=top>
+  <p> Suoritusasetuksia pääsee vaihtamaan valitsemalla valikosta Asetukset --> Muuta suoritusasetuksia </p>
+  
+  </td>
+  </tr>
+  <tr>  
+  <td rowspan=3>
+  <img src="Suoritusasetukset.jpg" title="Suoritusasetukset" 
+  alt="Suoritusasetukset">
+  </td>
+  <td>
+  <p> Suoritusasetukset ovat melko pitkälti vastaavat <a href=#kaannosasetukset>käännösasetusten</a> kanssa; lisätoimintona on animointi.
+  <ul>
+  <li> ohjelmakoodia voidaan suorittaa rivi kerrallaan </li>
+  <li> lisäkommentteja voidaan näyttää <a href="manual_fi3.html#gui">kommentti-ikkunassa(8)</a></li>
+  <li> animointi-ikkuna voidaan kytkeä päälle tai pois </li>
+  </ul>
+  </td>
+  </tr>
+  </table>
+  
+  <p> Suoritusasetuksia on mahdollista muuttaa myös suoraan pikakuvakkeista:</p>
+  <table cellspacing=10>
+  <tr>
+  <td>
+  <img src="7.jpg" title="Riveittäin suoritus" 
+  alt="Riveittäin suoritus">
+  </td>
+  <td>
+  <p>   Riveittäin suorituksen kytkeminen päälle tai pois. </p>
+  </td> 
+  </tr>
+  <tr>
+  <td>
+  <img src="8.jpg" title="Suorituksen kommentointi" 
+  alt="Suorituksen kommentointi">
+  </td>
+  <td>
+  <p> Suorituksen lisäkommentoinnin kytkeminen päälle tai pois. </p>
+  </td>
+  
+  </tr>
+  <tr>
+  <td>
+  <img src="9.jpg" title="Animointi" 
+  alt="Animointi">
+  </td>
+  <td>
+  <p> Animointi-ikkunan näyttämisen kytkeminen päälle tai pois. </p>
+  </td>
+  </tr>
+  </table>
+  <!---
+  <table>
+  <tr>
+  <td>
+  <img src="Animointi.jpg" title="Kuva animaattorista" 
+  alt="Kuva animaattorista">
+  </td>
+  </tr>
+  
+  </table> -->
   
   
-  <h3><a name="lataaminen">2.5 TTK-91-ohjelman lataaminen</a></h3>
-
-      <!-- Tapahtuu "automaattisesti", miten voi saada ladattua uudelleen 
-           jos haluaa (esim. avaamalla automaattisesti tallennetun binäärin -->
-	   
-  <h3>2.6 TTK-91-ohjelman binäärin tallentaminen</h3>
-
-    <!-- Tapahtuu jälleen "automaattisesti". Tallentuu sinne missä 
-         lähdekoodikin, päätteellä .b91. -->
-
-  <h3>2.x Käännösasetusten muuttaminen</h3>
-
+  
+  <!-- MUISTIN TYHJENTÄMINEN -->
+  
+  <table cellspacing=10>
+  <tr>
+  
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td>
+  <h3>2.10 Muistin tyhjentäminen</h3> 
+  </td>
+  </tr>
+  </table>
+   
+  <!-- Viimeistään täällä maininta muistin pysymisestä samana ellei sitä
+       nollata. -->
   <table>
   <tr>
   
   <td>
-  <img src="Kaannosasetukset.jpg" title="Käännösasetukset" 
-  alt="Käännösasetukset">
+  <img src="Tyhjennamuisti.jpg" title="Muistin tyhjentäminen" 
+  alt="Muistin tyhjentäminen">
   </td>
+  <td valign=top>
+  <p> Titokoneen muistin voi tyhjentää valikosta valitsemalla <b>Tiedosto --> Tyhjennä muisti</b>. Muistin tyhjentämisen lisäksi toiminnolla voidaan tyhjentää lähdekoodinäkymä. 
+  Jos toimintoa käytetään käännös- tai ajovaiheessa, kyseinen toiminto keskeytyy ja ruudulle palautetaan <a href=#gui>alkunäkymä</a>, jossa rekisterit, symbolitaulu ja
+  koodinäkymä on tyhjennetty. </p> 
   
+  </td>
   
   </tr>
   </table>
+  <br>
+       
+  <td>  
+  <img src="0.jpg" title="" 
+  alt="">
+  </td>
+  <td> 
+  <h3>2.11 Muistin koon vaihtaminen</h3>
+  </td>
+  </tr>
+  </table>
   
-  
-  <h3>2.x Muistin tyhjentäminen</h3> 
-   
-  <!-- Viimeistään täällä maininta muistin pysymisestä samana ellei sitä
-       nollata. -->
-
-  <h3>2.x Muistin koon vaihtaminen</h3>
-
   <table>
   <tr>
   
@@ -319,13 +657,48 @@ uudestaan kääntymään, mutta tapahtuuko sitä muulloinkin?
   <img src="Muisti.jpg" title="Muistin koon muuttaminen" 
   alt="Muistin koon vaihtaminen valikosta">
   </td>
-  
-  
+  <td valign=top>
+  <p> Titokoneen muistin kokoa on mahdollista muuttaa valitsemalla valikosta <b>Asetukset --> Aseta muistin koko</b>.
+  Muistin kokovaihtoehtoja on kahdeksan erilaista 512 rivistä 65536 riviin asti. Kun uusi muistin koko asetetaan, koodinäkymä tyhjennetään
+  ja näkyville palautetaan <a href="manual_fi.html#gui">alkunäkymä</a>.</p>
+  </p>
+  </td>
   </tr>
   </table>
   
-  <h3>2.x Käyttöliittymän kielen vaihtaminen</h3>
   
+  
+  <td>  
+  <a name="kielenvaihto">
+  <img src="0.jpg" title="" 
+  alt="">
+  </a>
+  </td>
+  <td>
+  <h3>2.12 Käyttöliittymän kielen vaihtaminen</h3>
+  </td>
+  </tr>
+  </table>
+  
+  <table>
+  <tr>
+  
+  <td>
+  <img src="Asetakieli.jpg" title="Kieliasetusten vaihtaminen" 
+  alt="Kieliasetukset">
+  </td>
+  <td>
+  <p>
+  Titokoneen käyttöliittymässä on mahdollista vaihtaa kieliasetuksia. Kieli valitaan valikosta <b>Asetukset --> Aseta kieli</b>. Oletuskielinä on suomi ja englanti.
+  Kielen voi vaihtaa suoraan lennosta, lähes riippumatta käyttöliittymän muista toiminnoista. Myös <a href=#kielenlisays>uuden kielen lisääminen</a> on mahdollista
+  Jos käyttäjä on määritellyt oman kielitiedoston, se haetaan valitsemalla valikosta <b> Asetukset --> Aseta kieli --> Valitse tiedostosta...</b>. Tämän jälkeen
+  käyttäjän on haettava luotu kielitiedosto ja avattava se. Jos kielitiedosto on oikeaa muotoa, kieli vaihtuu välittömästi. Jos tietyn tekstin käännösvastine puuttuu
+  kielitiedostosta, käytetään käyttöliittymässä oletuskieltä, englantia, kyseisen sanan kohdalla.
+  
+  </p>
+  </td>
+  </tr>
+  </table>
 
  <!-- Jne, sopivassa järjestyksessä. -->
 
@@ -340,8 +713,8 @@ uudestaan kääntymään, mutta tapahtuuko sitä muulloinkin?
 ======================================================================
 
 +--------------------------------------------------------------------+
-¦    Käskykoodi    ¦  Rj ¦ M ¦  Ri ¦      osoiteosa ADDR             ¦
-¦    8 bittiä      ¦  3  ¦ 2 ¦  3  ¦         16 bittiä               ¦
+|    Käskykoodi    ¦  Rj ¦ M ¦  Ri ¦      osoiteosa ADDR             |
+|    8 bittiä      ¦  3  ¦ 2 ¦  3  ¦         16 bittiä               |
 +--------------------------------------------------------------------+
 31               24 23           16 15                               0
 
@@ -629,97 +1002,61 @@ kotihakemistossa.
 
   <h3>4.1 Asetustiedostot</h3>
 
-  <h3>4.2 Uuden kielen tukeminen</h3>
+  <h3><a name="kielenlisays">4.2 Uuden kielen tukeminen</a></h3>
+<p> Uuden kielen lisääminen Titokoneeseen tapahtuu antamalla käännösvastineet oletuskielenä toimivan kielen sanoille. Oletuskielenä
+on englanti. Lisättävää kieltä varten kirjoitetaan ohjeiden mukainen Java-tiedosto, joka käännetään ja avataan Titokoneen käyttöliittymän kautta. Uuden kielitiedoston kirjoittaminen käy helpoiten ottamalla mallia olemassaolevasta kielitiedostosta. Avaa koneeltasi ensin tekstieditori, johon haet Titokone.jar -paketin mukana tulleen tiedoston Translations_fi.java -tiedoston hakemistosta fi/hu/cs/titokone/resources. Tekstieditoriin aukeaa Javan ResourceBundle-kalustoa
+hyväksikäyttävä luokka, joka muodostuu 2-ulotteisesta Object-taulukosta ja sen palauttavasta metodista. Taulukon alkiot näyttävät seuraavilta:</p>
 <pre>
-* oman käännöstiedoston valitsijan pitää varmistaa, ettei
-käännöstiedostossa ole pakettimäärettä - muuten sen avaaminen
-epäonnistuu (fi.hu.cs.titokone.resources.Translationsia ei voi avata
-tiedostosta, mutta pelkän Translationsin voi - mutta sen nimi riippuu
-siitä onko itse java-tiedostossa 'package'-määre). Tekijä voi ottaa
-käännösten pohjaksi Translations.javan, jossa on ohjeita tähän; mallia
-tiedoston saattamisesta käytettäväksi kannattaa kuitenkin ottaa muista
-käännöksistä, tässä tapauksessa Translations_fi.javasta.
+   { "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
+   { "Indirect memory addressing mode.", "Epäsuora muistiosoitus."},
+   { "1: Fetch indexing value from memory slot {0}.", "1: Nouda indeksointiarvo muistipaikasta {0}."}, 
 </pre>
+<p> 
+Jokainen rivi koostuu aaltosulkujen välissä olevasta oletuskielen avainarvosta ja sen käännösvastineesta. 
+Uloimpien aaltosulkujen sisällä on kaksi lainausmerkeillä rajattua tekstikenttää, jotka on erotettu pilkulla toisistaan.
+Ensimmäisten lainausmerkkien sisällä on oletuskielinen käännösavain. Toisten lainausmerkkien sisällä on käännösvastine.
+Oma käännösvastine luodaan korvaamalla suomenkielinen teksti. Käännöksiä helpottamaan Translations_fi -tiedostossa
+on kommenteilla kerrottu mihin osaan käyttöliittymää kyseiset käännökset viittaavat. Ylläolevan simerkin käännöksissä esiintyy
+erikoismerkkijono, '{0}'. Kyseisen merkkijonon tilalle sijoitetaan muuttuja, joka liittyy käyttöliittymälle välitettävään viestiin.
+Esimerkin ensimmäisen rivin {0} sisältää muistipaikan numeron; tämä on pääteltävissä itse lauseesta. On mahdollista luoda uusi käännösvastine, jonka muuttuja
+ei olekaan rivin lopussa, esimerkiksi:
+<pre>
+{ "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
+-->
+{ "Fetch second operand from memory slot {0}.", "Muistipaikasta {0} noudetaan jälkimmäinen operandi."},
+</pre>
+<p> Uusi kielitiedosto luodaan seuraavasti: </p>
+<ol>
+<li> Avaa Translations_fi.java.</li>
+<li> Anna käännösvastineet suomenkielisten tekstien kohdalle. </li>
+<li> Sijoita muuttujat {0}...{n} mielekkäille paikoille lauseessa </li>
+<li> Poista tiedostosta rivi 4: 'package fi.hu.cs.titokone.resources;'.</li>
+<li> Tallenna tiedosto haluamaasi paikkaan. </li>
+<li> Käännä tiedosto esimerkiksi javac-komennolla</li>
+<li> Käynnistä titokone </li>
+<li><a href=#kielenvaihto>Vaihda kielitiedosto</a> </li>
+</ol>
+<br>
 
+<h2><a name="pulmanpoisto">5. Virhetilanteita</a></h2>
 
-  <!-- Jne. -->
+  <ul>
 
-0<h2><a name="pulmanpoisto">5. Virhetilanteita</a></h2>
-
-  <!-- Virheilmoituksia -->
-
-  <!-- Oudot taustasäievirheet: yleisohje, jos leviää, kokeile uudelleen. 
+  <li> Oudot taustasäievirheet: yleisohje, jos leviää, kokeile uudelleen. 
        Yleensä johtuvat kuun väärästä asennosta ja poistuvat toisella
-       yrityksellä. Pahoittelumme. -->
+       yrityksellä. Pahoittelumme. </li>
 
-
-  <!-- Nämä voi vaihtaa divistä esim. p:ksi jos välejä ei tule riittävästi. -->
-
-  <div class="virhekuvaus">Kun ohjelma latautuu käännöksen tai ajon
-  päättymisen jälkeen, saan kommenttikenttään virheilmoituksen muotoa
-  "STDIN-datatiedostoa ei voi lukea: /minun/hakemistoni/stdin (Joku
-  syy)".</div>
-
-  <div class="virhetoipuminen">Ohjelma ilmoittaa vain, että mikäli
+  <li>Ohjelma ilmoittaa vain, että mikäli
   tulevaisuudessa näillä asetuksilla joku TTK-91-sovellus yrittää
   lukea STDIN-laitteelta, luku epäonnistuu ellei jotain tehdä
   asialle. "Joku syy" -osuus kertoo, mikä järjestelmän antama
   virheilmoitus oli kun tiedostoa luettiin. Jos sovelluksesi tarvitsee
   STDIN-laitetta, korjaa tiedoston tilanne ja lataa sovellus
   uudelleen. Ks. myös <a href="#lataaminen">2.5, TTK-91-ohjelman
-  lataaminen</a>.</div>
+  lataaminen</a>.</li>
     
-  <div class="virhekuvaus">On tylsää.</div>
-
-<pre>
-* virheilmoitukset pitää käydä läpi ja selvittää, mitä kukin tarkoittaa.
-Tätä pitänee tehdä osittain ryhmässä tai ainakin kysellen.
-
----------------------
-eka:
-Puhuin viime kokouksessa, että olen ottanut GUIhin Look And Feel -jutut mukaan, mikä saisi GUI:n näyttämään etenkin Windowsissa uskomattoman hyvältä. Harmittavasti olen kuitenkin törmännyt Javan 1.4.2 versiota riivaavaan bugiin, joka aiheuttaa yhden tietyn operaation aikana mahdollisesti Exceptionin ilman, että siihen voi itse vaikuttaa. Aluksi tuskailin kyseisen Exceptionin kanssa, kun en millään ymmärtänyt että mistä sellainen voi tulla. Sitten älysin katsastaa Googlesta parilla hyvin valitulla hakusanalla ja kappas vain, osoittautuikin että kyseessä on ihan raportoitu bugi. Bugin numero on 4711700 ja suora linkki raporttiin on http://developer.java.sun.com/developer/bugParade/bugs/4711700.html
-
-Mahdollisesti bugin voi kiertää parilla lisärivillä koodia, mutta se maksaa silloin tällöin pidemmällä latausajalla enkä voi taata että ohjelma välttämättä edes käynnistyy joka kerta. Tosin, todennäköisyys sille on koneesta rippuen 1/100. Tulevissa Javan versioissa kyseistä ongelmaa ei tietenkään ole, sillä eiköhän löydetyt bugit yleensä korjata.
-
-Toinen mahdollisuus on, mikäli Exception tulee, ilmoittaa pahoitellen, että ohjelma ei käynnisty johtuen Javassa olevasta bugista ja pyydetään käynnistämään uudelleen. Harvoin tuo kahta kertaa peräkkäin tulee. Mun mielestä kuitenkaan ei kannata tinkiä siitä hienosta ulkonäöstä jonkun typerän bugin vuoksi, joka tuskin vaivaa enää ainakaan syksyllä, jolloin ohjelmaa oikeasti käytetään.
-
-
-ennen:
-On Wed, 2004-08-18 at 11:10, Arto Åkerlund wrote:
-> Mahdollisesti bugin voi kiertää parilla lisärivillä koodia, mutta se
-> maksaa silloin tällöin pidemmällä latausajalla enkä voi taata että
-> ohjelma välttämättä edes käynnistyy joka kerta. Tosin, todennäköisyys
-> sille on koneesta rippuen 1/100. Tulevissa Javan versioissa kyseistä
-> ongelmaa ei tietenkään ole, sillä eiköhän löydetyt bugit yleensä
-> korjata.
-
-Hmm, laitetaan Titokoneeseen varmuuden vuoksi optio ton yli
-hyppäämiseksi (jos parametrien joukossa on vaikka --disablelookandfeel,
-ei tehdä lookandfeel-juttua), ja käytetään workaroundia. Olli, laitatko
-itsellesi ylös että kirjaat maininnan käyttöohjeeseen?
-------------------
-
-
-
-
-
-
-On Sun, 2004-04-18 at 14:41, Olli Alm wrote:
-> Ok, pistän korvan taakse tuon asian. Kuulostaa kyllä
-> hieman enemmän toteutusdokkarin kuin käyttöohjeen asialta
-> mielestäni. Mutta joo.
-
-Siis käyttöohjeeseen se menee muodossa "voit törmätä tällaiseen
-virheeseen, joka johtuu Javan 1.4.2-version bugista eikä yleensä toistu,
-mutta tarvittaessa voit käyttää --disablelooknfeel -parametriä, jolloin
-myös virhe poistuu". Toteutusdokkarissa voisi tietty mainita eri
-parametrit joilla ohjelman voi käynnistää, mutta niille ei taida olla
-juuri nyt järkevää paikkaa.
-
-
--------------------
-</pre>
-  <div class="virhetoipuminen">Syö leipää ni ei o tylsää. --Jukka Tilsa</div>
+  <li>On tylsää.</li>
+  <li>Syö leipää ni ei o tylsää. --Jukka Tilsa</li>
 
 
 
