@@ -91,8 +91,11 @@ public class FileHandler {
 	an instance of Application from it. 
 	@param binaryCode A StringBuffer containing the text contained in
 	the binary. 
-	@return An Application constructed from the parsed code. */
-    private Application parseApplication(StringBuffer binaryCode) { }
+	@return An Application constructed from the parsed code. 
+	@throws InvalidBinaryException If the binary string is not 
+	syntactically correct. */
+    private Application parseApplication(StringBuffer binaryCode) 
+	throws InvalidBinaryException { }
 
     /** This method transforms an instance of an Application class to 
 	a StringBuffer containing the code from it, in the standard .b91
