@@ -41,8 +41,8 @@ public class Translations_fi extends ListResourceBundle {
       { "2: Fetch second operand from memory slot {0}.", "2: Nouda jälkimmäinen operandi muistipaikasta {0}."},
       { "Write value {0} from register R{1} to memory slot {2}.", "Kirjoita rekisterin R{1} arvo {0} muistipaikkaan {2}."}, 
       { "Load value {0} to register R{1}.", "Lataa arvo {0} rekisteriin R{1}"},
-      { "Read value {0} from device {1} to register R{2}.", "Lue laitteen {1} arvo {0} rekisteriin R{2}."},
-      { "Write value {0} from register R{1} to device {2}.", "Kirjoita rekisterin R{1} arvo {0} laitteelle {2}."},
+      { "Read value {0} from {1} to register R{2}.", "Lue {1} arvo {0} rekisteriin R{2}."},
+      { "Write value {0} from register R{1} to {2}.", "Kirjoita rekisterin R{1} arvo {0} {2}."},
       { "Copy register R{0} to ALU IN1.", "Kopioi rekisterin R{0} sisältö ALU:n paikkaan IN1."},
       { "Copy second operand to ALU IN2.", "Kopioi jälkimmäinen operandi ALU:n paikkaan IN2."},
       { "ALU computes the result.", "ALU laskee tuloksen."},
@@ -426,7 +426,13 @@ public class Translations_fi extends ListResourceBundle {
        "{0}{1} indeksointi {2}, suora muistiosoitus."},
       {"{0}{1} Indexing {2}, indirect addressing.", 
        "{0}{1} indeksointi {2}, epäsuora muistiosoitus."},
-      
+      // RunDebugger, external devices
+      {"keyboard", "näppäimistöltä"},
+      {"stdin","tiedostosta"},
+      {"stdout","tiedostoon"},
+      {"display","näytölle"},
+       
+       
       // Comment with value (=KBD, =CRT =STDIN =STDOUT)
       {"{0}{1} Indexing {2}, direct, value {3}.", 
        "{0}{1} indeksointi {2}, välitön, arvo {3}."},

@@ -296,7 +296,7 @@ public class Animator extends JPanel implements Runnable {
                 
                 case 3 : // IN
                 int inValue = info.whatIN()[1];
-                comment1 = new Message ("Read value {0} from device {1} to register R{2}.", new String[] {""+inValue, info.whatDevice(), ""+Rj}).toString();
+                comment1 = new Message ("Read value {0} from {1} to register R{2}.", new String[] {""+inValue, info.whatDevice(), ""+Rj}).toString();
         	animateAnEvent (whereIsSecondOperand, MAR);
 		animateAnEvent (MAR, EXTERNAL_DEVICE);
                 animateAnEvent (EXTERNAL_DEVICE, MBR, inValue);
@@ -305,7 +305,7 @@ public class Animator extends JPanel implements Runnable {
                 
                 case 4 : // OUT
                 int outValue = info.whatOUT()[1];
-                comment1 = new Message ("Write value {0} from register R{1} to device {2}.", new String[] {""+value[Rj], ""+Rj, info.whatDevice()}).toString();
+                comment1 = new Message ("Write value {0} from register R{1} to {2}.", new String[] {""+value[Rj], ""+Rj, info.whatDevice()}).toString();
                 animateAnEvent (Rj, MBR);
 		animateAnEvent (MBR, EXTERNAL_DEVICE);
 		

@@ -171,11 +171,11 @@ public class RunDebugger{
 	
 	switch(deviceNumber) {
             case Processor.KBD:
-                info.setIN("Keyboard", Processor.KBD, value);
+                info.setIN(new Message("keyboard").toString(), Processor.KBD, value);
             break;
             
             case Processor.STDIN:
-                info.setIN("Standard input", Processor.STDIN, value);
+                info.setIN(new Message("stdin").toString(), Processor.STDIN, value);
             break;
         }
     }
@@ -191,11 +191,11 @@ public class RunDebugger{
 	switch(deviceNumber) {
             
             case Processor.CRT:
-                info.setOUT("Display", Processor.CRT, value);
+                info.setOUT(new Message("display").toString(), Processor.CRT, value);
             break;
             
             case Processor.STDOUT:
-                info.setOUT("Standard output", Processor.STDOUT, value);
+                info.setOUT(new Message("stdout").toString(), Processor.STDOUT, value);
             break;
         }
         

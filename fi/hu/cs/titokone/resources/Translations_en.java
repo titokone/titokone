@@ -47,9 +47,7 @@ public class Translations_en extends ListResourceBundle {
    protected static Object[][] contents;
 
    protected static final Object[][] emptyContents = {
-      // Localize below, pairs of key-value (what key is in your language)...
-      // Remove lines which you do not wish to translate completely. Leaving
-      // in a value of "" will translate the message to "" as well.
+      // Localize below, pairs of key-value (what key is in your  .
 
       // Class: Animator
       // General messages:
@@ -382,6 +380,13 @@ public class Translations_en extends ListResourceBundle {
       // Are these two needed?
       {"{0}{1} Indexing {2}, direct addressing, value {3}.", null},
       {"{0}{1} Indexing {2}, indirect addressing {3}.", null},
+      
+      // External devices
+      {"keyboard", null},
+      {"stdin", null},
+      {"stdout", null},
+      {"display", null},
+      
       
       // Class: RunInfo, no messages.
       

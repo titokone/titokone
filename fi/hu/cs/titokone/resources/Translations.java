@@ -386,7 +386,12 @@ public class Translations extends ListResourceBundle {
       // Are these two needed?
       {"{0}{1} Indexing {2}, direct addressing, value {3}.", null},
       {"{0}{1} Indexing {2}, indirect addressing {3}.", null},
-      
+      // External devices
+      {"keyboard", null},
+      {"stdin", null},
+      {"stdout", null},
+      {"display", null},
+            
       // Class: RunInfo, no messages.
       
       // Class: Settings.
