@@ -145,8 +145,7 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Initializes processor with new program
-    set FP and SP, PC = 0  and return RunInfo
-    @return RunInfo created by RunDebugger. */
+    set FP and SP, PC = 0  and return RunInfo */
     public void runInit(int initSP, int initFP) {
         status = TTK91Cpu.STATUS_STILL_RUNNING;
         regs.setRegister (TTK91Cpu.CU_PC, 0);
