@@ -264,7 +264,7 @@ public class Compiler {
 	    lineTemp = parseLine(line);
 	    if (lineTemp == null) { 
 // not a valid command
-		comment = new Message("Not a valid command.").toString();
+		comment = new Message("Invalid command.").toString();
 		throw new TTK91CompileException(comment); 
 	    } else {
 		
@@ -700,15 +700,15 @@ public class Compiler {
 	int nextToCheck = 0;	// for looping out the spacing
 	int fieldEnd = 0;	// searches the end of a field (' ', ',')
 
+
+	fieldEnd = symbolicOpcode.indexOf(";");
+	if (fieldEnd != -1) { symbolicOpcode = symbolicOpcode.substring(0, fieldEnd); }
 	symbolicOpcode = symbolicOpcode.replace('\t',' ');
 	symbolicOpcode = symbolicOpcode.toLowerCase();
 	symbolicOpcode = symbolicOpcode.trim();
-	fieldEnd = symbolicOpcode.indexOf(";");
-	if (fieldEnd != -1) { symbolicOpcode = symbolicOpcode.substring(0, fieldEnd); }
 
 	String[] lineAsArray = symbolicOpcode.split("[ \t]+");
 	int lineAsArrayIndex = 0;
-
 
 	if (lineAsArrayIndex == lineAsArray.length) { 
 		parsedLine = new String[6];
