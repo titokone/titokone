@@ -82,12 +82,29 @@ public class CompileInfo extends DebugInfo {
     
     /** This method sets lineEmpty value to true. */
     public void setLineEmpty(boolean empty){}
-
+    public void setSymbolName(String name){}
     public void setSymbolName(String name, boolean defined, int value){}
+    public void setLabelName(String name){}
+    public void setLineBinary(int binary){}
+    public void setLabedDefined(String name, boolean defined){}
+    public void setLabelValue(String name, int value){}
+    public void setFinal(){}
+    public void setInitPointers(int SP, int FP){}
     
     
-    
-    
-
+    public boolean returnLineEmpty(){}
+    public int returnPhase(){}
+    public String returnLineContents(){}
+    public String returnSymbolName(){}
+    public boolean returnSymbolDefined(){}
+    public int returnSymbolValue(){}
+    public int returnLineBinary(){}
+    public String returnLabelName(){}
+    public int returnLabelValue(){}
+    public boolean returnDefiningDS(){}
+    public boolean returnDefiningDC(){}
+    public int returnValue(){}
+    public boolean returnFinalPhase(){}
+    public int[] returnInitPointers(){}
 }
 
