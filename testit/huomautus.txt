@@ -1,0 +1,3 @@
+Muutama testiluokka puuttuu; esimerkiksi Controlin ja Settingsin testit 
+siksi, että ne poistettiin vahingossa, ja Animatorin siksi, että sitä 
+testattiin ronkkimalla.
