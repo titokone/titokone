@@ -4,28 +4,22 @@ package fi.hu.cs.titokone;
 /** This class tells GUIBrain what the processor has done. RunDebugger 
 creates objects from this class and passes them to onwards.*/
 
-//TODO: Javadoc
-
 public class RunInfo extends DebugInfo{
 
-   
-
-    /**
-    	this field is set to true if register value has changed
-    */
-    private boolean registerChanged;
-	/**
-    	this field is set to true if something is stored to memory
-    */
-    private boolean memoryChanged;
-    /**
-    	this field is set to true if something is stored to code area of memory
-    */
+    /** 	this field is set to true if something is stored to code area of memory */
     private boolean selfChangingCode;
 
+    /** this field contains number representation of changed codeline */
+    private int selfChangingBinary;
+    /** this field contains symbolic representation of changed codeline */
+    private String selfChanged;
+    
 
-   /** This field contains the operation type. */
-    private String operationType;
+   /** This field contains the number of operation type. */
+   private int operationType;
+   /** This field contains the description of operation type */
+   private String operationDescription;
+   
     /**This field contains line number.*/
     private int lineNumber;
     /** This field contains contents of the line, */
@@ -33,55 +27,73 @@ public class RunInfo extends DebugInfo{
     /** This field contains the command in binary format. */
     private int binary;
    
+    /** This array contains the current values of registers 0-7 */
     private int [] registers;
     
+    /** This String contains the colon-representation of current line */
     private String binaryString;
     
     /** This String represents the binary / data value of changed code */
     private String changedCodeAreaData;
     
-    /** This field defines the type of memory fetch. */
-    private int memoryFetchType;
+    /** This int represents the number of memoryfetches */
     private int numberOfMemoryfetches;
 
+    /** Old value of program counter */
     private int oldPC;
+	/** New value of program counter */    
     private int newPC;
-    private int oldSP;
+    /** Old value of frame pointer */
     private int oldFP;
-    private int newSP;
+    /** New value of frame pointer */
     private int newFP;
-    private int opcode;
+    /** Old value of stack pointer */
+    private int oldSP;
+    /** New value of stack pointer */
+    private int newSP;
+    
     /** This field contains first operand of the command. */
     private int rj; 
+    /** This field contains the value of first operand of the command */
     private int valueOfRj;
     /** This field contains index register. */
     private int ri;
+    /** This field contains the value of index register */
     private int valueOfRi;
+    /** This field represents the address */
     private int addr;
+    /** This field contains the value of address field */
     private int valueAtADDR;
-    private int valueOfFirstFetch;
-    private int valueOfSecondFetch;
 
-
-    private boolean compareOp;
+    /** This field contains the value of ALU-operation */
     private int aluResult;
+    /** This field contains the representation which bit has the value true after comparing 
+          0 - less, 1 - greater, 2 - equal 
+    */
+    //TO DO: Bittien tila säilyy vertailun jälkeen, päivitetäänkö ainoastaan muutokset GUIBRAINILLE? Jos ylipäänsä tarvitaan...
     private int srBit;
-    private boolean compareResult;
-   
-    private boolean conditionalJump;
-    private int whichSRBit;
-    private boolean srStatus;
-
-
+    
+	/** This boolean value tells is the operation in or out -operation */
     private boolean externalOperation;
+    /** This boolean value is set true if operation is in operation, otherwise false */
+    private boolean isIN;
+    
+    /** This String value contains the name of the device */
     private String deviceName;
+    
+    /** This value contains the value of the device */
     private int deviceNumber;
-    private int value;
+    
+    /** This value contains the value read or written from / to device */
+    private int valueOfDevice;
 
+    /** This value contains the String representation of SVC-operation */
     private String svcOperation;
 
-       
-    private int[][] changedRegisters;
+    /** This value is set to true if state of the memory is changed */
+    //TO DO: asetetaanko ainoastaan data-alueelle viitatessa? käytössä on myös selfChangingCode
+    private boolean memoryChanged;
+    
     private int[][] changedMemory;
     
     
@@ -109,12 +121,9 @@ public class RunInfo extends DebugInfo{
 		this.newFP = newFP;
     
 		this.externalOperation = false;
-		this.registerChanged = false;	
-		this.memoryChanged = false;
 		this.selfChangingCode = false;
+		this.memoryChanged = true;
 		
-		this.compareOp = false;
-		this.conditionalJump = false;
 	}
     
 	
@@ -126,10 +135,16 @@ public class RunInfo extends DebugInfo{
     /** This method sets the type of operation performed.
 	@param type Type of operation.
 	*/
-    public void setOperationType(String type){
+    public void setOperationType(int type){
 		this.operationType = type;
     }
-
+	
+    /** This method sets the description of operation. Can be used in a comment line */
+    @param String-representation of the description
+    public void setOperation(String description) {
+		this.operationDescription = description;
+    }
+    
     /** This method sets the binary value of the command.
 	@param binary Binary value of the command.
     */
@@ -169,21 +184,6 @@ public class RunInfo extends DebugInfo{
     	this.numberOfMemoryfetches = fetches;
     }
 
-    /** This method sets the value of the first fetch.
-	@param value Value of the first fetch.
-     */
-    public void setFirstFetch(int value){
-    	this.valueOfFirstFetch = value;
-    }
-
-    /** This method sets the value of the second fetch.
-	@param value Value of the second fetch.
-*/
-   public void setSecondFetch(int value){
-   		this.valueOfSecondFetch = value;
-   }
-
-
     /** This method sets the value of ADDR.
 	@param ADDR Int containing the ADDR.
     */
@@ -206,6 +206,8 @@ public class RunInfo extends DebugInfo{
     public void setChangedCodeAreaData(int line, int binary, String symbolic){
     	this.selfChangingCode = true;
 		this.changedCodeAreaData = symbolic;
+		this.selfChangingBinary = binary;
+		this.selfChanged = symbolic;
     }
     
     /** This sets the result of performed ALU operation
@@ -218,14 +220,25 @@ public class RunInfo extends DebugInfo{
     /** This method tells info that a compare operation was made and what SR 
 	bit was changed to what value.
 	@param whichBit Number of the bit.
-	@param newValue New value of the bit.
+    */
+    public void setCompareOperation(int whichBit){
+          this.srBit = whichBit;
+    }
+
+    /** This method tells is external operation executed
+         @return boolean true if command is an external operation 
+    */
+    public boolean isExternalOp() {
+	 	return this.externalOperation;   
+    }
+    /** This method tells is external operation in or out 
+          @return true if external operation is in operation, otherwise false
     */
     
-    // vaihtuvatko muut arvot, vai ovatko oletuksena nollia alussa?
-    public void setCompareOperation(int whichBit){
-    	this.compareOp = true;
-	    this.srBit = whichBit;
+    public boolean isInOp() {
+	 	return this.isIn;   
     }
+    
     
     /** This method tells info what was read from given device and what was 
 	the value.
@@ -235,9 +248,10 @@ public class RunInfo extends DebugInfo{
     */
     public void setIN(String deviceName, int device, int value){
     	this.externalOperation = true;
-		this.deviceName = deviceName;
+		this.isIn = true;
+    	this.deviceName = deviceName;
     	this.deviceNumber = device;
-    	this.value = value;
+    	this.valueOfDevice = value;
     }
     
 
@@ -249,54 +263,23 @@ public class RunInfo extends DebugInfo{
     */
     public void setOUT(String deviceName, int device, int value){
     	this.externalOperation = true;
-		this.deviceName = deviceName;
+		this.isIn = false;
+    	this.deviceName = deviceName;
 		this.deviceNumber = device;
 		this.value = value;
     }
     
-    /** This method tells info that a conditional jump was made and what was 
-	checked SR bit and its value.
-	@param whichBit Int containig number of the bit.
-	@param status  Value of the bit.
-    */
-    public void setConditionalJump(int whichBit, boolean status){
-    	this.conditionalJump = true;
-    	this.whichSRBit = whichBit;
-    	this.srStatus = status;
-    }
-
-
+    
     /** This method sets what kind of SVC operation was made.
      */
     public void setSVCOperation(String operation){
     	this.svcOperation = operation;
     }
-
-
-    /** This returns information if conditional jump was made.
-	@return boolean True if conditional jump was made.
-    */
-    public boolean getConditionalJump(){
-	    return this.conditionalJump;
-	}
- 
-    /** This method returns information which SR bit was used.
-	@return int Number of the SR bit.
-    */
-    public int getWhichBit(){
-		return this.whichSRBit;    
-	}
-    /** This method returns value of the SR bit.
-	@return boolean Value of the bit.
-    ????
-	*/
-    public boolean getBit(){
-	    return this.srStatus;
-	}
+     
 
     /** This method tells GUIBrain what kind of operation happened.
         @return int value which represents operation type.*/
-    public String whatOperationHappened(){
+    public int getOperationtype(){
 		return this.operationType;    
 	}
     
@@ -319,28 +302,7 @@ public class RunInfo extends DebugInfo{
     public int getMemoryfetches(){
 		return this.numberOfMemoryfetches;    
 	}
-
-    /** This method tells what kind of memoryfetch was made.
-    @return int What kind of memoryfetch was done.
-    */
-    public int getFetchType(){
-		return this.memoryFetchType;    
-	}
     
-    /** This method returns value of the first memoryfetch.
-	@return int Integer containing the value of fetch.
-    */
-    public int getValueOfFirstFetch(){
-		return this.valueOfFirstFetch;    
-	}
-
-    /** This method returns value of the second memoryfetch.
-	@return int Integer containing the value of fetch.
-    */
-    public int getValueOfSecondFetch(){
-		return this.valueOfSecondFetch;
-	}
-
     /** This method returns the number of the line..
 	@return int Integer containing theline number.
     */
@@ -366,26 +328,32 @@ public class RunInfo extends DebugInfo{
 	values.
 	@return int[] Integer array containing register numbers and new values.
 	*/
-    
-	//näitä ei koskaan aseteta!
-	public int[] getRegisters(){
+   	public int[] getRegisters(){
 		return this.registers;	
 	}
     
+	
+	/** This method tells are there changed memorylines
+		@return true, if state of the memory is changed, otherwise false
+	*/
+	public boolean memoryChanged() {
+		r
+    }
+	
     /** This method tells GUIBrain which lines in dataarea changed and what are
 	new values.
 	@return int[] Integer array containing line numbers and new values.
     */
-    // ja mistä helkkarista tämä tieto saadaan?
-  
-    public int[] whatMemoryLineChanged(){}
+     public object[] whatMemoryLineChanged(){
+	    
+	}
+
     
+        
     /** This method tells GUIBrain what was result of an OUT command (device 
 	and value).
 	@return int[] Integer array containing device number and new value.
     */
-    
-  	//MISTÄ GUIBRAIN TIETÄÄ ONKO KYSEESSÄ IN VAI OUT?
     
     public int[] whatOUT(){
 	    int [] outD = new int[2];
@@ -458,37 +426,17 @@ public class RunInfo extends DebugInfo{
 	    return this.aluResult;
 	}
 
-
-    /** This method tells GUIBrain that if a compare operation was made.
-	@return boolean telling if operation was made.
-    */
-    public boolean getCompareOP(){
-		return this.compareOp;
-	}
-
-    /** This method returns both which SR bit was set and what is new value.
-	0 represents false and 1 true.
-	@return An integer array containing which SR bit was changed and it's
-	new value.*/
-    public int[] getCompareResult(){
-	    int [] compare = new int[2];
-	    
-	    compare[0] = srBit;
-	    if(compareResult)
-	    	compare[1] = 1;
-	    else
-	        compare[0] = 0;
-	    
-	    return compare;     
-	}
-
+    
     /** This method returns type of the SVC operation.
 	@return int Integer containing the operation type.
     */
     public String getSVC(){
 		return this.svcOperation;    
 	}
-       
+    
+	//TO DO, Guille.
+	public String getSymbolUsed() {
+    }
     
     
    

@@ -4,53 +4,61 @@ package fi.hu.cs.titokone;
     command having been run. */
 public class RunDebugger{ 
 
+	
+	/** constant numerical value for operation type NOP */
     public static final short NO_OPERATION = 0;
+    /** constant numerical value for Data transfer operation type  */
     public static final short DATA_TRANSFER_OPERATION = 1;
+    /** constant numerical value for ALU-operation type  */
     public static final short ALU_OPERATION = 2;
+    /** constant numerical value for Comparing operation type */
     public static final short COMP_OPERATION = 3;
+    /** constant numerical value for branching operation type */
     public static final short BRANCH_OPERATION = 4;
+    /** constant numerical value for subroutines operation type  */
     public static final short SUB_OPERATION = 5;
+    /** constant numerical value for stack operation type  */
     public static final short STACK_OPERATION = 6;
+    /** constant numerical value for SVC operation type  */
     public static final short SVC_OPERATION = 7;
   
-    
+    /** constant short for supervisor call Halt */
     public static final short SVC_HALT  = 11;
+    /** constant short for supervisor call Read */
     public static final short SVC_READ  = 12;
+    /** constant short for supervisor call Write */
     public static final short SVC_WRITE = 13;
+    /** constant short for supervisor call Time */
     public static final short SVC_TIME  = 14; 
+    /** constant short for supervisor call Date */
     public static final short SVC_DATE  = 15;
     
-    
+    /** constant short for CRT-device */
     public static final short CRT = 0;
+    /** constant short for KBD-device */
     public static final short KBD = 1;
+    /** constant short for STDIN-device */
     public static final short STDIN = 6;
+    /** constant short for STDOUT-device */
     public static final short STDOUT = 7;
     
- //nämä pois
-    public static final short IMMEDIATE = 0; // 23(R1)
-    public static final short DIRECT = 1; // =23
-    public static final short INDIRECT = 2 //@23
-    public static final short DIRECT_REGISTER = 3; // R1 = 0(R1)
-    public static final short INDIRECT_REGISTER = 4; //@R1 = @0(R1)
-    public static final short INDEXED_DIRECT = 5; // =vakio(r2)
-    public static final short INDEXED_IMMEDIATE= 6; // vakio(r2)
-    public static final short INDEXED_INDIRECT = 7; //@vakio(r2)
-
-
-       
+    /** this field represents the old value of program counter */
     private int oldPC;
+    /** this field represents the old value of stack pointer */
     private int oldSP;
+    /** this field represents the old value of frame pointer */
     private int oldFP;
     
+    /** This field represents the Integer-array of registers R0-R7 */
     private Integer registers[];
-    
+    /** Runinfo for each command line of the program */
     private RunInfo info;
+    /** Comment-line generated to runinfo */
     private String comments;
+    /** This field represents the status of the program */
     private String statusMessage;
-    private int[] pointers;
-    private int lineNumber;
-    private String lineContents;
     
+        
     /** This constructor initializes the RunDebugger. After initialization it
 	waits until processor starts new running cycle.
     */
@@ -76,60 +84,54 @@ public class RunDebugger{
 					   			   
 		this.info = new RunInfo(lineContents, oldPC, newPC, oldSP, newSP,
 		                   oldFP, newFP);
-		 
+		
 		this.oldPC = newPC;
 		this.oldFP = newFP;
 		this.oldSP = newSP;	   
     }
 
-
-   /** This method sets the value of first memory fetch.
-     @param value Value found in memory.*/
-    public void setFirstFetch(int value){
-    	this.info.setFirstFetch(value);
-    }
-
-    /** This method sets the value of second memory fetch.
-     @param value Value found in memory.*/
-    public void setSecondFetch(int value){
-    	this.info.setSecondFetch(value);
-    }
+    
+    // TO DO: Sini, miten kielikäännökset syötetään, mikä muoto täällä?  Tarvitaanko operaatioiden String-esitystä
+    //  tässä muodossa vai syötetäänkö suoraan debuggerissa osaksi kommenttia?
 
     /** This method tells what kind of operation was made. 
+          can be used in the comment 
 	@param i Type of operation. */ 
     public void setOperationType(int opcode){
-    	switch(opcode) {
-		
+    		
+			this.info.setOperationType(opcode);
+			
+		switchc(opcode) {
 			case NO_OPERATION:
-				this.info.setOperationType("No operation");
+				this.info.setOperation("No operation");
 			break;
 			
 			case DATA_TRANSFER_OPERATION:
-				this.info.setOperationType("Data transfer");
+				this.info.setOperation("Data transfer");
 			break;
 			
 			case ALU_OPERATION:
-				this.info.setOperationType("ALU-operation");
+				this.info.setOperation("ALU-operation");
 			break;
 			
 			case COMP_OPERATION:
-				this.info.setOperationType("Comparing");
+				this.info.setOperation("Comparing");
 			break;
 			
 			case BRANCH_OPERATION:
-				this.info.setOperationType("Branching");
+				this.info.setOperation("Branching");
 			break;
 			
 			case SUB_OPERATION:
-				this.info.setOperationType("Subroutine");
+				this.info.setOperation("Subroutine");
 			break;
 			
 			case STACK_OPERATION:
-				this.info.setOperationType("Stack-operation");
+				this.info.setOperation("Stack-operation");
 			break;
 		
 			case SVC_OPERATION:
-				this.infosetOperationType("Supervisor call");
+				this.infosetOperation("Supervisor call");
 		    break;
 		}
 	    
@@ -167,25 +169,16 @@ public class RunDebugger{
     */
     public void selfChangingCode(int lineNumber, int binary, 
 				 String newContents) {
-		//???
-		
-    
+		this.info.setChangedCodeAreaData(linenumber, binary, newContents);
     }
 
-    
-    /** This method tells debugger that a NOP was executed.
-     */
-    public void setNoOperation(){
-    	//???
-    }
-
+        
     /** This method tells debugger what value was found from the ADDR part of 
 	the command.
 	@param value int containing the value.
     */
     public void setValueAtADDR(int value){
-    	//???
-	    
+    	this.info.setADDR(value);
     }
 
     /** This method tells debugger that one or more registers were changed.
@@ -200,6 +193,7 @@ public class RunDebugger{
 	First cell contains number of the line and second the new value..
 	@param lines Array containing new values.
     */
+    // TO DO: Arto kaipasi myös symbolista esitystä, syötetäänkö debuggerille object-taulukko?
     public void setChangedMemoryLines(int[][] lines){
     
     }
@@ -286,12 +280,5 @@ public class RunDebugger{
 	    	
 	    }
     }
-
-    /** This method tells debugger if command was CALL or EXIT operation and
-	it comments accordingly. True stands for CALL and false for EXIT.
-	@param type Boolean containing information which operation was done.
-    */
-    public void setSubOperation(int type){
-    
-    }
+  
 }
