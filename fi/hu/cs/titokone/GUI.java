@@ -221,6 +221,8 @@ public class GUI extends JFrame implements ActionListener {
         
         
         private JFileChooser openFileDialog;
+        private JFileChooser selectDefaultStdinFileDialog;
+        private JFileChooser selectDefaultStdoutFileDialog;
         
         private GUIRunSettingsDialog setRunningOptionsDialog;
         private GUICompileSettingsDialog setCompilingOptionsDialog;
@@ -259,10 +261,14 @@ public void actionPerformed(ActionEvent e) {
 
 public GUI() {
   
+  
+  
   setTitle("Titokone");
   openFileDialog = new JFileChooser();
-  this.setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
-  this.setCompilingOptionsDialog = new GUICompileSettingsDialog(this, false);
+  selectDefaultStdinFileDialog = new JFileChooser();
+  selectDefaultStdoutFileDialog = new JFileChooser();
+  setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
+  setCompilingOptionsDialog = new GUICompileSettingsDialog(this, false);
   
   symbolsHashMap = new HashMap();
           
@@ -433,7 +439,6 @@ private void initGUI() {
   disable(INPUT_FIELD);
   setGUIView(1);
   enterNumberButton.addActionListener(enterNumberButtonActionListener);
-  mainSplitPane.setDividerLocation(0.5);
 }
 
 
@@ -446,32 +451,29 @@ public void setGUIView(int view) {
   if (view == 1) {
     mainSplitPane.setLeftComponent(leftPanel);
     validate();
-    pack();
   }
   else if (view == 2) {
     
     leftPanel.add(codeTableScrollPane);
     mainSplitPane.setLeftComponent(leftPanel);
     validate();
-    pack();
   }
   else if (view == 3) {
     leftPanel.add(dataAndInstructionsTableSplitPane);
     mainSplitPane.setLeftComponent(leftPanel);
     validate();
-    pack();
     int dividerLocation;
   
     /* Set the location of divider between data and instructions table */
-    dividerLocation = instructionsTable.getRowHeight() * ((DefaultTableModel)instructionsTable.getModel()).getRowCount();
-    dividerLocation += dataAndInstructionsTableSplitPane.getDividerSize()*2;
-    
-    leftPanel.invalidate();
+    dividerLocation = instructionsTable.getHeight();
+    dividerLocation += dataAndInstructionsTableSplitPane.getDividerSize();
+    dividerLocation += instructionsTable.getTableHeader().getHeight();
     if (dividerLocation > leftPanel.getHeight() / 2) {
       dividerLocation = leftPanel.getHeight() / 2;
     }
-    
     dataAndInstructionsTableSplitPane.setDividerLocation(dividerLocation);
+    leftPanel.invalidate();
+    
   }
   activeView = view;
   mainSplitPane.setDividerLocation(0.5);
@@ -514,8 +516,12 @@ private JToolBar makeToolBar() {
   
   toolbar = new JToolBar("Toolbar");
   
+  System.out.println(getClass().getClassLoader().getResource("etc/open24.gif"));
+  
   openFileButton = new JButton();
-  openFileButton.setIcon(new ImageIcon("etc/open24.gif", "Open file"));
+  openFileButton.setIcon(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/open24.gif"), "Open file")
+  );
   openFileButton.setToolTipText("Open a file");
   openFileButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(openFileButton);
@@ -523,46 +529,64 @@ private JToolBar makeToolBar() {
   toolbar.addSeparator();
   
   compileButton = new JButton();
-  compileButton.setIcon(new ImageIcon("etc/compile24.gif", "Compile"));
+  compileButton.setIcon(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/compile24.gif"), "Compile")
+  );
   compileButton.setToolTipText("Compile the program");
   compileButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(compileButton);
   
   runButton = new JButton();
-  runButton.setIcon(new ImageIcon("etc/run24.gif", "Run"));
+  runButton.setIcon(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/run24.gif"), "Run")
+  );
   runButton.setToolTipText("Run the program");
   runButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(runButton);
   
   continueButton = new JButton();
-  continueButton.setIcon(new ImageIcon("etc/StepForward24.gif", "Continue"));
+  continueButton.setIcon(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/StepForward24.gif"), "Continue")
+  );
   continueButton.setToolTipText("Continue operation");
   continueButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(continueButton);
   
   continueToEndButton = new JButton();
-  continueToEndButton.setIcon(new ImageIcon("etc/FastForward24.gif", "Continue w/o pauses"));
+  continueToEndButton.setIcon(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/FastForward24.gif"), "Continue w/o pauses")
+  );
   continueToEndButton.setToolTipText("Continue operation without pauses");
   continueToEndButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(continueToEndButton);
   
   stopButton = new JButton();
-  stopButton.setIcon(new ImageIcon("etc/Stop24.gif", "Stop"));
+  stopButton.setIcon(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/Stop24.gif"), "Stop")
+  );
   stopButton.setToolTipText("Stop the current operation");
   stopButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(stopButton);
   
   toolbar.addSeparator();
   
-  lineByLineToggleButton = new JToggleButton(new ImageIcon("etc/RowInsertAfter24.gif", "Run line by line"));
+  //settingsFile = new File(getClass().getClassLoader().getResource("etc/settings.cfg").toString());
+  
+  lineByLineToggleButton = new JToggleButton(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/RowInsertAfter24.gif"), "Run line by line")
+  );
   lineByLineToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(lineByLineToggleButton);
   
-  showCommentsToggleButton = new JToggleButton(new ImageIcon("etc/History24.gif", "Show comments"));
+  showCommentsToggleButton = new JToggleButton(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/History24.gif"), "Show comments")
+  );
   showCommentsToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showCommentsToggleButton);
   
-  showAnimationToggleButton = new JToggleButton(new ImageIcon("etc/Movie24.gif", "Show comments"));
+  showAnimationToggleButton = new JToggleButton(
+    new ImageIcon(getClass().getClassLoader().getResource("etc/Movie24.gif"),"Show comments")
+  );
   showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showAnimationToggleButton);
   
@@ -592,7 +616,7 @@ private JToolBar makeToolBar() {
       guibrain.menuSetRunningOption(GUIBrain.ANIMATED, b);
     }
   });
-  
+ 
   return toolbar;
 }
 
@@ -1256,8 +1280,50 @@ public void updateAllTexts() {
   openFileDialog.setApproveButtonText(new Message("Open").toString());
   openFileDialog.setApproveButtonToolTipText(new Message("Open the selected file").toString());
   
+  UIManager.put ("FileChooser.lookInLabelText", new Message("Look in:").toString());
+  UIManager.put ("FileChooser.lookInLabelMnemonic", new Message("Look in:").toString());
+  UIManager.put ("FileChooser.fileNameLabelText", new Message("File name:").toString());
+  UIManager.put ("FileChooser.fileNameLabelMnemonic", new Message("File name:").toString());
+  UIManager.put ("FileChooser.filesOfTypeLabelText", new Message("Files of type:").toString());
+  UIManager.put ("FileChooser.filesOfTypeLabelMnemonic", new Message("Files of type:").toString());
+  UIManager.put ("FileChooser.upFolderToolTipText", new Message("Up one level").toString());
+  UIManager.put ("FileChooser.upFolderAccessibleName", new Message("Up").toString());
+  UIManager.put ("FileChooser.homeFolderToolTipText", new Message("Desktop").toString());
+  UIManager.put ("FileChooser.homeFolderAccessibleName", new Message("Desktop").toString());
+  UIManager.put ("FileChooser.newFolderToolTipText", new Message("Create new folder").toString());
+  UIManager.put ("FileChooser.newFolderAccessibleName", new Message("New folder").toString());
+  UIManager.put ("FileChooser.listViewButtonToolTipText", new Message("List").toString());
+  UIManager.put ("FileChooser.listViewButtonAccessibleName", new Message("List").toString());
+  UIManager.put ("FileChooser.detailsViewButtonToolTipText", new Message("Details").toString());
+  UIManager.put ("FileChooser.detailsViewButtonAccessibleName", new Message("Details").toString()); 
+  UIManager.put ("FileChooser.cancelButtonText", new Message("Cancel").toString());
+  UIManager.put ("FileChooser.cancelButtonMnemonic", new Message("Cancel").toString());
+  UIManager.put ("FileChooser.openButtonText", new Message("Open").toString());
+  UIManager.put ("FileChooser.openButtonMnemonic", new Message("Open").toString());
+  UIManager.put ("FileChooser.acceptAllFileFilterText", new Message("All files").toString());
+  
+  openFileDialog.updateUI();
+  selectDefaultStdinFileDialog.updateUI();
+  selectDefaultStdoutFileDialog.updateUI();
+  
+  
+  selectDefaultStdinFileDialog.setDialogTitle( new Message("Select default stdin file").toString() );
+  //selectDefaultStdinFileDialog.setApproveButtonText(new Message("Open").toString());
+  selectDefaultStdinFileDialog.setApproveButtonToolTipText(new Message("Open the selected file").toString());
+  
+  
+  
+  selectDefaultStdoutFileDialog.setDialogTitle( new Message("Select default stdout file").toString() );
+  selectDefaultStdoutFileDialog.setApproveButtonText(new Message("Open").toString());
+  selectDefaultStdoutFileDialog.setApproveButtonToolTipText(new Message("Open the selected file").toString());
+  
   setRunningOptionsDialog.updateAllTexts();
   setCompilingOptionsDialog.updateAllTexts();
+  
+  
+  UIManager.put("OptionPane.yesButtonText", new Message("Yes").toString());
+  UIManager.put("OptionPane.noButtonText", new Message("No").toString());
+  
   
   
   invalidate();
@@ -1267,7 +1333,7 @@ public void updateAllTexts() {
 
 
 public void showError(String errorMsg) {
-  JOptionPane.showMessageDialog(null, errorMsg, "Error", JOptionPane.ERROR_MESSAGE);
+  JOptionPane.showMessageDialog(null, errorMsg, new Message("Error").toString(), JOptionPane.ERROR_MESSAGE);
 }
 
 
@@ -1288,24 +1354,39 @@ private ActionListener openCommandActionListener = new ActionListener() {
 
 private ActionListener selectStdinFileActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {						
-    openFileDialog.resetChoosableFileFilters();
-	  openFileDialog.setAcceptAllFileFilterUsed(true);
+    selectDefaultStdinFileDialog.resetChoosableFileFilters();
+	  selectDefaultStdinFileDialog.setAcceptAllFileFilterUsed(true);
 
-		int rv = openFileDialog.showOpenDialog(null);
+		int rv = selectDefaultStdinFileDialog.showOpenDialog(null);
 		if (rv == JFileChooser.APPROVE_OPTION) {
-		  guibrain.menuSetStdin(openFileDialog.getSelectedFile());
+		  guibrain.menuSetStdin(selectDefaultStdinFileDialog.getSelectedFile());
 		}
 	} 
 };
 
 private ActionListener selectStdoutFileActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {						
-    openFileDialog.resetChoosableFileFilters();
-	  openFileDialog.setAcceptAllFileFilterUsed(true);
+    selectDefaultStdoutFileDialog.resetChoosableFileFilters();
+	  selectDefaultStdoutFileDialog.setAcceptAllFileFilterUsed(true);
 
-		int rv = openFileDialog.showOpenDialog(null);
+		int rv = selectDefaultStdoutFileDialog.showOpenDialog(null);
 		if (rv == JFileChooser.APPROVE_OPTION) {
-		  guibrain.menuSetStdout(openFileDialog.getSelectedFile());
+		  JOptionPane confirmDialog = new JOptionPane();
+		  String[] param = { (String)UIManager.get("OptionPane.yesButtonText"), 
+		                     (String)UIManager.get("OptionPane.noButtonText") };
+  
+		  int rv2 = confirmDialog.showConfirmDialog(
+		    selectDefaultStdoutFileDialog,	    
+		    new Message("Do you want to overwrite the file? Select {1} to append or {0} to overwrite.", param).toString(), 
+		    new Message("Overwrite?").toString(),
+		    JOptionPane.YES_NO_OPTION
+		  );
+		  if (rv2 == JOptionPane.YES_OPTION) {
+		    guibrain.menuSetStdout(selectDefaultStdoutFileDialog.getSelectedFile(), false);
+		  }
+		  else if (rv2 == JOptionPane.NO_OPTION) {
+		    guibrain.menuSetStdout(selectDefaultStdoutFileDialog.getSelectedFile(), true);
+		  }
 		}
 	} 
 };
@@ -1352,7 +1433,8 @@ private ActionListener setCompilingOptionsCommandActionListener = new ActionList
 
 private ActionListener stopCommandActionListener = new ActionListener() {
   public void actionPerformed(ActionEvent e) {
-    guibrain.menuInterrupt();
+    //guibrain.menuInterrupt();
+    new Thread(new GUIThreader(GUIThreader.TASK_STOP, guibrain)).start();
   }
 };
 

@@ -100,15 +100,29 @@ private static final short K91_COMPILING = 6;
 private static final short K91_PAUSED = 7;
 
 
+public static String DEFAULT_STDIN_FILENAME = "stdin";
+public static String DEFAULT_STDOUT_FILENAME = "stdout";
+
 
 /** This constructor sets up the GUIBrain instance. It calls private
     initialization functions, including findAvailableLanguages(). 
 */
 public GUIBrain(GUI gui) { 
   
-  control = new __stupid_Control();
   this.gui = gui;
-  settingsFile = new File("etc/settings.cfg");
+
+  File defStdinFile = new File(System.getProperty("user.dir") + DEFAULT_STDIN_FILENAME);
+  File defStdoutFile = new File(System.getProperty("user.dir") + DEFAULT_STDOUT_FILENAME);
+  try {
+    defStdinFile.createNewFile();
+    defStdoutFile.createNewFile();
+  }
+  catch (IOException e) {
+    System.out.println(e.getMessage());
+  }
+  control = new __stupid_Control(defStdinFile, defStdoutFile);
+
+  settingsFile = new File(getClass().getClassLoader().getResource("etc/settings.cfg").toString());
   
   try {
     currentSettings = new Settings( control.loadSettingsFileContents(settingsFile) );
@@ -116,6 +130,45 @@ public GUIBrain(GUI gui) {
   catch (ParseException e) {
     System.out.println("ParseException in settings");
   }
+  
+  
+  String filemode = currentSettings.getStrValue(Settings.STDIN_PATH);
+  String path = currentSettings.getStrValue(Settings.DEFAULT_STDIN);
+  
+  if (path != null && !path.equals("")) {
+    if (filemode.equals("absolute")) {
+      defStdinFile = new File(path);
+    }
+    else if (filemode.equals("relative")) {
+      defStdinFile = new File(System.getProperty("user.dir") + path);
+    }
+  }
+  try {
+    control.setDefaultStdIn(defStdinFile);
+  }
+  catch (IOException e) {
+    System.out.println(e.getMessage());
+  }
+    
+    
+  filemode = currentSettings.getStrValue(Settings.STDOUT_PATH);
+  path = currentSettings.getStrValue(Settings.DEFAULT_STDOUT); 
+  
+  if (path != null && !path.equals("")) {
+    if (filemode.equals("absolute")) {
+      defStdoutFile = new File(path);
+    }
+    else if (filemode.equals("relative")) {
+      defStdoutFile = new File(System.getProperty("user.dir") + path);
+    }
+  }
+  try {
+    control.setDefaultStdOut(defStdoutFile);
+  }
+  catch (IOException e) {
+    System.out.println(e.getMessage());
+  }
+  
   
   int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
   
@@ -219,7 +272,7 @@ public void menuOpenFile(File openedFile) {
     
   }
   else { // if file extension isn't either b91 or k91
-    gui.showError("File extension must be k91 or b91");
+    gui.showError(new Message("File extension must be k91 or b91").toString());
   } 
 }
 
@@ -229,18 +282,20 @@ public static final int MAX_KBD_VALUE = 32767;
 
 public boolean enterInput(String input) {
   int inputValue;
+  String[] minAndMaxValues = {""+MIN_KBD_VALUE, ""+MAX_KBD_VALUE};
+  
   try {
     inputValue = Integer.parseInt(input);
   }
   catch (NumberFormatException e) {
-    gui.changeTextInEnterNumberLabel("Illegal input");
-    gui.updateStatusBar("Illegal input. You must insert a number between " + MIN_KBD_VALUE + "..." + MAX_KBD_VALUE);
+    gui.changeTextInEnterNumberLabel(new Message("Illegal input").toString());
+    gui.updateStatusBar(new Message("Illegal input. You must insert a number between {0}...{1}", minAndMaxValues).toString());
     return false;
   }
   
   if (inputValue > MAX_KBD_VALUE || inputValue < MIN_KBD_VALUE) {
-    gui.changeTextInEnterNumberLabel("Illegal input");
-    gui.updateStatusBar("Illegal input. You must insert a number between " + MIN_KBD_VALUE + "..." + MAX_KBD_VALUE);
+    gui.changeTextInEnterNumberLabel(new Message("Illegal input").toString());
+    gui.updateStatusBar(new Message("Illegal input. You must insert a number between {0}...{1}", minAndMaxValues).toString());
     return false;
   }
   
@@ -259,6 +314,23 @@ public void menuRun() {
   
   interruptSent = false;
   noPauses = false;
+  
+  /* If stdout file is set to be overwritten, then it must be emptied first.
+     It's done here by deleting it first and then creating it again.
+  */
+  File stdoutFile = getCurrentDefaultStdoutFile();
+  if (currentSettings.getStrValue(Settings.STDOUT_USE).equals("overwrite")) {
+    try {
+      stdoutFile.delete();
+      stdoutFile.createNewFile();
+    }
+    catch (IOException e) {
+      String[] filename = { stdoutFile.getName() };
+      gui.showError(new Message("Error while emptying {0}", filename).toString());
+      System.out.println(e.getMessage());
+      return;
+    }
+  }
   
   __stupid_RunInfo runinfo;
   int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
@@ -279,7 +351,7 @@ public void menuRun() {
       }
     }
     catch (TTK91NoKbdData needMoreData) {
-      gui.addComment(new Message("Enter a number in the keyboard field above.").toString());
+      gui.addComment(new Message("Enter a number in the text field above.").toString());
       currentState = B91_WAIT_FOR_KBD;
       setGUICommandsForCurrentState();
       gui.enable(GUI.INPUT_FIELD);
@@ -465,7 +537,6 @@ public void menuCompile() {
     
   } while ( interruptSent == false ); // End of do-loop
   
-  
   if (compilingCompleted == true) {
     gui.resetAll();
     load();
@@ -510,6 +581,7 @@ private void interruptCurrentTasks() {
     were doing once it becomes possible. 
 */
 public void menuInterrupt() { 
+  
   interruptCurrentTasks();
   
   switch (currentState) {
@@ -528,11 +600,13 @@ public void menuInterrupt() {
 public void menuSetLanguage(String language) { 
   
  if (availableLanguages.containsKey(language)) {
-    System.out.println((Locale)availableLanguages.get(language));
-    Translator.setLocale((Locale)availableLanguages.get(language));  
+    //System.out.println((Locale)availableLanguages.get(language));
+    Translator.setLocale((Locale)availableLanguages.get(language));
+    gui.setLocale((Locale)availableLanguages.get(language));
     currentSettings.setValue(Settings.UI_LANGUAGE, language);
     control.saveSettings(currentSettings.toString(), settingsFile);
     gui.updateAllTexts();
+    
   }
 }
 
@@ -561,17 +635,28 @@ public void menuSetStdin(File stdinFile) {
   try {
     control.setDefaultStdIn(stdinFile);
   }
-  catch (ParseException e) {
+  catch (IOException e) {
     gui.showError(e.getMessage());
     return;
   }
-  currentSettings.setValue(Settings.STDIN_PATH, stdinFile.getPath());
+  String[] filename = { stdinFile.getPath() };
+  currentSettings.setValue(Settings.DEFAULT_STDIN, filename[0]);
+  currentSettings.setValue(Settings.STDIN_PATH, "absolute");
   control.saveSettings(currentSettings.toString(), settingsFile);
+
+  gui.addComment(new Message("Default stdin file set to {0}", filename).toString());
 }
 
 
 
-public void menuSetStdout(File stdoutFile) {
+public void menuSetStdout(File stdoutFile, boolean append) {
+  
+  if (append == true) {
+    currentSettings.setValue(Settings.STDOUT_USE, "append");
+  } 
+  else {
+    currentSettings.setValue(Settings.STDOUT_USE, "overwrite");
+  }
   try {
     control.setDefaultStdOut(stdoutFile);
   }
@@ -579,8 +664,12 @@ public void menuSetStdout(File stdoutFile) {
     gui.showError(e.getMessage());
     return;
   }
-  currentSettings.setValue(Settings.STDOUT_PATH, stdoutFile.getPath());
+  String[] filename = { stdoutFile.getPath() };
+  currentSettings.setValue(Settings.DEFAULT_STDOUT, filename[0]);
+  currentSettings.setValue(Settings.STDOUT_PATH, "absolute");
   control.saveSettings(currentSettings.toString(), settingsFile);
+  
+  gui.addComment(new Message("Default stdout file set to {0}", filename).toString());
 }
 
 
@@ -735,6 +824,50 @@ public String[] getAvailableLanguages() {
 
 
 // Private methods. ---------------------------------------------------
+
+
+
+private File getCurrentDefaultStdoutFile() {
+  
+  File currentStdoutFile = new File(System.getProperty("user.dir") + DEFAULT_STDOUT_FILENAME);
+  
+  String filemode = currentSettings.getStrValue(Settings.STDOUT_PATH);
+  String path = currentSettings.getStrValue(Settings.DEFAULT_STDOUT); 
+  
+  if (path != null && !path.equals("")) {
+    if (filemode.equals("absolute")) {
+      currentStdoutFile = new File(path);
+    }
+    else if (filemode.equals("relative")) {
+      currentStdoutFile = new File(System.getProperty("user.dir") + path);
+    }
+  }
+  
+  return currentStdoutFile;
+}
+
+
+
+private File getCurrentDefaultStdinFile() {
+  
+  File currentStdinFile = new File(System.getProperty("user.dir") + DEFAULT_STDIN_FILENAME);
+  
+  String filemode = currentSettings.getStrValue(Settings.STDIN_PATH);
+  String path = currentSettings.getStrValue(Settings.DEFAULT_STDIN); 
+  
+  if (path != null && !path.equals("")) {
+    if (filemode.equals("absolute")) {
+      currentStdinFile = new File(path);
+    }
+    else if (filemode.equals("relative")) {
+      currentStdinFile = new File(System.getProperty("user.dir") + path);
+    }
+  }
+  
+  return currentStdinFile;
+}
+
+
 
 /** This method determines the available languages. It reads them from 
     a setup file languages.cfg, which contains lineseparator-delimited
