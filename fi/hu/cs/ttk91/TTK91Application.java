@@ -1,2 +1,49 @@
+/*
+ * Created on Feb 24, 2004
+ *
+ * To change the template for this generated file go to
+ * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ */
 package fi.hu.cs.ttk91;
-public interface TTK91Application {}
+
+/**
+ * @author Kalle Kärkkäinen
+ *
+ */
+public interface TTK91Application {
+	/**
+	 * @return returns the program output in stdout and empties it
+	 */
+	public String readStdOut();
+
+	/**
+	 * @return returns the program output in crt and empties it
+	 */
+	public String readCrt();
+
+	/**
+	 * sets the keyboard input for the program.
+	 * This input survives the run, so if run again
+	 * program will use the same input again.
+	 * 
+	 * input string must be feed of integers delimeted 
+	 * with ' ', '\t', '\r', '\n', ',', '.', ':' or ';'.
+	 * if flawed no arguments contained are used. 
+	 * 
+	 * @throws IllegalArgumentException if input string is invalid.
+	 */
+	public void setKbd(String input);
+
+	/**
+	 * sets the stdin input for the program
+	 * This input survives the run, so if run again
+	 * program will use the same input again.
+	 * 
+	 * input string must be feed of integers delimeted 
+	 * with ' ', '\t', '\r', '\n', ',', '.', ':' or ';'.
+	 * if flawed no arguments contained are used.
+	 * 
+	 * @throws IllegalArgumentException if input string is invalid.
+	 */
+	public void setStdIn(String fileContent);
+}
