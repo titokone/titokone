@@ -2,6 +2,7 @@ package fi.hu.cs.titokone;
 
 import java.util.HashMap;
 import fi.hu.cs.ttk91.TTK91Memory;
+import fi.hu.cs.ttk91.TTK91AddressOutOfBounds;
 
 /** This class represents the memory of a TTK-91 computer. */
 public class RandomAccessMemory implements TTK91Memory {
@@ -100,8 +101,31 @@ public class RandomAccessMemory implements TTK91Memory {
     /** Sets new memory line to given memory slot.
         @param index Index to memory.
         @param memoryLine New memory line which will replace the old. */
-    public void setMemoryLine(int index, MemoryLine memoryLine) {
-        if (memoryLine == null) throw new IllegalArgumentException ("memoryLine=null.");
+    public void setMemoryLine(int index, MemoryLine memoryLine) 
+        throws TTK91AddressOutOfBounds {
+	String errorMessage;
+	String[] errorParameters;
+        if (memoryLine == null) {
+	    errorMessage = new Message("Trying to load a null memory " +
+				       "line.").toString();
+	    throw new IllegalArgumentException(errorMessage);
+	}
+	if(index > memory.length) {
+	    errorParameters = new String[2];
+	    errorParameters[0] = "" + index;
+	    errorParameters[1] = "" + memory.length;
+	    errorMessage = new Message("Address {0} too large, memory size " +
+				       "{1} (indexing starts at 0).", 
+				       errorParameters).toString();
+	    throw new TTK91AddressOutOfBounds(errorMessage);
+	}
+	if(index < 0) {
+	    errorMessage = new Message("Address {0} below zero.", 
+				       "" + index).toString();
+	    throw new TTK91AddressOutOfBounds(errorMessage);
+
+	}
+
         memory[index] = memoryLine;
     }
 
