@@ -60,6 +60,9 @@ public class Processor implements TTK91Cpu {
     */
     private boolean[] sr = new boolean[11];
 
+    //Added by Harri Tuomikoski, 12.10.2004, Koskelo-project.
+    private int stack_size = 0;
+    private int commands_executed = 0;
 
 /** The stdinData and kbdData fields stores buffer data to be read with 
     the IN operation. When the data has been read, the field should be 
@@ -73,8 +76,11 @@ public class Processor implements TTK91Cpu {
     public Processor(int memsize){
         ram = new RandomAccessMemory (memsize);
         regs = new Registers();
-    }
 
+	//Added by HT, 12.10.2004, Koskelo-project
+	this.stack_size = 0;
+	this.commands_executed = 0;
+    }
 
 /** Returns the memory attached to the processor. */
     public TTK91Memory getMemory() {
@@ -227,6 +233,9 @@ public class Processor implements TTK91Cpu {
             throw new TTK91AddressOutOfBounds(new Message(Processor.ADDRESS_OUT_OF_BOUNDS_MESSAGE).toString());
         }
 
+	//Added by HT, 12.10.2004, Koskelo-project
+	++this.commands_executed;
+
         // update PC_CURRENT
         regs.setRegister (TTK91Cpu.CU_PC_CURRENT, regs.getRegister (TTK91Cpu.CU_PC));
         
@@ -238,6 +247,20 @@ public class Processor implements TTK91Cpu {
             
         return runDebugger.cycleEnd();
     }
+
+    //Added by HT, 12.10.2004, Koskelo-project
+    public int giveCommAmount() {
+
+	return this.commands_executed;
+
+    }//giveCommAmount
+
+    //Added by HT, 12.10.2004, Koskelo-project
+    public int giveStackSize() {
+
+	return this.stack_size;
+
+    }//giveStackSize
 
 /** Transfer-operations. */
     private void transfer(int opcode, int Rj, int M, int ADDR, int param) 
@@ -492,11 +515,15 @@ public class Processor implements TTK91Cpu {
             case 51 : // PUSH
             regs.setRegister (Rj, regs.getRegister(Rj) +1);
             writeToMemory (regs.getRegister(Rj), param);
+	    //Added by HT, 12.10.2004, Koskelo-project
+	    ++this.stack_size;
             break;
             
             case 52 : // POP
             regs.setRegister (Ri, ram.getValue (regs.getRegister(Rj)));
             regs.setRegister (Rj, regs.getRegister(Rj) -1);
+	    //Added by HT, 12.10.2004, Koskelo-project
+	    --this.stack_size;
             break;
             
             case 53 : // PUSHR
@@ -504,6 +531,8 @@ public class Processor implements TTK91Cpu {
                 regs.setRegister (Rj, regs.getRegister(Rj) +1);
                 writeToMemory (regs.getRegister (Rj), regs.getRegister (TTK91Cpu.REG_R0 +i));
             }
+	    //Added by HT, 12.10.2004, Koskelo-project
+	    ++this.stack_size;
             break;
             
             case 54 : // POPR
@@ -511,6 +540,8 @@ public class Processor implements TTK91Cpu {
                 regs.setRegister (TTK91Cpu.REG_R6 -i, ram.getValue (regs.getRegister (Rj)));
                 regs.setRegister (Rj, regs.getRegister(Rj) -1);
             }
+	    //Added by HT, 12.10.2004, Koskelo-project
+	    --this.stack_size;
             break;
         }
     }
@@ -631,4 +662,5 @@ public class Processor implements TTK91Cpu {
     private boolean isOverflow (long value) {
         return (value > (long)Integer.MAX_VALUE || value < (long)Integer.MIN_VALUE);
     }
+
 }

@@ -12,6 +12,9 @@ public class RandomAccessMemory implements TTK91Memory {
     private int codeAreaSize=0;
     private int dataAreaSize=0;
 
+    //Added by Harri Tuomikoski, 12.10.2004, Koskelo-project
+    private int memory_references=0;
+
     /** Creates a memory with a given size and initializes it with
         rows containing 0.
         @param size Size of the memory. */
@@ -21,6 +24,8 @@ public class RandomAccessMemory implements TTK91Memory {
         memory = new MemoryLine[size];
         for (int i=0; i < size; i++)
             memory[i] = new MemoryLine (0, "");
+
+	this.memory_references = 0; //Added by HT, 12.10.2004, Koskelo-project
     }
 
     /** Returns the size of the memory. Defined in TTK91Memory.
@@ -32,6 +37,7 @@ public class RandomAccessMemory implements TTK91Memory {
     /** Returns the value of an indexed memory slot.
         @return Value of an indexed memory slot. */
     public int getValue(int memorySlot) {
+	++this.memory_references; //Added by HT, 12.10.2004, Koskelo-project
         return memory[memorySlot].getBinary();
     }
 	
@@ -153,4 +159,11 @@ public class RandomAccessMemory implements TTK91Memory {
         if (size > this.size) throw new IllegalArgumentException ("Data area size cannot be bigger than size of the whole memory.");
         dataAreaSize = size;
     }
+
+    //Added by HT, 12.10.2004, Koskelo-project
+    public int getMemoryReferences() {
+
+	return this.memory_references;
+
+    }//getMemoryReferences
 }
