@@ -54,7 +54,7 @@ public class RunDebugger{
     private String memoryComment;
     /** String array for the comment message */
     private String[] parameters = new String[3];
-    
+    private int deviceValue;
         
     /** Runinfo for each command line of the program */
     private RunInfo info;
@@ -213,7 +213,9 @@ public class RunDebugger{
     @param value Value written.
     */
     public void setIN(int deviceNumber, int value){
-        switch(deviceNumber) {
+        this.deviceValue = value;
+	
+	switch(deviceNumber) {
             case KBD:
                 info.setIN("Keyboard", KBD, value);
             break;
@@ -230,7 +232,9 @@ public class RunDebugger{
     @param value Value written.
     */
     public void setOUT(int deviceNumber, int value){
-        switch(deviceNumber) {
+        this.deviceValue = value;
+	
+	switch(deviceNumber) {
             
             case CRT:
                 info.setOUT("Display", CRT, value);
@@ -277,7 +281,17 @@ public class RunDebugger{
    */
        
     private void setComments() {
-    	info.setComments = new Message("{0}{1} Indexing {2}, "+ memoryComment, parameters).toString();
+    	if(info.isExternalOp()) {
+		String [] param = new String[4];
+		param[0] = parameters[0];
+		param[1] = parameters[1];
+		param[2] = parameters[2];
+		param[3] = this.deviceValue;
+		
+		info.setComments = new Message("{0}{1} Indexing {2}, "+ memoryComment+", value {3}.", param).toString();	
+	}	
+	else
+		info.setComments = new Message("{0}{1} Indexing {2}, "+ memoryComment +".", parameters).toString();
     }
     
     /** Sets value of new PC. 
