@@ -68,3 +68,7 @@ Settings     SR 27.3.   Lis‰tty metodi String[] getKeys().
 SymbolTable  SY 4.4.    Nime‰misen yhten‰isyyden vuoksi tehty seuraavat muutokset:
                         getSymbolValue -> getSymbol
                         defineSymbol -> addSymbol
+
+Processor    SR 5.4.    memoryInputin profiilia muutettiin hieman. Heitt‰‰ addressoutofboundsin.
+RandomAccessMemory SR 5.4. setMemoryLinen profiilia muutettiin hieman. Se heitt‰‰ 
+                           addressoutofbounds-poikkeuksen nyky‰‰n.
