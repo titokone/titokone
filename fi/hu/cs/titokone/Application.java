@@ -3,11 +3,18 @@ package fi.hu.cs.titokone;
 import fi.hu.cs.ttk91.TTK91Application;
 import fi.hu.cs.ttk91.TTK91NoKbdData;
 import fi.hu.cs.ttk91.TTK91NoStdInData;
+import java.util.logging.Logger;
+import java.util.StringTokenizer;
 
 /** This class represents a compiled TTK-91-application. It also contains 
     information about what has gotten printed during its running and 
     what it should be reading as various inputs during its run. */
 public class Application implements TTK91Application {
+    /** This field lists the delimiters accepted as any-combination 
+	delimitation markup in a string intended for either keyboard
+	or stdin input. */
+    public static final String DELIMITERS = " \n\r\t\f,.:;";
+
     /** This array contains the code to the application; one command
 	per line. The initial FP value can be calculated from 
 	code.length - 1. If the code area is empty, this field contains 
@@ -62,7 +69,20 @@ public class Application implements TTK91Application {
 	there are no local symbols available. (Locally, an empty 
 	symboltable is created.) */
     public Application(MemoryLine[] code, MemoryLine[] data, 
-		       SymbolTable symbols) {}
+		       SymbolTable symbols) {
+	if(code != null)
+	    this.code = code;
+	else
+	    this.code = new MemoryLine[0];
+	if(data != null)
+	    this.data = data;
+	else
+	    this.data = new MemoryLine[0];
+	if(symbols != null)
+	    this.symbols = symbols;
+	else
+	    this.symbols = new SymbolTable();
+    }
 
     /** This method returns the (initial) code area of the application. 
 	Any self-modifying code in the application will have no 
@@ -71,7 +91,9 @@ public class Application implements TTK91Application {
 	@return An array containing the code area of the application. The 
 	array will be of length 0 if for some reason this application has
 	no code area. */
-    public MemoryLine[] getCode() {}
+    public MemoryLine[] getCode() {
+	return code.clone();
+    }
 
     /** This method returns the initial data area of the application with 
 	its contents. Any modifications the code does to the data area 
@@ -81,19 +103,33 @@ public class Application implements TTK91Application {
 	@return An array containing the data area with its contents as 
 	MemoryLines. The array will be of length 0 if this application has 
 	no initial data area. */
-    public MemoryLine[] getInitialData() {}
+    public MemoryLine[] getInitialData() {
+	return data.clone();
+    }
+
+    /** This method returns the symbol table containing the application's 
+	local symbols. 
+	@return The application's symbol table, minus global symbols like 
+	HALT, unless they have been overwritten. */
+    public SymbolTable getSymbolTable() {
+	return symbols.clone();
+    }
 
     /** This method stores one more line to the CRT ("screen") memory 
 	of the application. The results can be queried by getCrt(); this
 	method will not actually make the line show on any physical screen.
 	@param line A new line to "write to the screen". */
-    public void writeToCrt(int line) {}
+    public void writeToCrt(int line) {
+	crt += "" + line + System.getProperty("line.separator", "\n");
+    }
 
     /** This method stores one more line to the StdOut ("file") memory 
 	of the application. The results can be queried by getStdOut(); this
 	method will not actually make the line show on any file.
 	@param line A new line to "write to the file". */
-    public void writeToStdOut(int line) {}
+    public void writeToStdOut(int line) {
+	stdout += "" + line + System.getProperty("line.separator", "\n");
+    }
 
     /** This method reads the next line from a keyboard "buffer" set up
 	before by setKbd(). If setKbd() is called after this method 
@@ -104,7 +140,21 @@ public class Application implements TTK91Application {
 	@throws TTK91NoKbdData If there is no more keyboard data
 	available in the buffer. The caller may then decide to get
 	their keyboard data via other routes, eg. the user. */
-    public String readNextFromKbd() throws TTK91NoKbdData {}
+    public int readNextFromKbd() throws TTK91NoKbdData {
+	Logger logger;
+
+	if(kbdpointer >= kbdcontent.length) {
+	    logger = Logger.getLogger(this.getClass().getPackage());
+	    logger.fine(new Message("Application has no more keyboard data, read: " + 
+				    "{0}, buffer length {1}.", 
+	                            {kbdpointer, kbdcontent.length}));
+	    throw new TTK91NoKbdData(new Message("No more keyboard data " +
+						 "stored on application."));
+	}
+	else {
+	    return kbdcontent[kbdpointer++]; // increment post-indexing.
+	}
+    }
 
     /** This method reads the next line from a file read "buffer" set
 	up before by setStdIn(). If setStdIn() is called after this
@@ -116,20 +166,42 @@ public class Application implements TTK91Application {
 	@throws TTK91NoStdInData If there is no more file read data 
 	available in the buffer. The caller may then decide to get their
 	data via other routes, eg. by reading from some actual file. */
-    public int readNextFromStdIn() throws TTK91NoStdInData {}
-
-    /** This method returns the symbol table containing the application's 
-	local symbols. 
-	@return The application's symbol table, minus global symbols like 
-	HALT, unless they have been overwritten. */
-    public SymbolTable getSymbolTable() {}
+    public int readNextFromStdIn() throws TTK91NoStdInData {
+	Logger logger;
+	
+	if(stdinpointer >= stdincontent.length) {
+	    logger = Logger.getLogger(this.getClass().getPackage());
+	    logger.fine(new Message("Application has no more stdin data, read: " +
+				    "{0}, buffer length {1}.", 
+				    {stdinpointer, stdincontent.length}));
+	    throw new TTK91NoStdInData(new Message("No more stdin data stored " +
+						   "on application."));
+	}
+	else {
+	    return stdincontent[stdinpointer++]; // increment post-indexing.
+	}
+    }
 
     /** This method checks whether input would be a valid string
         to give to setKbd or setStdIn.
         @param input The string to check.
         @return True if the string would be valid input, false 
         otherwise. */
-    public static boolean checkInput(String input) {}
+    public static boolean checkInput(String input) {
+	StringTokenizer stringChopper;
+	if(input == null)
+	    return false;
+	stringChopper = new StringTokenizer(input);
+	while(stringChopper.hasMoreTokens()) {
+	    try {
+		Integer.parseInt(stringChopper.nextToken());
+	    }
+	    catch(NumberFormatException notParseableToInteger) {
+		return false;
+	    }
+	}
+	return true;
+    }
 
     /* The implementation of TTK91Application *************************/
 
@@ -137,28 +209,85 @@ public class Application implements TTK91Application {
 	running of this application, and clears the buffer.
 	@return What the application printed to a file during its last run,
 	delimited with System.getProperty("line.separator", "\n"). */
-    public String readStdOut() {}
+    public String readStdOut() {
+	String result = stdout;
+	stdout = "";
+	return result;
+    }
 
     /** This method returns what was printed to the screen during the 
 	running of this application, and clears the buffer.
 	@return What the application printed to screen during its last 
 	run, delimited with System.getProperty("line.separator", "\n"). */
-    public String readCrt() {}
+    public String readCrt() {
+	String result = crt;
+	crt = "";
+	return result;
+    }
 
     /** This method can be used to set in advance what values any 
 	keyboard reads should return.
 	@param input What (integers) the application should "read from the
-	keyboard" during its run, delimited by '\n', '\r', '\r\n',
+	keyboard" during its run, delimited by '\n', '\r', '\r\n', '\f',
 	'\t', ' ', ',', '.', ':', ';' or any length combination
 	thereof.
 	@throws IllegalArgumentException If the input string is not valid. */ 
-    public void setKbd(String input) {}
+    public void setKbd(String input) {
+	String errorMessage;
+	StringTokenizer stringChopper;
+	Logger logger;
+	int i;
+
+	if(!checkInput(input)) {
+	    errorMessage = new Message("Keyboard input string \"{0}\" invalid, " + 
+				       "should be eg. \n-separated list of " +
+				       "integers.").toString();
+	    throw new IllegalArgumentException(new Message(errorMessage, input));
+	}
+	else {
+	    stringChopper = new StringTokenizer(input, DELIMITERS);
+	    kbdcounter = 0;
+	    kbdcontent = new int[stringChopper.countTokens()];
+	    i = 0;
+	    while(stringChopper.hasMoreTokens()) {
+		kbdcontent[i++] = Integer.parseInt(stringChopper.nextToken());
+	    }
+	    logger = Logger.getLogger(this.getClass().getPackage());
+	    logger.fine(new Message("Accepted \"{0}\" as keyboard input, tokens " +
+				    "found: {1}."), {input, "" + kbdcontent.length});
+	}
+							   
+    }
 
     /** This method can be used to set in advance what values any 
 	file reads should return. The input is checked.
 	@param input What (integers) the application should "read from
-	a file" during its run, delimited by '\n', '\r', '\r\n', '\t',
+	a file" during its run, delimited by '\n', '\r', '\r\n', '\t', '\f',
 	' ', ',', '.', ':', ';' or any-length combination thereof. 
 	@throws IllegalArgumentException If the input string is not valid. */ 
-    public void setStdIn(String input) {}
+    public void setStdIn(String input) {
+	String errorMessage;
+	StringTokenizer stringChopper;
+	int i;
+
+	if(!checkInput(input)) {
+	    errorMessage = new Message("Stdin input string \"{0}\" invalid, " + 
+				       "should be eg. \n-separated list of " +
+				       "integers.").toString();
+	    throw new IllegalArgumentException(new Message(errorMessage, input));
+	}
+	else {
+	    stringChopper = new StringTokenizer(input, DELIMITERS);
+	    stdincounter = 0;
+	    stdincontent = new int[stringChopper.countTokens()];
+	    i = 0;
+	    while(stringChopper.hasMoreTokens()) {
+		stdincontent[i++] = Integer.parseInt(stringChopper.nextToken());
+	    }
+	    logger.getLogger(this.getClass().getPackage());
+	    logger.fine(new Message("Accepted \"{0}\" as stdin input, tokens " +
+				    "found: {1}.", 
+	                            {input, "" + stdincontent.length}));
+	}
+    }
 }
