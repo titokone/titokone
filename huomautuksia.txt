@@ -10,6 +10,7 @@ Luokka       Nimi+pvm   Huomautus
 Control      SR 23.3.   compile-metodin parametrinä TTK91Source, ei Source.
                         Lisätty kenttä DEFAULT_MEMORY_SIZE.
                         Muutettu void setLanguage ResourceBundle 
-                        loadLanguageFile(File)-metodiksi. 
+                        loadLanguageFile(File)-metodiksi. Tätä tarvitaan
+                        vain kun käyttäjä valitsee oman kielitiedoston.
 
 CompileInfo  AT 23.3.	SetMemoryLine-metodin parametri value on String, ei int.
