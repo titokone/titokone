@@ -199,9 +199,13 @@ public class Compiler {
 	    
 	    SymbolTable st = new SymbolTable();
 	    String[] tempSTLine;
+	    String symbolName;
+	    int symbolValue;
 	    for (int i = 0; i < symbolTable.size(); ++i) {
 		tempSTLine = (String[])symbolTable.get(i);
-		st.addSymbol(tempSTLine[0], Integer.parseInt(tempSTLine[1]));
+		symbolName = tempSTLine[0];
+		symbolValue = Integer.parseInt(tempSTLine[1]);
+		st.addSymbol(symbolName, symbolValue);
 	    }
 	    
 	    if (!defStdin.equals("")) { st.addDefinition("stdin", defStdin); }
@@ -291,7 +295,8 @@ public class Compiler {
 				    (code.size() - 1);
 				/* MUUTETTU 23.04. (OLLI)  
                                 */                                
-				symbolTable.add(Integer.parseInt(symbols.get(lineTemp[0]).toString()), 
+				
+				symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
 				symbolTableEntry.clone());
 			    } else {
 				symbols.put(lineTemp[0], 
@@ -331,8 +336,7 @@ public class Compiler {
 				    symbolTableEntry[0] = lineTemp[4];
 				    symbolTableEntry[1] = "" + 
 					    (Integer) invalidLabels.get(lineTemp[4]);
-				    symbolTable.add(symbolTable.size(), 
-							symbolTableEntry.clone()); 
+				    symbolTable.add(symbolTableEntry.clone()); 
 				}
 			    }
 			} 
@@ -424,7 +428,7 @@ public class Compiler {
 		    if (symbols.containsKey(lineTemp[0])) {
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[2];
-			symbolTable.add(Integer.parseInt((String) symbols.get(lineTemp[0])), 
+			symbolTable.set(Integer.parseInt((String) symbols.get(lineTemp[0])), 
 					symbolTableEntry.clone());
 		    } else {
 			symbols.put(lineTemp[0], new Integer(symbolTable.size()));
@@ -445,7 +449,7 @@ public class Compiler {
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
-			symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), 
+			symbolTable.set(Integer.parseInt((String)symbols.get(lineTemp[0])), 
 					symbolTableEntry.clone());
 			
 		    } else {
@@ -466,7 +470,7 @@ public class Compiler {
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
-			symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), 
+			symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
 					symbolTableEntry.clone());
 		    } else {
 			symbolTableEntry[0] = lineTemp[0];
@@ -590,8 +594,7 @@ public class Compiler {
 	if (!defStdout.equals("")) {
 	    data[nextPosition] = "STDOUT " + defStdout;
 	}
-	
-	
+		
 // make new SymbolTable
 	String[][] newSymbolTable = new String[symbolTable.size()][2];
 	for (int i = 0; i < newSymbolTable.length; ++i) { 
@@ -822,8 +825,6 @@ public class Compiler {
         }
 	
 	if (lineAsArrayIndex < lineAsArray.length) { return null; }
-
-//pushr TODO
 
 	if (opcode.length() > 0) {
 	    if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
