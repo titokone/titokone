@@ -127,8 +127,8 @@ public GUIBrain(GUI gui, Animator animator) {
   this.gui = gui;
 
   logger = Logger.getLogger(getClass().getPackage().getName());
-  File defStdinFile = new File(System.getProperty("user.dir") + DEFAULT_STDIN_FILENAME);
-  File defStdoutFile = new File(System.getProperty("user.dir") + DEFAULT_STDOUT_FILENAME);
+  File defStdinFile = new File(System.getProperty("user.dir"), DEFAULT_STDIN_FILENAME);
+  File defStdoutFile = new File(System.getProperty("user.dir"), DEFAULT_STDOUT_FILENAME);
   try {
     //defStdinFile.createNewFile(); // We don't need write access to stdin.
     if(!defStdoutFile.exists()) {
@@ -160,7 +160,7 @@ public GUIBrain(GUI gui, Animator animator) {
       defStdinFile = new File(path);
     }
     else if (filemode.equals("relative")) {
-      defStdinFile = new File(System.getProperty("user.dir") + path);
+      defStdinFile = new File(System.getProperty("user.dir"), path);
     }
   }
   try {
@@ -179,7 +179,7 @@ public GUIBrain(GUI gui, Animator animator) {
       defStdoutFile = new File(path);
     }
     else if (filemode.equals("relative")) {
-      defStdoutFile = new File(System.getProperty("user.dir") + path);
+      defStdoutFile = new File(System.getProperty("user.dir"), path);
     }
   }
   try {
@@ -1313,7 +1313,7 @@ private File getCurrentDefaultStdoutFile() {
 */
 private File getCurrentDefaultStdinFile() {
   
-  File currentStdinFile = new File(System.getProperty("user.dir") + DEFAULT_STDIN_FILENAME);
+  File currentStdinFile = new File(System.getProperty("user.dir"), DEFAULT_STDIN_FILENAME);
   
   String filemode = currentSettings.getStrValue(Settings.STDIN_PATH);
   String path = currentSettings.getStrValue(Settings.DEFAULT_STDIN); 
@@ -1323,7 +1323,7 @@ private File getCurrentDefaultStdinFile() {
       currentStdinFile = new File(path);
     }
     else if (filemode.equals("relative")) {
-      currentStdinFile = new File(System.getProperty("user.dir") + path);
+      currentStdinFile = new File(System.getProperty("user.dir"), path);
     }
   }
   
