@@ -490,7 +490,8 @@ public void menuCompile() {
 	  if (comments == null) 
 	    comments = "";
 	  
-	  gui.addComment(compileinfo.getLineNumber() + ": " + comments);
+	  if (!comments.equals(""))
+	      gui.addComment(compileinfo.getLineNumber() + ": " + comments);
 	    
     compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);    
     phase = compileinfo.getPhase();

@@ -725,7 +725,7 @@ public boolean insertSymbolTable(String[][] symbolsAndValues) {
   DefaultTableModel symbolTableModel = (DefaultTableModel)symbolTable.getModel(); 
   
   /* Null parameter equals to setting an empty symbol table. */
-  if (symbolsAndValues == null) {
+  if (symbolsAndValues == null || symbolsAndValues.length == 0) {
     symbolTableModel.setDataVector(null, symbolTableIdentifiers);
     return true;
   }
