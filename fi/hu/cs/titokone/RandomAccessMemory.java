@@ -90,6 +90,12 @@ public class RandomAccessMemory implements TTK91Memory {
         return memory[index];
     }
 
+    /** This method returns a copy of all the memory lines. 
+	@return An array containing all the memory lines. */
+    public MemoryLine[] getMemoryLines() {
+	return (MemoryLine[]) memory.clone();
+    }
+
     /** Changes the symbol table stored in this class. It is not 
         used by RandomAccessMemory, but can be returned as a HashMap.
         @param symbols The new symboltable to store here. */
