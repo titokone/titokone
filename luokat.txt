@@ -33,15 +33,15 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	Control.java
 3	DebugInfo.java				OA              OA 25.3.
 0	Debugger.java
-0	FileHandler.java
-0	GUI.java
-0	GUIBrain.java
-0	GUICompileSettingsDialog.java
-0	GUIRunSettingsDialog.java
+2	FileHandler.java					AÅ
+2	GUI.java				AÅ		AÅ
+2	GUIBrain.java				SR		AÅ
+2	GUICompileSettingsDialog.java		AÅ		AÅ
+2	GUIRunSettingsDialog.java		AÅ		AÅ
 2	Interpreter.java					SH 20.3
-0	JTableX.java
-0	LoadInfo.java
-0	Loader.java
+2	JTableX.java				AÅ		AÅ
+2	LoadInfo.java						AÅ
+2	Loader.java						AÅ
 3	MemoryLine.java                         SY              SY 18.3.
 3	Message.java                            ?               SY 20.3
 1	Processor.java                                          SY 21.3
@@ -49,10 +49,10 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 3	Registers.java                          SY              SY 19.3
 0	ResourceLoadFailedException.java
 0	RunDebugger.java
-0	RunInfo.java
+2	RunInfo.java				OA
 2	Settings.java                           SR              SR 19.3.
 0	Source.java						SH 20.3
 3	SymbolTable.java                        ?               SY 20.3
 2	SymbolicInterpreter.java				AT 21.3.
-0	Titokone.java
+2	Titokone.java						AÅ
 2	Translator.java                         SR              SR 19.3.
