@@ -4,8 +4,8 @@ creates objects from this class and passes them to onwards.*/
 //KESKEN varsinkin javadocin osalta
 
 public class RunInfo extends DebugInfo{
-    
-    
+
+       
     public static final short NOOPERATION = 0;
     public static final short DATA_TRANSFER_OPERATION = 1;
     public static final short ALU_OPERATION = 2;
@@ -13,7 +13,7 @@ public class RunInfo extends DebugInfo{
     public static final short STACK_OPERATION = 4;
     public static final short SUB_OPERATION = 5;
     public static final short SERVICE_OPERATION = 6;
-    
+ 
     public static final short IMMEDIATE = 0;
     public static final short DIRECT = 1;
     public static final short DIRECT_REGISTER = 2;
@@ -23,21 +23,25 @@ public class RunInfo extends DebugInfo{
     public static final short INDEXED_DIRECT_REGISTER = 6; 
     public static final short INDEXED_INDERECT_REGISTER = 7;
    
+    private boolean registerChanged;
+    private boolean memoryChanged;
+    private boolean selfChangingCode;
 
 
-    /** This field contains the operation type. */
+   /** This field contains the operation type. */
     private int operationType;
     /**This field contains line number.*/
     private int lineNumber;
     /** This field contains contents of the line, */
     private String lineContents;
     /** This field contains the command in binary format. */
-    private int binaryCommand;
+    private int binary;
     
     
     private String statusMessage;
     private String comments;
     
+    private String changedCodeAreaData;
     
     private int memoryFetchType;
     private int numberOfMemoryfetches;
@@ -45,11 +49,13 @@ public class RunInfo extends DebugInfo{
     private int oldFP;
     private int SP;
     private int FP;
-    private int commandValue;
+    private int opcode;
     /** This field contains first operand of the command. */
     private int Rj; 
     /** This field contains index register. */
     private int Ri;
+    private int ADDR;
+
     private String index;
     
     
@@ -62,9 +68,16 @@ public class RunInfo extends DebugInfo{
     
     
     
-    public RunInfo(int lineNumber, String lineContents, int binary, int oldSP,
-                   int oldFP, int SP, int FP){}
+    public RunInfo(int lineNumber, String lineContents, int oldPC, int newPC
+		   int oldSP, int newSP, int FP){}
     
+    public void setBinary(int binary){}
+    public void setStatusMessage(String statusMessage){}
+    public void setIndexRegister(int register){}
+   
+    public void setChangedCodeAreaData(String symbolic){}
+    
+
     /** This method tells GUIBrain what kind of operation happened.
         @returns int value which represents operation type.*/
     public int whatOperationHappened(){}

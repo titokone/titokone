@@ -1,33 +1,39 @@
-/** This class is used by compiler when it compiles code. For each line compiled
-    compiler asks CompileDebugger to create a CompileInfo object and passes it to the GUIBrain. */
+package fi.hu.cs.titokone;
 
-//KESKEN
+/** This class is used by compiler when it compiles code. For each line 
+    compiled compiler asks CompileDebugger to create a CompileInfo object and 
+    passes it to the GUIBrain. */
+
+
 
 public class CompileDebugger extends Debugger {
     
-    CompileInfo info;
-    
+    private CompileInfo info;
+    private String statusMessage;
+    private String comments;
+
     /*------- Compiler instructions -----------*/
-    /** This method tells that an EQU was found and it is added to the symboltable.*/
+    /** This method tells that an EQU was found and it is added to the 
+	symboltable.*/
     public void foundEQU(String name, int value){}
 
     /** This method tells debugger that a DS compiler instruction was found
 	and it is added to the symboltable. */
-    public void foundDS(String name, int size){ }
+    public void foundDS(String name){ }
     /** This method tells where data area for given DS is in the memory. */
     public void reserveDS(String name, int size, int ADDR){}
  
     /** This method tells debugger that a DC compiler instruction was found
 	and it is added to the symboltable. */
-    public void foundDC(String name, int value){ }
+    public void foundDC(String name){ }
     /** This method tells where given DC is located in the memory. */
-    public void reserveDC(String name, int ADDR){}
+    public void reserveDC(String name, int value, int ADDR){}
 
     /** This method tells debugger that a symbol was found on a line but it is 
 	unknown.*/
     public void foundSymbol(String name){}
-    /** THis Method  tells debugger that a known symbol was found and it's value
-	is given as a partameter. */
+    /** THis Method  tells debugger that a known symbol was found and it's 
+	value is given as a partameter. */
     public void foundSymbol(String name, int value){}
 
     /** This method tells that a label was found and it is added to the
@@ -40,36 +46,38 @@ public class CompileDebugger extends Debugger {
     
     public CompileDebugger(){}
 
-    public void firstPhase(String statusMessage, short phase, int lineNumber,
-                        boolean lineEmpty){}
-    public void firstPhase(String statusMessage, short phase,
-			   int lineNumber, String lineContents){}
-			   
-    
-    /** This method informs debugger what was compiled. It creates a new 
-     *CompileInfo object.
-	 @param symbolic symbolic command line.
-	 @param numeric Numeric representation of command.
-	 @param machinecommand line as an integer.
-	 @param comment */
-    
-    public void secondPhase(String statusMessage, short phase, int lineNumber,
-                        String lineContents, String numeric){
-    }
-    
-    public void finalPhase(String statusMessage, short phase, int lineNumber){}
+    public void firstPhase(int lineNumber, boolean lineEmpty){}
+    public void firstPhase(int lineNumber, String lineContents){}
+    public void firstPhase(){}		   
     
     public void setInitPointers(int sp, int fp){}
+
+
+
+    /** This method informs debugger what was compiled. It creates a new 
+     *CompileInfo object.
+
+	 */
+    
+    public void secondPhase( int lineNumber, String lineContents, String IR){
+    }
+    
+    public void finalPhase(){}
+    
+
 
     
     public void setMemoryline(int line, int value){}
   
     public void binary(int binary){}
     private void setStatusMessage(String message){}
+    
+    /** This private method sets collected comments to the CompileInfo.*/
     private void setComments(String comment){}
     
     
-    /** This method returns the created CompileInfo-object. */
+    /** This method returns the created CompileInfo-object. It calls private 
+     method setComments and then returns CompileInfo.*/
     public CompileInfo lineCompiled(){}
 }
 

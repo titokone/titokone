@@ -17,8 +17,8 @@ public class Debugger extends Translatable{
 
     /** This method tells debugger that a new cycle has been started. It
      initiates parameter values and stores old PC and IR. */
-    public void cycleStart(int lineNumber, int oldPC, int newPC, int IR, 
-			   int SP, int FP, String lineContents){ }
+    public void cycleStart(int lineNumber, String lineContents, int oldPC, 
+			   int newPC, int oldSP, int newSP, int FP){ }
 
 /*-------- Memoryfetch types ---------*/
 // joitain vielä puutuu
@@ -62,9 +62,9 @@ public class Debugger extends Translatable{
     public void noOperation(){ }
 
     /** Store/Load */
-    public void store(int Ri, int Rj){}
+    public void store(int Ri, int address, int address){}
     
-    public void load(int Ri, int Rj){}
+    public void load(int Ri, int Rj, int value){}
 
     public void in(int device, int value){ }
 
@@ -100,8 +100,8 @@ public class Debugger extends Translatable{
     public void svc(int serviceid){}
   
 
-	/** This method tells debugger that a command cycle was completed and
-	    it should return a debuginfo package.
+    /** This method tells debugger that a command cycle was completed and
+        it should return a debuginfo package.
 	@returns DebugInfo
 	*/
 
