@@ -52,12 +52,14 @@ public class Control implements TTK91Core {
     /** This constructor sets up the Control instance.
     */
     public Control(File defaultStdInFile, File defaultStdOutFile) { 
-	fileHandler = new FileHandler();
-	compiler = new Compiler();
+	fileHandler = new FileHandler(); 
+	compiler = new Compiler(); 
+	//compiler = new __stub_compiler();//TEST
 	// Create a new processor with a memory size of 2^9.
 	changeMemorySize(DEFAULT_MEMORY_SIZE);
 	this.defaultStdInFile = defaultStdInFile;
 	this.defaultStdOutFile = defaultStdOutFile;
+	currentStdOutFile = defaultStdOutFile;
     }
     
     /** Compiles a symbolic TTK91-assembly language to binary executable
@@ -65,6 +67,9 @@ public class Control implements TTK91Core {
 	compilation (eg. Compiler) throws them.
         @param source The source code to be compiled.
         @return The binary executable code.
+	@throws TTK91CompileException If the compiler throws one.
+	@throws TTK91Exception Never in this implementation. (Except for
+	TTK91CompileExceptions, which inherit it.)
     */
     public TTK91Application compile(TTK91CompileSource source) 
       throws TTK91Exception, TTK91CompileException { 
@@ -72,7 +77,7 @@ public class Control implements TTK91Core {
       // Compile lines, basically ignoring the output, until no more
       // CompileInfos are returned.
       while(compileLine() != null)
-	; // All is done in compileLine().
+	  ; // All is done in compileLine().
       application = compiler.getApplication(); 
       return application;
     }
@@ -145,6 +150,9 @@ public class Control implements TTK91Core {
 	if(applicationStdin != null)
 	    stdinFile = applicationStdin;
 	contents = fileHandler.loadStdIn(stdinFile).toString();
+	// We use a brutal way of testing the input in order to get 
+	// more detailed information on *where* the input fails. 
+	// Otherwise, should use Application's static boolean checkInput().
 	try {
 	    application.setStdIn(contents);
 	}
@@ -217,13 +225,13 @@ public class Control implements TTK91Core {
 	catch(TTK91NoStdInData stdinDataWillNotBeAvailable) {
 	    // Ignore it; we'll just see how it goes to run it.
 	    // (On the other hand, TTK91AddressOutOfBounds thrown by 
-	    // load() will be thrown upwards.)
+	    // load() will be thrown upwards from here.)
 	}
 	// Run the program a line at a time until the counter becomes
 	// equal to the step count. (The counter is incremented before
 	// comparing to the steps variable.) If the steps was 0, run
 	// infinitely. 
-	while(runLine() != null && steps != 0 && ++counter <= steps)
+	while(runLine() != null && (steps == 0 || ++counter <= steps))
 	    ; // All is done in the check. See runLine().
     }
 
@@ -424,6 +432,8 @@ public class Control implements TTK91Core {
 	String sourceString = fileHandler.loadSource(openedFile).getSource();
 	compiler.compile(sourceString); // Prepare the compiler.
 	sourceFile = openedFile;
+	application = null;
+	currentStdOutFile = defaultStdOutFile;
 	return sourceString;
     }
 
@@ -469,6 +479,7 @@ public class Control implements TTK91Core {
     */
     public void openBinary(File openedFile) throws IOException,
 						   ParseException { 
+	sourceFile = null;
 	application = fileHandler.loadBinary(openedFile).toApplication();
 	
     }
