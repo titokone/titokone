@@ -38,6 +38,11 @@ CompileInfo  AT 24.3.	entiset return-metodit on nyt get-alkuisia. Myös DC:n ja D
 Interpreter  SH 24.3.   Lisätty komentojen parametrimääreitä ja muutettu  
                         vastaavasti niitä commandData taulukossa
 
+RunInfo	OA 26.3		Kaikki muuttujen nimet vaihdettu pienillä
+			kirjaimilla alkaviksi. Isoilla kirjaimilla
+ 			oli ainakin ADDR, Ri, Rj, ValueOfRi, 
+ 			ValueOfRj.
+
 CompileInfo  AT 25.3.	symbolValue on String, ennen int. SAmoin set ja get metodit.
 			(jotta voi tallettaa DEFin symbolitauluun)
 
@@ -45,5 +50,4 @@ Compiler     AT 25.3.	Lisätty metodi parseLine(String) joka palauttaa string tau
 			jossa on annetty konekäsky siten, että positiossa 0 on label
 			1 konekäsky, 2 1. rekisteri, 3 muistinosoitusmoodi, 4 osoite
 			ja 5 toinen rekisteri. null jos virheellinen konekäsky
-
 
