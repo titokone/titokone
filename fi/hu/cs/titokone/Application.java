@@ -276,7 +276,7 @@ public class Application implements TTK91Application {
 
 	if(!checkInput(input)) {
 	    errorMessage = new Message("Stdin input string \"{0}\" invalid, " + 
-				       "should be eg. \n-separated list of " +
+				       "should be eg. \\n-separated list of " +
 				       "integers.", input).toString();
 	    throw new IllegalArgumentException(errorMessage);
 	}
