@@ -165,7 +165,6 @@ public class Compiler {
 		}
 	} else {
 		if (nextLine == code.size()) {
-			// TODO create application;
 			compileDebugger.finalPhase();
 			compileFinished = true;
 			return null;
@@ -200,8 +199,10 @@ public class Compiler {
 
 		return new Application(codeMemoryLines, dataMemoryLines, st);
 
-	} else { throw new InvalidStateException(new Message("").toString()); }
-// TODO
+	} else { 
+		throw new InvalidStateException(new Message(
+					"Compilation is not finished yet.").toString()); 
+	}
     }
 
     /** This function transforms a binary command number to a MemoryLine 
@@ -245,13 +246,12 @@ public class Compiler {
 	String[] symbolTableEntry = new String[2];
 	boolean labelFound = false;
 	boolean variableUsed = false;
-	boolean symbolDefined = false;
 
 	if (lineTemp == null) {
 		lineTemp = parseLine(line);
 		if (lineTemp == null) { 
 // not a valid command
-			comment = new Message("").toString();
+			comment = new Message("Not a valid command.").toString();
 			throw new TTK91CompileException(comment); 
 		} else {
 
@@ -267,7 +267,7 @@ public class Compiler {
 				
 					if (invalidLabels.containsKey(lineTemp[0])) {
 // not a valid label			
-						comment = new Message("").toString();
+						comment = new Message("Invalid label.").toString();
 						throw new TTK91CompileException(comment);
 					} else {
 						invalidLabels.put(lineTemp[0], null);
@@ -315,6 +315,28 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 						}
 					} 
 				}
+	
+				if (variableUsed && labelFound) {
+		commentParameters = new String[2];
+		commentParameters[0] = lineTemp[0];
+		commentParameters[1] = lineTemp[4];
+		comment = new Message("Found label {0} and variable {1}.").toString();
+		compileDebugger.setComment(comment);
+
+				} else {
+					if (variableUsed) {
+		comment = new Message("Variable {0} used.", lineTemp[4]).toString();
+		compileDebugger.setComment(comment);
+	
+					} else {
+						if (labelFound) {
+		comment = new Message("Label {0} found.", lineTemp[0]).toString();
+		compileDebugger.setComment(comment);
+	
+						}
+					}
+				}
+
 			}
 		}
 	} else {
@@ -324,7 +346,7 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 
 		if (invalidLabels.containsKey(lineTemp[0])) {
 // not a valid label
-			comment = new Message("").toString();
+			comment = new Message("Invalid label.").toString();
 			throw new TTK91CompileException(comment);
 		}
 
@@ -341,11 +363,11 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 
 		if (atLeastOneNonNumber == false || allCharsValid == false) { 
 // not a valid label;
-			comment = new Message("").toString();
+			comment = new Message("Invalid label.").toString();
 			throw new TTK91CompileException(comment); 
 		} else {
 			if (invalidLabels.containsKey(lineTemp[0])) {
-				comment = new Message("").toString();
+				comment = new Message("Invalid label.").toString();
 				throw new TTK91CompileException(comment); 
 			} 
 
@@ -354,11 +376,11 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 				try {
 					intValue = Integer.parseInt(lineTemp[2]);	
 				} catch(NumberFormatException e) {	
-					comment = new Message("").toString();
+					comment = new Message("Invalid size for a DS.").toString();
 					throw new TTK91CompileException(comment);
 				}	
 				if (intValue < 0 || intValue > MAXINT) {
-					comment = new Message("").toString();
+					comment = new Message("Invalid size for a DS.").toString();
 					throw new TTK91CompileException(comment); 
 				}
 			}
@@ -369,12 +391,14 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 					try {
 						intValue = Integer.parseInt(lineTemp[2]);	
 					} catch(NumberFormatException e) {	
-						comment = new Message("").toString();
+						comment = new Message(
+							"Invalid size for a DC.").toString();
 						throw new TTK91CompileException(comment); 
 					}	
 
 					if (intValue < MININT || intValue > MAXINT) {
-						comment = new Message("").toString();
+						comment = new Message(
+							"Invalid size for a DC.").toString();
 						throw new TTK91CompileException(comment); 
 					}
 				}
@@ -392,7 +416,12 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
                                         symbolTable.add(symbolTableEntry);
 				}
 				compileDebugger.foundEQU(lineTemp[0], intValue);
-// TODO				compileDebugger.setComment();
+				commentParameters = new String[2];
+				commentParameters[0] = lineTemp[0];
+				commentParameters[1] = lineTemp[2];
+				comment = new Message("Variable {0} defined as {1}.", 
+						commentParameters).toString();
+				compileDebugger.setComment(comment);
 			}
 			if (lineTemp[1].equals("ds")) {
 				if (symbols.containsKey(lineTemp[0])) {
@@ -407,7 +436,9 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 
 				}
 				compileDebugger.foundDS(lineTemp[0]);
-// TODO				compileDebugger.setComment();
+				comment = new Message("Found variable {0}.", 
+								lineTemp[0]).toString();
+				compileDebugger.setComment(comment);
 			}
 			if (lineTemp[1].equals("dc")) {
 				compileDebugger.foundDC(lineTemp[0]);
@@ -421,7 +452,9 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
                                         symbolTable.add(symbolTableEntry);
 				}
 				compileDebugger.foundDC(lineTemp[0]);
-// TODO				compileDebugger.setComment();
+				comment = new Message("Found variable {0}.", 
+								lineTemp[0]).toString();
+				compileDebugger.setComment(comment);
 			}
 			if (lineTemp[1].equals("def")) {
 				if (lineTemp[0].equals("stdin") || lineTemp[0].equals("stdout")) {
@@ -431,17 +464,20 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 						defStdout = lineTemp[2];
 					}		
 					compileDebugger.foundDEF(lineTemp[0], lineTemp[2]);
-// TODO					compileDebugger.setComment();
+					commentParameters = new String[2];
+					commentParameters[0] = lineTemp[0].toUpperCase();
+					commentParameters[1] = lineTemp[2];
+					comment = new Message("{0} defined as {1}.", 
+								commentParameters).toString();
+					compileDebugger.setComment(comment);
 				} else {
-					comment = new Message("").toString();
+					comment = new Message(
+						"Invalid DEF operation.").toString();
 					throw new TTK91CompileException(comment); 
 				}			
 			}
 		}		
 	}
-
-
-//	generate a comment from the boolean variables! TODO
 	return compileDebugger.lineCompiled();
     }
 
@@ -452,7 +488,6 @@ symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableE
 	like compiler-codes (pseudo-codes) and lines with nothing but comments.
      */
     private CompileInfo initializeSecondRound() {
-/* TODO increase the values in symbol[] with the beginning of data area. */
 
 	nextLine = 0;
 	firstRound = false;
@@ -605,7 +640,17 @@ Basic functionality: (Trim between each phase.)
 	compileDebugger.setBinary(lineAsBinary);
 	codeMemoryLines[nextLine] = new MemoryLine(lineAsBinary, line);
 	
-// TODO comments
+// comment
+	String lineAsZerosAndOnes = symbolicInterpreter.intToBinary(lineAsBinary, 32);
+	String binaryByPositions = 
+		symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(0,8), true) + ":" +
+		symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(8,10), true) + ":" +
+		symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(11,12), true) + ":" +
+		symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(13,15), true) + ":" +
+		symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(16), true);
+	String[] commentParameters = {line, "" + lineAsBinary, binaryByPositions};
+	comment = new Message("{0} --> {1} ({2}) ", commentParameters).toString();
+	compileDebugger.setComment(comment);
 
 	return compileDebugger.lineCompiled();
     }

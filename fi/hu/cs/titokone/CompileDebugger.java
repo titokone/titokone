@@ -14,9 +14,9 @@ public class CompileDebugger {
     /** This field contains current statusmessage. */
     private String statusMessage;
 
-    /** This field contains current comments. This string is created by
+    /** This field contains current comment. This string is created by
      * debugger when its different methods are called.*/
-    private String comments;
+    private String comment;
 
 /*----------- Constructor -----------*/
 
@@ -196,7 +196,7 @@ public class CompileDebugger {
 
     /**	This method sets the comment to the compileInfo. 
     */
-    public void setComments(String message) {
+    public void setComment(String message) {
 	info.setComments(message);
     }
 
