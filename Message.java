@@ -1,3 +1,5 @@
+package fi.helsinki.cs.titokone;
+
 /** This class represents a translatable message to the user. It uses
     the Translator class statically to deal with the actual translation. */
 public class Message {
@@ -26,7 +28,7 @@ public class Message {
 	are markers, the remaining markers will show as such in the 
 	resulting string. If there are more strings in the array than are 
 	needed, the final ones are ignored. */
-    public Message(String tempalteKey, String[] parameters) {}
+    public Message(String templateKey, String[] parameters) {}
 
     /** This method translates the message and does any necessary
 	replacement of parameters into the string itself. The translated

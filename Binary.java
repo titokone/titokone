@@ -1,3 +1,7 @@
+package fi.helsinki.cs.titokone;
+
+import java.text.ParseException;
+
 /** This class represents the contents of a binary file. It can 
     interpret an Application instance of itself with the help of the 
     BinaryInterpreter class, as well as transforming an Application into
@@ -29,9 +33,9 @@ public class Binary {
 	interpretation. If the class already knows what the application
 	class corresponding to the binary is, it will just return that.
 	@return An application instance corresponding to the binary. 
-	@throws InvalidBinaryException If the binary contents are not 
+	@throws ParseException If the binary contents are not 
 	syntatically correct. */
-    public Application toApplication() throws InvalidBinaryException { }
+    public Application toApplication() throws ParseException { }
 
     /** This method determines (if it is not done already), stores and
 	returns the String representation in .b91 format of this
