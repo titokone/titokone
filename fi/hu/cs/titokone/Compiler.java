@@ -372,19 +372,19 @@ public class Compiler {
 	    
 	    if (invalidLabels.containsKey(lineTemp[0])) {
 // not a valid label
-		comment = new Message("Invalid label.").toString();
-		throw new TTK91CompileException(comment);
+		if (!(lineTemp[1].equalsIgnoreCase("def") && 
+				(lineTemp[0].equalsIgnoreCase("stdin") ||
+				lineTemp[0].equalsIgnoreCase("stdout"))
+		)) {
+			comment = new Message("Invalid label.").toString();
+			throw new TTK91CompileException(comment);
+		}
 	    }
 	    if(!validLabelName(lineTemp[0])) {
 		// not a valid label;
 		comment = new Message("Invalid label.").toString();
 		throw new TTK91CompileException(comment); 
 	    } else {
-		if (invalidLabels.containsKey(lineTemp[0])) {
-		    comment = new Message("Invalid label.").toString();
-		    throw new TTK91CompileException(comment); 
-		} 
-		
 		if (lineTemp[1].equalsIgnoreCase("ds")) {
 		    intValue = 0;
 		    try {
@@ -542,8 +542,6 @@ public class Compiler {
 	
 	if (!defStdin.equals("")) ++dataAreaSize;
 	if (!defStdout.equals("")) ++dataAreaSize;
-
-//System.out.println("data: " + dataAreaSize);
 
 	data = new String[dataAreaSize];
 	String[] newSymbolTableLine = new String[2];
@@ -936,13 +934,18 @@ opcode.equalsIgnoreCase("pushr") || opcode.equalsIgnoreCase("popr")) {
 	if (nextToCheck < line.length()) {
 	    while (line.charAt(nextToCheck) == ' ') { ++nextToCheck; }
 	    value = line.substring(nextToCheck);
-	    if (value.length() > 0) {
-		try {
-		    intValue = Integer.parseInt(value);
-		    if (opcode.equalsIgnoreCase("ds") && intValue < 1) { 
-			return null; 
+	    
+            if (opcode.equals("def")) {
+		if (value.length() < 1) return null;
+	    } else {
+		    if (value.length() > 0) {
+			try {
+		    		intValue = Integer.parseInt(value);
+		    		if (opcode.equalsIgnoreCase("ds") && intValue < 1) { 
+					return null; 
+		    		}
+			} catch (NumberFormatException e) { return null; }
 		    }
-		} catch (NumberFormatException e) { return null; }
 	    }
 	}	
 
