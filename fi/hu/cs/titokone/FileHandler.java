@@ -43,10 +43,10 @@ public class FileHandler {
 	@return A source instance which is no longer dependent on I/O. 
 	@throws IOException If an I/O error occurs. Eg. one of the possible
 	IOExceptions is FileNotFoundException. */
-public __stupid_Source loadSource(File srcFile) throws IOException {
+public Source loadSource(File srcFile) throws IOException {
   
   testAccess(srcFile, READ_ACCESS);
-  __stupid_Source src = new __stupid_Source(loadFileContentsToString(srcFile));
+  Source src = new Source(loadFileContentsToString(srcFile));
   return src;
 }
 
@@ -111,6 +111,7 @@ private String loadFileContentsToString(File loadFile) throws IOException {
 
   /* !!!!  This is BAD CODE! length() returns long and it's casted   !!!!
      !!!!  to int here, so in case of a big file this code is buggy  !!!!
+     TODO: cleanup.
   */
   int loadFileLength = (int)loadFile.length(); 
   
@@ -170,11 +171,11 @@ public void saveSettings(String settingsData, File settingsFile) throws IOExcept
 	IOExceptions is FileNotFoundException. 
 	@throws ParseException If the file does not contain a valid 
 	binary. */
-public __stupid_Binary loadBinary(File binaryFile) throws IOException, ParseException {
+public Binary loadBinary(File binaryFile) throws IOException, ParseException {
   
   testAccess(binaryFile, READ_ACCESS);
   String str = loadFileContentsToString(binaryFile);
-  __stupid_Binary bin = new __stupid_Binary(str);
+  Binary bin = new Binary(str);
   return bin;
 }
   
@@ -184,7 +185,7 @@ public __stupid_Binary loadBinary(File binaryFile) throws IOException, ParseExce
 	@param filename The identifier for the file to save to. 
 	@throws IOException If an I/O error occurs, eg. the given file 
 	cannot be written to. */
-public void saveBinary(__stupid_Binary bin, File binarySaveFile) throws IOException {
+public void saveBinary(Binary bin, File binarySaveFile) throws IOException {
   
   testAccess(binarySaveFile, WRITE_ACCESS);
   String str = bin.toString();
