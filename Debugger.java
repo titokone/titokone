@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 /** This class is parent class for RunDebugger and CompileDebugger which
     produces info object what was done.
 */
