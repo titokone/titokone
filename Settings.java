@@ -74,6 +74,6 @@ public class Settings {
 	a settings file for parsing.
 	@throws ParseException If the settings text was not syntactically
 	correct. */
-    private parseSettingsFile(String fileContent) throws ParseException {}
+    private void parseSettingsFile(String fileContent) throws ParseException {}
 
 }

@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 import java.util.ResourceBundle;
 import java.io.File;
 import java.io.IOException;
+import fi.hu.cs.ttk91.TTK91CompileSource;
 
 /** This class transforms files into various sorts of buffer classes
     depending on who needs them, and saves these buffer classes to
