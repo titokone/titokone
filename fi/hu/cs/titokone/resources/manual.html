@@ -14,13 +14,6 @@
 <!-- P {font-family:"Verdana", serif}-->
 
 
-<!-- OLLI: Laitoin yläotsikoille (h2) valmiiksi a name -ankkurit,
-     jotta #-linkit toimivat. Lisäile ankkureita ja tunnuksia
-     loogiseksi katsomallasi nimeämisperusteella sitä mukaa kun tulee
-     tarpeen viitata aiempiin/tuleviin aliotsikoihin (kuten
-     esimerkiksi esimerkkivirhetilanteessa, jonka kirjailin
-     loppupäähän). Tämän kommentin voi poistaa lukemisen jälkeen. -->
-
 <h2>Contents</h2>
 
 <ol>
@@ -28,7 +21,7 @@
   <li><a href="#install"> Installing Titokone</a></li>
   <li><a href="#doables">What you can do with the Titokone</a></li>
   <li><a href="#machinelanguage">The TTK-91 machine language</a></li>
-  <li><a href="#extension">Extending and adjusting the system</a></li>
+  <li><a href="#extension">Fine-tuning and extending the system</a></li>
   <li><a href="#troubleshooting">Troubleshooting</a></li>
   <!-- <li><a href="hakemisto">Glossary</a></li> --> <!-- jos jaksaa kerätä-->
 </ol>
@@ -45,7 +38,7 @@ in a simple processor.
 <tr>
 
 <td>
-<a href="manual1.html#gui" name="gui">
+<a href="Openview.html" name="gui">
 <img src="img/screenEnglish0.jpg" title="Basic view" 
   alt="Basic view of the system">
 </a>
@@ -97,7 +90,7 @@ First part is about installing the Titokone. If you've already done that, then
 you can move directly to the <a href="#doables">Titokone functions</a>.
 </p>
 
-<table cellspacing=10>
+<table cellspacing="10">
 <tr>
 <td>  
 <img src="img/0.jpg" title="" alt="">
@@ -132,7 +125,7 @@ if you want to use Titokone at eg. your home machine.
 
 
 
-<table cellspacing=10>
+<table cellspacing="10">
 <tr>
 <td>  
 <img src="img/0.jpg" title="" alt="">
@@ -155,7 +148,7 @@ JAR file itself along with some instructions and helper programs.
 </p>
 
 
-<table cellspacing=10>
+<table cellspacing="10">
 <tr>
 <td>  
 <img src="img/0.jpg" title="" alt="">
@@ -268,7 +261,7 @@ is not sufficient.
 
 
 
-<h2><a name="doables">3. Titokone functions</a></h2> <!-- mitä tällä voi tehdä? -->
+<h2><a name="doables">3. What you can do with the Titokone</a></h2> 
 
 <br>
 
@@ -276,17 +269,17 @@ is not sufficient.
 
 
 
-<table cellspacing=10>
+<table cellspacing="10">
 <tr>
-  <td align=center>
+  <td align="center">
   <a name="open">
   <img src="img/1.jpg" title="Open button" 
-  alt="Picture of Open button">
+  alt="Picture of the Open button">
   </a>
   </td>
 
 <td>
-  <h3>3.1 Opening a TTK-91-program</h3> 
+  <h3>3.1 Opening a TTK-91 program</h3> 
 </td>
 
 </tr>
@@ -294,51 +287,56 @@ is not sufficient.
   
 <br>
 
-<table cellspacing=10>
+<table cellspacing="10">
 <tr>
   
-<td valign=top>
+<td valign="top">
 
 <img src="img/Fileopen.jpg" title="Open file" 
-alt="Open file from menu">
+alt="Picture illustrating how to select File --> Open from the menu.">
 
 </td>
       
-<td valign=top>
+<td valign="top">
 <p> 
-  Opening a file is done either by pressing the <a href="1en.html">open-button</a> or 
-  by choosing Open from the File menu. Once you've done this you get the <a href="#file">
-  file dialog</a> window.
+  Opening a new file is done by pressing the <a href="1en.html">Open toolbutton</a>
+  or by choosing File --> Open from the menu. You will then see a <a
+  href="#file">file dialog</a>.
+
 </p>
 </td>
 
 </tr>
 </table>
 
-<table cellspacing=10>
+<table cellspacing="10">
 <tr>
   
-<td valign=top>
+<td valign="top">
 <a name="file">
-<img src="img/File.jpg" title="File dialog" 
-alt="Picture of file dialog">
+<img src="img/File.jpg" title="A file dialog" 
+alt="Picture of the file dialog for illustration">
 </a>
 </td>
-<td valign=top>
+<td valign="top">
 <p>
-The file dialog shows the file listing of the current folder by the selected file type.
-There are two possible file types: .k91 is for the source code while .b91 is the binary
-form of the program.
+The file dialog shows the files in the currently chosen directory,
+according to the chosen type. The file types to show are determined
+according to their file extensions: k91 stands for a source file, b91
+for a binary file.
 </p>
 <ul><li>
-When .k91 file is opened Titokone displays a <a href="Sourcecode.html">source code view</a>.
-Source code must be <a href="#compile">compiled</a> before it can be <a href="#run">run</a>.
+When opening a file with a k91 extension, you will see the 
+<a href="Sourcecode.html">source code view</a> on the screen.
+The source code myst be <a href="#compile">compiled</a> before it can
+be <a href="#run">run</a>.
 </li>
 <br>
 <li>
-And when .b91 file is opened Titokone shows the <a href="Running.html">run view</a>.
-Since .b91 is already compiled and in the binary form, it can be <a href="#run">run</a> 
-without being compiled again.
+When opening a file with a b91 extension, you will see the
+<a href="Running.html">running view</a> on the screen.
+The binary file is already in machine language format, so it can be 
+<a href="#run">run</a> immediately without recompilation.
 </li>
 </ul>
 </td>
@@ -347,45 +345,13 @@ without being compiled again.
 
 <br>
 
-
-<table cellspacing=10>
-<tr>
-  
-<td valign=top>
-<a name="file">
-<img src="File.jpg" title="File dialog" 
-alt="File dialog">
-</a>
-</td>
-<td valign=top>
-<p>
-File dialog shows the files of current directory by extension. 
-<!--*A*-->
-The two possible types are identified by their ending: a .k91-extension is for the 
-source code-file while .b91 is the ending for a compiled binary file.
-</p>
-<ul><li>
-When file with k91-extension is opened, <a href="manual1.html#gui">source code view</a> is shown.
-Source code file has to be <a href="#compile">compiled</a> before <a href=#run>executing</a> the file.
-</li>
-<br>
-<li>
-When file with b91-extension is opened, <a href="manual3.html#gui">runnable view</a> is shown.
-Binary file is already in machine language form, so it can be <a href="#run">executed</a> immediately.
-</li>
-</ul>
-</td>
-</tr>
-</table>
-
-<br>
 
 <!-- LÄHDEKOODIN MUOKKAUS -->
 
 
 
 
-<table cellspacing=3>
+<table cellspacing="3">
 <tr>
 <td>  
 <img src="img/0.jpg" title="" 
@@ -400,44 +366,27 @@ alt="">
 </table>
 
 
-<p> 
-	It is possible to edit the source code by doing this:
-</p>
+<p>The source code can be edited in Titokone as follows:</p>
 <ul>
-<li> 
-	First you must open a .k91 file.
-</li>
-<p> 
-	either
-</p>
-<li> 
-	Prsee the left mouse button on top of the line you wish to edit. This does not
-	display the cursor but the text can be edited.
-</li>
-<p>
-	<img src="img/this.jpg">
-</p>
-<p>
-	or
-</p>
-<li> 
-	Double click the line you wish to edit and you see the cursor.
-</li>
-<p>
-	<img src="img/orthis.jpg">
-</p>
-<li> 
-	Edit the line
-</li>
-<li>
-	Confirm the changes by pressing the enter or moving out from the line.
-</li>
-<li> 
-	Once confirmed, the changes are saved to the original file.	
-</li>
+<li> Open a file with k91 as its file extension. </li>
+<p>Either</p>
+<li> Click on the source code line with the left mouse button, at
+which point there will be no cursor visible, but the line can be
+written on.</li>
+<p><img src="img/this.jpg"></p>
+<p>or</p>
+<li> Double-click on the source code line with the left mouse, at
+which point a cursor will appear on the line.</li>
+<p><img src="img/orthis.jpg"></p>
+<li> Make the necessary changes on the line. </li>
+<li> Confirm the changes by pressing enter. </li>
+<li> The changes are stored in the original file. </li>
 </ul>
 
- 
+ <p>We recommend editing the source code in a separate program,
+ however. There have been problems with the result getting stored in
+ some other, recently opened k91 file. See <a href="#paranoid">our
+ troubleshooting section on this</a>.
 
 
   <!-- Voi olla k91 tai b91, viittaa vastaaviin 2.x-lukuihin -->
@@ -453,40 +402,40 @@ alt="">
 
 
     
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   
   <td>
   <img src="img/2.jpg" title="Compile" 
-  alt="Picture of compilebutton">
+  alt="Picture of the compile button">
   </td>
   
   <td>
   <a name="compile">
-  <h3>3.3 Compiling the TTK-91-program</h3> <!-- Ja mahd. tekstin muokkaus -->
+  <h3>3.3 Compiling a TTK-91 program</h3> 
   </a>
   </td>
   
   </tr>
   </table>
       
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
 
-  <td valign=top>
+  <td valign="top">
   <img src="img/Filecompile.jpg" title="Compiling from menu" 
-  alt="Picture of compiling menu">
+  alt="Picture illustrating how to select File --> Compile from the menu">
   </td>
   
-  <td valign=top>
-  <p>
-Compilation in Titokone is done in two phases: During the first phase compiled checks the syntax
-and gathers the symbol table. During the second phase compiler creates the object code and checks 
-that the used variables are defined. Compilation starts by pressing the <a 
-href="2en.html">compile-button</a> ob by sleecting compile from the file-menu.
-Compilation is done according to the 
-<a href="#compilesettings">compile setting</a> defined before. Compiler may stop and comment or 
-it may continue directly to the end without stopping in between.
+  <td valign="top">
+  <p>Compilation happens in two phases in Titokone: first a syntax
+  check is done and the symbol table is created. On the second round,
+  the object code is formed. Compilation is started by clicking on the 
+  <a href="2en.html">Compile button</a> or by choosing File -->
+  Compile from the menu.
+  Compilation is done according to the <a
+  href="#compilesettings">compilation settings</a>, either stopping
+  every time a comment appears or all through without pauses.
   </p>
   </td>
   </tr>
@@ -495,63 +444,90 @@ it may continue directly to the end without stopping in between.
   <br>
   <a name="compilingfunctions">
   <b>
-Functions during the compilation
+  Functions during compilation
   </b>
   </a>
   
-  <table cellspacing=10>
-  <tr>1 Javan hakemine
-TODO what is this?
+  <table cellspacing="10">
+  <tr>
    
   <td>
   <img src="img/4.jpg" title="Forward" 
   alt="Picture of forward-button">
   </td>
-  <td><p> Jatka askelittain: kääntämistä voi suorittaa askel kerrallaan, edeten seuraavaan <a href="#compcases">tapahtumaan</a> asti. </p>
+  <td><p>Continue a step onwards: the compilation progressing a row at
+  a time can be continued by pressing this button or the enter key
+  after each step, which advances until the next
+  <a href="#compcases">event occurs</a>. </p>
   </td>
   </tr>
   
   <tr>
-  <td><img src="img/5.jpg" title="FF" 
-  alt="Picture of FF-button">
+  <td><img src="img/5.jpg" title="Fast forward" 
+  alt="Picture of Fast forward button">
   </td>
   
-  <td><p> Jatka: halutessaan käyttäjä voi suorittaa käännöksen kerralla loppuun.</p>
+  <td><p>Continue to the end: The compilation can be run through
+  without pauses. This will not change the row-wise compilation
+  setting, it only overrides it for this compilation.</p> 
   </td>
   </tr>
   
   <tr>
-  <td><img src="img/6.jpg" title="STOP" 
+  <td><img src="img/6.jpg" title="Stop" 
   alt="Picture of stop-button">
   </td>
   <td>
-  <p> Pysäytä: käännös voidaan pysäyttää painamalla pysäytä-nappia.
+  <p>Stop: The compilation can be aborted by pressing the stop
+  button. The view will remain as it was until the Continue button is
+  also pressed.</p>
   </td>
   </tr>
   </table>
   <br>
   <a name="compcases">
-  <b> Käännöksen tapahtumatyypit </b>
+  <b>Compilation event types</b>
   </a>
-  <p> Tapahtumatyypeillä tarkoitetaan kääntäjän reagointia lähdekoodin sisältöön. Riviä kommentoidaan tai riville pysähdytään <a href="#compilesettings">asetusten</a> mukaisesti.</p>
-  <p> Ensimmäinen kierros:</p>
+  <p> Compilation event types refer to the compiler's reactions to the
+  contents of the source code. A line is commented and/or stopped on
+  according to the <a href="#compilesettings">compiling options</a>.</p>
+  <p> First round:</p>
   <ul>
-  <li> Ei tapahtumaa: jos rivi alkaa kommenttimerkillä (;), on tyhjä tai sisältää käskyn NOP </li>
-  <li> Muuttujan määrittely: Jos riviltä löytyy uusi muuttuja, se lisätään symbolitauluun. </li>
-  <li> Muuttujan käyttäminen: Jos rivin komennossa käytetään muuttujaa, muuttuja lisätään symbolitauluun jos se ei siellä vielä ole. </li>
-  <li> Muistiviitteen löytyminen: Jos rivin alusta löytyy muistiviite, viite ja rivin numero lisätään symbolitauluun </li>
-  <li> Käännöksen virhetilanne: käännös keskeytetään, virheestä ilmoitetaan käyttäjälle ja jatka-painikkeella palaudutaan lähdekoodinäkymään. </li>
-  <li> Ensimmäisen käännösvaiheen valmistuminen: onnistuneen ensimmäisen kierroksen jälkeen <a href="Compile.html">objektikoodinäkymä</a> tuodaan esiin ja toinen kierros voi alkaa. </li> 
+  <li> No event: if the line begins with a comment sign (;), is empty
+  or contains no references to symbols or labels.
+  <li> Defining a variable: If there is a new variable defined on the
+  line, it is added to the symbol table.</li>
+  <li> Using a variable: If a symbol (or a label) is used in the
+  command on the line and the symbol is not in the symbol table yet,
+  it is added.</li>
+  <li> Finding a label: If there is a label in the start of a line,
+  the label and the line number are added to the symbol table.</li>
+  <li> A compilation error: The compilation is aborted, the error is
+  reported to the user and, once the user clicks the "Continue"
+  button, the source code view is restored.</li>
+  <li> Finishing first round: After a successful first round of
+  compilation, the declared variables (DC and DS) get space reserved
+  for them, the symbol table is updated and the <a
+  href="Compile.html">object code view</a> is 
+  shown. Now the second round can begin. </li> 
   </ul>
-  <p> Toinen kierros: </p>
+  <p> Second round: </p>
   <ul> 
-  <li> Objektikoodin luonti: koodiriville tuodaan käskyn konekieliesitys ja käsky näytetään alapalkin tilatiedoissa. </li>
+  <li> Creating the object code: The machine language interpretation
+  of the code line is generated and the command is shown in the status
+  bar near the bottom of the window.</li>
   </ul>
-  <p> Käännöksen valmistuminen: </p>
+  <p> Finishing the compilation: </p>
   <ul>
-//   	<li>Ohjelma <a href="#loading">ladataan</a> muistiin ja <a href="Suoritusnakyma.html">suoritusnäkymä</a> tuodaan esille.</li>
-  	<li> Käännöksen virhetilanne: käännös keskeytetään, virheestä ilmoitetaan käyttäjälle ja jatka-painikkeella palaudutaan lähdekoodinäkymään. </li>
-	<li>Binääritiedosto <a href="#binaari">tallennetaan</a> automaattisesti samaan hakemistoon samalla nimellä muuten mutta eri päätteellä; pääte on b91.</li>
+ 	<li>The program is <a href="#loading">loaded to memory</a> and the
+  <a href="Suoritusnakyma.html">running view</a> is shown.</li>
+  	<li> A compilation error: the compilation is aborted, the user
+  is notified of the error and the "Continue"-button can be used to
+  return to the source code view.</li>
+
+	<li>A binary of the file is <a href="#binaari">saved</a>
+  automatically in the same directory, with the same name but
+  different file extension; the binary will have b91 as its extension.</li>
   </ol>
   </ul>
   <br>
@@ -562,7 +538,7 @@ TODO what is this?
   
   
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   <td>  
   <img src="img/0.jpg" title="" 
@@ -570,7 +546,7 @@ TODO what is this?
   </td>
   <td>
   <a name="compilesettings">
-  <h3>3.4 Käännösasetukset </h3>
+  <h3>3.4 Compiling options </h3>
   </a>
   </td>
   </tr>
@@ -579,15 +555,17 @@ TODO what is this?
   
   
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   <td>
-  <img src="img/Tiedostomuokkaakaannos.jpg" title="Käännösasetukset valikosta" 
-  alt="Käännösasetukset valikosta">
+  <img src="img/Filesetcompile.jpg" title="Compiling options from the menu" 
+  alt="An illustration on how to select Options --> Set compiling
+  options from the menu">
   </td>
-  <td valign=top>
+  <td valign="top">
   <p>
-  Käännöksen aikaisia asetuksia voi muuttaa valitsemalla valikosta Asetukset --> Muokkaa käännösasetuksia.
+  The compiling options cam be changed by choosing Options --> Set
+  compiling options from the menu.
   </p>
   </td>
   
@@ -595,21 +573,26 @@ TODO what is this?
   <tr>
   <td>
   
-  <img src="img/Kaannosasetukset.jpg" title="Käännösasetukset" 
-  alt="Käännösasetukset">
+  <img src="img/Compilingoptions.jpg" title="The compiling options dialog" 
+  alt="The compiling options dialog">
   
   </td>
-  <td valign=top> 
+  <td valign="top"> 
   <p>
-  Käännösasetuksilla voidaan vaikuttaa käännöksen etenemistapaan ja kommentointiin.
+  The compiling options affect how the compilation behaves and how it
+  is commented.
   </p>
   <ul>
-  <li>Jos 'Pysäytä kääntäminen kommentin ilmestyessä' on valittuna, käännös etenee askelittain. Käännös jää odottamaan käyttäjältä seuraavaa <a
-  href=#kaantajantoiminnot>toimintoa</a>.
+  <li>If 'Pause whenever a comment occurs' is selected, the compilation
+  will proceed stepwise. The compiler will stop to wait for the user
+  to eg. press the "Continue" button.
   </li>
-  <li>Jos 'Näytä lisäkommentteja kääntämisen kulusta' on valittuna, rivin kääntämisestä ilmestyy lisäkommentteja kommentti-ikkunaan.
+  <li>If 'Show extra comments while compiling' is selected, there will
+  be comments shown of the progress of the compilation in the comment window.
   </li>
-  <li> Asetusten muutokset tulevat voimaan painamalla 'aseta'-painiketta.</li>  
+  <li>The option changes will become effective once the Apply button
+  is pressed. You can cancel the changes by pressing Close instead, or
+  just close the window after pressing Apply first and Close then.</li>
   </ul>
     
   </td>
@@ -628,24 +611,26 @@ TODO what is this?
   
   
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   <td>  
   <img src="img/0.jpg" title="" 
   alt="">
   </td>
   <td>
-  <h3><a name="loading">3.5 TTK-91-ohjelman lataaminen</a></h3>
+  <h3><a name="loading">3.5 Loading a TTK-91 program</a></h3>
   </td>
   </tr>
   </table>
   
   
-  <p> Ohjelman lataaminen tapahtuu automaattisesti </p>
+  <p>A TTK-91 program is loaded automatically when</p>
   <ul>
-  <li>K91-tiedoston <a href="#compile">käännöksen</a> valmistuessa.</li>
-  <li>B91-tiedoston <a href="#open">avaamisen</a> yhteydessä </li>
-  <li>Ohjelman suorituksen jälkeen; jos itseään muuttavaa ohjelmaa on suoritettu, koodialueen muutokset poistetaan.</li>
+  <li><a href="#compile">The compilation</a> of a k91
+  file is completed.</li>
+  <li>A b91 file is <a href="#open">opened</a></li>
+  <li>After a program has been run; if the program has modified its
+  code area, the changes will be erased.</li>
   </ul>
   <br>
   
@@ -654,71 +639,84 @@ TODO what is this?
   
   
     
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   
   <td>  
   <a name="run">
   <img src="img/3.jpg" title="Run" 
-  alt="Picture of run-button">
+  alt="Picture of the Run button">
   </td>
   </a>    
   
   <td>
-  <h3> 3.6 TTK-91-ohjelman suoritus</h3> <!-- Ja uudelleensuoritus -->
+  <h3> 3.6 Running a TTK-91 program</h3> 
   </td>
   
   </tr>
   </table>
      
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   <td>  
-  <img src="img/Filerun.jpg" title="File run" 
-  alt="Running from menu">
+  <img src="img/Filerun.jpg" title="File --> run" 
+  alt="An illustration on how to select File --> Run from the menu">
   </td>
-  <td valign=top> K91-tiedoston käännöksen tai b91-tiedoston avaamisen seurauksena ohjelma ladataan muistiin ja on valmis suoritettavaksi.<a href="Running.html">
-  Suoritusnäkymässä</a> koodi-ikkuna on jaettu kahteen osaan, koodi- ja data-alueeseen. On kuitenkin syytä huomioida, että Titokoneen muisti on todellisuudessa yhtenäinen alue; muistialueen jako kahteen osaan on toteutettu käytettävyyssyistä. Suoritus aloitetaan painamalla  <a href="3en.html">suorita-pikakuvaketta</a>  tai valitsemalla valikosta Tiedosto --> Aja. Suoritus toteutetaan <a href="#runsettings">suoritusasetusten</a> mukaisesti joko pysähdellen tai kerralla loppuun asti suorittaen. </td>
+  <td valign="top"> After compiling a k91 file or opening a b91 file,
+  the program is loaded into memory and is ready for running. <a
+  href="Running.html">In the running view,</a> the code window is
+  divided in two, the code and data area. You should note that in
+  reality, the memory of the Titokone is one large area; dividing it
+  to two parts visually is a usability choice. To start running the
+  program, press the <a href="3en.html">Run toolbutton</a> or choose
+  File --> Run from the menu. The running will follow according to 
+  the <a href="#runsettings">running options</a>, either pausing or
+  running all the way through, with or without animation. </td> 
   
   </tr>
   </table>
   <br>
   
-  <b> Toiminnot suorituksen aikana </b>
+  <b> Actions during running </b>
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
    
   <td>
-  <img src="img/4.jpg" title="Forward" 
-  alt="Picture of forward-button">
+  <img src="img/4.jpg" title="Continue" 
+  alt="Picture of the Continue button">
   </td>
-  <td><p> Jatka askelittain: ohjelman ajaminen voidaan tehdä rivi kerrallaan.</p>
-  </td>
-  </tr>
-  
-  <tr>
-  <td><img src="img/5.jpg" title="FF" 
-  alt="Picture of FF-button">
-  </td>
-  
-  <td><p> Jatka: halutessaan käyttäjä voi suorittaa ohjelman loppuun pysähtelemättä.</p>
+  <td><p>Continue a step onwards: if the run is progressing a row at a
+  time, it can be continued by pressing the Continue button or the
+  enter key after each step, which advances to the next row (command).</p>
   </td>
   </tr>
   
   <tr>
-  <td><img src="img/6.jpg" title="STOP" 
-  alt="Picture of stop-button">
+  <td><img src="img/5.jpg" title="Continue to the end" 
+  alt="Picture of the Continue to the end button">
+  </td>
+  
+  <td><p> Continue to the end: The run can be finished without
+  pauses. This will not affect the row-wise running setting, it only
+  overrides it for this run.</p>
+  </td>
+  </tr>
+  
+  <tr>
+  <td><img src="img/6.jpg" title="Stop" 
+  alt="Picture of the stop-button">
   </td>
   <td>
-  <p> Pysäytä: suoritus voidaan pysäyttää painamalla pysäytä-nappia.</p>
+  <p>Stop: the run can be aborted by pressing the stop button. The
+ view will remain as it was until the Continue button is also pressed.</p>
   </td>
   </tr>
   </table>
-  <ul><li> Jos suoritus keskeytyy virheeseen, lopputilanne
-näytetään vielä. Käyttäjä voi tällöin painaa jatka-nappia ladatakseen
-ohjelman uudelleen.</li></ul>
+  <ul><li> If the run is aborted due to an error, the final view is
+ shown until the user presses the Continue button. At that point, the
+ program is reloaded automatically.</li></ul>
   <br>
   
   
@@ -730,7 +728,7 @@ ohjelman uudelleen.</li></ul>
   
   
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   
   <td>  
@@ -740,50 +738,60 @@ ohjelman uudelleen.</li></ul>
   </a>
   </td>
   <td>
-  <h3>3.7 Suoritusasetukset </h3>
+  <h3>3.7 Running options</h3>
   </td>
   </tr>
   </table>
   
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   <td>
   <img src="img/Runningdialog.jpg" title="Set running options" 
-  alt="Setting running options from menu">
+  alt="An illustration on how to select Options --> Set running
+  options from the menu">
   </td>
-  <td valign=top>
-  <p> Suoritusasetuksia pääsee vaihtamaan valitsemalla valikosta Asetukset --> Muuta suoritusasetuksia. </p>
+  <td valign="top">
+  <p> The running options can be modified by selecting Options --> Set
+  running options from the menu.</p>
   
   </td>
   </tr>
   <tr>  
   <td rowspan=3>
-  <img src="img/Runningoptions.jpg" title="Running options" 
-  alt="Running options">
+  <img src="img/Runningoptions.jpg" title="The running options dialog" 
+  alt="The running options dialog">
   </td>
   <td>
-  <p> Suoritusasetukset ovat melko pitkälti vastaavat <a href="#compilesettings">käännösasetusten</a> kanssa; lisätoimintona on animointi.
+  <p> The running options are almost the same as the 
+ <a href="#compilesettings">compiling options</a>; an option to
+ animate the command is added.
   <ul>
-  <li> Ohjelmakoodia voidaan suorittaa rivi kerrallaan </li>
-  <li> Lisäkommentteja voidaan näyttää <a href="Running.html">kommentti-ikkunassa(8)</a></li>
-  <li> Animointi-ikkuna näyttäminen voidaan kytkeä päälle tai pois </li>
-  <li> Kun animointi on päällä, riveittäin suoritus menee automaattisesti päälle. </li>
-  <li> Asetusten muutokset tulevat voimaan painamalla 'aseta'-painiketta.</li>  
+  <li> The program code is run a row at a time if "Execute code line
+ by line" is selected </li>
+  <li> Additional comments are shown in the <a
+ href="Running.html">comment window(8)</a> if "Show extra comments
+ while executing" is selected</li>
+  <li> The animation window will be opened for the run if "Show
+ animation while executing" is selected</li>
+  <li> When the animation is turned on, line by line execution is
+ automatically turned on.</li>
+
+  <li> The changes will come to effect once the "apply" button is pressed.</li>  
   </ul>
   </td>
   </tr>
   </table>
   
-  <p> Suoritusasetuksia on mahdollista muuttaa myös suoraan pikakuvakkeista:</p>
-  <table cellspacing=10>
+  <p> You can also change the running options directly from toolbuttons:</p>
+  <table cellspacing="10">
   <tr>
   <td>
   <img src="img/7.jpg" title="Line-by-line on / off" 
   alt="Executing line-by-line on / off">
   </td>
   <td>
-  <p>   Riveittäin suorituksen kytkeminen päälle tai pois. </p>
+  <p> Turning the line by line execution on or off. </p>
   </td> 
   </tr>
   <tr>
@@ -792,7 +800,7 @@ ohjelman uudelleen.</li></ul>
   alt="Extra comments on / off">
   </td>
   <td>
-  <p> Suorituksen lisäkommentoinnin kytkeminen päälle tai pois. </p>
+  <p> Turning the extra comments on or off.</p>
   </td>
   
   </tr>
@@ -802,7 +810,7 @@ ohjelman uudelleen.</li></ul>
   alt="Animating on / off">
   </td>
   <td>
-  <p> Animointi-ikkunan näyttämisen kytkeminen päälle tai pois. </p>
+  <p>Turning the animation window show on or off.</p>
   </td>
   </tr>
   </table>
@@ -815,7 +823,7 @@ ohjelman uudelleen.</li></ul>
     
   
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   
   <td>  
@@ -823,7 +831,7 @@ ohjelman uudelleen.</li></ul>
   alt="">
   </td>
   <td>
-  <h3>3.8 Animointi</h3> 
+  <h3>3.8 Animation</h3> 
   </td>
   </tr>
   </table>
@@ -832,8 +840,8 @@ ohjelman uudelleen.</li></ul>
   <table>
   <tr>
   <td>
-  <img src="img/Animate.jpg" title="Animator" 
-  alt="Picture of Animator">
+  <img src="img/Animate.jpg" title="The animation window" 
+  alt="Picture of the animation window">
   </td>
   </tr>
   </table>
@@ -854,7 +862,7 @@ ohjelman uudelleen.</li></ul>
   alt="">
   </td>
   <td> 
-  <h3>3.9 STDIN- ja STDOUT-tiedostojen valinta </h3>
+  <h3>3.9 Selecting the STDIN and STDOUT files</h3>
   </td>
   </tr>
   </table>
@@ -863,8 +871,8 @@ ohjelman uudelleen.</li></ul>
   <table>     
   <tr>
   <td>  
-  <img src="img/Setstd.jpg" title="STDIN & STDOUT" 
-  alt="Choosing STDIN- and STDOUT-files">
+  <img src="img/Setstd.jpg" title="Selecting the STDIN and STDOUT files" 
+  alt="Selecting the STDIN and STDOUT files">
   </td>
   <td> 
   
@@ -882,32 +890,39 @@ ohjelman uudelleen.</li></ul>
   
   
   
-  <table cellspacing=10>
+  <table cellspacing="10">
   <tr>
   <td>  
   <img src="img/0.jpg" title="" 
   alt="">
   </td>
   <td>
-  <h3> 3.10 Muistin tyhjentäminen</h3> 
+  <h3> 3.10 Erasing the memory</h3> 
   </td>
   </tr>
   </table>
    
-  <!-- Viimeistään täällä maininta muistin pysymisestä samana ellei sitä
-       nollata. -->
   <table>
   <tr>
   
   <td>
   <img src="img/Erasememory.jpg" title="Erase memory" 
-  alt="Erasing the memory -menu">
+  alt="An illustration on how to select File --> Erase memory from the
+  menu">
   </td>
-  <td valign=top>
-  <p> Titokoneen muistin voi tyhjentää valikosta valitsemalla <b>Tiedosto --> Tyhjennä muisti</b>. Muistin tyhjentämisen lisäksi toiminnolla voidaan tyhjentää lähdekoodinäkymä. 
-  Jos toimintoa käytetään käännös- tai ajovaiheessa, kyseinen toiminto keskeytyy ja ruudulle palautetaan <a href="Openview.html">avausnäkymä</a>, jossa rekisterit, symbolitaulu ja
-  koodinäkymä on tyhjennetty. </p> 
-  
+  <td valign="top">
+  <p> The titokone memory can be emptied by selecting File --> Erase
+  memory from the menu. Besides erasing the memory, it can in practice
+  be used to empty the source code view. If the memory is emptied
+  during compilation or running, the action will be aborted and the 
+  <a href="Openview.html">opening view</a>, with registers, symbol
+  table and code view have been emptied.</p>
+  <p>Unless the memory is erased or its size is changed, the remnants
+  of old programs can be seen in the memory. The symbolic
+  representations of those lines are hidden for clarity. If a program does not
+  store something in a register or a memory slot before reading from
+  there, the result may well be something different from 0.</p>
+
   </td>
   
   </tr>
@@ -921,7 +936,7 @@ ohjelman uudelleen.</li></ul>
   alt="">
   </td>
   <td> 
-  <h3>3.11 Muistin koon vaihtaminen</h3>
+  <h3>3.11 Changing the memory size</h3>
   </td>
   </tr>
   </table>
@@ -933,17 +948,27 @@ ohjelman uudelleen.</li></ul>
   <img src="img/Memory.jpg" title="Change memory size" 
   alt="Change memory size -menu">
   </td>
-  <td valign=top>
-  <p> Titokoneen muistin kokoa on mahdollista muuttaa valitsemalla valikosta <b>Asetukset --> Aseta muistin koko</b>.
-  Muistin kokovaihtoehtoja on kahdeksan erilaista 512 rivistä 65536 riviin asti. Kun uusi muistin koko asetetaan, koodinäkymä tyhjennetään
-  ja näkyville palautetaan <a href="Avausnakyma.html">avausnäkymä</a>.</p>
+  <td valign="top">
+  <p> You can change the Titokone memory size by selecting <b>Options
+  --> Set memory size</b> from the menu. There are 8 different memory
+  sizes, from 512 to 65536 rows. When the new memory size is set, the
+  code view is emptied and the and the 
+  <a href="Openview.html">opening view</a> is shown.</p>
   </p>
-  <p>Kun muistin koko ylittää 32768 riviä, loppupään riveihin ei voida viitata suoraan koodista, sillä vakio-osaan ei mahdu 32768:aa suurempia lukuja. Sen sijaan esimerkiksi riville
-  32768+500 voidaan viitata seuraavalla koodinpätkällä:</p>
+  <p>For a memory size larger than 32768 lines, the end lines have
+  addresses larger than the constant part of a command can hold (its
+  maximum value is 32768). This means that the lines cannot be
+  referenced directly from a single line of code, but you can use
+  other methods, like the following bit addressing 32768+500 illustrates:</p>
 <pre>
-   LOAD R1, =32768 ; Ladataan maksimivakio rekisteriin
-   LOAD R2, 500(R1) ; Ladataan rivin 32768+500 sisältö R2:een.
-</pre> </td></tr>
+   LOAD R1, =32768 ; Load the maximum constant into a register
+   LOAD R2, 500(R1) ; Load the contents of the line 32768+500 to R2.
+</pre> 
+  <p>You can also give the value in an EQU or a DC, as they have a
+  higher maximum value. The registers are all 32-bit, like the memory
+  slots, even if the
+  constant (or address) part of a command only fits 16 bits.</p>
+</td></tr>
   </table>
   <br>
   
@@ -964,7 +989,7 @@ ohjelman uudelleen.</li></ul>
   </a>
   </td>
   <td>
-  <h3>3.12 Käyttöliittymän kielen vaihtaminen</h3>
+  <h3>3.12 Changing the user interface language</h3>
   </td>
   </tr>
   </table>
@@ -977,26 +1002,31 @@ ohjelman uudelleen.</li></ul>
   alt="Language settings -menu">
   </td>
   <td valign="top">
-  <p>Titokoneen käyttöliittymässä on mahdollista vaihtaa kieliasetuksia. Kieli valitaan valikosta <b>Asetukset --> Aseta kieli</b>. Oletuskielinä ovat suomi ja englanti. Kielen voi vaihtaa suoraan lennosta, lähes riippumatta käyttöliittymän muista toiminnoista. Jos käyttäjä on määritellyt oman kielitiedoston, hän voi joko valita sen luettelosta lisättyään sen kieliasetustiedostoon tai valita sen erillisestä tiedostosta. Kieliasetustiedostoon lisätyt kielet tulevat näkyville 'Aseta kieli' -valikon alle. Erillisessä tiedostossa
-  olevan kielitiedoston avaaminen onnistuu valikon kohdasta 'Valitse tiedostosta...'. Jos kielitiedosto on oikeaa muotoa, kieli vaihtuu välittömästi. Jos tietyn tekstin käännösvastine puuttuu kielitiedostosta, käytetään käyttöliittymässä oletuskieltä, englantia, kyseisen tekstin kohdalla. Lisäohjeita uuden kielen lisäämiseen löytyy kohdasta <a href="#addlanguage">Uuden kielen tukeminen</a>. 
- 
+  <p>You can change the language settings from the Titokone user
+  interface. Select the language from the menu <b>Options --> Set
+  language</b>. The languages included by default are Finnish and
+  English. You can change the language on the run, nearly independent
+  of other things going on in the user interface. If the user has
+  defined her own language file, she can either choose it from the
+  list or locate it in a separate file. Languages correctly added to
+  the language settings file are shown in the 'Set language' menu. You
+  can choose another language file by clicking on 'Select from a
+  file...'. If the language file is of the correct form, the language
+  is immediately changed. If a certain text's translation equivalent
+  is missing from the language file, the default language (English) is
+  used at its stead. For more information on adding a new language,
+  see <a href="#addlanguage">Adding support for a new language</a>
+
   </p>
   </td>
   </tr>
   </table>
   <br>
 
- <!-- Jne, sopivassa järjestyksessä. -->
 
-<h2><a name="machinelanguage">4. TTK-91-konekieli</a></h2>
-<!-- Tässä voi miettiä, haluaako toistaa tekstitiedoston speksin vähän 
-     siistimmässä formaatissa vaiko vain. Mietin, nyt päädyin tähän...
--->
+<h2><a name="machinelanguage">4. The TTK-91 machine language</a></h2>
 <br>
-<h3>
-
-                    4.1  A SUMMARY OF TTK-91 COMMANDS
-</h3>
+<h3>4.1  A summary of the TTK-91 commands</h3>
 <br>
 
 <pre>
@@ -1359,23 +1389,26 @@ The default files for the two first options are stdin and stdout in
 the user's current working directory.
 </p>
 <p>
-Jos yhteenveto Titokoneen käskykannasta ei tyydyttänyt tiedonjanoasi, lisää aiheesta löydät kurssin <a href="http://www.cs.helsinki.fi/u/kerola/tito/">Tietokoneen toiminta</a> kotisivuilta.
+If this summary of the Titokone commands was not sufficient for your
+thirst of knowledge, you can find more information about the subject 
+from the course homepage of <a
+href="http://www.cs.helsinki.fi/u/kerola/tito/">Computer organization</a>.
 </p>
 <br>
 
-<h2><a name="extension">5. Järjestelmän hienosäätö ja laajentaminen</a></h2>
+<h2><a name="extension">5. Fine-tuning and extending the system</a></h2>
 
-  <h3>5.1 Asetustiedostot</h3>
+  <h3><a name="settings_files">5.1 Settings files</a></h3>
 
 <p>
-Kun käyttäjä muuttaa asetuksia, Titokone tallentaa muutokset tämän
-kotihakemistoon tiedostoon titokone.cfg. Asetustiedosto ylikirjoittuu
-joka asetusmuutoksen jälkeen. 
+When the user changes the settings, Titokone stores the changes in the
+user's home directory, in a file called titokone.cfg. The settings
+file is overwritten after every change in the settings.
 </p>
 <p>
-Mikäli Titokone on avattu jar-paketistaan, järjestelmän oletusasetukset
-löytyvät tiedostosta fi/hu/cs/titokone/etc/settings.cfg. Tämän tiedoston
-sisältö on seuraavanlainen:
+If Titokone has been opened from its jar package, the system default
+settings can be found in the file 
+fi/hu/cs/titokone/etc/settings.cfg. The file contents are as follows:
 </p>
 <pre>
    # Default settings. Running mode: commented (+1), one row at a time (+2),
@@ -1396,24 +1429,26 @@ sisältö on seuraavanlainen:
    Memory size = 9
 </pre>
 <p>
-Asetustiedoston käsin muuttamiseen ei yleensä ole tarvetta. STDIN- ja
-STDOUT-tiedostojen polut tallentuvat tiedostoon kuitenkin aina ns.
-absoluuttisessa muodossa, kun ne on valittu Titokoneen
-käyttöliittymästä. Mikäli polku halutaan ilmaista suhteessa
-työhakemistoon, näin voidaan tehdä asettamalla kohdan "Stdin path" tai
-"Stdout path" arvoksi 'relative', kuten yllä.
+Changing the settings file by hand is not usually necessary. On the
+other hand, the STDIN and STDOUT file paths are always stored in the
+file as absolute paths, when they have been selected from the Titokone
+user interface. If you wish to express the path in relation to the
+working directory, you can do so by setting "Stdin path" or "Stdout
+path" values to 'relative', like they are above.
 </p>
 <p>
-Lisäksi, samoin jar-paketin sisällä fi/hu/cs/titokone/etc/-hakemistossa,
-sijaitsee kieliasetustiedosto languages.cfg. Tästä tiedostosta Titokone
-hakee luettelon järjestelmän osiksi lisätyistä kielitiedostoista, jotka
-luetellaan kielenvaihtovalikossa kielen nimen perusteella. Tällaiset
-kielitiedostot on sijoitettu fi/hu/cs/titokone/resources/-hakemistoon, 
-niiden nimi on muotoa Translations_xx.class ja ne kuuluvat pakettiin
-fi.hu.cs.titokone.resources. Kielitiedosto muodostuu pareista muotoa
-"kielen nimi valikossa" = "xx". Arvon "xx" tulee olla kieltä kuvaava
-kaksikirjaiminen tunnus (tämä syötetään java.util.Localen
-konstruktorille). Oletuskielitiedoston sisältö on seuraavanlainen:
+In addition, also inside the jar package in fi/hu/cs/titokone/etc/, 
+there is the language settings file languages.cfg. This file contains
+a list of the language files which have been added to be a part of the
+system. They are listed in the language choosing file based on the
+language's name given here. The language files themselves are located
+in the fi/hu/cs/titokone/resources/ directory. They are called
+Translations_xx.class and are part of the package
+fi.hu.cs.titokone.resources. The language file consists of pairs of
+the form "the name of the language in the menu" = "xx". The value "xx"
+should be a two-letter identifier for the language (it is passed to
+the constructor of java.util.Locale). The contents of the default
+language settings file are:
 </p>
 <pre>
    Suomi = fi
@@ -1424,23 +1459,44 @@ konstruktorille). Oletuskielitiedoston sisältö on seuraavanlainen:
   
   
   
-  <h3><a name="addlanguage">5.2 Uuden kielen tukeminen</a></h3>
-<p> Uuden kielen lisääminen Titokoneeseen tapahtuu antamalla käännösvastineet oletuskielenä toimivan kielen sanoille. Oletuskielenä
-on englanti. Lisättävää kieltä varten kirjoitetaan ohjeiden mukainen Java-tiedosto, joka käännetään ja avataan Titokoneen käyttöliittymän kautta. Uuden kielitiedoston kirjoittaminen käy helpoiten ottamalla mallia olemassaolevasta kielitiedostosta. Avaa koneeltasi ensin tekstieditori, johon haet Titokone.jar -paketin mukana tulleen tiedoston Translations_fi.java -tiedoston hakemistosta fi/hu/cs/titokone/resources. Tekstieditoriin aukeaa Javan ResourceBundle-kalustoa
-hyväksikäyttävä luokka, joka muodostuu 2-ulotteisesta Object-taulukosta ja sen palauttavasta metodista. Taulukon alkiot näyttävät seuraavilta:</p>
+  <h3><a name="addlanguage">5.2 Adding support for a new language</a></h3>
+<p> Adding a new natural language support to Titokone is done by
+giving translated equivalents to the words and phrases in the default
+language, which is English. A new Java file is written and compiled
+for the new language, and it is opened via the Titokone user
+interface. Writing a new language file is simplest done by using an
+existing translation file as an example. First open a text editor on
+your machine and fetch eg. the file Translations_fi.java from the
+directory fi/hu/cs/titokone/resources (included in the titokone.jar
+package). You will see a class which uses the Java ResourceBundle
+utilities and consists of a two-dimensional Object array and a method
+which returns it. The lines in the array look as follows:</p>
+
 <pre>
    { "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
    { "Indirect memory addressing mode.", "Epäsuora muistiosoitus."},
    { "1: Fetch indexing value from memory slot {0}.", "1: Nouda indeksointiarvo muistipaikasta {0}."}, 
 </pre>
 <p> 
-Jokainen rivi koostuu aaltosulkujen välissä olevasta oletuskielen avainarvosta ja sen käännösvastineesta. 
-Uloimpien aaltosulkujen sisällä on kaksi lainausmerkeillä rajattua tekstikenttää, jotka on erotettu pilkulla toisistaan. Ensimmäisten lainausmerkkien sisällä on oletuskielinen käännösavain. Toisten lainausmerkkien sisällä on käännösvastine. Oma käännösvastine luodaan korvaamalla suomenkielinen teksti. Yleensä
-lauseen merkitys on jossain määrin pääteltävissä itse lauseesta. Käännöksiä helpottamaan Translations_fi -tiedostossa on kommenteilla kerrottu, mihin luokkaan kyseiset käännökset viittaavat. Jos käännettävän lauseen merkitys tuntuu epäselvältä, luokan lähdekoodista on mahdollista selvittää käännökseen sijoitettavan muuttujan tarkoitus. 
+Each line consists of a pair of quote-delimited strings inside
+{}-brackets; the first string is the default language's key value and the
+second its translation equivalent. You translate the original string
+by replacing the latter (here Finnish) text. Usually you can determine
+the meaning of the sentence somehow from itself. To help translators
+with the more vague phrases, we have pointed out in comments which
+class file the translation refers to. If it turns out to be difficult
+to determine the meaning of a translateable string, you can find the
+context from the source code of the class, which may eg. help
+determine the meaning of the variable ({i}) placed in the translation.
 </p>
 <p>
-Allaolevan esimerkin käännöksissä esiintyy erikoismerkkijono, '{0}'. Kyseisen merkkijonon tilalle sijoitetaan muuttuja, joka liittyy käyttöliittymälle välitettävään viestiin. Esimerkin ensimmäisen rivin {0} sisältää muistipaikan numeron. Käännöstä tehdessä on mahdollista luoda uusi käännösvastine, jonka muuttuja
-ei olekaan rivin lopussa, esimerkiksi:
+In the example translations below, there is a special sequence of
+characters, '{0}'. It will be replaced with a variable, which is
+attached to the message passing up to the user interface. In the
+example, the {0} will be replaced with the number of the memory
+slot. The translation does not have to place the variable in the same
+place as the original string; you can move the '{0}' around in the
+sentence. For example:
 <pre>
 //Animator
 { "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
@@ -1448,151 +1504,183 @@ ei olekaan rivin lopussa, esimerkiksi:
 //Animator
 { "Fetch second operand from memory slot {0}.", "Muistipaikasta {0} noudetaan jälkimmäinen operandi."},
 </pre>
-<p> Uusi kielitiedosto luodaan seuraavasti: </p>
+<p>A new language file is created as follows:</p>
 <ol>
-<li> Avaa Translations_fi.java.</li>
-<li> Tallenna tiedosto haluamaasi paikkaan haluamallasi nimellä, mutta .java-päätteisenä. </li>
-<li> Anna käännösvastineet suomenkielisten tekstien kohdalle. </li>
-<li> Sijoita muuttujat {0}...{n} mielekkäille paikoille lauseessa </li>
-<li> Poista tiedostosta rivi 4: 'package fi.hu.cs.titokone.resources;'.</li>
-<li> Vaihda luokan nimi vastaamaan antamaasi tiedoston nimeä.</li>
-<li> Käännä tiedosto esimerkiksi javac-komennolla</li>
-<li> Käynnistä Titokone </li>
-<li><a href="#changelanguage">Vaihda kielitiedosto</a> </li>
+<li> Open Translations_fi.java.</li>
+<li> Save the file by a name you most prefer, but keep the .java
+ending.</li>
+<li> Write the translation equivalents over the Finnish texts.</li>
+<li> Place the variables {0}...{n} in sensible positions in the sentence</li>
+<li> Remove line 4 from the file, which says 'package fi.hu.cs.titokone.resources;'.</li>
+<li> Change the class name to correspond with the filename you stored
+the file as.</li>
+<li> Compile the file, eg. by using the javac command</li>
+<li> Start Titokone </li>
+<li><a href="#changelanguage">Change the language</a> </li>
 </ol>
 <p>
-Voit myös lisätä uuden kielen pysyväksi osaksi järjestelmää, jolloin
-käännöstiedostoa ei enää tarvitse etsiä joka kerta uudelleen. Tallenna
-kohdassa 2 tiedosto hakemistoon fi/hu/cs/titokone/resources/ muiden
-käännöstiedostojen kanssa. Muuta luokan nimeksi rivillä 
+You can also add the new language as a permanent part of the system,
+which relieves you from needing to find the translation file again
+every time. In point 2, store the file in the directory
+fi/hu/cs/titokone/resources with the other translation files. Change
+the class's name, on the line
 </p>
 <pre>
 public class Translations_fi {
 </pre>
-<p>käännöskielesi ('xx') mukaan Translations_xx ja tallenna se tiedostoon Translations_xx.java. Korvaa
-'xx' kohdekielesi ISO-koodilla (Javan Localen tukemat versiot ISO 639:stä). Esimerkiksi jos kääntäisit ohjelman norjaksi, koodi olisi 'no', saksan vastaava olisi 'de'. <b>Älä poista tiedostosta (kohdan 4
-mukaan) pakettimääreriviä</b>, sillä nyt sitä tarvitaan. 
+<p>to be Translations_xx according to your translated language ('xx'),
+and store it in a file called Translations_xx.java. Replace 
+'xx' with the ISO-code of your target language (those versions of ISO
+639 that Java's Locale supports). For example, if you translated the
+program into Norwegian, the code would be 'no', and the corresponding
+code for German would be 'de'. <b>Do not remove (like point 4 advices)
+the package definition line</b>; it is needed for this.
 </p>
 <p>
-Kun käännöksesi on valmis ja sille on käännetty .class-tiedosto, asenna
-se lisäämällä kieliasetustiedostoon fi/hu/cs/titokone/etc/languages.cfg
-rivi "kielen nimi valikossa" = "xx", jossa korvaat taas xx:n
-kielikoodillasi. Esimerkiksi "Deutsch = de". Ks. myös asetustiedostot.
-Kun nyt käynnistät Titokoneen seuraavan kerran, uusi kieli on yhtenä
-vaihtoehtona valikossa.
+When your translation is finished and it has a compiled .class file,
+install it by editing the language setup file
+fi/hu/cs/titokone/etc/languages.cfg and add a line containing "what
+the language should be called in the menu" = "xx", where you again
+replace xx with your language code. For example, "Deutsch = de". See
+also <a href="#settings_files">5.1, Settings files</a>. Now, once you
+start Titokone the next time, the new language will be included as an
+option in the menu.
 </p>
 
 <br>
 
-<h2><a name="troubleshooting">6. Virhetilanteita</a></h2>
+<h2><a name="troubleshooting">6. Troubleshooting</a></h2>
 
   <ol>
-  <li><a href="#thread">Komentorivi-ikkunaan tuleee eriskummallisia virheilmoituksia</a></li>
-  <li><a href="#stdinerror">STDIN-tiedoston lukemisessa tapahtui virhe</a></li>
-  <li><a href="#comptwo">Kääntäjä ei korosta virheellistä riviä</a></li>
-  <li><a href="#selfcode"> Itseään muuttava koodi ei toimi </a></li>
-  <li><a href="#chosen"> Käännös jumittuu ensimmäisellä kierroksella </a></li>
-  <li><a href="#paranoid"> Lähdekooditiedosto kirjoittui yli?</a></li>
-  <li><a href="#variable"> Epäkelpo luku muuttujassa?</a></li>
-  <li><a href="#animazion"> Epäkelpo luku muuttujassa?</a></li>
-  <li><a href="#spfp"> Animaattorin SP ja FP, missä ne ovat?</a></li>
-  <li><a href="#R0"> Rekisteristä R0 tulee pelkkää nollaa </a></li>
-  <li><a href="#help"> Ei näistä mitään apua löytynyt...</a></li>
+  <li><a href="#thread">The terminal window shows weird error messages</a></li>
+  <li><a href="#stdinerror">STDIN file cannot be read, but I didn't
+  even try</a></li>
+  <li><a href="#comptwo">The compiler won't emphasize the faulty line</a></li>
+  <li><a href="#selfcode">Self-changing code doesn't work?</a></li>
+  <li><a href="#chosen">How can I change my source after a failed compilation?</a></li>
+  <li><a href="#paranoid">An overwritten source code file?</a></li>
+  <li><a href="#variable">Invalid opcode equ?</a></li>
+  <li><a href="#animazion">Animation and row-wise execution oddity</a></li>
+  <li><a href="#spfp">Where are SP and FP in the animator?</a></li>
+  <li><a href="#R0"> The register R0 is giving just 0 </a></li>
+  <li><a href="#help">I have another problem...</a></li>
   </ol>
 
   <br>
-  <a name="thread"><b>Kysymys: Näen ikkunassa, josta käynnistin Titokoneen, outoja Javan
-   virheilmoituksia. Sovellus ei kuitenkaan vaikuta kaatuneen. Mistä on kyse? -Arto Å.</b></a>
+  <a name="thread"><b>I see odd Java error messages in the terminal I
+  started Titokone from. The program itself does not seem to mind,
+  though. What is going on?</b></a>
    <div>
-   Vastaus: Ongelmat johtuvat pääasiassa kuun väärästä asennosta. Eräänä osasyynä saattavat olla samanaikaisuusongelmat, joilta olisimme voineet kenties välttyä jos
-   olisimme muistaneet Rinnakkaisohjelmistot-kurssin asiat jo aiemmin; osan
-   taas aiheuttavat Javan grafiikkakirjasto Swingin viat, joita emme pääse
-   korjaamaan. Pahoittelumme.</div>
+   The programs are mainly caused by the wrong positioning of the
+  Moon. A partial reason are problems with synchronization, which we
+  might have avoided if we had paid more attention on the Concurrent
+  systems course. Some of the errors are caused by probable bugs (or
+  very odd features) of Swing, a graphics library in Java, which we
+  cannot fix. Sorry about those, just ignore the messages for now.</div>
 
   <br>
-  <a name="stdinerror"><b>Kysymys: Mikä kysymys liittyy tähän vastaukseen? Nimim.S.R.</b></a>
+  <a name="stdinerror"><b>I get an error message about not being able
+  to read the STDIN file, even though the program I just loaded
+  doesn't even try to read it. What's wrong?</b></a>
   <div>
-  Vastaus: Ohjelma ilmoittaa vain, että mikäli tulevaisuudessa näillä asetuksilla joku 
-  TTK-91-sovellus yrittää lukea STDIN-laitteelta, luku epäonnistuu ellei jotain tehdä
-  asialle. "Joku syy" -osuus kertoo, mikä järjestelmän antama
-  virheilmoitus oli kun tiedostoa luettiin. Jos sovelluksesi tarvitsee
-  STDIN-laitetta, korjaa tiedoston tilanne ja lataa sovellus
-  uudelleen. Katso myös <a href="#loading">2.5, TTK-91-ohjelman
-  lataaminen</a>.</div>
-  
+  Titokone is just notifying you in advance, that if you try to read
+  the STDIN device with a TTK-91 program, the read will fail unless
+  something is done about this. There is a specification of the error
+  message given by the Java I/O system in the end of the error
+  message. If your application should need the STDIN device, fix what
+  is wrong with reading the file and reload the application. See also
+  <a href="#loading">3.5, Loading a TTK-91 program</a>.</div>
+
   <br>  
-   <a name="comptwo"><b>Kysymys: Ohjelmaani oli jäänyt virheellinen rivi
-  koodia; yritin käyttää määrittelemätöntä muuttujaa. Virheilmoitus tuli kyllä ruudulle,
-  mutta rivi ei korostu. Mitä ihmettä? Terveisin, revenneet pelihousut.</b></a>
+   <a name="comptwo"><b>My program had an incorrect line
+   of code; I tried to use a variable which was undefined. The error
+   message showed up right, but the line is not emphasised
+   correctly. What's up?</b></a>
   
-  <div>Vastaus: käännöksen toisessa vaiheessa, objektikoodin luonnissa olevaa virheellistä riviä
-  ei korosteta, jos virhe sattuu olemaan objektikoodin ensimmäisellä rivillä. Joskus päällään seisominen
-  voi auttaa tähän pieneen, mutta kiusalliseen yksityiskohtaan. Pahoittelumme.</div>
+  <div>In the second phase, when object code is generated, the
+  line containing the error is not emphasized if it is the first
+  line. Sorry about the bug.
+  </div>
  
   <br>
-  <a name="selfcode"><b>Kysymys: Tein valtavan hienon ohjelman, joka sisältää itseään muuttavaa
-  koodia. Ensimmäisen kerran ajettuani ohjelman, muuttunut koodi jäi koodialueelle. Eihän oikeat
-  koneet niin toimi? -Lyhyeen loppui koodi-ilottelu </b></a>
- <div> Valitettavasti Titokoneen versiossa 1.0 on bugi, jonka takia koodialuetta ei piirretä uudelleen. Itseään
-  muuttanut koodi näkyy tästä syystä väärin, vaikka se suorittuu oikein.</div>
+  <a name="selfcode"><b>I made a wonderful program, which contains
+  self-modifying code. The first time I ran the program, the changed
+  code remains on the code area. This isn't how the real machines
+  work, is it?</b></a>
+ <div>Unfortunately Titokone 1.0 has a bug, which causes the code area
+  to not be redrawn during the reload of the application after a
+  finished run. This means that self-changed code is shown wrong,
+  even though it is loaded correctly on the processor.</div>
  
  
  <br>
-  <a name="chosen"><b>Käännös päättyi virheeseen ensimmäisellä kierroksella, mutta en pääse
-muokkaamaan koodia! Virheen aiheuttanut rivi pysyy valittuna. Ystävällisin terveisin, erittäin närkästynyt!      </b></a>
-  
-  <div>Virheen aiheuttanut rivi pysyy valittuna. Virheen jälkeen Titokone näyttää vielä virheeseen johtaneen
-lopputilanteen. Kun painat jatka-nappia tai rivinvaihtonäppäintä, käännöksestä siirrytään takaisin lähdekoodinäkymään, jossa voit muokata koodia.</div>
+  <a name="chosen"><b>The compilation ended in an error on the first
+  round, but I cannot edit the code! The row that caused the error
+  remains selected.</b></a>
+
+  <div>After an error, Titokone shows the situation which lead into
+  the error. When you press the 'continue' button or the enter key,
+  you will move from compilation mode back to the source code view, in
+  which you can edit the code.</div>
+
   <br>
-  <a name="paranoid"><b> Avasin useita lähdekooditiedostoja Titokoneessa, muokkasin niistä
-	paria ja nyt joku tiedostoista kirjoittui toisen päälle! Olenko
-	paranoidi? -RaK
-   </b></a>
-   <div> Et ole, vaan erittäin ikävä bugi, jota emme Titokoneen versiosta 1.0
-saaneet paikannettua, aiheuttaa joskus tällaisen ylikirjoittumisen.
-Ongelman voi välttää muokkaamalla tiedostoja muualla (suuremmat
-muokkaukset tulisi joka tapauksessa tehdä toisaalla) tai käsittelemällä
-Titokoneella vain yhtä tiedostoa kerrallaan. Pahoittelemme kovasti.
-Laskuharjoitusten pitäjälle voi näyttää tämän osan käyttöohjeesta,
-mikäli hän ei ota uskoakseen "Titokone söi kotitehtäväni!" -selitystäsi.
-(Tämä selitys todennäköisesti toimii vain kerran.)</div>
+
+  <a name="paranoid"><b>I opened several source code files in
+  Titokone, modified a few of them and now one of the files is
+  overwritten by another! Am I just paranoid?</b></a>
+   <div>No, you are not imagining it. It is caused by a nasty bug,
+   which we did not manage to locate in Titokone version 1.0. You can
+   avoid the problem by editing the files in other programs (larger
+   edits must be done elsewhere in any case), or by not opening
+   multiple files with Titokone. We are very sorry about the
+   problem. You can show this part of the manual to your excercise
+   checker if he will not believe you when you tell him that "Titokone
+   ate my homework!" (This explanation, however, probably only works once.)
+   </div>
 
 
 <br>
 
-<a name="variable"><b>Saan käännösvirheen "epäkelpo komento dc" (tai ds tai equ), kun käytän
-nähdäkseni ihan oikein muotoa "muuttuja dc 333333333333333" -Kai Koksimies</b></a>
-<div>Kun jälkimmäinen luku on riittävän pitkä, kääntäjä ei näe siinä
-kelvollista dc-komentoa (suurin mahdollinen luku DC:lle on 2^31-1, eli
-2147483647), vaan yrittää tulkita komentoa muodossa "muistiviite komento
-parametrit", mistä outo virheilmoitus johtuu. Virheilmoituksen
-selventäminen on parannuslistalla Titokoneen seuraavaa versiota varten.</div>
+<a name="variable"><b>I am getting the compilation error "invalid
+opcode dc" (or ds or equ) when I use - correctly, as far as I see - 
+"variable dc 333333333333333".</b></a>
+<div>When the latter number is large enough, the compiler fails to
+notice a valid dc command with a too large number (the maximum number
+for DC is 2^31-1, or 2147483647), but it tries to interpret the
+command in the form "label command parameters", which causes the odd
+error message. Clarifying the message is on the list of improvements
+to make for the second version of Titokone.</div>
 
-<br><a name="animazion"><b> Kun klikkaan animointiasetuksen päälle, rivittäin suoritus menee
-samalla myös päälle. En saa riveittäin suoritusta pois päältä ilman,
-että animointikin lakkaa. Missä on vika?</b></a>
-<div>Animoinnin seuraamisen helpottamiseksi ja synkronointiongelmia
-vähentääksemme päätimme, että animointi tehdään rivi kerrallaan. Tästä
-syystä riveittäin suorituksen asetus vaaditaan aina asetetuksi yhdessä
-animoinnin kanssa.</div>
+<br><a name="animazion"><b> When I turn on the animation setting, the
+row-wise execution setting is turned on too. I can't turn off row-wise
+execution without stopping the animation as well. What's wrong?</b></a>
+<div>To make following the animation easier and to ease
+synchronization problems, we decided to conduct the animation one
+command ("row") at a time. This means that row-wise execution is
+always required to be on together with animation.</div>
 
 <br>
 
-<b><a name="R0">Rekisteri R0 eitoimi??? Latasin luvun 14 rekisteriin R0, nyt yritän
-    saada sen sieltä pois, mutta sieltä tulee vaan nollaa. Johtuuko tämä kahden komplementista?
-    -Mä,lan </a></b>
-<div>Johtuen TTK-91 määrittelyistä, rekisterille R0 on varattu erikoismerkitys; sieltä
- palautetaan aina arvo 0, vaikka sisältö olisi eri. Pahoittelemme mahdollista sekaannusta.</div>
+<b><a name="R0">The register R0 doesn't work? I loaded 14 into R0, now
+I am trying to read it, but all I get is zero. Is this caused by the
+2's complement?</a></b>
+<div>According to the TTK-91 specification, the register R0 has a
+special meaning. When it occurs as a second parameter, 0 is always
+returned, even if the register itself contains something else. We are
+sorry for the possible confusion.</div>
 <br>
-<a name="spfp"><b>Animointi-ikkunassa ei ole SP:tä eikä FP:tä!</b></a>
-<div>SP:n toinen nimi on R6 ja FP:n R7. Ne ovat animointi-ikkunassa tällä
-nimellä; tosin tämä voidaan muuttaa käännöstiedostoista tarvittaessa.</div>
+
+<a name="spfp"><b>The animation window has no SP or FP!</b></a>
+<div>The SP register is also known as R6, and FP as R7. They are
+    included the animation window by this name; this can be adjusted
+    from the translation if necessary.</div>
 <br>
-<b><a name="help">Parannusehdotuksia, ongelmia?</a></b>
-<div>Mikäli kohtaamasi virhetilanne ei löytynyt tästä, ole hyvä ja ilmoita
-siitä esimerkiksi jollekin Tietokoneen toiminta -kurssin luennoijalle ja
-pyydä välittämään viesti eteenpäin. p.09-743 9685 (Tai joku muu yhteystieto joka
-toimii.) Bugiraportteja otetaan myös vastaan.</div>
+
+<b><a name="help">Further problems or ideas?</a></b>
+<div>If the problem you have observed was not described here, please
+notify eg. a lecturer of the Computer organization (Tietokoneen
+toiminta) course, and ask them to pass the message on. 
+Bug reports are also welcome.</div>
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
