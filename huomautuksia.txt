@@ -70,5 +70,11 @@ SymbolTable  SY 4.4.    Nime‰misen yhten‰isyyden vuoksi tehty seuraavat muutokse
                         defineSymbol -> addSymbol
 
 Processor    SR 5.4.    memoryInputin profiilia muutettiin hieman. Heitt‰‰ addressoutofboundsin.
+
 RandomAccessMemory SR 5.4. setMemoryLinen profiilia muutettiin hieman. Se heitt‰‰ 
                            addressoutofbounds-poikkeuksen nyky‰‰n.
+
+FileHandler  SR 5.4.    checkAccess palauttaa vain booleanin, tehtiin privaatista  
+                        testAccessista checkAccess joka heitt‰‰ poikkeuksia ja poistettiin 
+                        checkAccess, joka oli sekin lis‰tty suunnittelun j‰lkeen. SaveStdOut 
+                        poistettu turhana.
