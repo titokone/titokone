@@ -300,12 +300,13 @@ System.err.println("Foo2");
 			}
 		System.err.println("Foo4");	
 			// accept empty label for dc [EN]
-			if(!validLabelName(lineTemp[0])) {
+			if(!validLabelName(lineTemp[0]) && !(lineTemp[0].equals("") && lineTemp[1].equalsIgnoreCase("DC"))) {
 				// not a valid label;
 				System.err.println("Foo5");
 				comment = new Message("Invalid label.").toString();
 				throw new TTK91CompileException(comment); 
 			} else {
+				System.err.println("Foo6");
 				if (lineTemp[1].equalsIgnoreCase("ds")) {
 					intValue = 0;
 					try {
