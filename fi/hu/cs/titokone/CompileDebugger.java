@@ -168,7 +168,7 @@ public class CompileDebugger {
     
     /** This method sets given memorylines to the given values. It is
 	used in the finalizing first phase of compilation. Compiler
-	uses it to tell GUIBrain  
+	uses it to tell GUIBrain what given lines contain.
 	@param lines An int array where first cell is linenumber and second
 	is the new value.
     */

@@ -1,9 +1,11 @@
 package fi.hu.cs.titokone;
 
 
-/** This class tells GUIBrain and Animator what the processor has done.
-RunDebugger creates objects from this class and passes them onwards.*/
-// TODO: lisaa javadocia.
+/** This class tells GUIBrain what the processor has done. RunDebugger 
+creates objects from this class and passes them to onwards.*/
+
+//TODO: Javadoc
+
 public class RunInfo extends DebugInfo{
 
    
@@ -55,8 +57,10 @@ public class RunInfo extends DebugInfo{
     private int opcode;
     /** This field contains first operand of the command. */
     private int Rj; 
+    private int valueOfRj;
     /** This field contains index register. */
     private int Ri;
+    private int valueOfRi;
     private int ADDR;
     private int valueAtADDR;
     private int valueOfFirstFetch;
@@ -85,118 +89,251 @@ public class RunInfo extends DebugInfo{
     private int[][] changedMemory;
     
     
-    
+    /** This constructor initializes the RunInfo and sets its starting values.
+     @param lineNumber Line number of current line.
+     @param lineContents String containing symbolic command.
+     @param oldPC value of the old PC.
+     @param newPC value of the new PC.
+     @param oldSP value of the old SP.
+     @param newSP value of the new SP.
+     @param oldFP value of the old FP.
+     @param newFP value of the old FC.
+*/
+
     public RunInfo(int lineNumber, String lineContents, int oldPC, int newPC,
 		   int oldSP, int newSP, int oldFP, int newFP){}
     
+    /** This method sets the type of operation performed.
+	@param type Type of operation.
+	/*
+    public void setOperationType(int type){}
+
+    /** This method sets the binary value of the command.
+	@param binary Binary value of the command.
+    */
     public void setBinary(int binary){}
 
-    public void setIndexRegister(int register){}
+    /** this method sets the index register.
+	@param register Number of the register.
+	@param value Value of the register.
+    */
+    public void setIndexRegister(int register, int value){}
    
+    /** This method sets the first operand.
+	@param registers Number of the register.
+	@param value Value of the register.	
+    */
     public void setFirstOperand(int register, int value){}
 
+    /** This method sets the type of the fetch.
+	@param type Type of the fetch.
+    */
+    public void setFetchType(int type){}
+
+    /** This method sets the number of fetches.
+	@param fetches Number of fetches.
+    */
     public void setNumberOfFetches(int fetches){}
 
-    /** */
+    /** This method sets the value of the first fetch.
+	@param value Value of the first fetch.
+     */
     public void setFirstFetch(int value){}
 
-    /** */
+    /** This method sets the value of the second fetch.
+	@param value Value of the second fetch.
+*/
     public void setSecondFetch(int value){}
 
 
+    /** This method sets the value of ADDR.
+	@param ADDR Int containing the ADDR.
+    */
+    public void setADDR(int ADDR){}
 
-    public void setADDR(int fetchType, int ADDR){}
+    /** This method sets the value found at ADDR.
+	@param value Value found at the ADDR.
+    */
     public void setValueAtADDR(int value){}
-
+    /** This method tells info that something was written to the codearea and
+	what it was and its possible symbolic presentation.
+	@param line Number of the line.
+	@param binary New value written.
+	@param symbolic Possible symbolic command.
+    */
     public void setChangedCodeAreaData(int line, int binary, String symbolic){}
     
+    /** This sets the result of performed ALU operation
+	@param result Result of the operation.
+    */
     public void setALUResult(int result){}
     
-    public void setCompareOperation(int whichSRBit, boolean newValue){}
+    /** This method tells info that a compare operation was made and what SR 
+	bit was changed to what value.
+	@param whichBit Number of the bit.
+	@param newValue New value of the bit.
+    */
+    public void setCompareOperation(int whichBit, boolean newValue){}
     
+    /** This method tells info what was read from given device and what was 
+	the value.
+	@param String deviceName Name of the device.
+	@param device Number of the device.
+	@param value Value read.
+    */
     public void setIN(String deviceName, int device, int value){}
     
+
+    /** This method tells info what was written to the  given device and what 
+	was the value.
+	@param String deviceName Name of the device.
+	@param device Number of the device.
+	@param value Value written.
+    */
     public void setOUT(String deviceName, int device, int value){}
     
-
+    /** This method tells info that a conditional jump was made and what was 
+	checked SR bit and its value.
+	@param whichBit Int containig number of the bit.
+	@param boolean Value of the bit.
+    */
     public void setConditionalJump(int whichBit, boolean status){}
 
+
+    /** This method sets what kind of SVC operation was made.
+     */
     public void setSVCOperation(int operation){}
 
 
-
-    public boolean returnConditionalJump(){}
-    public int returnWhichBit(){}
-    public boolean returnBit(){}
+    /** This returns information if conditional jump was made.
+	@return boolean True if conditional jump was made.
+    */
+    public boolean getConditionalJump(){}
+ 
+    /** This method returns information which SR bit was used.
+	@return int Number of the SR bit.
+    */
+    public int getWhichBit(){}
+    /** This method returns value of the SR bit.
+	@return boolean Value of the bit.
+    */
+    public boolean getBit(){}
 
     /** This method tells GUIBrain what kind of operation happened.
         @return int value which represents operation type.*/
     public int whatOperationHappened(){}
     
-    /** This method returns both old and new PC, SP and FP. */
-    public int[] returnPointers(){}
+    /** This method returns both old and new PC, SP and FP.
+    @return int[] Array containing pointers.
+    */
+    public int[] getPointers(){}
     
-    /** This methot tells GUIBrain how many memoryfetches were made. */
-    public int returnMemoryfetches(){}
+    /** This methot tells GUIBrain how many memoryfetches were made.
+	@return int How many fetches were made.
+    */
+    public int getMemoryfetches(){}
 
-    /** This method tells what kind of memoryfetch was made.*/
-    public int returnFetchType(){}
+    /** This method tells what kind of memoryfetch was made.
+    @return int What kind of memorygetch was done.
+    */
+    public int getFetchType(){}
     
-    /** */
-    public int returnValueOfFirstFetch(){}
+    /** This method returns value of the first memoryfetch.
+	@return int Integer containing the value of fetch.
+    */.
+    public int getValueOfFirstFetch(){}
 
-    /** */
-    public int returnValueOfSecondFetch(){}
+    /** This method returns value of the second memoryfetch.
+	@return int Integer containing the value of fetch.
+    */.
+    public int getValueOfSecondFetch(){}
 
-    /** */
-    public int returnLineNumber(){}
+    /** This method returns the number of the line..
+	@return int Integer containing theline number.
+    */.
+    public int getLineNumber(){}
     
-    /** */
-    public String returnLineContents(){}
+    /** This method returns the symbolic command found on the line..
+	@return String String containing the symbolic command.
+    */.
+    public String getLineContents(){}
     
-    /** */
-    public int returnBinary(){}
+    /** This method returns the binary command.
+	@return int Integer containing the binary command.
+    */.
+    public int getBinary(){}
     
-    /** This method tells GUIBrain which registers changed and what is new
-	value.*/
+    /** This method tells GUIBrain which registers changed and what are new
+	values.
+	@param int[] Integer array containing register numbers and new values.
+*/
     public int[] whatRegisterChanged(){}
     
-    /** This method tells GUIBrain which line in data area changed and what is
-	new value.*/
+    /** This method tells GUIBrain which lines in dataarea changed and what are
+	new values.
+	@param int[] Integer array containing line numbers and new values.
+    */
     public int[] whatMemoryLineChanged(){}
     
     /** This method tells GUIBrain what was result of an OUT command (device 
-	and value).*/
+	and value).
+	@param int[] Integer array containing device number and new value.
+    */
     public int[] whatOUT(){}
     
     /** This method tells GUIBrain what was result of an IN command (device and
-     *value.*/
+     *value.
+	@param int[] Integer array containing device number and new value.
+    */
     public int[] whatIN(){}
     
     /** This method returns name of the used device.
 	@return String devicename. */
     public String whatDevice(){}
 
-    public int returnFirstOperand(){}
-    public int returnIndexRegister(){}
-    public int returnADDR(){}
-    public int returnValueAtADDR(){}
+    /** This method returns value of the first operand.
+	@return int[] Integer array containing the number and value of the 
+	first operand.
+    */.
+    public int[] getFirstOperand(){}
 
-    public int returnALUResult(){}
+    /** This method returns value of the index registers.
+	@return int[] Integer array containing  number and value of the index 
+	register.
+    */.
+    public int[] getIndexRegister(){}
+
+    /** This method returns value of the ADDR part of the command.
+	@return int Integer containing the value of the ADDR part of command.
+    */.
+    public int getADDR(){}
+
+    /** This method returns value found at the ADDR.
+	@return int Integer containing the value found at ADDR..
+    */.
+    public int getValueAtADDR(){}
+
+    /** This method returns the result of the ALU operation.
+	@return int Integer containing the result.
+    */
+    public int getALUResult(){}
 
 
     /** This method tells GUIBrain that if a compare operation was made.
 	@return boolean telling if operation was made.
     */
-    public boolean returnCompareOP(){}
+    public boolean getCompareOP(){}
 
     /** This method returns both which SR bit was set and what is new value.
 	0 represents false and 1 true.
 	@return An integer array containing which SR bit was changed and it's
 	new value.*/
-    public int[] returnCompareResult(){}
+    public int[] getCompareResult(){}
 
-    public int returnSVC;
+    /** This method returns type of the SVC operation.
+	@return int Integer containing the operation type.
+    */
+    public int getSVC(){}
        
     
     
