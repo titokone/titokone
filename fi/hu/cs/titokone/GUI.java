@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -49,6 +50,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JToggleButton;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
@@ -243,6 +245,8 @@ public class GUI extends JFrame implements ActionListener {
 	      JFrame animatorFrame;
 	      Animator animator;
 	      JSlider animatorSpeedSlider;
+	      JButton animatorContinueButton;
+	      
         public static final int ANIMATOR_SPEED_MIN = 0;
         public static final int ANIMATOR_SPEED_MAX = 100;
   	      
@@ -347,39 +351,10 @@ public GUI() {
   print("Initializing GUI...");        
   initGUI();
 
-  try {
-    animator = new Animator();
-  }
-  catch (IOException e) {
-    System.out.println(e.getMessage());
-  }
   
-  animatorFrame = new JFrame();
-  animatorFrame.setSize(810, 636);
-  animatorFrame.setTitle("Animator");
-  animatorFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
   
-  animatorSpeedSlider = new JSlider(JSlider.HORIZONTAL, ANIMATOR_SPEED_MIN, ANIMATOR_SPEED_MAX, 50);
-  Hashtable labelTable = new Hashtable();
-  labelTable.put( new Integer( 0 ), new JLabel("Slow") );
-  labelTable.put( new Integer( ANIMATOR_SPEED_MAX ), new JLabel("Fast") );
-  animatorSpeedSlider.setLabelTable( labelTable );
   
-  animatorSpeedSlider.setPaintLabels(true);
-  animatorSpeedSlider.addChangeListener( new ChangeListener() {
-    public void stateChanged(ChangeEvent e) {
-      int speed = ANIMATOR_SPEED_MAX - animatorSpeedSlider.getValue();
-      animator.setAnimationDelay(speed);
-    }
-  });
-  
-  JPanel animatorPanel = new JPanel(new BorderLayout());
-  animatorPanel.add(animator, BorderLayout.CENTER);
-  animatorPanel.add(animatorSpeedSlider, BorderLayout.NORTH);
-  
-  animatorFrame.getContentPane().add(animatorPanel);
-   
-     
+  initAnimator();   
   
   print("Initializing GUIBrain...");        
   guibrain = new GUIBrain(this, animator);
@@ -978,6 +953,7 @@ public void setEnabled(short command, boolean b) {
     case CONTINUE_COMMAND:
       continueMenuItem.setEnabled(b);
       continueButton.setEnabled(b);
+      animatorContinueButton.setEnabled(b);
       break;
     case CONTINUE_WITHOUT_PAUSES_COMMAND:
       continueToEndMenuItem.setEnabled(b);
@@ -1583,6 +1559,58 @@ private void enterInput() {
 }
 
 
+private void initAnimator() {
+  
+  try {
+    animator = new Animator();
+  }
+  catch (IOException e) {
+    System.out.println(e.getMessage());
+  }
+  
+  animatorFrame = new JFrame();
+  animatorFrame.setSize(810, 636);
+  animatorFrame.setTitle("Animator");
+  animatorFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+  
+  animatorSpeedSlider = new JSlider(JSlider.HORIZONTAL, ANIMATOR_SPEED_MIN, ANIMATOR_SPEED_MAX, 50);
+  Hashtable labelTable = new Hashtable();
+  labelTable.put( new Integer( 0 ), new JLabel("Slow") );
+  labelTable.put( new Integer( ANIMATOR_SPEED_MAX ), new JLabel("Fast") );
+  animatorSpeedSlider.setLabelTable( labelTable );
+  
+  animatorSpeedSlider.setPaintLabels(true);
+  animatorSpeedSlider.addChangeListener( new ChangeListener() {
+    public void stateChanged(ChangeEvent e) {
+      int speed = ANIMATOR_SPEED_MAX - animatorSpeedSlider.getValue();
+      animator.setAnimationDelay(speed);
+    }
+  });
+  
+  animatorContinueButton = new JButton();
+  try {  
+    animatorContinueButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/StepForward24.gif"), "Continue")
+    );
+  }
+  catch (Exception e) {
+  }
+  animatorContinueButton.setToolTipText("Continue operation");
+  animatorContinueButton.setMargin(new Insets(0,0,0,0));
+  animatorContinueButton.addActionListener(continueCommandActionListener);
+  
+  JPanel animatorToolBarPanel = new JPanel(new BorderLayout());
+  animatorToolBarPanel.add(animatorSpeedSlider, BorderLayout.CENTER);
+  animatorToolBarPanel.add(animatorContinueButton, BorderLayout.WEST);
+  JPanel animatorPanel = new JPanel(new BorderLayout());
+  animatorPanel.add(animator, BorderLayout.CENTER);
+  animatorPanel.add(animatorToolBarPanel, BorderLayout.NORTH);
+  
+  animatorFrame.getContentPane().add(animatorPanel);
+   
+}
+  
+
 /** Inserts the menu into main window.
     @param destFrame The frame the menu bar will be inserted.
 */
@@ -1599,6 +1627,7 @@ private void insertMenuBar(JFrame destFrame) {
 	stopMenuItem          = fileMenu.add("Stop");
 	eraseMem              = fileMenu.add("Erase memory");
 	quit                  = fileMenu.add("Exit");
+  
   
   optionsMenu           = new JMenu("Options");
   
@@ -1640,6 +1669,18 @@ private void insertMenuBar(JFrame destFrame) {
 	mainMenuBar.add(optionsMenu);
 	mainMenuBar.add(helpMenu);
 	destFrame.setJMenuBar(mainMenuBar);
+	
+	
+	openFile.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK) );
+  compileMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_MASK) );
+  runMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK) );
+  continueMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0) );
+  continueToEndMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK) );
+  eraseMem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK) );
+  stopMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0) );
+  quit.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK) );
+  manual.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0) );
+  
 	
 	openFile.addActionListener(openCommandActionListener);
   compileMenuItem.addActionListener(compileCommandActionListener);
@@ -1688,7 +1729,6 @@ private JToolBar makeToolBar() {
   }
   openFileButton.setToolTipText("Open a file");
   openFileButton.setMargin(new Insets(0,0,0,0));
-  openFileButton.setMnemonic(KeyEvent.VK_O);
   openFileButton.setEnabled(false);
   toolbar.add(openFileButton);
   
