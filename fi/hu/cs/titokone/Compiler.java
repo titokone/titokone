@@ -479,7 +479,7 @@ public class Compiler {
 					  lineTemp[0]).toString();
 		    compileDebugger.setComment(comment);
 		}
-		if (lineTemp[1].equals("def")) {
+		if (lineTemp[1].equalsIgnoreCase("def")) {
 		    if (lineTemp[0].equals("stdin") || 
 			lineTemp[0].equals("stdout")) {
 			if (lineTemp[0].equals("stdin")) { 
@@ -838,16 +838,19 @@ public class Compiler {
 		if (opcode.equalsIgnoreCase("nop")) {
 		    // (do nothing)
 		} else {
-		    //MUUTETTU! 23.4.04 oli pelkkä "pop" (Olli)
-		    if (opcode.equalsIgnoreCase("pop")|| 
-opcode.equalsIgnoreCase("pushr") || opcode.equalsIgnoreCase("popr")) {
+		    if (opcode.equalsIgnoreCase("pop")) {
 			if (addressingMode.equals("@") || 
 			    addressingMode.equals("=") || !address.equals("")) 
 			    return null;	
 		    } else {
-			if (firstRegister.equals("") || 
-			    (address.equals("") && secondRegister.equals(""))) 
-			    return null;
+			if (opcode.equalsIgnoreCase("pushr") || 
+                            opcode.equalsIgnoreCase("popr")) {
+				if (firstRegister.equals("")) return null;
+			} else {
+				if (firstRegister.equals("") || 
+				   (address.equals("") && secondRegister.equals(""))) 
+				    return null;
+			}
 		    }
 		}
 	    }
