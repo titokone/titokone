@@ -265,7 +265,8 @@ public void menuOpenFile(File openedFile) {
     
     String[] src = k91Source.split("\n|\r|\r\n");
     gui.insertToCodeTable(src);
-    gui.updateStatusBar("Opened a new k91 source file");
+    gui.updateStatusBar(new Message("Opened a new k91 source " +
+				    "file.").toString());
     gui.setGUIView(2);
     
     currentState = K91_NOT_COMPILING;
@@ -1111,7 +1112,8 @@ private LoadInfo load() {
   }
   catch (TTK91AddressOutOfBounds e) { 
     gui.showError(new Message("Titokone out of memory").toString());
-    return null;
+    return control.getPendingLoadInfo(); // This is null; load really failed.
+    // Above line changed by Sini 26.4.
   }
   catch (TTK91NoStdInData e) {
     File[] appDefs = control.getApplicationDefinitions();
@@ -1120,8 +1122,10 @@ private LoadInfo load() {
       stdinFilePath[0] = appDefs[Control.DEF_STDIN_POS].getPath();
     }
     
-    gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
-    return null;
+    //gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
+    gui.addComment(e.getMessage()); // The message is already translated.
+    return control.getPendingLoadInfo(); // This is != null; load succeeded.
+    // Above 3 lines changed by Sini 26.4.
   }
   
   return loadinfo;

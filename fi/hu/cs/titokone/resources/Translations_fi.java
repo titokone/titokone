@@ -208,6 +208,8 @@ public class Translations_fi extends ListResourceBundle {
       {"Parse error in settings file.", 
        "Jäsennysvirhe asetustiedostoa luettaessa."},
       {"Titokone out of memory: {0}", "Titokoneesta loppui muisti: {0}"},
+      {"Opened a new k91 source file.", 
+       "Avattiin uusi k91-lähdekooditiedosto."},
       {"File extension must be k91 or b91", "Tiedostopäätteen tulee " +
        "olla k91 tai b91."}, 
       {"Illegal input", "Syöte ei kelpaa"},   
