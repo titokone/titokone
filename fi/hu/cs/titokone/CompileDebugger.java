@@ -87,8 +87,70 @@ public class CompileDebugger {
 	@param name String containing name of the symbol.
     */
     public void foundSymbol(String name) {
-	
+
+	boolean wasReservedWord = false;
+
+	if (name.equalsIgnoreCase("CRT")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 0);
+		wasReservedWord = true;
+	} 
+
+	if (name.equalsIgnoreCase("KBD")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 1);
+		wasReservedWord = true;
+	} 
+
+	if (name.equalsIgnoreCase("STDIN")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 6);
+		wasReservedWord = true;
+	} 
+
+	if (name.equalsIgnoreCase("STDOUT")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 7);
+		wasReservedWord = true;
+	} 
+
+	if (name.equalsIgnoreCase("HALT")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 11);
+		wasReservedWord = true;
+	} 
+
+	if (name.equalsIgnoreCase("READ")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 12);
+		wasReservedWord = true;
+	} 
+
+	if (name.equalsIgnoreCase("WRITE")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 13);
+		wasReservedWord = true;
+	} 
+
+	if (name.equalsIgnoreCase("TIME")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 14);
+		wasReservedWord = true;
+	} 
+
+	if (name.equalsIgnoreCase("DATE")) {  	
+		info.setSymbolFound();
+		info.setSymbolName(name, 15);
+		wasReservedWord = true;
+	} 
+
+	if (!wasReservedWord) {
+		info.setSymbolFound();
+		info.setSymbolName(name);
+	}
+
     }
+
 
     /** This method tells that a label was found and it is added to the
      symboltable. Boolean new tells debugger that if it was new.
@@ -151,11 +213,12 @@ public class CompileDebugger {
     debugger what are code lines and then what is dataArea in memory
     and what it contains. GUIBrain then redraws GUI and writes
     codelines leaving binary cells empty. Then it draws data area
-    where number of first data line is i+codeArea.length
+    where number of first data line is codeArea.length
     @param codeArea String array containing codelines.
     @param dataArea String array containing data.
+    @param symbolTable 2-dimensional String array containing the symbol table.
     */
-    public void finalFirstPhase(String[] codeArea, String[] dataArea) {
+    public void finalFirstPhase(String[] codeArea, String[] dataArea, String[][] symbolTable) {
 // String because of the DEF command
 
     }

@@ -10,6 +10,7 @@ package fi.hu.cs.titokone;
 import fi.hu.cs.ttk91.TTK91CompileException;
 import java.util.StringTokenizer;
 import java.util.HashMap;
+import java.util.Vector;
 
 /** This class knows everything about the relation between symbolic
     code and binary code. It can transform a full source to binary or
@@ -21,13 +22,13 @@ public class Compiler {
     /** This field contains the source code as a String array. */
     private String[] source;
 
-    /** This field contains the symbol table in its incomplete form. Some of 
-	the values corresponding to the keys may be null, if they have not
-	been defined yet. */
+    /** This field holds the declared variables, labels and other symbols. It acts as a 
+	pointer to the symbolTable Vector where the actual data is stored. */
     private HashMap symbols;
 
-    /** This field tells how many symbols have been found so far. */
-    private int symbolsFoundSoFar;
+    /** This field holds the invalid values to be introduced (i.e. already used labels can't 
+	be re-used. */
+    private HashMap invalidLabels;
 
     /** This field tells the next line to be checked. */
     private int nextLine;
@@ -55,19 +56,17 @@ public class Compiler {
 	first round. */
     private int commandLineCount;
 
-    /** This field keeps track of the size of the data area expanded during the
-	first round. */
-    private int dataAreaSize;
-    
     /** This array contains the code.  During the first round this field holds the 
 	clean version of the code (stripped of compiler commands like def, ds, dc etc.)
       */
-    private String[] code;
+    private Vector code;
 
-    /** This array contains the data. During first round this array holds the compiler 
-	commands, and when finalizing the first round those commands are converted to a 
-	data array.
-      */
+    /** This field acts as a symboltable, it is a String array vector where 1:st position
+ 	holds the name of the symbol and the second either it's value (label, equ) or
+	the command (ds 10, dc 10) */
+    private Vector symbolTable;
+
+    /** This array contains the data. */
     private String[] data;
 
     /** This field contains the CompileDebugger instance to inform of any compilation
@@ -90,16 +89,25 @@ public class Compiler {
     public void compile(String source) { 
 	firstRound = true;
 	this.source = splitALine(source);
-	symbols = new HashMap();
-	symbolsFoundSoFar = 0;
+
 	nextLine = 0;
-	commandLineCount = 0;
-	dataAreaSize = 0;
-	code = new String[this.source.length];
-	data = new String[this.source.length];
-	symbolCommands = new String[this.source.length];
 	defStdin = "";
 	defStdout = "";
+
+	code = new Vector();
+	symbols = new HashMap();	
+	symbolTable = new Vector();
+	invalidLabels = new HashMap();
+
+	invalidLabels.put("crt", new Integer(0));
+	invalidLabels.put("kbd", new Integer(1));
+	invalidLabels.put("stdin", new Integer(6));
+	invalidLabels.put("stdout", new Integer(7));
+	invalidLabels.put("halt", new Integer(11));
+	invalidLabels.put("read", new Integer(12));
+	invalidLabels.put("write", new Integer(13));
+	invalidLabels.put("time", new Integer(14));
+	invalidLabels.put("date", new Integer(15));
     }
 	
     /** This function goes through one line of the code. On the first round, it
@@ -118,24 +126,30 @@ public class Compiler {
 	the first round of compilation is finished. */
     public CompileInfo compileLine() throws TTK91CompileException { 
 
+	CompileInfo info;
+
 	if (firstRound) {
 		if (nextLine == source.length) {
 			compileDebugger.firstPhase();
-			return(initializeSecondRound());
+			info = initializeSecondRound();
+			return info;
 		} else {
 			compileDebugger.firstPhase(nextLine, source[nextLine]);
+			info = firstRoundProcess(source[nextLine]);
 			++nextLine;
-			return(firstRoundProcess(source[nextLine]));
+			return info;
 		}
 	} else {
-		if (nextLine == code.length) {
+		if (nextLine == code.size()) {
 			// TODO create application;
 			compileDebugger.finalPhase();
-			return compileDebugger.lineCompiled();
+			info =  compileDebugger.lineCompiled();
+			return info;
 		} else {
 //			compileDebugger.secondPhase(nextLine, source[nextLine], );
+			info = secondRoundProcess((String)code.get(nextLine));
 			++nextLine;
-			return(secondRoundProcess(code[nextLine]));
+			return info;
 		}
 	}
     }
@@ -184,6 +198,10 @@ public class Compiler {
 	String comment = "";
 	String[] commentParameters;
 	int intValue = 0;
+	String[] symbolTableEntry = new String[2];
+	boolean labelFound = false;
+	boolean variableUsed = false;
+	boolean symbolDefined = false;
 
 	if (lineTemp == null) {
 		lineTemp = parseLine(line);
@@ -191,39 +209,77 @@ public class Compiler {
 // not a valid command
 			throw new TTK91CompileException(); 
 		} else {
-			code[commandLineCount] = line;
-			++ commandLineCount;
-			if (lineTemp[0].equals("")) {
+
+			if (lineTemp[1].equals("")) {
+// line empty;
+
+			} else {
+				code.add(line);
+				if (!lineTemp[0].equals("")) {
+					nothingFound = false;
+					labelFound = true;
+// label found
+				
+					if (invalidLabels.containsKey(lineTemp[0])) {
+// not a valid label			
+						throw new TTK91CompileException();
+					} else {
+						invalidLabels.put(lineTemp[0], null);
+
+						if (symbols.containsKey(lineTemp[0])) {
+							symbolTableEntry[0] = lineTemp[0];
+							symbolTableEntry[1] = "" + 
+									(code.size() - 1);
+symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableEntry);
+						} else {
+							symbols.put(lineTemp[0], 
+								new Integer(code.size() - 1));
+							symbolTableEntry[0] = lineTemp[0];
+                                                	symbolTableEntry[1] = "" +
+              	                                          		(code.size() - 1);
+                	                                symbolTable.add(symbolTableEntry);
+						}
+	
+						compileDebugger.foundLabel(lineTemp[0], 
+									code.size() -1);
+					}
+				}
+
 				try {
 					Integer.parseInt(lineTemp[4]);	
 				} catch(NumberFormatException e) {	
-					nothingFound = false; 	
 // variable used	
+					nothingFound = false; 	
+					variableUsed = true;
 					compileDebugger.foundSymbol(lineTemp[4]);
-//	TODO				compileDebugger.setComments("")
 
-				}	
-			} else {
-				nothingFound = false;
-// label found
-				
-				if (symbols.containsKey(lineTemp[0])) {
-// label was already set			
-				} else {
-					symbols.put((Object)lineTemp[0], 
-						(Object)new Integer(commandLineCount));
-					data[symbolsFoundSoFar] = "" + commandLineCount;
-					symbolCommands[symbolsFoundSoFar] = line;
-					++symbolsFoundSoFar;
-					compileDebugger.foundLabel(lineTemp[0], commandLineCount);
-//	TODO				compileDebugger.setComments("")
+					if (!symbols.containsKey(lineTemp[0])) {
+						if (invalidLabels.get(lineTemp[4]) == null) {
+							symbols.put(lineTemp[4], new 
+								Integer(symbolTable.size()));
+							symbolTableEntry[0] = lineTemp[0];
+                                                        symbolTableEntry[1] = "";
+							symbolTable.add(symbolTableEntry);
+						} else {
+// reserver word was used	
+		symbols.put(lineTemp[4], new Integer(symbolTable.size()));
+                symbolTableEntry[0] = lineTemp[0];
+                symbolTableEntry[1] = "" + (Integer)invalidLabels.get(lineTemp[4]);
+                symbolTable.add(symbolTableEntry);
+						}
+					} 
 				}
 			}
 		}
 	} else {
-
+// compiler command
 		boolean allCharsValid = true;
 		boolean atLeastOneNonNumber = false;
+
+		if (invalidLabels.containsKey(lineTemp[0])) {
+			throw new TTK91CompileException();
+		}
+
 		for (int i = 0; i < lineTemp[0].length(); ++i) {
 			if (atLeastOneNonNumber == false) {
 				if (VALIDLABELCHARS.indexOf(lineTemp[0].charAt(i)) > 9) {
@@ -234,44 +290,67 @@ public class Compiler {
 				allCharsValid = false;
 			}
 		}
+
 		if (atLeastOneNonNumber == false || allCharsValid == false) { 
 // not a valid label;
 			throw new TTK91CompileException(); 
 		} else {
+			if (invalidLabels.containsKey(lineTemp[0])) {
+				throw new TTK91CompileException();
+			} 
 
-			if (!lineTemp[1].equals("def")) {
+			if (lineTemp[1].equalsIgnoreCase("ds")) {
 				intValue = 0;
 				try {
 					intValue = Integer.parseInt(lineTemp[2]);	
 				} catch(NumberFormatException e) {	
-// not a number
 					throw new TTK91CompileException(); 
 				}	
-				if (intValue < MININT || intValue > MAXINT) {
-// value too big/small
+				if (intValue < 0 || intValue > MAXINT) {
 					throw new TTK91CompileException(); 
 				}
 			}
-// ok (found compiler command)
-			if (lineTemp[1].equals("equ")) {
+
+			if (lineTemp[1].equalsIgnoreCase("dc")) {
+				intValue = 0;
+				if (lineTemp[2].trim().length() > 0) {
+					try {
+						intValue = Integer.parseInt(lineTemp[2]);	
+					} catch(NumberFormatException e) {	
+						throw new TTK91CompileException(); 
+					}	
+
+					if (intValue < MININT || intValue > MAXINT) {
+						throw new TTK91CompileException(); 
+					}
+				}
+			}
+
+			if (lineTemp[1].equalsIgnoreCase("equ")) {
 				if (symbols.containsKey(lineTemp[0])) {
-					data[intValue] = lineTemp[2];
+					symbolTableEntry[0] = lineTemp[0];
+					symbolTableEntry[1] = lineTemp[2];
+symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableEntry);
 				} else {
-					data[symbolsFoundSoFar] = "" + intValue;
-					++symbolsFoundSoFar;
+					symbols.put(lineTemp[0], new Integer(symbolTable.size()));
+			           	symbolTableEntry[0] = lineTemp[0];
+                                        symbolTableEntry[1] = lineTemp[2];
+                                        symbolTable.add(symbolTableEntry);
 				}
 				compileDebugger.foundEQU(lineTemp[0], intValue);
 // TODO				compileDebugger.setComment();
 			}
 			if (lineTemp[1].equals("ds")) {
 				if (symbols.containsKey(lineTemp[0])) {
-// TODO what is done if ds was defined earlier? 
-					data[intValue] = line;
+					symbolTableEntry[0] = lineTemp[0];
+					symbolTableEntry[1] = lineTemp[1] + " " + lineTemp[2];
+symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableEntry);
+
 				} else {
-					symbols.put((Object)lineTemp[0], 
-						(Object)new Integer(symbolsFoundSoFar));
-					datd[symbolsFoundSoFar] = line;
-					++symbolsFoundSoFar;
+					symbolTableEntry[0] = lineTemp[0];
+					symbolTableEntry[1] = lineTemp[1] + " " + lineTemp[2];
+					symbolTable.add(symbolTableEntry);
+
 				}
 				compileDebugger.foundDS(lineTemp[0]);
 // TODO				compileDebugger.setComment();
@@ -279,12 +358,13 @@ public class Compiler {
 			if (lineTemp[1].equals("dc")) {
 				compileDebugger.foundDC(lineTemp[0]);
 				if (symbols.containsKey(lineTemp[0])) {
-					data[intValue] = line;
-				} else {
-					symbols.put((Object)lineTemp[0], 
-						(Object)new Integer(symbolsFoundSoFar));
-					data[symbolsFoundSoFar] = line;
-					++symbolsFoundSoFar;
+                                       symbolTableEntry[0] = lineTemp[0];
+                                        symbolTableEntry[1] = lineTemp[1] + " " + lineTemp[2];
+symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), symbolTableEntry);
+                                } else {
+                                        symbolTableEntry[0] = lineTemp[0];
+                                        symbolTableEntry[1] = lineTemp[1] + " " + lineTemp[2];
+                                        symbolTable.add(symbolTableEntry);
 				}
 				compileDebugger.foundDC(lineTemp[0]);
 // TODO				compileDebugger.setComment();
@@ -305,6 +385,8 @@ public class Compiler {
 		}		
 	}
 
+
+//	generate a comment from the boolean variables! TODO
 	return compileDebugger.lineCompiled();
     }
 
@@ -319,61 +401,91 @@ public class Compiler {
 
 	nextLine = 0;
 	firstRound = false;
-	String[] newCode = new String[commandLineCount];
-	for (int i= 0; i < commandLineCount; ++i) newCode[i] = code[i];
+
+// copy the code.
+
+	String[] newCode = new String[code.size()];
+	for (int i= 0; i < newCode.length; ++i) newCode[i] = (String)code.get(i);
 
 	String[] lineTemp;
 	int dataAreaSize = 0;
 
-	for (int i = 0; i < symbolsFoundSoFar; ++i) {
-		lineTemp = parseCompilerCommandLine(data[i]);
-		if (lineTemp[1].equalsIgnoreCase("ds")) {
-			try {
-				dataAreaSize = 
-					dataAreaSize + Integer.parseInt(lineTemp[0]);
-			} catch (exception e) {  }
-		} else {
-			if (!lineTemp[1].equalsIgnoreCase("equ")) {
-				++ dataAreaSize;
+// calculate the size of data-area
+
+	for (int i = 0; i < symbolTable.size(); ++i) {
+		lineTemp = (String[])symbolTable.get(i);
+		if (lineTemp[1].trim().length() > 3) {
+			if (lineTemp[1].substring(0,2).equalsIgnoreCase("ds")) {
+				dataAreaSize += Integer.parseInt(lineTemp[1].substring(3));
+			} else {
+				if (lineTemp[1].substring(0,2).equalsIgnoreCase("dc"))
+					++dataAreaSize;
 			}
 		}
 	}
 	
 	if (!defStdin.equals("")) ++dataAreaSize;
 	if (!defStdout.equals("")) ++dataAreaSize;
-	String[] newData = new String[dataAreaSize];
 
-	int j = 0;
-	String[][] symbolTable = new String[symbolTableSize][2];
+	String[] data = new String[dataAreaSize];
+	String[] newSymbolTableLine = new String[2];
+	newSymbolTableLine[0] = "";
+	newSymbolTableLine[1] = "";
+	int nextPosition = 0;
+	int nextMemorySlot = newCode.length;
+	int dsValue = 0;
 
-	for (int i= 0; i < data.length; ++i) {
-		if (lineTemp[1].equalsIgnoreCase("ds") {
-			newData[i] = "";
-		} else { 
-			if (lineTemp[1].equalsIgnoreCase("dc") {
-				newData[i] = "";
-				symbolTable [j][0] = "";		
-				symbolTable [j][1] = "";		
 
-			} else {	// EQU
-				symbolTable [j][0] = "";
-				symbolTable [j][1] = "";
+// update variable values to symbolTable
 
-			}
-		}
-	}
+	for (int i = 0; i < symbolTable.size(); ++i) {
+                lineTemp = (String[])symbolTable.get(i);
+                if (lineTemp[1].trim().length() > 2) {
+                        if (lineTemp[1].substring(0,2).equalsIgnoreCase("ds")) {
+				dsValue = Integer.parseInt(lineTemp[1].substring(3));
+				newSymbolTableLine[0] = lineTemp[0];
+				newSymbolTableLine[1] = "" + nextMemorySlot;
+				symbolTable.add(i, newSymbolTableLine);
+				++nextMemorySlot;
+				for (int j = nextPosition; 
+					j < nextPosition + dsValue; ++nextPosition) {
+ 					data[j] = "" + 0;		
+				}		
+                        } else {
+                                if (lineTemp[1].substring(0,2).equalsIgnoreCase("dc")) {
+					if (lineTemp[1].length() > 3) {
+						data[nextPosition] = lineTemp[1].substring(3);
+					} else { data[nextPosition] = "" + 0; }
+	
+					newSymbolTableLine[0] = lineTemp[0];
+					newSymbolTableLine[1] = "" + nextMemorySlot;
+					symbolTable.add(i, newSymbolTableLine);
+					++nextMemorySlot;
+					++nextPosition;
+				}
+                        }
+                }
+        }
 
-	int nextPosition = symbolsFoundSoFar;
+
 	if (!defStdin.equals("")) {
-		newData[nextPosition] = "STDIN " + defStdin;
+		data[nextPosition] = "STDIN " + defStdin;
 		++nextPosition;
 	}
 	if (!defStdout.equals("")) {
-		newData[nextPosition] = "STDOUT " + defStdout;
+		data[nextPosition] = "STDOUT " + defStdout;
 	}
+
 	
-	compileDebugger.finalFirstPhase(newCode, newData);
+// make new SymbolTable
+	String[][] newSymbolTable = new String[symbolTable.size()][2];
+	for (int i= 0; i < newSymbolTable.length; ++i) { 
+		newSymbolTable[i] = (String[])symbolTable.get(i);
+	}
+
+	compileDebugger.finalFirstPhase(newCode, data, newSymbolTable);
 	return compileDebugger.lineCompiled();	
+
     }
 
     /** This function transforms any commands to binary and stores both
@@ -434,19 +546,19 @@ Basic functionality: (Trim between each phase.)
 		}
 
 		if (parsedLine[1].equalsIgnoreCase("jump")) {
-			if (parsedLine[4].equals("") && parderLine[5].equals("")) {
+			if (parsedLine[4].equals("") && parsedLine[5].equals("")) {
 				throw new TTK91CompileException();
 			} else { allOk = true; }
 		}
 	
 		if ("jneg-jzer-jpos-jnneg-jnzer-jnpos".indexOf(parsedLine[1]) != -1) {
-			 if (parsedLine[4].length() > 0 && parderLine[5].equals("")) {
+			 if (parsedLine[4].length() > 0 && parsedLine[5].equals("")) {
                                 throw new TTK91CompileException();
                         } else { allOk = true; }
 		}
 		
 		if ("jles-jequ-jgre-jnles-jnequ-jngre".indexOf(parsedLine[1]) != -1) {
-			 if (parsedLine[4].equals("") && parderLine[5].equals("")) {
+			 if (parsedLine[4].equals("") && parsedLine[5].equals("")) {
                                 throw new TTK91CompileException();
                         } else { allOk = true; }
 		}
@@ -599,13 +711,24 @@ Basic functionality: (Trim between each phase.)
                 address = "";
         }
 
+	if (opcode.length() > 0) {
+		if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
+			if (addressingMode.equals("=") || address.equals("")) return null;	
+		}
+	}	
+
+	if (addressingMode.equals("=") && address.equals("")) return null;
+	if (opcode.equalsIgnoreCase("load") && address.equals("")) return null;
+	if (opcode.equalsIgnoreCase("store") && address.equals("")) return null;
+	if (opcode.equalsIgnoreCase("store") && addressingMode.equals("=")) return null;
+
 	parsedLine = new String[6];
-	parsedLine[0] = label;
-	parsedLine[1] = opcode;
-	parsedLine[2] = firstRegister;
-	parsedLine[3] = addressingMode;
-	parsedLine[4] = address;
-	parsedLine[5] = secondRegister;
+	parsedLine[0] = label.trim();
+	parsedLine[1] = opcode.trim();
+	parsedLine[2] = firstRegister.trim();
+	parsedLine[3] = addressingMode.trim();
+	parsedLine[4] = address.trim();
+	parsedLine[5] = secondRegister.trim();
 	return parsedLine;
     }
 
@@ -664,9 +787,17 @@ Basic functionality: (Trim between each phase.)
 	if (nextToCheck < line.length()) {
 		while (line.charAt(nextToCheck) == ' ') { ++nextToCheck; }
 		value = line.substring(nextToCheck);
+		if (value.length() > 0) {
+			try {
+				intValue = Integer.parseInt(value);
+				if (opcode.equalsIgnoreCase("ds") && intValue < 1) { 
+					return null; 
+				}
+			} catch (NumberFormatException e) { return null; }
+		}
 	}	
 
-	if (value.equals("")) return null;
+	if (!opcode.equalsIgnoreCase("dc") && value.equals("")) return null;
 
 	parsedLine = new String[3];
 	parsedLine[0] = label;

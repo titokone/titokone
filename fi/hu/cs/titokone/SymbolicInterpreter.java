@@ -137,9 +137,8 @@ public class SymbolicInterpreter extends Interpreter {
 		}
 	}
 
-	if (wasNegative) {
-		returnValue[0] = '1';
-	}
+	if (wasNegative) { returnValue[0] = '1'; } 
+
 	return new String(returnValue);
     }
 
