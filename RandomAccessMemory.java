@@ -1,70 +1,66 @@
-/** This class represents the memory of TTK-91 computer. */
-public class RandomAccessMemory implements Memory {
+package fi.hu.cs.titokone;
 
-	/** Creates memory with given size. 
-	    @param size Size of the memory.
-	*/
-	public RandomAccessMemory (int size) {}
+import java.util.HashMap;
+import fi.hu.cs.ttk91.TTK91Memory;
 
-	/** Returns the length of the memory.
-	    return Length of the memory.
-	*/
-	public int getLength() {}
+/** This class represents the memory of a TTK-91 computer. */
+public class RandomAccessMemory implements TTK91Memory {
+
+	/** Creates a memory with a given size and initializes it with
+	    rows containing 0.
+	    @param size Size of the memory. */
+	public RandomAccessMemory(int size) {}
+
+	/** Returns the size of the memory. Defined in TTK91Memory.
+	    @return Length of the memory. */
+	public int getSize() {}
 	
-	/** Returns the value of indexed memory slot.
-	    @return Value of indexed memory slot.
-	*/
+	/** Returns the value of an indexed memory slot.
+	    @return Value of an indexed memory slot. */
 	public int getValue(int memorySlot) {}
 	
-	/** Returns symbol table.
-	    @return Symbol table.
-	*/
-	public SymbolTable getSymbolTable() {}
+	/** Returns the symbol table of currently used symbols as 
+	    a hashmap, with String names of the symbols as keys 
+	    referencing the Integer values of the symbols. 
+	    Defined in TTK91Memory.
+	    @return The symboltable as a hashmap. */
+	public HashMap getSymbolTable() {}
 	
-	/** Returns memory dump.
-	    @return Memory dump.
-	*/
+	/** Returns a memory dump. Defined in TTK91Memory.
+	    @return Memory dump in integer form. */
 	public int[] getMemory() {}
 	
-	/** Returns code area dump.
-	    @return Code area dump.
-	*/
-	public int [] getCodeArea() {}
+	/** Returns a code area dump. Defined in TTK91Memory.
+	    @return Code area dump in integer form. */
+	public int[] getCodeArea() {}
 	
-	/** Returns data area dump.
-	    @return Data area dump.
-	*/
+	/** Returns a data area dump.
+	    @return Data area dump in integer form. */
 	public int[] getDataArea() {}
 	
-	/** Returns the length of code area.
-	    @return Length of code area.
-	*/
-	public int getCodeAreaLength() {}
+	/** Returns the length of the code area.
+	    @return Length of the code area. */
+	public int getCodeAreaSize() {}
 	
-	/** Returns the length of data area.
-	    @param len Length of data area.
-	*/
-	public int getDataAreaLength() {}
+	/** Returns the length of the data area.
+	    @return Length of the data area. */
+	public int getDataAreaSize() {}
 
 	/** Returns memory line at given slot.
 	    @param index Index to memory.
-	    @return Memory line at given slot.
-	*/
-	public MemoryLine getMemoryLine (int index) {}
+	    @return Memory line at given slot. */
+	public MemoryLine getMemoryLine(int index) {}
 
 	/** Sets new memory line to given memory slot.
 	    @param index Index to memory.
-	    @param memoryLine New memory line which will replace old.
-	*/
-	public void setMemoryLine (int index, MemoryLine memoryLine) {}
+	    @param memoryLine New memory line which will replace the old. */
+	public void setMemoryLine(int index, MemoryLine memoryLine) {}
 	
-	/** Sets the length of code area.
-	    @param len Length of code area.
-	*/
-	public void setCodeAreaLength(int len) {}
+	/** Sets the length of the code area.
+	    @param length Length of the code area. */
+	public void setCodeAreaLength(int length) {}
 	
-	/** Sets the length of data area.
-	    @param len Length of data area.
-	*/
-	public void setDataAreaLength(int len) {}
+	/** Sets the length of the data area.
+	    @param length Length of the data area. */
+	public void setDataAreaLength(int length) {}
 }
