@@ -117,7 +117,7 @@ public class Processor implements TTK91Cpu {
         try {
             ram.setMemoryLine(rowNumber, inputLine);
         } catch (ArrayIndexOutOfBoundsException e) {
-	    errorMessage = new Message("Rownumber {0} is beyond memory " +
+	    errorMessage = new Message("Row number {0} is beyond memory " +
 				       "limits.", "" + rowNumber).toString();
 	    throw new TTK91AddressOutOfBounds(errorMessage);
 
