@@ -32,6 +32,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.logging.Logger;
 import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -264,10 +265,11 @@ public class GUI extends JFrame implements ActionListener {
         private int activeView = 0;
         
         
-        private JFileChooser openFileDialog;
-        private JFileChooser selectDefaultStdinFileDialog;
-        private JFileChooser selectDefaultStdoutFileDialog;
-        private JFileChooser selectLanguageFileDialog;
+        private JFileChooser generalFileDialog;
+        //  private JFileChooser openFileDialog;
+        //  private JFileChooser selectDefaultStdinFileDialog;
+        //  private JFileChooser selectDefaultStdoutFileDialog;
+        //  private JFileChooser selectLanguageFileDialog;
         
         private GUIRunSettingsDialog setRunningOptionsDialog;
         private GUICompileSettingsDialog setCompilingOptionsDialog;
@@ -280,6 +282,8 @@ public class GUI extends JFrame implements ActionListener {
           
         
         private static final int COMMENT_LIST_SIZE = 100;
+
+        private Logger logger;
 
         public static final String resourceHomeDir = "fi/hu/cs/titokone/";
 
@@ -310,9 +314,9 @@ public void actionPerformed(ActionEvent e) {
 
 
 public GUI() {
-
   thisGUI = this;    
-  System.out.println("Initializing setRunningOptionsDialog...");        
+  logger = Logger.getLogger(getClass().getPackage().getName());
+  print("Initializing setRunningOptionsDialog...");        
   setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
   setRunningOptionsDialog.addComponentListener( new ComponentListener() {
     public void componentShown(ComponentEvent e) {}
@@ -323,7 +327,7 @@ public GUI() {
     public void componentResized(ComponentEvent e) {}
   });
   
-  System.out.println("Initializing setCompilingOptionsDialog...");        
+  print("Initializing setCompilingOptionsDialog...");        
   setCompilingOptionsDialog = new GUICompileSettingsDialog(this, false);
   setCompilingOptionsDialog.addComponentListener( new ComponentListener() {
     public void componentShown(ComponentEvent e) {}
@@ -334,14 +338,14 @@ public GUI() {
     public void componentResized(ComponentEvent e) {}
   });
   
-  System.out.println("Initializing symbolsHashMap...");        
+  print("Initializing symbolsHashMap...");        
   symbolsHashMap = new HashMap();
   
-  System.out.println("Initializing GUI...");        
+  print("Initializing GUI...");        
   initGUI();
-  System.out.println("Initializing GUIBrain...");        
+  print("Initializing GUIBrain...");        
   guibrain = new GUIBrain(this);
-  System.out.println("Inserting menubar...");        
+  print("Inserting menubar...");        
   insertMenuBar(this);
   disable(GUI.COMPILE_COMMAND);
   disable(GUI.RUN_COMMAND);
@@ -350,13 +354,13 @@ public GUI() {
   disable(GUI.STOP_COMMAND);
   
   
-	System.out.println("Packing...");        
+  print("Packing...");        
   this.pack();
-	System.out.println("Setting visible...");        
+  print("Setting visible...");        
   this.setVisible(true);
 	
 	
-  System.out.println("Setting title...");        
+  print("Setting title...");        
   setTitle("Titokone");
   
   addWindowListener( new WindowAdapter () {
@@ -368,38 +372,31 @@ public GUI() {
 	
 	
   try {
-    System.out.println("Initializing selectDefaultStdinFileDialog...");        
-    selectDefaultStdinFileDialog = new JFileChooser();
-    System.out.println("Initializing selectDefaultStdoutFileDialog...");        
-    selectDefaultStdoutFileDialog = new JFileChooser();
-    System.out.println("Initializing openFileDialog...");        
-    openFileDialog = new JFileChooser();
-    System.out.println("Initializing selectLanguageFileDialog...");        
-    selectLanguageFileDialog = new JFileChooser();
+    //System.out.println("Initializing selectDefaultStdinFileDialog...");        
+    //selectDefaultStdinFileDialog = new JFileChooser();
+    //System.out.println("Initializing selectDefaultStdoutFileDialog...");        
+    //selectDefaultStdoutFileDialog = new JFileChooser();
+    //System.out.println("Initializing openFileDialog...");        
+    //openFileDialog = new JFileChooser();
+    //System.out.println("Initializing selectLanguageFileDialog...");        
+    //selectLanguageFileDialog = new JFileChooser();
+    generalFileDialog = new JFileChooser();
 	
   }
   catch (NullPointerException e) {
-    System.out.println("Exiting due to a bug in recent Java version.\n"+
+    System.out.println("Exiting due to a bug in a recent Java version.\n"+
                        "Please start again.");
     System.exit(0);
   }
   
-  openFileDialog.setFileFilter(B91FileFilter);
-	openFileDialog.setFileFilter(K91FileFilter);
-	openFileDialog.setAcceptAllFileFilterUsed(false);
-  selectDefaultStdinFileDialog.setAcceptAllFileFilterUsed(true);
-  selectDefaultStdoutFileDialog.setAcceptAllFileFilterUsed(true);
-  selectLanguageFileDialog.setFileFilter(classFileFilter);
-  selectLanguageFileDialog.setAcceptAllFileFilterUsed(false);
-  
   aboutDialog = new GUIAboutDialog(this, false);
  
   
-  System.out.println("Updating texts...");        
+  print("Updating texts...");        
   updateAllTexts();
   
   
-	System.out.println("Complete!");        
+  print("Complete!");        
 	 
 }
 
@@ -1154,17 +1151,13 @@ public void updateAllTexts() {
   UIManager.put ("FileChooser.FileChooser.openButtonText", new Message("Open").toString());
   UIManager.put ("FileChooser.openButtonToolTipText", new Message("Open the selected file").toString());
   
-  selectDefaultStdinFileDialog.updateUI();
-  selectDefaultStdoutFileDialog.updateUI();
-  
-  openFileDialog.setDialogTitle( new Message("Open a new file").toString() );
-  selectDefaultStdinFileDialog.setDialogTitle( new Message("Select default stdin file").toString() );
-  selectDefaultStdoutFileDialog.setDialogTitle( new Message("Select default stdout file").toString() );
+  //selectDefaultStdinFileDialog.updateUI();
+  //selectDefaultStdoutFileDialog.updateUI();
+  generalFileDialog.updateUI(); // Title updates done for each show..().
   
   setRunningOptionsDialog.updateAllTexts();
   setCompilingOptionsDialog.updateAllTexts();
   aboutDialog.updateAllTexts();
-  
   
   UIManager.put("OptionPane.yesButtonText", new Message("Yes").toString());
   UIManager.put("OptionPane.noButtonText", new Message("No").toString());
@@ -1629,9 +1622,11 @@ private JToolBar makeToolBar() {
 private ActionListener openCommandActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {
 	 
-		int rv = openFileDialog.showOpenDialog(thisGUI);
+		int rv = showOpenFileDialog();
+
 		if (rv == JFileChooser.APPROVE_OPTION) {
-		   new GUIThreader(GUIThreader.TASK_OPEN_FILE, guibrain, openFileDialog.getSelectedFile()).run();
+		   new GUIThreader(GUIThreader.TASK_OPEN_FILE, guibrain, 
+				   generalFileDialog.getSelectedFile()).run();
 		}
 	} 
 };
@@ -1639,33 +1634,34 @@ private ActionListener openCommandActionListener = new ActionListener() {
 private ActionListener selectStdinFileActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {						
 
-		int rv = selectDefaultStdinFileDialog.showOpenDialog(thisGUI);
+		int rv = showSelectStdinDialog();
 		if (rv == JFileChooser.APPROVE_OPTION) {
-		  guibrain.menuSetStdin(selectDefaultStdinFileDialog.getSelectedFile());
+		  guibrain.menuSetStdin(generalFileDialog.getSelectedFile());
 		}
 	} 
 };
 
 private ActionListener selectStdoutFileActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {						
-    
-		int rv = selectDefaultStdoutFileDialog.showOpenDialog(thisGUI);
+	    int rv = showSelectStdoutDialog();
 		if (rv == JFileChooser.APPROVE_OPTION) {
 		  JOptionPane confirmDialog = new JOptionPane();
 		  String[] param = { (String)UIManager.get("OptionPane.yesButtonText"), 
 		                     (String)UIManager.get("OptionPane.noButtonText") };
   
 		  int rv2 = confirmDialog.showConfirmDialog(
-		    selectDefaultStdoutFileDialog,	    
+		    generalFileDialog,
 		    new Message("Do you want to overwrite the file? Select {1} to append or {0} to overwrite.", param).toString(), 
 		    new Message("Overwrite?").toString(),
 		    JOptionPane.YES_NO_OPTION
 		  );
 		  if (rv2 == JOptionPane.YES_OPTION) {
-		    guibrain.menuSetStdout(selectDefaultStdoutFileDialog.getSelectedFile(), false);
+		    guibrain.menuSetStdout(generalFileDialog.getSelectedFile(), 
+					   false);
 		  }
 		  else if (rv2 == JOptionPane.NO_OPTION) {
-		    guibrain.menuSetStdout(selectDefaultStdoutFileDialog.getSelectedFile(), true);
+		    guibrain.menuSetStdout(generalFileDialog.getSelectedFile(), 
+					   true);
 		  }
 		}
 	} 
@@ -1736,9 +1732,9 @@ private ActionListener selectLanguageFromFileActionListener = new ActionListener
     //openFileDialog.resetChoosableFileFilters();
 	  //openFileDialog.setAcceptAllFileFilterUsed(true);
 
-		int rv = selectLanguageFileDialog.showOpenDialog(thisGUI);
+                int rv = showSelectLanguageFileDialog();
 		if (rv == JFileChooser.APPROVE_OPTION) {
-		   guibrain.menuSetLanguage(selectLanguageFileDialog.getSelectedFile());
+		   guibrain.menuSetLanguage(generalFileDialog.getSelectedFile());
 		}
 	} 
 };
@@ -1849,5 +1845,60 @@ private FileFilter classFileFilter = new FileFilter() {
     return new Message("Class file").toString();
   }
 };
+
+
+    /** This method uses the generalFileDialog as a k91/b91 file
+	opening dialog.
+	@return Whatever generalFileDialog.showOpenDialog(thisGUI) 
+	returns. */
+    private int showOpenFileDialog() {
+	generalFileDialog.setFileFilter(B91FileFilter);
+	generalFileDialog.setFileFilter(K91FileFilter);
+	generalFileDialog.setAcceptAllFileFilterUsed(false);
+	generalFileDialog.setDialogTitle(new Message("Open a new " +
+						  "file").toString() );
+	return generalFileDialog.showOpenDialog(thisGUI);
+    }
+
+    /** This method uses the generalFileDialog as a default stdin
+	file choosing dialog.
+	@return Whatever generalFileDialog.showOpenDialog(thisGUI) 
+	returns. */
+    private int showSelectStdinDialog() {
+	generalFileDialog.setAcceptAllFileFilterUsed(true);
+	generalFileDialog.setDialogTitle(new Message("Select default stdin " +
+						     "file").toString());
+	return generalFileDialog.showOpenDialog(thisGUI);
+    }
+
+    /** This method uses the generalFileDialog as a default stdout
+	file choosing dialog.
+	@return Whatever generalFileDialog.showOpenDialog(thisGUI) 
+	returns. */
+    private int showSelectStdoutDialog() {
+	generalFileDialog.setAcceptAllFileFilterUsed(true);
+	generalFileDialog.setDialogTitle(new Message("Select default stdout " +
+						     "file").toString() );
+	return generalFileDialog.showOpenDialog(thisGUI);
+    }
+
+    /** This method uses the generalFileDialog as a language file
+	choosing dialog. 
+	@return Whatever generalFileDialog.showOpenDialog(thisGUI) 
+	returns. */
+    private int showSelectLanguageFileDialog() {
+	generalFileDialog.setFileFilter(classFileFilter);
+	generalFileDialog.setAcceptAllFileFilterUsed(false);
+	generalFileDialog.setDialogTitle(new Message("Select language " +
+						     "file").toString());
+	return generalFileDialog.showOpenDialog(thisGUI);
+    }
+
+    /** This method prints out startup messages. It exists to make it
+	easier to decide whether they should be shown to the user or
+	not. */
+    private void print(String message) {
+	System.out.println(message);
+    }
 
 } 
