@@ -20,6 +20,8 @@ public class Compiler {
 
     /** This field holds all the valid symbols on a label. */
     private final String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyzåäö_";
+    private final int NOTVALID = -1;
+    private final int EMPTY = -1;
 
     /** This field keeps track of whether we are in the first round of compilation
 	or the second. It is set by compile() and updated by compileLine(). */
@@ -70,110 +72,8 @@ public class Compiler {
 	@throws TTK91CompileException If a) there is a syntax error during the first
 	round of checking (error code 101) or b) a symbol is still undefined after 
 	the first round of compilation is finished. */
-    public CompileInfo compileLine(String symbolicOpCode) throws TTK91CompileException { }
-//TODO remove symbolicOpCodes and get next line from source.
-
-	int opCode = 0;		
-	int firstRegister = 0;	// values if nothing else is found (like if String is "NOP")
-	int addressingMode = 0;
-	int secondRegister = 0;
-	int address = 0;
-	
-	String wordTemp = "";
-	int nextToCheck = 0;	// for looping out the spacing
-	int fieldEnd = 0;	// searches the end of a field (' ', ',')
-
-	symbolicOpCode = symbolicOpCode.toLowerCase();
-	symbolicOpCode = symbolicOpCode.trim();
-	if (symbolicOpCode.length() == 0) { return EMPTY; }
-
-/*label or opCode*/
-	fieldEnd = symbolicOpCode.indexOf(" ");
-	if (fieldEnd == -1) {
-		fieldEnd = symbolicOpCode.length();
-	} 
-
-	wordTemp = symbolicOpCode.substring(nextToCheck, fieldEnd);
-	opCode = getOpCode(wordTemp);	
-	if (opCode == -1) { 	// try to find a label (not a valid opCode)
-				// label must have one non-number (valid chars A-Ö, 0-9 and _)
-		boolean allCharsValid = true;
-		boolean atLeastOneNonNumber = false;
-		for (int i = 0; i < wordTemp.length(); ++i) {
-			if (atLeastOneNonNumber == false) {
-				if (VALIDLABELCHARS.indexOf(wordTemp.charAt(i)) > 9) {
-					atLeastOneNonNumber = true;
-				}
-			} 
-			if (VALIDLABELCHARS.indexOf(wordTemp.charAt(i)) < 0) {
-				allCharsValid = false;
-			}
-		}
-		if (atLeastOneNonNumber == false || allCharsValid == false) { return NOTVALID; }
-		
-				// opCode must follow the label
-		fieldEnd = symbolicOpCode.indexOf(" ", nextToCheck);
-        	if (fieldEnd == -1) {
-                	fieldEnd = symbolicOpCode.length();
-        	}
-        	opCode = getOpCode(symbolicOpCode.substring(nextToCheck, fieldEnd));
-		if (opCode < 0) { return NOTVALID; }
-	}			// now opCode has integer value of an opcode.
-
-	nextToCheck = fieldEnd + 1;
-
-	/* TODO if jump or other not normal then do something.*/
-
-
-/*first register*/
-	if (nextToCheck < symbolicOpCode.length()) {
-		if (symbolicOpCode.charAt(nextToCheck) != ' ') { return NOTVALID; }
-		while (nextToCheck == ' ') { ++nextToCheck }	// needs a space, then R0-R7, SP or FP
-		fieldEnd = symbolicOpCode.indexOf(",", nextToCheck);
-                if (fieldEnd == -1) {
-                        fieldEnd = symbolicOpCode.length();
-                }
-
-		firstRegister = getRegisterId(symbolicOpCode.substring(nextToCheck, fieldEnd));
-		if (firstRegister == NOTVALID) { return NOT VALID; }
-
-		nextToCheck = fieldEnd + 1;
-	}
-
-/*addressingMode*/
-	if (nextToCheck < symbolicOpCode.length()) {
-		while (nextToCheck == ' ') { ++nextToCheck; }
-		if (symbolicOpCode.charAt(nextToCheck) == '=' || 
-				symbolicOpCode.charAt(nextToCheck) == '@') {
-			addressingMode = getAddressingMode(symbolicOpCode.charAt(nextToCheck));
-			++nextToCheck;
-		} else { addressingMode = getAddressingMode(""); }
-	}
-
-/*address and other register*/
-	while (nextToCheck == ' ') { ++nextToCheck; }
-	if (symbolicOpCode.charAt(nextToCheck).isDigit) {
-		if (symbolicOpCode.indexOf("(", nextToCheck) != -1) {
-			if (symbolicOpCode.indexOf(")", nextToCheck) < 
-						symbolicOpCode.indexOf("(", nextToCheck)) {
-				return NOTVALID; 
-			} else {
-				address = symbolicOpCode.substring(nextToCheck, 
-						symbolicOpCode.indexOf("(", nextToCheck));
-			
-				otherRegister = getRegisterId(
-					symbolicOpCode.substring(
-						symbolicOpCode.indexOf("(", nextToCheck)
-						, symbolicOpCode.indexOf(")", nextToCheck)));
-			}
-		} else {
-			address = symbolicOpCode.substring(nextToCheck);
-		}
-	} else {
-		otherRegister = getRegisterId(symbolicOpCode.substring(nextToCheck).trim());
-	}
-}
-*/
+    public CompileInfo compileLine() throws TTK91CompileException { 
+    }
 
 
     /** This method returns the readily-compiled application if the compilation
@@ -225,7 +125,7 @@ public class Compiler {
 	@return A CompileInfo object describing what was done, or 
 	null if the second round and thus the compilation has been 
 	completed. */
-    private CompileInfo secondRoundProcess(String line) { }
+    private CompileInfo secondRoundProcess(String line) { 
 
 /* Antti: 04.03.04
 Do a pure binary translation first, then when all sections are complete, convert the binary to an 
@@ -250,6 +150,110 @@ Basic functionality: (Trim between each phase.)
 
 	Store both formats to a data array (symbolic and binary).
 */
+
+
+	String label = "";
+	int opCode = 0;		
+	int firstRegister = 0;	// values if nothing else is found (like if String is "NOP")
+	int addressingMode = 0;
+	int secondRegister = 0;
+	int address = 0;
+	
+	String wordTemp = "";
+	int nextToCheck = 0;	// for looping out the spacing
+	int fieldEnd = 0;	// searches the end of a field (' ', ',')
+
+	symbolicOpCode = symbolicOpCode.toLowerCase();
+	symbolicOpCode = symbolicOpCode.trim();
+	if (symbolicOpCode.length() == 0) { return EMPTY; }
+
+/*label or opCode*/
+	fieldEnd = symbolicOpCode.indexOf(" ");
+	if (fieldEnd == -1) {
+		fieldEnd = symbolicOpCode.length();
+	} 
+
+	wordTemp = symbolicOpCode.substring(nextToCheck, fieldEnd);
+	opCode = getOpCode(wordTemp);	
+	if (opCode == -1) { 	// try to find a label (not a valid opCode)
+				// label must have one non-number (valid chars A-Ö, 0-9 and _)
+		boolean allCharsValid = true;
+		boolean atLeastOneNonNumber = false;
+		for (int i = 0; i < wordTemp.length(); ++i) {
+			if (atLeastOneNonNumber == false) {
+				if (VALIDLABELCHARS.indexOf(wordTemp.charAt(i)) > 9) {
+					atLeastOneNonNumber = true;
+				}
+			} 
+			if (VALIDLABELCHARS.indexOf(wordTemp.charAt(i)) < 0) {
+				allCharsValid = false;
+			}
+		}
+		if (atLeastOneNonNumber == false || allCharsValid == false) { return NOTVALID; }
+		label = wordTemp;		
+
+				// opCode must follow the label
+		fieldEnd = symbolicOpCode.indexOf(" ", nextToCheck);
+        	if (fieldEnd == -1) {
+                	fieldEnd = symbolicOpCode.length();
+        	}
+        	opCode = getOpCode(symbolicOpCode.substring(nextToCheck, fieldEnd));
+		if (opCode < 0) { return NOTVALID; }
+	}			// now opCode has integer value of an opcode.
+
+	nextToCheck = fieldEnd + 1;
+
+	/* TODO if jump or other not normal then do something.*/
+
+
+/*first register*/
+	if (nextToCheck < symbolicOpCode.length()) {
+		if (symbolicOpCode.charAt(nextToCheck) != ' ') { return NOTVALID; }
+		while (nextToCheck == ' ') { ++nextToCheck; }	// needs a space, then R0-R7, SP or FP
+		fieldEnd = symbolicOpCode.indexOf(",", nextToCheck);
+                if (fieldEnd == -1) {
+                        fieldEnd = symbolicOpCode.length();
+                }
+
+		firstRegister = getRegisterId(symbolicOpCode.substring(nextToCheck, fieldEnd));
+		if (firstRegister == NOTVALID) { return NOTVALID; }
+
+		nextToCheck = fieldEnd + 1;
+	}
+
+/*addressingMode*/
+	if (nextToCheck < symbolicOpCode.length()) {
+		while (nextToCheck == ' ') { ++nextToCheck; }
+		if (symbolicOpCode.charAt(nextToCheck) == '=' || 
+				symbolicOpCode.charAt(nextToCheck) == '@') {
+			addressingMode = getAddressingMode(symbolicOpCode.charAt(nextToCheck));
+			++nextToCheck;
+		} else { addressingMode = getAddressingMode(""); }
+	}
+
+/*address and other register*/
+	while (nextToCheck == ' ') { ++nextToCheck; }
+	if (symbolicOpCode.charAt(nextToCheck).isDigit) {
+		if (symbolicOpCode.indexOf("(", nextToCheck) != -1) {
+			if (symbolicOpCode.indexOf(")", nextToCheck) < 
+						symbolicOpCode.indexOf("(", nextToCheck)) {
+				return NOTVALID; 
+			} else {
+				address = symbolicOpCode.substring(nextToCheck, 
+						symbolicOpCode.indexOf("(", nextToCheck));
+			
+				otherRegister = getRegisterId(
+					symbolicOpCode.substring(
+						symbolicOpCode.indexOf("(", nextToCheck)
+						, symbolicOpCode.indexOf(")", nextToCheck)));
+			}
+		} else {
+			address = symbolicOpCode.substring(nextToCheck);
+		}
+	} else {
+		otherRegister = getRegisterId(symbolicOpCode.substring(nextToCheck).trim());
+	}
+    }
 
     /** This function generates a StringTokenizer from the source string. 
 	The delimiters used are \r\n\f.

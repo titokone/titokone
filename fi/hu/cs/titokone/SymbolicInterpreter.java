@@ -19,8 +19,8 @@ public class SymbolicInterpreter extends Interpreter {
     private final int NOTVALID = -1;
     /** This field holds the value to be returned if given value results in an empty line. */
     private final int EMPTY = 0;
-    /** This field holds all the valid symbols on a label. */
-    private final String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyzåäö_";
+
+// constructor
 
     /** This constructor sets up a SymbolicInterpreter instance. It calls
 	the private method dataSetup() to set up its data structures. */
@@ -29,20 +29,37 @@ public class SymbolicInterpreter extends Interpreter {
     /** This method sets up the HashTables. */
     private void dataSetup() {}
 
+// public methods --> 
+
     /** This method checks if a command is a valid opCode.
 	@param command String form of a possible opCode.*/
     public int getOpcode(String command) { }
 	
-
-
     /** This method transforms an addressing mode (=, @ or nothing) to 
 	a number identifying it. 
-	@param identifier String form of an addressing mode.*/
-    public int getAddressingMode(String identifier) { }
+	@param identifier String form of an addressing mode.
+	@return Int value telling how many times memory must be accessed. */
+    public int getAddressingMode(String identifier) { 
+
+	identifier = identifier.trim();
+	if (identifier.equals(""))  { return 1; }
+	if (identifier.equals("=")) { return 0; }
+	if (identifier.equals("@")) { return 2; }
+	return NOTVALID;
+    }
 
     /** This method returns the binary form of a given register as an integer.
 	@param registerName String form of a register (R0-R7, SP or FP).
-    public int getRegisterId(String registerName) { }
+	@return Int value of a given register. */
+    public int getRegisterId(String registerName) { 
+	registerName = registerName.trim();
+	for (int i = 0; i < 8; ++i) {
+		if (registerName.equalsIgnoreCase("r" + i)) { return i; }		
+	}
+	if (registerName.equalsIgnoreCase("sp")) { return 6; }
+	if (registerName.equalsIgnoreCase("fp")) { return 7; }
+	if (registerName.equals("")) { return EMPTY; } else { return NOTVALID; }
+    }
 
     /** This method coverts a complete command in a symbolic form to a binary form.
         caller must split up the original command and give the parts as parameters
@@ -56,7 +73,7 @@ public class SymbolicInterpreter extends Interpreter {
      */
     public int stringToBinary(String opCode, String firstRegister, String addressingMode, 
 							String address, String otherRegister) { 
-
+	
 	
 
     }
