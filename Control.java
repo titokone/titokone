@@ -10,6 +10,7 @@
     in GUI. In this software that piece of code is the GUIBrain class.
 */
 
+import java.text.ParseException;
 
 public class Control implements TTK91Core {
     
