@@ -37,13 +37,11 @@ public class Compiler {
     /** Minimum value of the EQU and DC. */
     private final int MININT = -2147483648;
 
-/* TODO */
     /** Maximum value of the Address. */
     private final int ADDRESSMAX = 32767;
 
     /** Minimum value of the Address. */
     private final int ADDRESSMIN = -32768;
-/* /TODO */
 
     /** This field holds the value of Stdin if it was set with DEF command. */
     private String defStdin;
@@ -935,8 +933,6 @@ Address can be either a variable or a number and that must be noticed also.
 	    }
 	}	
 
-/* TODO */
-
 	if (!address.equals("")) {
 		boolean isANumber = true;
 		for (int i=0; i< address.length(); ++i) {
@@ -945,19 +941,20 @@ Address can be either a variable or a number and that must be noticed also.
 					isANumber = false;
 			}
 		}
+
+/* This one checks the length of the address String because
+   Integer.parseInt(100000000000000) throws an exception.*/
 		if (isANumber) {
 			if (address.length() > ("" + ADDRESSMIN).length() ||
 			    Integer.parseInt(address) > ADDRESSMAX ||
 			    Integer.parseInt(address) < ADDRESSMIN) {
 				comment = new Message("Compilation failed: {0}",
 					  new Message(
-			"Invalid address value.").toString()).toString();
+			"invalid address value.").toString()).toString();
 				throw new TTK91CompileException(comment);
 			}
 		}
 	}
-
-/* /TODO */
 
 	if (addressingMode.equals("=") && address.equals("")) {
 		comment = new Message("Compilation failed: {0}",
