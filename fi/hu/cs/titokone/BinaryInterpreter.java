@@ -63,36 +63,134 @@ public class BinaryInterpreter extends Interpreter {
 	    return GARBLE;
 	
 	Integer param = (Integer)parameters.get(opcode);
-
+	
 	switch(param.intValue()){
-	case 0:{
+	case 0:{ // No parameters
 	    return s;
 	}
-	case 1:{ // Hmmh, rekisterit vai vain toinen?
+	case 1:{ // TODO Hmmh, rekisterit vai vain toinen?
 	    return s;
 	}
-	case 2:{
+	case 2:{ //SP and register
 	    s = s +" "+getFirstRegisterFromBinary(command);
 	    s = s +", "+getSecondRegisterFromBinary(command);
 	}
-	case 4:{
-	    s = s +" "+getAddressFromBinary(command); 
+	case 3:{ //only SP
+	    s+=" "+getFirstRegisterFromBinary(command);
+	    return s;
+	}
+	case 4:{ //address only TODO Not used?
+	    String mem = getMemoryModeFromBinary(command);
+	    /*if (mem.equals("="))  //HACK, Some commands use less fetches
+		mem = "";         //so ordinary transformation doesn't work
+	    if (mem.equals(""))
+	        mem="@";
+	    */
+	    if (mem.equals(null))
+		return GARBLE;
+
+	    s+=" "+mem;
+	    s+= getAddressFromBinary(command); 
+	    s = s + "(" + getSecondRegisterFromBinary(command);
+	    s = s + ")";
 	    return s;   
 	}
-	case 5:{
+	case 5:{ //Full parameters
 	    s = s + " " + getFirstRegisterFromBinary(command);
 	    s = s + ", " + getMemoryModeFromBinary(command);
 	    s = s + getAddressFromBinary(command);
 	    s = s + "(" + getSecondRegisterFromBinary(command);
 	    s = s + ")";
-	    s = s + " ";
+	   
 	    return s;
 	    }
+	case 6:{//Full with less fetches
+
+	    String mem = getMemoryModeFromBinary(command);
+
+	    if (mem.equals("="))  //HACK, Some commands use less fetches
+		mem = "";         //so ordinary transformation doesn't work
+	    else{
+		if (mem.equals(""))
+		    mem="@";
+	    }
+	    if (mem==null)
+		return GARBLE;
+	   
+
+	    s = s + " " + getFirstRegisterFromBinary(command);
+	    s = s + ", " + mem;
+	    s = s + getAddressFromBinary(command);
+	    s = s + "(" + getSecondRegisterFromBinary(command);
+	    s = s + ")";
+
+	    return s;
 	}
+
+	 
+	case 7:{//Register and device
+	    s+=" "+getFirstRegisterFromBinary(command);
+	    
+	    Integer device = new Integer(getAddressFromBinary(command));
+	    if (device.intValue()==0){
+		s+=", =CRT";
+		return s;
+	    }
+	    if (device.intValue()==1){
+		s+=", =KBD";
+		return s;
+	    }
+	    if (device.intValue()==6){
+		s+=", =STDIN";
+		return s;
+	    }
+	    if (device.intValue()==7){
+		s+=", =STDOUT";
+		return s;
+	    }
+	    
+	    return GARBLE;
+	}
+	case 8:{ //Address with less fetches
+	    String mem = getMemoryModeFromBinary(command);
+	    if (mem.equals("="))  //HACK, Some commands use less fetches
+		mem = "";         //so ordinary transformation doesn't work
+	    else {
+		if (mem.equals(""))
+		mem="@";
+	    }
+	    if (mem==null)
+		return GARBLE;
+
+	    s = s + " " + mem;
+	    s = s + getAddressFromBinary(command);
+	    s = s + "(" + getSecondRegisterFromBinary(command);
+	    s = s + ")";
+	   
+	    return s;
+	}
+	case 9:{//SVC SP and operation
+	    s+=" "+getFirstRegisterFromBinary(command);
+	    s+=", =";
+	    Integer service = new Integer(getAddressFromBinary(command));
+	    if (service.intValue()==11){
+		s+="HALT";
+		return s;
+	    }
+	    if (service.intValue()==14){
+		s+="TIME";
+		return s;
+	    }
+	    if (service.intValue()==15){
+		s+="DATE";
+		return s;
+	    }
+	    return GARBLE;
+	}
+	}
+    
 	return s;
-
-
-
+	
     }
 
    /* Translates the opcode and checks if it is a valid one, then
@@ -136,7 +234,7 @@ public class BinaryInterpreter extends Interpreter {
 	three legal values)
 	@param binaryCommand The command's binary-form representation.
 	@return Memory address mode from binary command in a String format.
-      */
+    *///TODO Entä muistiosoitus = 4? Kaapataan nullista
     public String getMemoryModeFromBinary(int binaryCommand) {
 	int command = binaryCommand;
 	int i = command >> 19;
@@ -147,6 +245,7 @@ public class BinaryInterpreter extends Interpreter {
 	    return "";
 	if (i==2)
 	    return "@";
+	
 	return null;
 
     }
@@ -170,10 +269,52 @@ public class BinaryInterpreter extends Interpreter {
 	then this function returns it.
 	@param binaryCommand The command's binary-form representation.
 	@return Address part of the binary command in a String format.
-      */
+    */ 
+    //TODO negat luvut ja suuret osoitteet.
+    //Kun syötetään luku -32767, tulee ylivuoto
+
     public String getAddressFromBinary(int binaryCommand) {
 	int command = binaryCommand;
 	int i = command & 65535;
+
+	
+
+	Integer opcode = new Integer(getOpCodeFromBinary(command));
+
+     
+	
+	String mem = getMemoryModeFromBinary(binaryCommand);
+	Integer param = (Integer)parameters.get(opcode);
+	
+	
+	switch(param.intValue()){
+	case 6:{
+	    if (mem.equals("="))  //HACK, Some commands use less fetches
+		mem = "";         //so ordinary transformation doesn't work
+	    else {
+		if (mem.equals(""))
+		    mem="@";
+	    }
+	    break;
+	}
+	case 8:{
+	    if (mem.equals("="))  //HACK, Some commands use less fetches
+		mem = "";         //so ordinary transformation doesn't work
+	    else{
+		if (mem.equals(""))
+		    mem="@";
+	    }
+	    break;
+	}
+	default: {}
+
+	}
+	if (i>=32768&&mem.equals("=")){
+	 
+	    i=i-32768;
+	    i=i*(-1);
+		
+	}
 	String s = "" + i;
 	return s;
 
