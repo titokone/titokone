@@ -21,11 +21,18 @@ import java.io.IOException;
 import fi.hu.cs.ttk91.*;
 import java.text.ParseException;
 import java.util.ResourceBundle;
+import java.util.logging.Logger;
 
 public class Control implements TTK91Core {
     /** This is the memory size that will be used by default, unless 
 	a higher class (GUIBrain) chooses to change the size later. */
     public static final int DEFAULT_MEMORY_SIZE = 512;
+
+    /** This field set directs handling of an array containing file
+	definitions set in the application. See getApplicationDefinitions(). */
+    public static final int DEF_STDIN_POS = 0;
+    public static final int DEF_STDOUT_POS = 1;
+    public static final int DEF_HOME_POS = 2;
 
     /** This has control to all the files this program has opened.
     */
@@ -37,7 +44,8 @@ public class Control implements TTK91Core {
 
     private Application application;
 
-    private File defaultStdInFile, defaultStdOutFile, sourceFile;
+    private File defaultStdInFile, defaultStdOutFile, currentStdOutFile, 
+	sourceFile;
 
     /** This constructor sets up the Control instance.
     */
@@ -79,28 +87,36 @@ public class Control implements TTK91Core {
 	@throws IllegalStateException If application is null. */
     public void load() throws TTK91AddressOutOfBounds, ParseException,
 			      IOException {
-	insertStdinToApplication();
+	File[] appDefinitions;
+	if(application == null) {
+	    errorMessage = new Message("No application to load.").toString();
+	    throw new IllegalStateException(errorMessage);
+	}
+	// Fetch STDIN/STDOUT filenames from Application's symboltable.
+	appDefinitions = getApplicationDefinitions();
+	if(appDefinitions[DEF_STDOUT_POS] != null)
+	    currentStdOutFile = appDefinitions[DEF_STDOUT_POS];
+	insertStdinToApplication(appDefinitions[DEF_STDIN_POS]);
 	Loader loader = new Loader(processor);
 	loader.setApplicationToLoad(application);
 	loader.loadApplication();
     }    
 
     /** This method does the actual inserting STDIN datat to an application.
+	@param applicationStdin The application's suggestion for a file
+	to read the stdin data from. If null, the data is read from the 
+	set default stdin file.
 	@throws IOException If the current STDIN file cannot be opened.
 	@throws ParseException If the current STDIN file contains
-	invalid input.
-	@throws IllegalStateException If there is no application to load. */
-    private void insertStdinToApplication() throws ParseException, 
-						   IOException {
+	invalid input. */
+    private void insertStdinToApplication(File applicationStdin) 
+	throws ParseException, IOException {
 	String contents, errorMessage;
 	File stdinFile = defaultStdInFile;
+	File[] appDefinitions;
 
-	if(application == null) {
-	    errorMessage = new Message("No application to load.").toString();
-	    throw new IllegalStateException(errorMessage);
-	}
-	// TODO: get stdin/stdout filename from Application's symboltable.
-	// TODO: set it to stdinFile. If there is none, the default will do.
+	if(applicationStdin != null)
+	    stdinFile = applicationStdin;
 	contents = fileHandler.loadStdIn(stdinFile).toString();
 	try {
 	    application.setStdIn(contents);
@@ -108,6 +124,41 @@ public class Control implements TTK91Core {
 	catch(IllegalArgumentException syntaxErrorInStdinData) {
 	    throw new ParseException(syntaxErrorInStdinData.getMessage(),-1);
 	}
+    }
+    
+    /** This helper method gets the definitions in the currently loaded
+	application. It assumes the definitions are file paths.
+	@return A File-array containing STDIN, STDOUT and HOME definitions
+	or nulls if the values have not been defined in the application.
+	The positions of the values in the array are determined by the 
+	constants DEF_STDIN_POS, DEF_STDOUT_POS and DEF_HOME_POS 
+	respectively. */
+    public File[] getApplicationDefinitions() {
+	SymbolTable symbols;
+	String[] definitions;
+	File[] result = new File[3];
+	Logger logger;
+	
+	symbols = application.getSymbolTable();
+	definitions = symbols.getAllDefinitions[];
+	for(int i = 0; i < definitions.length; i++) {
+	    if(definitions[i].equalsIgnoreCase("STDIN"))
+		result[DEF_STDIN_POS] = 
+		    new File(symbols.getDefinition(definitions[i]));
+	    else if(definitions[i].equalsIgnoreCase("STDOUT"))
+		result[DEF_STDOUT_POS] = 
+		    new File(symbols.getDefinition(definitions[i]));
+	    else if(definitions[i].equalsIgnoreCase("HOME"))
+		result[DEF_HOME_POS] = 
+		    new File(symbols.getDefinition(definitions[i]));
+	    else { 
+		logger = Logger.getLogger(this.getClass().getPackage());
+		logger.warning(new Message("Application contained an odd " +
+					   "definition key '{0}'.",
+					   definitions[i]).toString());
+	    }
+	}
+	return result;
     }
 
     /** Runs a given app for <steps> steps at a time and updates its state.
@@ -242,7 +293,7 @@ public class Control implements TTK91Core {
 			application.writeToCrt(outData[1]); 
 		    if(info.whatDevice().equals("STDOUT")) {
 			application.writeToStdOut(outData[1]);
-			// TODO: Write through to file too.
+			writeToStdoutFile(outData[1]);
 		    }
 		}
 	    }
@@ -261,6 +312,18 @@ public class Control implements TTK91Core {
 	    data = application.readNextFromStdIn();
 	    processor.stdinInput(data);
 	    return runLine(); // Try again with the CPU buffer filled.
+	}
+    }
+    
+    /** This method appends the given data to the current stdout file. 
+	@param data The data to append to the stdout file.
+	@throws TTK91FailedWrite If there was an I/O error. */
+    private void writeToStdoutFile(String data) throws TTK91FailedWrite {
+	try {
+	    fileHandler.appendToStdout(data, currentStdOutFile);
+	}
+	catch(IOException writeFailed) {
+	    throw new TTK91FailedWrite(writeFailed.getMessage());
 	}
     }
     
@@ -308,7 +371,7 @@ public class Control implements TTK91Core {
 	defaultStdOutFile = stdoutFile;
 	// Check whether we can really write to the file without writing
 	// to it. (We just append, really.)
-	if(!fileHandler.checkAccess(stdoutFile, FileHandler.APPEND_ACCESS)) {
+	if(!fileHandler.testAccess(stdoutFile, FileHandler.APPEND_ACCESS)) {
 	    errorMessage = new Message("Writing STDOUT to {0} will not " +
 				       "work; access check failed.", 
 				       stdoutFile.toString()).toString();
@@ -316,8 +379,6 @@ public class Control implements TTK91Core {
 	    throw new IOException(errorMessage);
 	}	
     }
-    
-    
     
     /** This is called when a source file is opened from GUI.
         This method passes the file to FileHandler and prepares to 
@@ -407,20 +468,6 @@ public class Control implements TTK91Core {
     public void keyboardInput(int inputValue) {
 	processor.keyboardInput(inputValue);
     }
-
-    // Control ei tarvitse naita metodeja, koska tiedot kasitellaan
-    // joka tapauksessa GUIBrainissa vasta. --Sini 15.3.
-    //public void setRunningOptions(boolean isCommentedExecution, 
-    //                              boolean isPausedExecution, 
-    //                              boolean isAnimatedExecution, 
-    //                              int     speed) {}
-
-    
-
-    //public void setCompilingOptions(boolean isCommentedExecution, 
-    //                                boolean isPausedExecutionm,
-    //                                int     speed) {}
-
 
     /** RunLine() calls this, when the processor wants to write a
         value to CRT.
