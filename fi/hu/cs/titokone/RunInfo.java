@@ -1,26 +1,19 @@
 package fi.hu.cs.titokone;
 
+import java.util.LinkedList;
+
 
 /** This class tells GUIBrain what the processor has done. RunDebugger 
 creates objects from this class and passes them to onwards.*/
 
 public class RunInfo extends DebugInfo{
 
-    /** this field is set to true if something is stored to code area of memory */
-    private boolean selfChangingCode;
-
-    /** this field contains number representation of changed codeline */
-    private int selfChangingBinary;
-    /** this field contains symbolic representation of changed codeline */
-    private String selfChanged;
-    
-
    /** This field contains the number of operation type. */
    private int operationType;
    /** This field contains the description of operation type */
    private String operationDescription;
    
-    /**This field contains line number.*/
+    /** This field contains line number.*/
     private int lineNumber;
     /** This field contains contents of the line, */
     private String lineContents;
@@ -32,9 +25,6 @@ public class RunInfo extends DebugInfo{
     
     /** This String contains the colon-representation of current line */
     private String binaryString;
-    
-    /** This String represents the binary / data value of changed code */
-    private String changedCodeAreaData;
     
     /** This int represents the number of memoryfetches */
     private int numberOfMemoryfetches;
@@ -90,12 +80,10 @@ public class RunInfo extends DebugInfo{
     /** This value contains the String representation of SVC-operation */
     private String svcOperation;
 
-    /** This value is set to true if state of the memory is changed */
-    //TODO: asetetaanko ainoastaan data-alueelle viitatessa? käytössä on myös selfChangingCode
-    private boolean memoryChanged;
-    
-    private int[][] changedMemory;
-    
+    /** This list contains all changed memory lines. List contains object 
+    arrays, whose first element is a Integer and second a MemoryLine. 
+    Integer tells the row where MemoryLine is in memory. */
+    LinkedList changedMemoryLines;
     
     /** This constructor initializes the RunInfo and sets its starting values.
      @param lineNumber Line number of current line.
@@ -121,7 +109,6 @@ public class RunInfo extends DebugInfo{
 		this.newFP = newFP;
     
 		this.externalOperation = false;
-		this.selfChangingCode = false;
 		this.memoryChanged = true;
 		
 	}
@@ -198,17 +185,14 @@ public class RunInfo extends DebugInfo{
     public void setValueAtADDR(int value){
     	this.valueAtADDR = value;
     }
-    /** This method tells info that something was written to the codearea and
-	what it was and its possible symbolic presentation.
-	@param line Number of the line.
-	@param binary New value written.
-	@param symbolic Possible symbolic command.
+    
+    /* Sets changed memory lines.
+    @param changedMemoryLines List of changed memory lines. List contains 
+    object arrays, whose first element is a Integer and second is a MemoryLine. 
+    Integer tells the row where MemoryLine is in memory.
     */
-    public void setChangedCodeAreaData(int line, int binary, String symbolic){
-    	this.selfChangingCode = true;
-		this.changedCodeAreaData = symbolic;
-		this.selfChangingBinary = binary;
-		this.selfChanged = symbolic;
+    public void setChangedMemoryLines(LinkedList changedMemoryLines){
+        this.changedMemoryLines = changedMemoryLines;
     }
     
     /** This sets the result of performed ALU operation
@@ -334,30 +318,20 @@ public class RunInfo extends DebugInfo{
 	}
     
 	
-	/** This method tells are there changed memorylines
-		@return true, if state of the memory is changed, otherwise false
-	*/
-	public boolean memoryChanged() {
-	    // TODO: tarkista menikö oikein.
-	    return memoryChanged;
-    }
-	
-    /** This method tells GUIBrain which lines in dataarea changed and what are
-	new values.
-	@return int[] Integer array containing line numbers and new values.
-    */
-     public Object[] whatMemoryLineChanged(){
-	 // TODO: ei palauta mitään järkevää; korjattava.
-	 return null;
-     }
-
     
+    /* Returns changed memory lines.
+    @return List of changed memory lines. List contains object arrays, whose 
+    first element is a Integer and second is a MemoryLine. Integer tells the 
+    row where MemoryLine is in memory.
+    */
+    public LinkedList getChangedMemoryLines(){
+        return changedMemoryLines;
+    }
         
     /** This method tells GUIBrain what was result of an OUT command (device 
 	and value).
 	@return int[] Integer array containing device number and new value.
     */
-    
     public int[] whatOUT(){
 	    int [] outD = new int[2];
 	    outD[0] = this.deviceNumber;
