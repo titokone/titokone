@@ -34,7 +34,7 @@ public class CompileDebugger {
 	@param name String containing name of the symbol.
 	@param value Int containing the value.
     */
-    public void foundDS(String name, boolean new){ }
+    public void foundDS(String name, int value){ }
 
     /** This method tells where data area for given DS is in the
 	memory. This method is used when compiles has checked all
@@ -50,10 +50,10 @@ public class CompileDebugger {
     /** This method tells debugger that a DC compiler instruction was found
 	and it is added to the symboltable. 
 	@param name String containing name of the symbol.
-	@param new Boolean containing information if the DC is new or is it 
+        @param isNew Boolean containing information if the DC is new or is it 
 	already in symboltable..
     */
-    public void foundDC(String name, boolean new){ }
+    public void foundDC(String name, boolean isNew){ }
     /** This method tells where given DC is located in the
 	memory. This method is used when compiles has checked all
 	lines in the first phase and has called firstPhase()
@@ -68,9 +68,9 @@ public class CompileDebugger {
     /** This method tells debugger that a symbol was found on a line but it is 
 	unknown.
 	@param name String containing name of the symbol.
-	@param new Boolean containing the information if the symbol was new..
+        @param isNew Boolean containing the information if the symbol was new..
     */
-    public void foundSymbol(String name, boolean new){}
+    public void foundSymbol(String name, boolean isNew){}
 
     /** THis Method  tells debugger that a known symbol was found and it's 
 	value is given as a paratmeter. 
@@ -82,16 +82,16 @@ public class CompileDebugger {
     /** This method tells that a label was found and it is added to the
      symboltable. Boolean new tells debugger that if it was new.
      @param name String containing name of the symbol.
-     @param new Boolean containing the onformation if the symbol was new.
+     @param isNew Boolean containing the onformation if the symbol was new.
     */
-    public void foundLabel(String name, boolean new){}
+    public void foundLabel(String name, boolean isNew){}
 
     /** This method tells that for given label points to given line.
 	@param name String containing name of the symbol.
 	@param linenumber Int containing the linenumber of the label.
-	@param new Boolean containing the information if the label was new.
+        @param isNew Boolean containing the information if the label was new.
     */
-    public void foundLabel(String name, int lineNumber, boolean new){}
+    public void foundLabel(String name, int lineNumber, boolean isNew){}
 
     /** This method tells that a DEF  was found and it is added to the
      symboltable. 
@@ -175,7 +175,7 @@ public class CompileDebugger {
   
 
    /** This method returns the created CompileInfo-object. It sets
-    * comments in the CompileInfo and then returns it.*/
-    public CompileInfo lineCompiled(){}
+    comments in the CompileInfo and then returns it.*/
+    public CompileInfo lineCompiled() {}
 }
 
