@@ -36,7 +36,8 @@ public class CompileDebugger {
 	@param value Int containing the value.
     */
     public void foundEQU(String name, int value) {
-		
+	info.setSymbolFound();
+	info.setSymbolName(name, "" + value);
     }
 
     /** This method tells debugger that a DS compiler instruction was found
@@ -45,7 +46,8 @@ public class CompileDebugger {
 	@param value Int containing the value.
     */
     public void foundDS(String name, int value) { 
-
+	info.setSymbolFound();
+	info.setSymbolName(name);
     }
 
     /** This method tells where data area for given DS is in the
@@ -58,7 +60,7 @@ public class CompileDebugger {
 	@param ADDR Starting address of the segment..
     */
     public void reserveDS(String name, int size, int ADDR) {
-
+// TODO deprecated?
     }
  
     /** This method tells debugger that a DC compiler instruction was found
@@ -68,8 +70,8 @@ public class CompileDebugger {
 	already in symboltable..
     */
     public void foundDC(String name, boolean isNew) {
-   
-
+   	info.setSymbolFound();
+	info.setSymbolName(name);
     }
 
     /** This method tells where given DC is located in the
@@ -82,7 +84,7 @@ public class CompileDebugger {
 	@param ADDR Address of the DC.
     */
     public void reserveDC(String name, int value, int ADDR) {
-
+// TODO deprecated?
     }
 
     /** This method tells debugger that a symbol was found on a line but it is 
@@ -91,17 +93,17 @@ public class CompileDebugger {
         @param isNew Boolean containing the information if the symbol was new..
     */
     public void foundSymbol(String name, boolean isNew) {
-
+	// TODO "Tunnuksen name (määrittelemättä) käyttö"
 
     }
 
-    /** THis Method  tells debugger that a known symbol was found and it's 
+    /** This Method  tells debugger that a known symbol was found and it's 
 	value is given as a paratmeter. 
 	@param name String containing name of the symbol.
 	@param value Int containing the value.
     */
     public void foundSymbol(String name, int value) {
-
+	// TODO "Tunnuksen name (määrittelemättä) käyttö"
     }
 
     /** This method tells that a label was found and it is added to the
@@ -110,7 +112,7 @@ public class CompileDebugger {
      @param isNew Boolean containing the onformation if the symbol was new.
     */
     public void foundLabel(String name, boolean isNew) {
-
+	//TODO this can't happen! label must have a line number
     }
 
     /** This method tells that for given label points to given line.
@@ -119,7 +121,9 @@ public class CompileDebugger {
         @param isNew Boolean containing the information if the label was new.
     */
     public void foundLabel(String name, int lineNumber, boolean isNew) {
-
+	info.setLabelFound();
+	info.setLabelName(name);
+	info.setLabelValue(lineNumber);
     }
 
     /** This method tells that a DEF  was found and it is added to the
@@ -128,8 +132,8 @@ public class CompileDebugger {
      @param value String containing the value.
     */
     public void foundDEF(String name, String value) {
-
-
+	info.setSymbolFound();
+	info.setSymbolName(name, value);
     }
     
     /** This method tells debugger that first round of compilation is
@@ -167,9 +171,10 @@ public class CompileDebugger {
     codelines leaving binary cells empty. Then it draws data area
     where number of first data line is i+codeArea.length
     @param codeArea String array containing codelines.
-    @param dataArea Integer array containing data.
+    @param dataArea String array containing data.
     */
-    public void finalFirstPhase(String[] codeArea, int[] dataArea) {
+    public void finalFirstPhase(String[] codeArea, String[] dataArea) {
+// String because of the DEF command
 
     }
 

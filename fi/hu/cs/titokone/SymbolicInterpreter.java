@@ -107,7 +107,7 @@ public class SymbolicInterpreter extends Interpreter {
 		String binary = intToBinary(opcodeAsInt, 8) + intToBinary(firstRegisterAsInt, 3) + 
 			intToBinary(addressingModeAsInt, 2) + 
 			intToBinary(secondRegisterIdAsInt, 3) + intToBinary(addressAsInt, 16);
-		return binaryToInt(binary);		
+		return binaryToInt(binary, true);		
 	}
 	return -1;
     }
@@ -120,7 +120,15 @@ public class SymbolicInterpreter extends Interpreter {
     public String intToBinary(int value, int bits) {
 /* TODO if bits too few, i.e. 10,2 then result is "11" */
 	char[] returnValue = new char[bits];
+
+
 	for (int i = 0; i < bits; ++i) returnValue[i] = '0';
+
+	if (value < 0) { 
+		returnValue[0] = '1'; 
+		value = value * -1;
+	} 
+
 	for (int i = returnValue.length - 1; i > -1; --i) {
 		if (value >= (int)Math.pow(2.0, i * 1.0)) {
 			returnValue[returnValue.length - 1 - i] = '1';
@@ -133,11 +141,22 @@ public class SymbolicInterpreter extends Interpreter {
 
     /**	This method converts String that contains a binary to int. binaryToInt("01") --> 1
 	@param binaryValue String representing the binary, if other than {0,1} then null.
+	@param signIncluded Boolean value telling whether 11 is -1 or 3 i.e. will the leading
+	one be interpreted as sign-bit.
 	@return Int value of a Binary.
 	*/
-    public int binaryToInt(String binaryValue) {
+    public int binaryToInt(String binaryValue, boolean signIncluded) {
 /* TODO ! returns 0 when error! exception perhaps? */
+	boolean isNegative = false;
 	int value = 0;
+
+	if (signIncluded) { 
+		if (binaryValue.charAt(0) == '1') { 
+			isNegative = true; 
+			binaryValue = binaryValue.substring(1);
+		}
+	}
+		
 	for (int i = 0; i < binaryValue.length(); ++i) {
 		if (binaryValue.charAt(binaryValue.length() - 1 -i) == '1') {
 			value = value + (int)Math.pow(2.0, i * 1.0);	
@@ -147,6 +166,8 @@ public class SymbolicInterpreter extends Interpreter {
 			}
 		}		
 	}
+
+	if (isNegative) { value = value * -1; }
 	return value;
     }
 

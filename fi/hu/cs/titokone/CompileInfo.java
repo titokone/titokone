@@ -43,7 +43,7 @@ public class CompileInfo extends DebugInfo {
 
   /** This field contains the value of the symbol found. If symbolDefined
       is false, the value in this field should be ignored. */
-  private int symbolValue;
+  private String symbolValue;
 
   /** This field contains the address of the symbol.*/
   private int symbolAddress;
@@ -151,9 +151,10 @@ public class CompileInfo extends DebugInfo {
 	@param value Value of the symbol.
 	@param address Memoryaddress of the symbol.
     */
-    public void setSymbolName(String name, int address, int value) {
+    public void setSymbolName(String name, String value) {
 	symbolName = name;
 	symbolValue = value;
+	symbolDefined = true;
 	symbolAddress = address;
     }
  
@@ -293,7 +294,7 @@ public class CompileInfo extends DebugInfo {
     /** This method returns value of current symbol.
 	@return An integer containing symbol's value.
     */
-    public int getSymbolValue() {
+    public String getSymbolValue() {
 	return symbolValue;
     }
 

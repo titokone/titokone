@@ -10,7 +10,7 @@ taulukkona siis.
 
 import fi.hu.cs.ttk91.TTK91CompileException;
 import java.util.StringTokenizer;
-import java.util.Hashtable;
+import java.util.HashMap;
 
 /** This class knows everything about the relation between symbolic
     code and binary code. It can transform a full source to binary or
@@ -25,7 +25,7 @@ public class Compiler {
     /** This field contains the symbol table in its incomplete form. Some of 
 	the values corresponding to the keys may be null, if they have not
 	been defined yet. */
-    private String[] symbols;
+    private HashMap symbols;
 
     /** This field holds the initial value of a symboltable, if it gets filled up
 	a new table is created doubling it's size.
@@ -92,12 +92,13 @@ public class Compiler {
     public void compile(String source) { 
 	firstRound = true;
 	this.source = source.split();
+	symbols = new HashMap();
 	symbolsFoundSoFar = 0;
-	symbols = new String[SYMBOLTABLEINITIALSIZE];
 	nextLine = 0;
 	commandLineCount = 0;
-	code = new String[CODEARRAYINTIALSIZE;
 	dataAreaSize = 0;
+	code = new String[CODEARRAYINTIALSIZE];
+	data = new String[SYMBOLTABLEINITIALSIZE];
     }
 
     /** This function goes through one line of the code. On the first round, it
@@ -172,7 +173,7 @@ public class Compiler {
 	} else {
 		if (!lineTemp[0].equals("")) {		// label found
 			if (lineTemp[1].equals("DC")) {
-
+				
 			} else {			
 				if (lineTemp[1].equals("DS")) {
 
@@ -181,12 +182,14 @@ public class Compiler {
 
 					} else {
 					
-					}			
 						if (lineTemp[1].equals("DEF")) {
 
 						} else {	// valid code with a label 
 						
-						}			
+						}
+					}
+				}
+			}			
 		} else {
 			try {
 				Integer.parseInt(lineTemp[4]);	
@@ -318,15 +321,25 @@ Basic functionality: (Trim between each phase.)
 	nextToCheck = fieldEnd + 1;
 
 /*first register*/
-	if (nextToCheck < symbolicOpcode.length()) {
-		while (symbolicOpcode.charAt(nextToCheck) == ' ') { ++nextToCheck; }	
-		fieldEnd = symbolicOpcode.indexOf(",", nextToCheck);
+       if (nextToCheck < symbolicOpcode.length()) {
+                while (symbolicOpcode.charAt(nextToCheck) == ' ') { ++nextToCheck; }
+                fieldEnd = symbolicOpcode.indexOf(",", nextToCheck);
                 if (fieldEnd == -1) {
-                        fieldEnd = symbolicOpcode.length();
+                        if (symbolicInterpreter.getRegisterId(
+                                        symbolicOpcode.substring(nextToCheck)) != -1) {
+                                firstRegister = symbolicOpcode.substring(nextToCheck);
+                                fieldEnd = symbolicOpcode.length();
+                        } else {
+                                fieldEnd = nextToCheck - 1;
+                        }
+                } else {
+                        if (symbolicInterpreter.getRegisterId(
+                                symbolicOpcode.substring(nextToCheck, fieldEnd)) != -1) {
+                                firstRegister = symbolicOpcode.substring(nextToCheck, fieldEnd);
+                        }
                 }
-		firstRegister = symbolicOpcode.substring(nextToCheck, fieldEnd);
-		nextToCheck = fieldEnd + 1;
-	}
+        nextToCheck = fieldEnd + 1;
+        }
 
 /*addressingMode*/
 	if (nextToCheck < symbolicOpcode.length()) {
@@ -340,24 +353,30 @@ Basic functionality: (Trim between each phase.)
 
 /*address and second register*/
 	while (nextToCheck == ' ') { ++nextToCheck; }
-	if ("0123456789".indexOf(symbolicOpcode.charAt(nextToCheck)) != -1) {
-		if (symbolicOpcode.indexOf("(", nextToCheck) != -1) {
-			if (symbolicOpcode.indexOf(")", nextToCheck) < 
-						symbolicOpcode.indexOf("(", nextToCheck)) {
-				return null; 
-			} else {
-				address = symbolicOpcode.substring(nextToCheck, 
-						symbolicOpcode.indexOf("(", nextToCheck));
-			
-				secondRegister = symbolicOpcode.substring(
-	symbolicOpcode.indexOf("(", nextToCheck) + 1, symbolicOpcode.indexOf(")", nextToCheck));
-			}
+	if (symbolicOpcode.indexOf("(", nextToCheck) != -1) {
+		if (symbolicOpcode.indexOf(")", nextToCheck) < 
+					symbolicOpcode.indexOf("(", nextToCheck)) {
+			return null; 
 		} else {
-			address = symbolicOpcode.substring(nextToCheck);
+			address = symbolicOpcode.substring(nextToCheck, 
+					symbolicOpcode.indexOf("(", nextToCheck));
+			
+			secondRegister = symbolicOpcode.substring(
+	symbolicOpcode.indexOf("(", nextToCheck) + 1, symbolicOpcode.indexOf(")", nextToCheck));
+			if (symbolicInterpreter.getRegisterId(secondRegister) == -1) {
+                        	return null;
+                        }
+
 		}
 	} else {
-		secondRegister = symbolicOpcode.substring(nextToCheck).trim();
+		address = symbolicOpcode.substring(nextToCheck);
 	}
+
+	if (symbolicInterpreter.getRegisterId(address) != -1) {
+		secondRegister = address;
+		address = "";
+	}
+
 
 	parsedLine = new String[6];
 	parsedLine[0] = label;
