@@ -1,10 +1,10 @@
 /** This class contains information common to various interpreters. */
 public class Interpreter {
     /** This field specifies the opcode field length in number of bits. */
-    public static final int opcodeLength = 8; // ?
-    public static final int addressModeLength = 2; // ?
-    public static final int registerFieldLength = 3; // ?
-    public static final int addressFieldLength = 16; // ?
+    public static final int opcodeLength = 8; 
+    public static final int addressModeLength = 2; 
+    public static final int registerFieldLength = 3; 
+    public static final int addressFieldLength = 16; 
     
 
     public static final Integer NONE = new Integer(0);

@@ -12,8 +12,15 @@ public class LoadInfo extends DebugInfo {
   private int initSP;
   /** This field contains the value to be stored to the FP register. */
   private int initFP;
+  /** This fiels stores the status message to be shown to user in GUI. */
+  private String statusMessage;
   
   /**
+     @param codeArea Has the opcodes as MemoryLine array
+     @param dataArea Has the data part as MemoryLine array
+     @param initSP The initial value of SP
+     @param initFP The initial value of FP
+     @param statusMessage Message to GUI to be displayed at the status bar.
     */ 
   public LoadInfo(MemoryLine[] codeArea, MemoryLine[] dataArea, 
 		  int initSP, int initFP, String statusMessage) { }
@@ -38,4 +45,8 @@ public class LoadInfo extends DebugInfo {
     */
   public int getFP() { }
   
+  /**@return The message for GUI to be displayed at the status bar.
+    */
+  public String getStatusMessage() { }
+
 }
