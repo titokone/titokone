@@ -525,6 +525,7 @@ public class Control implements TTK91Core {
     public String modifySource(String[] modifiedSource) throws IOException {
         StringBuffer result = new StringBuffer();
 	String sourceString;
+	File targetFile = sourceFile;
 	if(modifiedSource == null)
 	  throw new IllegalArgumentException(new Message("Modified source " +
 							  "was null.").toString());
@@ -539,7 +540,7 @@ public class Control implements TTK91Core {
 	compiler.compile(sourceString); // Prepare the compiler.
 	application = null;
 	currentStdOutFile = defaultStdOutFile;
-	fileHandler.saveSource(new Source(sourceString), sourceFile);
+	fileHandler.saveSource(new Source(sourceString), targetFile);
 	return sourceString;
     }
   

@@ -483,7 +483,16 @@ public synchronized void menuRun() {
     
 }
 
-
+  /** This method is used to save the source after it has been 
+      modified in the code window. */ // Added by Sini 5.5.
+  public void saveSource() {
+    try {
+      control.modifySource(gui.getCodeTableContents());
+    }
+    catch (IOException e) {
+      gui.showError(e.getMessage());
+    }
+  }
 
 
 /** This method corresponds to the menu option File -> Compile. It
@@ -492,13 +501,6 @@ public synchronized void menuRun() {
 public synchronized void menuCompile() { 
   
     threadRunning = true;
-    
-    try {
-      control.modifySource(gui.getCodeTableContents());
-    }
-    catch (IOException e) {
-      System.out.println(e.getMessage());
-    }
     
     interruptSent = false;
     noPauses = false;
