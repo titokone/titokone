@@ -21,7 +21,7 @@ public class RunInfo extends DebugInfo{
     private int binary;
    
     /** This array contains the current values of registers 0-7 */
-    private int [] registers;
+    private Integer [] registers;
     
     /** This String contains the colon-representation of current line */
     private String binaryString;
@@ -114,7 +114,7 @@ public class RunInfo extends DebugInfo{
     
 	
 	
-	public void setRegisters(int [] registers) {
+	public void setRegisters(Integer [] registers) {
 		this.registers = registers;	
 	}
 	
@@ -312,7 +312,7 @@ public class RunInfo extends DebugInfo{
 	values.
 	@return int[] Integer array containing register numbers and new values.
 	*/
-   	public int[] getRegisters(){
+   	public Integer[] getRegisters(){
 		return this.registers;	
 	}
     

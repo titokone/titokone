@@ -82,8 +82,9 @@ public class RunDebugger{
      @param oldFP value of the old FP.
      @param newFP value of the old FC.
     */
-    public void cycleStart(String lineContents, int newPC, int newSP, int newFP){ 
-		info = new RunInfo(lineContents, oldPC, newPC, oldSP, newSP,
+    public void cycleStart(int lineNumber, String lineContents, int newPC, int newSP, int newFP){ 
+
+		info = new RunInfo(lineNumber, lineContents, oldPC, newPC, oldSP, newSP,
 		                   oldFP, newFP);
 		
 		oldPC = newPC;
@@ -132,7 +133,7 @@ public class RunDebugger{
 			break;
 		
 			case SVC_OPERATION:
-				this.infosetOperation("Supervisor call");
+				this.info.setOperation("Supervisor call");
 		    break;
 		}
 	    
@@ -163,16 +164,7 @@ public class RunDebugger{
 			    
     }
 
-    /** This method tells debugger that something was written in the codearea.
-	@param lineNumber number of the line where something was written.
-	@param binary Binary value written.
-	@param newContents String containing possible new symbolic command.
-    */
-    public void selfChangingCode(int lineNumber, int binary, String newContents) {
-		this.info.setChangedCodeAreaData(linenumber, binary, newContents);
-    }
-
-        
+    
     /** This method tells debugger what value was found from the ADDR part of 
 	the command.
 	@param value int containing the value.
@@ -182,7 +174,8 @@ public class RunDebugger{
     }
 
     /** This method tells debugger that one or more registers were changed.
-	First cell contains number of the register and second the new value..
+	If value has not changed, value is null,
+      otherwise changed value is in current index
 	@param registers Array containing new values.
     */
     public void setRegisters(Integer [] registers){
@@ -211,7 +204,7 @@ public class RunDebugger{
 	@param status New status of the bit.
     */
     public void setCompareResult(int whichBit){
-    		this.info.setCompareOperation(whichbit);
+    		this.info.setCompareOperation(whichBit);
     }
 
     /** This method tells debugger that something was read from the given
@@ -226,7 +219,7 @@ public class RunDebugger{
 	    	break;
 	    	
 	    	case STDIN:
-	    		this.infosetIN("Standard input", STDIN, value);
+	    		this.info.setIN("Standard input", STDIN, value);
 	    	break;
     	}
     }
