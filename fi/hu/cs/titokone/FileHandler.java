@@ -40,7 +40,7 @@ public class FileHandler {
     public FileHandler() {}
 
     /** This function loads up a Source file from a given file.
-	@param filename The identifier of the file to read from.
+	@param srcFile The identifier of the file to read from.
 	@return A source instance which is no longer dependent on I/O. 
 	@throws IOException If an I/O error occurs. Eg. one of the possible
 	IOExceptions is FileNotFoundException. */
@@ -57,7 +57,7 @@ public class FileHandler {
     }
     
     /** This function loads a settings file into a StringBuffer.
-	@param filename The identifier of the file to read from.
+	@param settingsFile The identifier of the file to read from.
 	@return A StringBuffer which no longer depends on I/O.
 	@throws IOException If an I/O error occurs. Eg. one of the possible
 	IOExceptions is FileNotFoundException. */
@@ -87,7 +87,7 @@ public class FileHandler {
 	System.getProperty("line.separator", "\n").
 	@param settingsData The settings data in a StringBuffer in the 
 	form it is to be saved in. The linebreaks in the file will be \ns.
-	@param filename The identifier of the file to save to.
+	@param settingsFile  The identifier of the file to save to.
 	@throws IOException If an I/O error occurs, eg. the directory 
 	the file should be in does not exist or we cannot write to it. */
     public void saveSettings(String settingsData, File settingsFile) 
@@ -98,7 +98,7 @@ public class FileHandler {
     /** This function loads a Binary from a binary .b91 file and
 	returns the result. The Binary class checks itself upon creation
 	and throws a ParseException if it is not syntactically correct. 
-	@param filename Identifier of the file to read from.
+	@param binaryFile Identifier of the file to read from.
 	@return An Binary instance containing the contents of the
 	.b91 file. 
 	@throws IOException If an I/O error occurs. Eg. one of the possible
@@ -112,8 +112,8 @@ public class FileHandler {
   
    
     /** This method saves a Binary to file in a .b91 binary format.
-	@param binary The binary to save to file. 
-	@param filename The identifier for the file to save to. 
+	@param bin The binary to save to file. 
+	@param binarySaveFile The identifier for the file to save to. 
 	@throws IOException If an I/O error occurs, eg. the given file 
 	cannot be written to. */
     public void saveBinary(Binary bin, File binarySaveFile) 
@@ -125,27 +125,13 @@ public class FileHandler {
 	a string. The contents should be integers delimited by \n, 
 	\r or \r\n, but the loader does not check that this is the 
 	case.
-	@param filename The identifier for the file to read from.
+	@param stdinFile The identifier for the file to read from.
 	@return A stringbuffer containing the contents of the file.
 	@throws IOException If an I/O error occurs, eg. the given
 	file is not found. */
     public StringBuffer loadStdIn(File stdinFile) throws IOException {
 	return loadFileContentsToString(stdinFile);
     }
-
-    /** This method saves a "stdout" file representing the disk. 
-	The contents to be saved to the file should be integers
-	delimited by \n, \r or \r\n, but no checking is made.
-	@param contents The string to save to the file.
-	@param filename The file to save the given string to.
-	@throws IOException If an I/O error occurs, eg. the given
-	file cannot be written to. 
-	This method is not used in practice, as appending the
-	data one line at a time has been found to be more convenient. */
-    //public void saveStdOut(String contents, File stdoutFile) 
-    //	throws IOException {
-    //	saveStringToFile(contents, stdoutFile);
-    //}
 
     /** This method appends data to a stdout file. If the file does
 	not exist, it is created. 
@@ -169,7 +155,7 @@ public class FileHandler {
     /** This method attempts to load a resource bundle from a file
 	(with an URLClassLoader). It bundles up the various exceptions
 	possibly created by this into ResourceLoadFailedException.
-	@param filename The filename to load and instantiate the 
+	@param rbFile The filename to load and instantiate the 
 	ResourceBundle from. 
 	@return A ResourceBundle found from the file.
 	@throws ResourceLoadFailedException If the file load would cast
