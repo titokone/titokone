@@ -35,7 +35,7 @@ public class Control implements TTK91Core {
 
     /** This has control to all the files this program has opened.
     */
-    private FileHandler fileHandler; 
+    private FileHandler fileHandler;
     
     private Processor processor;
     
@@ -49,15 +49,16 @@ public class Control implements TTK91Core {
     /** This constructor sets up the Control instance.
     */
     public Control(File defaultStdInFile, File defaultStdOutFile) { 
-      fileHandler = new FileHandler();
-      compiler = new Compiler();
-      processor = new Processor(DEFAULT_MEMORY_SIZE);
-      this.defaultStdInFile = defaultStdInFile;
-      this.defaultStdOutFile = defaultStdOutFile;
+	fileHandler = new FileHandler();
+	compiler = new Compiler();
+	processor = new Processor(DEFAULT_MEMORY_SIZE);
+	this.defaultStdInFile = defaultStdInFile;
+	this.defaultStdOutFile = defaultStdOutFile;
     }
     
     /** Compiles a symbolic TTK91-assembly language to binary executable
-        application. Defined by TTK91Core.
+        application. Defined by TTK91Core. It throws exceptions if the
+	compilation (eg. Compiler) throws them.
         @param source The source code to be compiled.
         @return The binary executable code.
     */
@@ -86,6 +87,7 @@ public class Control implements TTK91Core {
 	@throws IllegalStateException If application is null. */
     public void load() throws TTK91AddressOutOfBounds, ParseException,
 			      IOException {
+	String errorMessage;
 	File[] appDefinitions;
 	if(application == null) {
 	    errorMessage = new Message("No application to load.").toString();
@@ -151,7 +153,7 @@ public class Control implements TTK91Core {
 		result[DEF_HOME_POS] = 
 		    new File(symbols.getDefinition(definitions[i]));
 	    else { 
-		logger = Logger.getLogger(this.getClass().getPackage());
+		logger = Logger.getLogger(getClass().getPackage().getName());
 		logger.warning(new Message("Application contained an odd " +
 					   "definition key '{0}'.",
 					   definitions[i]).toString());
@@ -276,7 +278,7 @@ public class Control implements TTK91Core {
         loaded into the TTK91's memory.
         @return Returns RunInfo object of the last line executed.
     */
-    public RunInfo runLine() throws TTK91RuntimeException { 
+    public RunInfo runLine() throws TTK91RuntimeException {
 	RunInfo info;
 	int data;
 	int[] outData; 
@@ -292,7 +294,7 @@ public class Control implements TTK91Core {
 			application.writeToCrt(outData[1]); 
 		    if(info.whatDevice().equals("STDOUT")) {
 			application.writeToStdOut(outData[1]);
-			writeToStdoutFile(outData[1]);
+			writeToStdoutFile("" + outData[1]);
 		    }
 		}
 	    }
