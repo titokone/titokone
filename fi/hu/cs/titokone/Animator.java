@@ -40,49 +40,49 @@ public class Animator extends JFrame {
     private final static int MEMORY = 20;
     
     private final static int[][] routeToBus = {
-        {228,131, 269,131},             // R0
-        {228,151, 269,151},             // R1
-        {228,171, 269,171},             // R2
-        {228,191, 269,191},             // R3
-        {228,211, 269,211},             // R4
-        {228,231, 269,231},             // R5
-        {228,251, 269,251},             // R6
-        {228,271, 269,271},             // R7
-        {292,131, 269,131},             // TR
-        {292,151, 269,151},             // PC
-        {292,171, 269,171},             // IR
-        {292,191, 269,191},             // SR
-        {292,321, 269,321},             // BASE
-        {292,341, 269,341},             // LIMIT
-        {292,361, 269,361},             // MAR
-        {292,381, 269,381},             // MBR
-        {140,345, 140,330, 269,330},    // ALU_IN1
-        {210,345, 210,330, 269,330},    // ALU_IN2
-        {180,420, 180,432, 269,432},    // ALU_OUT
-        {540,415, 540,487, 269,487},    // EXTERNAL_DEVICE
-        {680,415, 680,487, 269,487},    // MEMORY
+        {182,97,  220,97},              // R0
+        {182,119, 220,119},             // R1
+        {182,141, 220,141},             // R2
+        {182,163, 220,163},             // R3
+        {182,185, 220,185},             // R4
+        {182,207, 220,207},             // R5
+        {182,229, 220,229},             // R6
+        {182,251, 220,251},             // R7
+        {257,110, 220,110},             // TR
+        {257,132, 220,132},             // PC
+        {257,154, 220,154},             // IR
+        {257,176, 220,176},             // SR
+        {257,295, 220,295},             // BASE
+        {257,317, 220,317},             // LIMIT
+        {257,339, 220,339},             // MAR
+        {257,361, 220,361},             // MBR
+        {182,327, 220,327},             // ALU_IN1
+        {182,349, 220,349},             // ALU_IN2
+        {182,393, 220,393},             // ALU_OUT
+        {520,423, 520,491, 220,491},    // EXTERNAL_DEVICE
+        {661,423, 661,491, 220,491},    // MEMORY
     };
     
     private final static int[][] whereWriteValueTo = {
-        {165,138},                      // R0
-        {165,158},                      // R1
-        {165,178},                      // R2
-        {165,198},                      // R3
-        {165,218},                      // R4
-        {165,238},                      // R5
-        {165,258},                      // R6
-        {165,278},                      // R7
-        {305,137},                      // TR
-        {305,157},                      // PC
-        {305,177},                      // IR
-        {305,197},                      // SR
-        {305,328},                      // BASE
-        {305,348},                      // LIMIT
-        {305,368},                      // MAR
-        {305,388},                      // MBR
-        {114,368},                      // ALU_IN1
-        {182,368},                      // ALU_IN2
-        {154,409},                      // ALU_OUT
+        {73,105},                       // R0
+        {73,127},                       // R1
+        {73,149},                       // R2
+        {73,171},                       // R3
+        {73,193},                       // R4
+        {73,215},                       // R5
+        {73,237},                       // R6
+        {73,259},                       // R7
+        {264,117},                      // TR
+        {264,139},                      // PC
+        {264,161},                      // IR
+        {264,183},                      // SR
+        {264,303},                      // BASE
+        {264,325},                      // LIMIT
+        {264,347},                      // MAR
+        {264,369},                      // MBR
+        {74,334},                       // ALU_IN1
+        {74,356},                       // ALU_IN2
+        {74,401},                       // ALU_OUT
     };
     
     /** Contains values of registers, alu, memory and external device. */
@@ -100,7 +100,7 @@ public class Animator extends JFrame {
 
     private BufferedImage backgroundImage, doubleBuffer;
     private int pointX=-1, pointY=-1;
-    private int animationDelay = 25;
+    private int delay = 40;
     
     /** Creats new animator. 
         @param width Width of created Frame.
@@ -138,9 +138,9 @@ public class Animator extends JFrame {
                 g2.drawString (SR_String, whereWriteValueTo[i][0], whereWriteValueTo[i][1]);
             
         // write current command and comments
-        g2.drawString (currentCommand, 355, 48);
-        g2.drawString (comment1, 106, 564);
-        g2.drawString (comment2, 106, 585);
+        g2.drawString (new Message ("Current command: ").toString() + currentCommand, 217, 23);
+        g2.drawString (comment1, 29, 548);
+        g2.drawString (comment2, 29, 581);
         
         // draw red animation spot
         if (pointX != -1) {
@@ -149,7 +149,7 @@ public class Animator extends JFrame {
         }
         
         // draw double buffer to frame
-        g.drawImage (doubleBuffer, 0,0, getWidth(), getHeight(), null);
+        g.drawImage (doubleBuffer, 3,32, getWidth()-6, getHeight()-34, null);   // TODO. g edustaa koko Framea eikä vain sen piirtoaluetta!
     }
 
     /** This method produces an animation of a command based on 
@@ -241,7 +241,6 @@ public class Animator extends JFrame {
                 case 4 : // OUT
                 int outValue = info.whatOUT()[1];
                 comment1 = new Message ("Write value {0} from register R{1} to device {2}.", new String[] {""+value[Rj], ""+Rj, info.whatDevice()}).toString();
-                animateAnEvent (whereIsSecondOperand, EXTERNAL_DEVICE);
                 animateAnEvent (Rj, EXTERNAL_DEVICE);
                 break;
             }
@@ -273,12 +272,13 @@ public class Animator extends JFrame {
             comment1 = new Message ("Set comparision result to SR").toString();
             animateAnEvent (ALU_OUT, SR);
             switch (info.getCompareStatus()) {
-                case  0 : SR_String = "1 0 0...";break;
-                case  1 : SR_String = "0 1 0...";break;
-                case  2 : SR_String = "0 0 1...";break;
-                default : SR_String = "0 0 0...";break;
+                case  0 : SR_String = "1   0   0...";break;
+                case  1 : SR_String = "0   1   0...";break;
+                case  2 : SR_String = "0   0   1...";break;
+                default : SR_String = "0   0   0...";break;
             }
             pause();
+            comment2 = "";
             break;
 
             case RunDebugger.BRANCH_OPERATION :
@@ -411,15 +411,15 @@ public class Animator extends JFrame {
         value[IR] = cpu.getValueOf (TTK91Cpu.CU_IR);
         value[TR] = cpu.getValueOf (TTK91Cpu.CU_TR);
         value[SR] = -1;
-        SR_String = "0 0 0...";
+        SR_String = "0   0   0...";
         value[BASE] = baseValue;
         value[LIMIT] = limitValue;
     }
     
-    /** Sets animation frequency.
-        @param frequency Frames drawn per second. */
-    public void setAnimationFrequency (int frequency) {
-        animationDelay = 1000 / frequency;
+    /** Sets animation delay.
+        @param delay Delay between frames in milliseconds. */
+    public void setAnimationDelay (int delay) {
+        this.delay = delay;
     }
 
     /** This method animates one event like "move 7 from R1 to In2 in ALU using
@@ -456,7 +456,7 @@ public class Animator extends JFrame {
                 pointY = y1;
                 repaint();
                 try {
-                    Thread.sleep(animationDelay);
+                    Thread.sleep(delay);
                 } catch (Exception e) {}
             }
         }
@@ -475,8 +475,8 @@ public class Animator extends JFrame {
     }
     
     public static void main (String[] args) throws IOException {
-        Animator a = new Animator(800, 600, "Animator");
-        a.setAnimationFrequency (40);
+        Animator a = new Animator(806, 634, "Animator");
+        a.setAnimationDelay (40);
         a.init (new Processor(512), 0, 512);
         RunDebugger runDebugger = new RunDebugger();
         
@@ -498,6 +498,13 @@ public class Animator extends JFrame {
         runDebugger.setValueAtADDR (100);
         runDebugger.setSecondFetchValue (1000);
         runDebugger.runCommand (38862858);
+        a.animate (runDebugger.cycleEnd());
+*/
+
+        runDebugger.cycleStart (0, "COMP R0, @30");
+        runDebugger.setOperationType (RunDebugger.COMP_OPERATION);
+        runDebugger.runCommand (521142302);
+        runDebugger.setCompareResult (0);
         a.animate (runDebugger.cycleEnd());
         
         runDebugger.cycleStart (0, "IN R7, 10(R1)");
@@ -523,7 +530,7 @@ public class Animator extends JFrame {
         runDebugger.setALUResult (20);
         runDebugger.runCommand (297795604);
         a.animate (runDebugger.cycleEnd());
-
+/*
         runDebugger.cycleStart (0, "LOAD R1, =100");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.runCommand (35651684);
