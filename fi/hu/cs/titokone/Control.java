@@ -4,6 +4,7 @@ package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.*;
 import java.io.File;
+import java.io.InputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.ParseException;
@@ -590,12 +591,23 @@ public class Control implements TTK91Core {
     }
     
     /** This is called when GUIBrain wants to load the settings.
+	It uses FileHandler for reading them.
         @return A string representation of the Settings object stored in 
         the file.
     */
     public String loadSettingsFileContents(File settingsFile) 
 	throws IOException { 
 	return fileHandler.loadSettings(settingsFile).toString();
+    }
+
+    /** This is called when GUIBrain wants to load the settings from
+	a stream. It uses FileHandler for reading them.
+        @return A string representation of the Settings object stored in 
+        the input stream.
+    */
+    public String loadSettingsStreamContents(InputStream settingsStream) 
+	throws IOException {
+	return fileHandler.loadSettings(settingsStream).toString();
     }
     
     /** This method stores the settings string to the given file. 
