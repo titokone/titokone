@@ -20,8 +20,11 @@ public class Translator {
     /** This field stores the current locale. It defaults to 
 	defaultLocale. */
     private static Locale currentLocale = defaultLocale;
+    /** This field stores the default ResourceBundle. */
+    private static ResourceBundle defaultTranslations = 
+	ResourceBundle.getBundle(resourceFamilyName, defaultLocale);
     /** This field stores the current ResourceBundle in use. */
-    private static ResourceBundle translations;
+    private static ResourceBundle translations = defaultTranslations;
 
     /** This function translates a fixed string to the currently used 
 	language. If the current language has no string corresponding to
@@ -32,7 +35,19 @@ public class Translator {
 	Translations*class file. 
 	@return The translated string, if available, or something otherwise
 	usable. */
-    public static String translate(String keyString) { }
+    public static String translate(String keyString) { 
+	try {
+	    return translations.getString(keyString);
+	}
+	catch(MissingResourceException untranslatedKey) {
+	    try {
+		return defaultTranslations.getString(keyString);
+	    }
+	    catch(MissingResourceException totallyUnknownKey) {
+		return keyString;
+	    }
+	}	
+    }
 
     /** This function translates a template string to the currently
 	used language and replaces any {i} markers in it with strings
@@ -51,7 +66,17 @@ public class Translator {
 	@return The translated string, if available, or something otherwise
 	usable, with {i} markers replaced from the parameters array as 
 	far as there are available replacements. */
-    public static String translate(String keyString, String[] parameters) { }
+    public static String translate(String keyString, String[] parameters) { 
+	MessageFormat formatter;
+	// First, we translate the basic string as if it had no parameters,
+	// then we replace any {i} fields in it by using MessageFormat's
+	// format method, with the replacements as its parameter. The
+	// replacement is done according to locale, although this is
+	// unlikely to affect anything in our current implementation.
+	formatter = new MessageFormat(translate(keyString));
+	formatter.setLocale(currentLocale);
+	return formatter.format(parameters).toString();
+    }
 
     /** This method sets the current locale in use and fetches a 
 	corresponding ResourceBundle that contains the translations most
@@ -59,7 +84,11 @@ public class Translator {
 	translation if there is nothing better available. 
 	@param newLocale The locale to switch to, eg. new Locale("fi", 
 	"FI"). */
-    public static void setLocale(Locale newLocale) { }
+    public static void setLocale(Locale newLocale) { 
+	currentLocale = newLocale;
+	translations = ResourceBundle.getBundle(resourceFamilyName,
+						currentLocale);
+    }
 
     /** This method sets the current locale in use and tries to fetch the
 	translation from translationPath. Use of setLocale(Locale) is 
@@ -67,14 +96,20 @@ public class Translator {
 	control over where the translations are found.
 	@param newLocale The locale to switch to, eg. new Locale("fi", 
 	"FI"). 
-	@param translations A class containing the translations for this 
+	@param newTranslations A class containing the translations for this 
 	locale. If the translations are located in the standard place, 
 	setLocale(Locale) can be used. */
     public static void setLocale(Locale newLocale, 
-				 ResourceBundle translations) {}
+				 ResourceBundle newTranslations) {
+	currentLocale = newLocale;
+	translations = newTranslations;
+    }
 
     /** This method returns the resource bundle in use.
 	@return The resource bundle set to correspond to the current 
 	locale. */
-    public static ResourceBundle getResourceBundle() {}
+    public static ResourceBundle getResourceBundle() {
+	return translations;
+    }
+
 }
