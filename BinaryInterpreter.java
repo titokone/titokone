@@ -40,6 +40,42 @@ checking a binary.
 /* Translates the opcode and checks if it is a valid one, then
 calls the getParameterString to sort out the rest of the binary.*/
 
+    /**	This command returns the operation code from a binary
+	@param binaryCommand The command's binary-form representation.
+	@return Operation code in a String format.
+      */
+    public String getOpCodeFromBinary(int binaryCommand) {}
+
+    /** If a command has a first register value then this function returns
+	it. (NOP has none, thus it would return "") Normally value would
+	be a value from R0 to R7
+	@param binaryCommand The command's binary-form representation.
+	@return Possible register value in a String format.
+      */
+    public String getFirstRegisterFromBinary(int binaryCommand) {}
+
+    /** Function returns possible memory address mode from a binary command
+	given as a parameter. Four possible values (non excistent, and
+	three legal values)
+	@param binaryCommand The command's binary-form representation.
+	@return Memory address mode from binary command in a String format.
+      */
+    public String getMemoryModeFromBinary(int binaryCommand) {}
+
+    /** If a command has second register value, this function returns it
+	"" or R0 to R7).
+	@param binaryCommand The command's binary-form representation.
+	@return Possible other register from binary command in a String format.
+      */
+    public String getSecondRegisterFromBinary(int binaryCommand) {}
+
+    /** If a given binary represents a valid command that has an address 
+	then this function returns it.
+	@param binaryCommand The command's binary-form representation.
+	@return Address part of the binary command in a String format.
+      */
+    public String getAddressFromBinary(int binaryCommand) {}
+
     /** This method deals with the more complicated bit of extracting
 	the parameter string needed for this command in translating
 	a binary command to a string.
