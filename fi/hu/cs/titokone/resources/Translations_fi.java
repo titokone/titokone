@@ -234,9 +234,24 @@ public class Translations_fi extends ListResourceBundle {
       {"K91 source", "K91-lähdekooditiedosto"},  
       {"Class file", "Luokkatiedosto"},
 
-      // Class: GUICompileSettingsDialog - not processed yet - TODO
+      // Class: GUICompileSettingsDialog
+      // (Set compiling options already defined in GUI.)
+      {"Apply", null},
+      {"Close", null},
+      {"Compile line by line", null},
+      {"Show comments", null},
+      {"Set compiling options", null},
+      // Pause whenever a comment occurs & show extra comments while compiling
+      // represented in JOptionPane.
 
-      // Class: GUIRunSettingsDialog - not processed yet - TODO
+      // Class: GUIRunSettingsDialog
+      // (Set running options already defined in GUI, as are Apply and Close.)
+      {"Execute line by line", null},
+      {"Show comments", null},
+      {"Show animation", null},
+      // (execute code line by line, show extra comments while executing
+      // and show animation while executing are represented in JOptionPane.
+
       // Class: GUIThreader, no messages.
       // Class: Interpreter, no messages.
       // Class: InvalidDefinitionException, no messages.
