@@ -256,9 +256,8 @@ public class Compiler {
 	@return A CompileInfo object describing what was done, or null if 
 	the first round has been completed. This will be the sign for
 	the compiler to prepare for the second round and start it. */
-    private CompileInfo firstRoundProcess(String line) 
-	throws TTK91CompileException {
-	String[] lineTemp = parseCompilerCommandLine(line);
+    private CompileInfo firstRoundProcess(String line) throws TTK91CompileException {
+	String[] lineTemp;
 	boolean nothingFound = true;
 	String comment = "";
 	String[] commentParameters;
@@ -269,110 +268,10 @@ public class Compiler {
 
 	compileDebugger.setStatusMessage(new Message("First round of compilation.").toString());
 
-	if (lineTemp == null) {
-	    lineTemp = parseLine(line);
-	    if (lineTemp == null) { 
-// not a valid command
-		comment = new Message("Invalid command.").toString();
-		throw new TTK91CompileException(comment); 
-	    } else {
-		
-		if (lineTemp[1].equals("")) {
-// line empty;
-		    
-		} else {
-		    code.add(line);
-		    if (!lineTemp[0].equals("")) {
-			nothingFound = false;
-			labelFound = true;
-// label found
-				
-			if (invalidLabels.containsKey(lineTemp[0])) {
-// not a valid label			
-			    comment = new Message("Invalid label.").toString();
-			    throw new TTK91CompileException(comment);
-			} else {
-			    invalidLabels.put(lineTemp[0], null);
 
-			    if (symbols.containsKey(lineTemp[0])) {
-				symbolTableEntry[0] = lineTemp[0];
-				symbolTableEntry[1] = "" + 
-				    (code.size() - 1);
-				/* MUUTETTU 23.04. (OLLI)  
-                                */                                
-				
-				symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
-				symbolTableEntry.clone());
-			    } else {
-				symbols.put(lineTemp[0], new Integer(symbolTable.size()));
-				symbolTableEntry[0] = lineTemp[0];
-				symbolTableEntry[1] = "" +
-				    (code.size() - 1);
-				symbolTable.add(symbolTableEntry.clone());
-			    }
-			    
-			    compileDebugger.foundLabel(lineTemp[0], 
-						       code.size() -1);
-			}
-		    }
-		    
-		    try {
-			if (!lineTemp[4].equals(""))
-				Integer.parseInt(lineTemp[4]);	
-		    } catch(NumberFormatException e) {	
-// variable used	
-			if (symbolicInterpreter.getRegisterId(lineTemp[4]) == -1) {
-			    nothingFound = false; 	
-			    variableUsed = true;
-			    compileDebugger.foundSymbol(lineTemp[4]);
-			    if (!symbols.containsKey(lineTemp[4])) {
-			        if (invalidLabels.get(lineTemp[4]) == null) {
-				    symbols.put(lineTemp[4], new 
-					    Integer(symbolTable.size()));
-				    symbolTableEntry[0] = lineTemp[4];
-				    symbolTableEntry[1] = "";
-				    symbolTable.add(symbolTableEntry.clone());
-				} else {
-// predefined word (halt etc) was used	
-				    symbols.put(lineTemp[4], 
-					    new Integer(symbolTable.size()));
-				    symbolTableEntry[0] = lineTemp[4];
-				    symbolTableEntry[1] = "" + 
-					    (Integer) invalidLabels.get(lineTemp[4]);
-				    symbolTable.add(symbolTableEntry.clone()); 
-				}
-			    }
-			} 
-		    }
-	
-		    if (variableUsed && labelFound) {
-			commentParameters = new String[2];
-			commentParameters[0] = lineTemp[0];
-			commentParameters[1] = lineTemp[4];
-			comment = new Message("Found label {0} and variable " +
-					      "{1}.", 
-					      commentParameters).toString();
-			compileDebugger.setComment(comment);
+	try { 
+	    lineTemp = parseCompilerCommandLine(line); 
 
-		    } else {
-			if (variableUsed) {
-			    comment = new Message("Variable {0} used.", 
-						  lineTemp[4]).toString();
-			    compileDebugger.setComment(comment);
-	
-			} else {
-			    if (labelFound) {
-				comment = new Message("Label {0} found.", 
-						      lineTemp[0]).toString();
-				compileDebugger.setComment(comment);
-	
-			    }
-			}
-		    }
-		    
-		}
-	    }
-	} else {
 // compiler command
 	    boolean allCharsValid = true;
 	    boolean atLeastOneNonNumber = false;
@@ -525,6 +424,103 @@ public class Compiler {
 		    }			
 		}
 	    }		
+	} catch(TTK91CompileException e) {
+		lineTemp = parseLine(line);
+		
+		if (lineTemp[1].equals("")) {
+// line empty;
+		    
+		} else {
+		    code.add(line);
+		    if (!lineTemp[0].equals("")) {
+			nothingFound = false;
+			labelFound = true;
+// label found
+				
+			if (invalidLabels.containsKey(lineTemp[0])) {
+// not a valid label			
+			    comment = new Message("Invalid label.").toString();
+			    throw new TTK91CompileException(comment);
+			} else {
+			    invalidLabels.put(lineTemp[0], null);
+
+			    if (symbols.containsKey(lineTemp[0])) {
+				symbolTableEntry[0] = lineTemp[0];
+				symbolTableEntry[1] = "" + 
+				    (code.size() - 1);
+				/* MUUTETTU 23.04. (OLLI)  
+                                */                                
+				
+				symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
+				symbolTableEntry.clone());
+			    } else {
+				symbols.put(lineTemp[0], new Integer(symbolTable.size()));
+				symbolTableEntry[0] = lineTemp[0];
+				symbolTableEntry[1] = "" +
+				    (code.size() - 1);
+				symbolTable.add(symbolTableEntry.clone());
+			    }
+			    
+			    compileDebugger.foundLabel(lineTemp[0], 
+						       code.size() -1);
+			}
+		    }
+		    
+		    try {
+			if (!lineTemp[4].equals(""))
+				Integer.parseInt(lineTemp[4]);	
+		    } catch(NumberFormatException ne) {	
+// variable used	
+			if (symbolicInterpreter.getRegisterId(lineTemp[4]) == -1) {
+			    nothingFound = false; 	
+			    variableUsed = true;
+			    compileDebugger.foundSymbol(lineTemp[4]);
+			    if (!symbols.containsKey(lineTemp[4])) {
+			        if (invalidLabels.get(lineTemp[4]) == null) {
+				    symbols.put(lineTemp[4], new 
+					    Integer(symbolTable.size()));
+				    symbolTableEntry[0] = lineTemp[4];
+				    symbolTableEntry[1] = "";
+				    symbolTable.add(symbolTableEntry.clone());
+				} else {
+// predefined word (halt etc) was used	
+				    symbols.put(lineTemp[4], 
+					    new Integer(symbolTable.size()));
+				    symbolTableEntry[0] = lineTemp[4];
+				    symbolTableEntry[1] = "" + 
+					    (Integer) invalidLabels.get(lineTemp[4]);
+				    symbolTable.add(symbolTableEntry.clone()); 
+				}
+			    }
+			} 
+		    }
+	
+		    if (variableUsed && labelFound) {
+			commentParameters = new String[2];
+			commentParameters[0] = lineTemp[0];
+			commentParameters[1] = lineTemp[4];
+			comment = new Message("Found label {0} and variable " +
+					      "{1}.", 
+					      commentParameters).toString();
+			compileDebugger.setComment(comment);
+
+		    } else {
+			if (variableUsed) {
+			    comment = new Message("Variable {0} used.", 
+						  lineTemp[4]).toString();
+			    compileDebugger.setComment(comment);
+	
+			} else {
+			    if (labelFound) {
+				comment = new Message("Label {0} found.", 
+						      lineTemp[0]).toString();
+				compileDebugger.setComment(comment);
+	
+			    }
+			}
+		    }
+		    
+	    	}
 	}
 	return compileDebugger.lineCompiled();
     }
@@ -643,8 +639,7 @@ public class Compiler {
 	@return A CompileInfo object describing what was done, or 
 	null if the second round and thus the compilation has been 
 	completed. */
-    private CompileInfo secondRoundProcess(String line) 
-	throws TTK91CompileException { 
+    private CompileInfo secondRoundProcess(String line) throws TTK91CompileException { 
 
 	/* Antti: 04.03.04
 
@@ -730,7 +725,7 @@ public class Compiler {
     /**	This method parses a String and tries to find a label, opCode
 	and all the other parts of a Command line.
 	@param symbolicOpCode Symbolic form of an operation code. */  
-    public String[] parseLine(String symbolicOpcode) {
+    public String[] parseLine(String symbolicOpcode) throws TTK91CompileException {
 	String label = "";
 	String opcode = "";		
 	String firstRegister = "";
@@ -738,6 +733,8 @@ public class Compiler {
 	String secondRegister = "";
 	String address = "";
 	
+	String comment;		// for exception
+
 	String[] parsedLine;	
 	String wordTemp = "";
 	int nextToCheck = 0;	// for looping out the spacing
@@ -765,8 +762,12 @@ public class Compiler {
 /* label */
 	wordTemp = lineAsArray[lineAsArrayIndex];
 	if (symbolicInterpreter.getOpcode(wordTemp) == -1) { 	
-	    if(!validLabelName(wordTemp))
-		return null;
+	    if(!validLabelName(wordTemp)) {
+		comment = new Message("Compilation failed: {0}", 
+				 new Message("invalid label {0}.", 
+					wordTemp).toString()).toString();
+		throw new TTK91CompileException(comment);		
+	    }
 	    label = wordTemp;
 	    ++lineAsArrayIndex;
 	} 
@@ -775,8 +776,18 @@ public class Compiler {
 	if (lineAsArrayIndex < lineAsArray.length) {
 		opcode = lineAsArray[lineAsArrayIndex];
 		++lineAsArrayIndex;
-		if (symbolicInterpreter.getOpcode(opcode) < 0) { return null; }
-	} else { return null; }
+		if (symbolicInterpreter.getOpcode(opcode) < 0) { 
+                	comment = new Message("Compilation failed: {0}",
+                                 	 new Message("invalid opcode {0}.",
+                                        	opcode).toString()).toString();
+                	throw new TTK91CompileException(comment);
+		}
+	} else {
+		comment = new Message("Compilation failed: {0}", 
+			   new Message("invalid opcode {0}.", 
+					opcode).toString()).toString();
+		throw new TTK91CompileException(comment);		
+        }
 
 /*first register*/
 	if (lineAsArrayIndex < lineAsArray.length) {
@@ -821,7 +832,11 @@ public class Compiler {
 
 		   if (lineAsArray[lineAsArrayIndex].indexOf(")") < 
 	               lineAsArray[lineAsArrayIndex].indexOf("(")) {
-			 return null;
+				comment = new Message("Compilation failed: {0}", 
+					  new Message("second register expected."
+						).toString()).toString();
+				throw new TTK91CompileException(comment);		
+ 
 		   } else {
 			if (spaceBetweenMemorymodeAndAddress) {
 			   address = lineAsArray[lineAsArrayIndex].substring(
@@ -840,7 +855,10 @@ public class Compiler {
 			);
 
 			if (symbolicInterpreter.getRegisterId(secondRegister) == -1) {
-                        	return null;
+   				comment = new Message("Compilation failed: {0}",
+      					  new Message("invalid register {0}.", 
+							secondRegister).toString()).toString();
+                        	throw new TTK91CompileException(comment);
                     	}
 		   }
 		} else {
@@ -854,12 +872,21 @@ public class Compiler {
 			++lineAsArrayIndex;
 
 			if (lineAsArray[lineAsArrayIndex].indexOf("(") == -1 ||
-			    lineAsArray[lineAsArrayIndex].indexOf(")") == -1) 
-				return null;
+			    lineAsArray[lineAsArrayIndex].indexOf(")") == -1) {
+				comment = new Message("Compilation failed: {0}",
+					  new Message("second register expected."
+						).toString()).toString();
+				throw new TTK91CompileException(comment);
+			}
+				
 
 		  	if (lineAsArray[lineAsArrayIndex].indexOf(")") < 
 	               	    lineAsArray[lineAsArrayIndex].indexOf("(")) {
-			 	return null;
+                             	comment = new Message("Compilation failed: {0}",
+                                          new Message("second register expected."
+                                                ).toString()).toString();
+                                throw new TTK91CompileException(comment);
+
 		   	} else {
 				secondRegister = lineAsArray[lineAsArrayIndex].substring(
                                 	lineAsArray[lineAsArrayIndex].indexOf("(") + 1,
@@ -876,7 +903,11 @@ public class Compiler {
 	    address = "";
         }
 	
-	if (lineAsArrayIndex < lineAsArray.length) { return null; }
+	if (lineAsArrayIndex < lineAsArray.length) { 
+		comment = new Message("Compilation failed: {0}",
+                          new Message("end of line expected.").toString()).toString();
+                throw new TTK91CompileException(comment);
+	}
 
 	if (opcode.length() > 0) {
 	    if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
@@ -884,44 +915,82 @@ public class Compiler {
 		// jnneg/jnzer/jnpos.
 		if(opcode.toLowerCase().matches("j" + "n?" + 
 						"((neg)|(zer)|(pos))")) {
-		    if (firstRegister.equals("")) return null;
+		    if (firstRegister.equals("")) {
+		     	comment = new Message("Compilation failed: {0}",
+                                  new Message("first register expected."
+                                                ).toString()).toString();
+                	throw new TTK91CompileException(comment);
+		    }
 		} 
-		if (addressingMode.equals("=") || address.equals("")) return null;	
+		if (addressingMode.equals("=") || address.equals("")) {
+	                comment = new Message("Compilation failed: {0}",
+            	                        new Message("address expected."
+                     	                    ).toString()).toString();
+	                throw new TTK91CompileException(comment);
+		}
 	    } else {
 		if (opcode.equalsIgnoreCase("nop")) {
 		    // (do nothing)
 		} else {
 		    if (opcode.equalsIgnoreCase("pop")) {
 			if (addressingMode.equals("@") || 
-			    addressingMode.equals("=") || !address.equals("")) 
-			    return null;	
+			    addressingMode.equals("=") || !address.equals("")) {
+				comment = new Message("Compilation failed: {0}",
+                                  	  new Message("invalid argument."
+                                                ).toString()).toString();
+                        	throw new TTK91CompileException(comment);
+			}
 		    } else {
 			if (opcode.equalsIgnoreCase("pushr") || 
                             opcode.equalsIgnoreCase("popr")) {
-				if (firstRegister.equals("")) return null;
+				if (firstRegister.equals("")) {
+					comment = new Message("Compilation failed: {0}",
+                                  		  new Message("first register expected."
+                                                	).toString()).toString();
+		                        throw new TTK91CompileException(comment);
+				}
 			} else {
 				if (firstRegister.equals("") || 
-				   (address.equals("") && secondRegister.equals(""))) 
-				    return null;
+				   (address.equals("") && secondRegister.equals(""))) {
+					comment = new Message("Compilation failed: {0}",
+                                                  new Message("address or register expected."
+                                                        ).toString()).toString();
+                                        throw new TTK91CompileException(comment);
+				}
 			}
 		    }
 		}
 	    }
 	}	
 
-	if (addressingMode.equals("=") && address.equals("")) 
-	    return null;
-	if (opcode.equalsIgnoreCase("store") && address.equals("")) 
-	    return null;
-	if (opcode.equalsIgnoreCase("store") && addressingMode.equals("=")) 
-	    return null;
+	if (addressingMode.equals("=") && address.equals("")) {
+		comment = new Message("Compilation failed: {0}",
+                          new Message("address expected.").toString()).toString();
+                          throw new TTK91CompileException(comment);
+	}          
+
+	if (opcode.equalsIgnoreCase("store") && address.equals("")) {
+		comment = new Message("Compilation failed: {0}",
+			  new Message("address expected.").toString()).toString();
+                throw new TTK91CompileException(comment);
+	}          
+	
+	if (opcode.equalsIgnoreCase("store") && addressingMode.equals("=")) {
+		comment = new Message("Compilation failed: {0}",
+                          new Message("invalid addressing mode {0}.", "="
+                                                        ).toString()).toString();
+                throw new TTK91CompileException(comment);
+        }          
 
 	if (opcode.equals("") && (!label.equals("") || 
 				  !firstRegister.equals("") || 
 				  !addressingMode.equals("") || 
 				  !address.equals("") || 
 				  !secondRegister.equals(""))) {
-		return null;
+		comment = new Message("Compilation failed: {0}",
+                      	  new Message("opcode missing.", "="  
+                                                        ).toString()).toString();
+                throw new TTK91CompileException(comment);
 	}
 
 	parsedLine = new String[6];
@@ -941,7 +1010,7 @@ public class Compiler {
     	@return String array with label in position 0, command in the
 	position 1 and position 2 contains the parameter.
       */	
-    public String[] parseCompilerCommandLine(String line) {
+    public String[] parseCompilerCommandLine(String line) throws TTK91CompileException {
 
 	int fieldEnd = 0;
 	int nextToCheck = 0;	
@@ -950,6 +1019,8 @@ public class Compiler {
 	String value = "";
 	int intValue;
 	String[] parsedLine;
+
+	String comment;		// for exception
 
 /* preprosessing */
 	line = line.toLowerCase();
@@ -982,7 +1053,10 @@ public class Compiler {
 		opcode = line.substring(nextToCheck, fieldEnd);
 	    }
 	    if (!opcode.matches("((dc)|(ds)|(equ)|(def))")) {
-		return null;
+                comment = new Message("Compilation failed: {0}",
+                                 new Message("invalid opcode {0}.",
+                                        opcode).toString()).toString();
+                throw new TTK91CompileException(comment);
 	    }
 	    nextToCheck = fieldEnd;	
 	}
@@ -993,22 +1067,43 @@ public class Compiler {
 	    value = line.substring(nextToCheck);
 	    
             if (opcode.equals("def")) {
-		if (value.length() < 1) return null;
+		if (value.length() < 1) {
+	                comment = new Message("Compilation failed: {0}",
+                                  new Message("invalid value {0}.",
+                 	                       value).toString()).toString();
+                	throw new TTK91CompileException(comment);
+		}
 	    } else {
 		    if (value.length() > 0) {
 			try {
 		    		intValue = Integer.parseInt(value);
 		    		if (opcode.equalsIgnoreCase("ds") && intValue < 1) { 
-					return null; 
-		    		}
-			} catch (NumberFormatException e) { return null; }
+ 					comment = new Message("Compilation failed: {0}",
+                 	                          new Message("invalid value for a DS {0}.",
+                                               value).toString()).toString();
+                        		throw new TTK91CompileException(comment);
+				}
+			} catch (NumberFormatException e) { 
+				comment = new Message("Compilation failed: {0}",
+                                          new Message("invalid value {0}.",
+                                               value).toString()).toString();
+                                throw new TTK91CompileException(comment);
+			}
 		    }
 	    }
 	} //OLLI: lisättiin ELSE 26.4., jotta rivit 'KISSA DC ' eivät mene läpi 
-	else { return null; }
+	else { 
+		comment = new Message("Compilation failed: {0}",
+                          new Message("value expected.").toString()).toString();
+                throw new TTK91CompileException(comment);
+	}
 	
 	
-	if (!opcode.equalsIgnoreCase("dc") && value.equals("")) return null;
+	if (!opcode.equalsIgnoreCase("dc") && value.equals("")) {
+		comment = new Message("Compilation failed: {0}",
+                          new Message("value expected.").toString()).toString();
+                throw new TTK91CompileException(comment);
+	}
 	
 	parsedLine = new String[3];
 	parsedLine[0] = label;
