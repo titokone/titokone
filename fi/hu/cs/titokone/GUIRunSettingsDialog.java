@@ -9,22 +9,29 @@ import javax.swing.event.*;
 
 public class GUIRunSettingsDialog extends JDialog {
   
-JButton applyButton, closeButton;
-  
+public JButton applyButton, closeButton;
+public JCheckBox lineByLineCheckBox;
+public JCheckBox showCommentsCheckBox;
+public JCheckBox showAnimationCheckBox;
+
+GUI ownerGUI;
+
+public static String APPLY = "GUIRunSettingsDialog_Apply";
+
 public GUIRunSettingsDialog(Frame ownerFrame, boolean modal) {
 	
 	super(ownerFrame, modal);
+	
+	ownerGUI = (GUI)ownerFrame;
+
 	setTitle("Set running options");
 	setSize(250,180);
 	
 	applyButton = new JButton("Apply");
 	closeButton = new JButton("Close");
 	
-	applyButton.addActionListener( new ActionListener() {
-		public void actionPerformed( ActionEvent e ) {
-			
-		} 
-	} );
+	applyButton.setActionCommand(APPLY);
+	applyButton.addActionListener(ownerGUI);
 	
 	closeButton.addActionListener( new ActionListener() {
 		public void actionPerformed( ActionEvent e ) {
@@ -33,24 +40,16 @@ public GUIRunSettingsDialog(Frame ownerFrame, boolean modal) {
 	} );
 	
 	
-	JRadioButton lineByLineRadioButton = new JRadioButton("Execute line by line");
-	JRadioButton runAtCertainSpeedRadioButton = new JRadioButton("Execute at the specified speed");
-	JTextField speedTextField = new JTextField();
-	JCheckBox showCommentsCheckBox = new JCheckBox("Show comments");
-	JCheckBox showAnimationCheckBox = new JCheckBox("Show animation");
-	
-	ButtonGroup bgroup = new ButtonGroup();
-	bgroup.add(lineByLineRadioButton);
-	bgroup.add(runAtCertainSpeedRadioButton);
+	lineByLineCheckBox = new JCheckBox("Execute line by line");
+	showCommentsCheckBox = new JCheckBox("Show comments");
+	showAnimationCheckBox = new JCheckBox("Show animation");
 	
 	
 	getContentPane().setLayout( new BorderLayout() );
 	
-	JPanel checkBoxPanel = new JPanel(new GridLayout(5,1));
+	JPanel checkBoxPanel = new JPanel(new GridLayout(3,1));
 	
-	checkBoxPanel.add(lineByLineRadioButton);
-	checkBoxPanel.add(runAtCertainSpeedRadioButton);
-	checkBoxPanel.add(speedTextField);
+	checkBoxPanel.add(lineByLineCheckBox);
 	checkBoxPanel.add(showCommentsCheckBox);
 	checkBoxPanel.add(showAnimationCheckBox);
 	

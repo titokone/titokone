@@ -218,6 +218,13 @@ public void saveStdOut(String contents, File stdoutFile) throws IOException {
   testAccess(stdoutFile, WRITE_ACCESS);
   saveStringToFile(contents, stdoutFile);
 }
+
+public void appendDataToStdOut(String dataItem, File stdoutFile) throws IOException {
+  testAccess(stdoutFile, APPEND_ACCESS);
+  testAccess(stdoutFile, READ_ACCESS);
+  String newFileContents = loadFileContentsToString(stdoutFile) + "\n" + dataItem;
+  saveStringToFile(newFileContents, stdoutFile);
+}
   
 
     /** This method attempts to load a resource bundle from a file
@@ -291,11 +298,11 @@ public ResourceBundle loadResourceBundle(File rbFile) throws ResourceLoadFailedE
     in the File.getName(). If there are no periods in that part,
     the file is considered to be without an extension and newExtension
     is added. */
-public File changeExtension(File filename, String newExtension) {
+public File changeExtension(File f, String newExtension) {
   String filenamestr;
   File parent;
-  filenamestr = filename.getName();
-  parent = filename.getParentFile();
+  filenamestr = f.getName();
+  parent = f.getParentFile();
 
   return new File(parent, changeExtensionStr(filenamestr, 
                                              newExtension));
@@ -322,13 +329,20 @@ private String changeExtensionStr(String filename, String newExtension)
 
     /** This method checks whether the given file can be a) written
         to, b) appended to, or c) read.
-        @param filename The file to check.
-        @param permission The persmission to check against.
+        @param accessedFile The file to check.
+        @param accessMode The permission to check against.
         @return True if actually going through with the operation
         should go fine and not throw an IOException. (This also
         means testing whether the file exists if it should be read.) */
-public boolean checkAccess(File accessedFile, int permission) {
-  // TODO
+public boolean checkAccess(File accessedFile, int accessMode) {
+  
+  switch (accessMode) {
+    case READ_ACCESS:
+      return accessedFile.canRead();
+    case WRITE_ACCESS:
+    case APPEND_ACCESS:
+      return accessedFile.canWrite();
+  }
   return false;
 }
 
