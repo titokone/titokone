@@ -48,7 +48,9 @@ public class SymbolTable {
     @param symbolName Name of the symbol.
     @param symbolValue Integer value of the symbol. */
     public void addSymbol(String symbolName, int symbolValue) {
-        if (symbolName == null) throw new IllegalArgumentException ("symbolName: null");
+        if (symbolName == null) 
+	    throw new IllegalArgumentException (new Message("SymbolName was " +
+							    "null.").toString());
         symbols.put (symbolName, new Integer(symbolValue));
     }
 
