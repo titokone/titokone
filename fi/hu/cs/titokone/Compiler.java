@@ -833,6 +833,7 @@ public class Compiler {
 				lineAsArray[lineAsArrayIndex].indexOf("(") 
   			   );
 			}
+
 			secondRegister = lineAsArray[lineAsArrayIndex].substring(
                                 lineAsArray[lineAsArrayIndex].indexOf("(") + 1,
 				lineAsArray[lineAsArrayIndex].indexOf(")")
@@ -847,6 +848,24 @@ public class Compiler {
 		      address = lineAsArray[lineAsArrayIndex];
 		   } else {
 		      address = lineAsArray[lineAsArrayIndex].substring(addressingMode.length());
+		   }
+
+		   if (lineAsArrayIndex + 1 < lineAsArray.length) {
+			++lineAsArrayIndex;
+
+			if (lineAsArray[lineAsArrayIndex].indexOf("(") == -1 ||
+			    lineAsArray[lineAsArrayIndex].indexOf(")") == -1) 
+				return null;
+
+		  	if (lineAsArray[lineAsArrayIndex].indexOf(")") < 
+	               	    lineAsArray[lineAsArrayIndex].indexOf("(")) {
+			 	return null;
+		   	} else {
+				secondRegister = lineAsArray[lineAsArrayIndex].substring(
+                                	lineAsArray[lineAsArrayIndex].indexOf("(") + 1,
+					lineAsArray[lineAsArrayIndex].indexOf(")")
+				);
+			}
 		   }
 		}
 		++lineAsArrayIndex;
