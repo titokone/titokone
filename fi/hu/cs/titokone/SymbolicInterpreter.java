@@ -86,7 +86,11 @@ public class SymbolicInterpreter extends Interpreter {
 	boolean allOk = true;
 	boolean addressEmpty;
 
-	if (address.equals("")) addressEmpty = true;  else addressEmpty = false;
+	if (address.equals("")) { 
+		addressEmpty = true; 
+	} else { 
+		addressEmpty = false;
+	}
 
 	int opcodeAsInt = getOpcode(opcode);
 	int firstRegisterAsInt = getRegisterId(firstRegister);
@@ -116,7 +120,6 @@ public class SymbolicInterpreter extends Interpreter {
 			addressingModeAsInt = addressingModeAsInt - 1;
 			if (addressingModeAsInt == -1) { ++addressingModeAsInt; }
 		}
-
 
 		String binary = intToBinary(opcodeAsInt, 8) + intToBinary(firstRegisterAsInt, 3) + 
 			intToBinary(addressingModeAsInt, 2) + 

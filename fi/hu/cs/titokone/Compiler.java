@@ -676,14 +676,14 @@ public class Compiler {
 	compileDebugger.setStatusMessage(new Message(
 			"Second round of compilation.").toString());
 
-	int addressAsInt = 0;
+	String address = "";
 	int lineAsBinary;
 	String comment;
 	String[] symbolTableEntry;
 	String[] lineTemp = parseLine(line);
 	if (!lineTemp[4].equals("")) {
 	    try { 
-		addressAsInt = Integer.parseInt(lineTemp[4]); 
+		address = "" + Integer.parseInt(lineTemp[4]); 
 	    } catch (NumberFormatException e) {
 		Object tempObject = symbolTable.get((((Integer)symbols.get(lineTemp[4]))).intValue());
 		symbolTableEntry = (String[])tempObject;
@@ -693,15 +693,17 @@ public class Compiler {
 		    comment = new Message("Missing referred label {0}", missing).toString();
 		    throw new TTK91CompileException(comment);
 		}
-		addressAsInt = Integer.parseInt((String)symbolTableEntry[1]);
+		address = (String)symbolTableEntry[1];
 	    }
 	}
+
 
 	lineAsBinary = symbolicInterpreter.stringToBinary(lineTemp[1], 
 							  lineTemp[2], 
 							  lineTemp[3], 
-							  addressAsInt + "", 
+							  address, 
 							  lineTemp[5]);
+
 	compileDebugger.setBinary(lineAsBinary);
 	codeMemoryLines[nextLine] = new MemoryLine(lineAsBinary, line);
 	
