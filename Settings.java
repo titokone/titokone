@@ -12,14 +12,20 @@ public class Settings {
     
     /** This string separates keys from values in the settings file. 
 	It cannot be included in the key strings. */
-    public static final String KEY_VALUE_SEPARATOR = ":=";
+    public static final String KEY_VALUE_SEPARATOR = "=";
+    /** This field stores the comment marker to put before any comment 
+	lines. */
+    private static final String COMMENT_MARKER = "#";
     
     /** This is one of the default settings keys of values that can be 
 	stored here. */
     public static final String UI_LANGUAGE = "Language";
     public static final String RUN_MODE = "Running mode";
+    public static final String COMPILE_MODE = "Compilation mode";
     public static final String DEFAULT_STDIN = "Stdin file";
+    public static final String STDIN_PATH = "Stdin path"; 
     public static final String DEFAULT_STDOUT = "Stdout file";
+    public static final String STDOUT_PATH = "Stdout path";
     public static final String MEMORY_SIZE = "Memory size";
 
     /** This constructor sets up a settings class with default values. 
@@ -31,18 +37,16 @@ public class Settings {
 	correct. */
     public Settings(String settingsFileContent) throws ParseException {}
 
-    /** This method sets a key to a certain value. 
+    /** This method sets a key to a certain string value. 
 	@param key The key to point to the value.
 	@param value The value to be stored. 
 	@throws IllegalArgumentException If the given key contains 
 	KEY_VALUE_SEPARATOR. */
-    public void setValue(String key, Object value) {}
+    public void setValue(String key, String value) {}
 
-    /** This method sets a key to a certain value. 
+    /** This method sets a key to a certain integer value. 
 	@param key The key to point to the value.
-	@param value The value to be stored. 
-	@throws IllegalArgumentException If the given key contains 
-	KEY_VALUE_SEPARATOR. */
+	@param value The value to be stored. */
     public void setValue(String key, int value) {}
 
     /** This method returns the value of a certain key. It will try to 
@@ -53,17 +57,11 @@ public class Settings {
     public int getIntValue(String key) {}
     
     /** This method returns the value of a certain key. It will try to 
-	cast it to an integer before returning. 
+	cast it to a string before returning. 
 	@param key The key pointing to the value to be returned. 
 	@return The value the key points to, cast to a String. 
 	@throws ClassCastException If the value was not a String. */
     public String getStrValue(String key) {}
-
-    /** This method returns the value of a certain key. It will try to 
-	cast it to an integer before returning. 
-	@param key The key pointing to the value to be returned. 
-	@return The value the key points to. */
-    public Object getValue(String key) {}
 
     /** This method transforms this settings class into a format which
 	can be parsed by parseSettingsFile. 
