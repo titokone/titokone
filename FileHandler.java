@@ -10,7 +10,7 @@ public class FileHandler {
 	@return A source instance which is no longer dependent on I/O. 
 	@throws IOException If an I/O error occurs. Eg. one of the possible
 	IOExceptions is FileNotFoundException. */
-    public Source loadSource(String filename) throws IOException { }
+    public Source loadSource(String filename) throws IOException {}
 
     // (No saveSource is needed.)
 
@@ -19,7 +19,7 @@ public class FileHandler {
 	@return A StringBuffer which no longer depends on I/O.
 	@throws IOException If an I/O error occurs. Eg. one of the possible
 	IOExceptions is FileNotFoundException. */
-    public StringBuffer loadSettings(String filename) throws IOException { }
+    public StringBuffer loadSettings(String filename) throws IOException {}
 
     /** This method saves settings data from a StringBuffer to a file.
 	The line separator will be 
@@ -30,7 +30,7 @@ public class FileHandler {
 	@throws IOException If an I/O error occurs, eg. the directory 
 	the file should be in does not exist or we cannot write to it. */
     public void saveSettings(StringBuffer settingsData, String filename) 
-	throws IOException { }
+	throws IOException {}
 
     /** This function loads an Application from a binary .b91 file and
 	returns the result. The Application's source will consist of
@@ -46,7 +46,7 @@ public class FileHandler {
 	@throws InvalidBinaryException If the binary file is not syntactically
 	correct. */
     public Application loadApplication(String filename) 
-	throws IOException, InvalidBinaryException { }
+	throws IOException, InvalidBinaryException {}
    
     /** This method saves an Application to file in a .b91 binary format 
 	which can be read by loadApplication. It calls a private method
@@ -83,8 +83,30 @@ public class FileHandler {
 	interface is insufficient for the saving, since it does not reveal 
 	the application's symbol table.)
 	@param filename The full or relative path of the file to save the 
-	binary to. */
+	binary to. 
+	@throws IOException If an I/O error occurs, eg. the given file 
+	cannot be written to. */
     public void saveApplication(Application binary, String filename)
+	throws IOException {}
+
+    /** This method loads a "stdin" file representing the disk into 
+	a string. The contents should be integers delimited by \n, 
+	\r or \r\n, but the loader does not check that this is the 
+	case.
+	@param filename The name of the file to load the data from.
+	@return A string containing the contents of the file.
+	@throws IOException If an I/O error occurs, eg. the given
+	file is not found. */
+    public String loadStdIn(String filename) throws IOException {}
+
+    /** This method saves a "stdout" file representing the disk. 
+	The contents to be saved to the file should be integers
+	delimited by \n, \r or \r\n, but no checking is made.
+	@param contents The string to save to the file.
+	@param filename The file to save the given string to.
+	@throws IOException If an I/O error occurs, eg. the given
+	file cannot be written to. */
+    public void saveStdOut(String contents, String filename) 
 	throws IOException {}
 
     /** This method parses a binary in text form given to it and creates
@@ -95,7 +117,7 @@ public class FileHandler {
 	@throws InvalidBinaryException If the binary string is not 
 	syntactically correct. */
     private Application parseApplication(StringBuffer binaryCode) 
-	throws InvalidBinaryException { }
+	throws InvalidBinaryException {}
 
     /** This method transforms an instance of an Application class to 
 	a StringBuffer containing the code from it, in the standard .b91
@@ -104,5 +126,5 @@ public class FileHandler {
 	@return A StringBuffer containing the binary in the aforementioned
 	format. The line delimiter will be 
 	System.getProperty("line.separator", "\n"). */
-    private StringBuffer transformApplication(Application binary) { }
+    private StringBuffer transformApplication(Application binary) {}
 }
