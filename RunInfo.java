@@ -36,11 +36,8 @@ public class RunInfo extends DebugInfo{
     private String lineContents;
     /** This field contains the command in binary format. */
     private int binary;
-    
-    
-    private String statusMessage;
-    private String comments;
-    
+   
+   
     private String changedCodeAreaData;
     
     private int memoryFetchType;
@@ -72,7 +69,7 @@ public class RunInfo extends DebugInfo{
 		   int oldSP, int newSP, int FP){}
     
     public void setBinary(int binary){}
-    public void setStatusMessage(String statusMessage){}
+
     public void setIndexRegister(int register){}
    
     public void setChangedCodeAreaData(String symbolic){}
@@ -81,12 +78,6 @@ public class RunInfo extends DebugInfo{
     /** This method tells GUIBrain what kind of operation happened.
         @returns int value which represents operation type.*/
     public int whatOperationHappened(){}
-    
-    /** This method tells GUIBrain what was statusMessage. */
-    public String returnStatusMessage(){}
-    
-    /** This method tells GUIBrain what the comments were. */
-    public String returnComments(){}   
     
     /** This method returns both old and new SP and FP. */
     public int[] returnPointers(){}
