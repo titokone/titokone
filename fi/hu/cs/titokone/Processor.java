@@ -22,10 +22,14 @@ public class Processor implements TTK91Cpu {
     private static final String INTEGER_OVERFLOW_MESSAGE = "Integer overflow";
     private static final String DIVISION_BY_ZERO_MESSAGE = "Division by zero";
 
-    private static final int CRT = 0;
-    private static final int KBD = 1;
-    private static final int STDIN = 6;
-    private static final int STDOUT = 7;
+    /** CRT-device */
+    public static final int CRT = 0;
+    /** KBD-device */
+    public static final int KBD = 1;
+    /** STDIN-device */
+    public static final int STDIN = 6;
+    /** STDOUT-device */
+    public static final int STDOUT = 7;
 
     /** This field represents the memory of computer. */
     private RandomAccessMemory ram;
