@@ -1,7 +1,8 @@
 
 
 public class CompileDebugger extends Debugger {
-
+    
+    CompileInfo info;
     
     /*------- Compiler instructions -----------*/
     /** This method tells that an EQU was found and it is added to the symboltable.*/
@@ -20,7 +21,8 @@ public class CompileDebugger extends Debugger {
     public void reserveDC(String name, int ADDR){}
 
     
-  
+    public void foundSymbol(String name){}
+    public void foundSymbol(String name, int value){}
 
     /** This method tells that a label was found and it is added to the
      symboltable. */
@@ -32,9 +34,11 @@ public class CompileDebugger extends Debugger {
     
     public CompileDebugger(){}
 
-    public void newLine(String statusMessage, short phase, int lineNumber,
+    public void firstPhase(String statusMessage, short phase, int lineNumber,
                         boolean lineEmpty){}
-   
+    public void firstPhase(String statusMessage, short phase,
+			   int lineNumber){}
+			   
     
     /** This method informs debugger what was compiled. It creates a new 
      *CompileInfo object.
@@ -42,16 +46,16 @@ public class CompileDebugger extends Debugger {
 	 @param numeric Numeric representation of command.
 	 @param machinecommand line as an integer.
 	 @param comment */
-
-    public void newLine(String statusMessage, short phase, int lineNumber,
-                        String lineContents){
+    
+    public void secondPhase(String statusMessage, short phase, int lineNumber,
+                        String lineContents, String numeric){
     }
     
     public void finalPhase(String statusMessage, short phase, int lineNumber){}
     
     public void binary(int binary){}
-    public void setStatusMessage(String message){}
-    public void setComments(String comment){}
+    private void setStatusMessage(String message){}
+    private void setComments(String comment){}
     
     
     /** This method returns the created CompileInfo-object. */
