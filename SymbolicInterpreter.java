@@ -3,7 +3,9 @@
 public class SymbolicInterpreter extends Interpreter {
     /** This hashtable contains the opcode values keyed to the symbolic
 	commands. */
-    private HashTable opcodes;
+    private HashMap opcodes;
+    private HashMap addressModes;
+    private HashMap registers;
 
     /** This constructor sets up a SymbolicInterpreter instance. It calls
 	the private method dataSetup() to set up its data structures. */
