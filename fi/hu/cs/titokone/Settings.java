@@ -4,7 +4,7 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.Iterator;
-import java.util.Logger;
+import java.util.logging.Logger;
 
 /** This class keeps track of the settings. It can parse and save settings
     file content. It provides support for a standard set of settings, but
@@ -199,7 +199,7 @@ public class Settings {
 		    // Log where we failed and on what.
 		    parameters[0] = "" + lineCounter;
 		    parameters[1] = line;
-		    errorMessage = new Message("Syntax error on line {0}, "
+		    errorMessage = new Message("Syntax error on line {0}, " +
 					       "which was: \"{1}\".",  
 					       parameters).toString();
 		    throw new ParseException(errorMessage);
