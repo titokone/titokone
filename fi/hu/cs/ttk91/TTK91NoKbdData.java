@@ -13,5 +13,14 @@ package fi.hu.cs.ttk91;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class TTK91NoKbdData extends TTK91RuntimeException {
+    
+    String error;
+    public TTK91NoKbdData(String s){
+	error=s;
+    }
+    public String toString(){
+	return error;
+    }
+
 
 }
