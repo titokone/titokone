@@ -331,8 +331,13 @@ public class Binary {
 	@return The String representation of this binary. */
     public String toString() {
 
-	if (contents!=null)
-	    return contents;
+	if (contents!=null){
+	    String[] temp = contents.split("\n");
+	    String content="";
+	    for(int i=0;i<temp.length;i++)
+		content+=temp[i]+System.getProperty("line.separator", "\n");
+	    return content;
+	}
 	
 	MemoryLine[] code=application.getCode();
 	MemoryLine[] data=application.getInitialData();
