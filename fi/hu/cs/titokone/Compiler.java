@@ -274,7 +274,7 @@ public class Compiler {
 
 		/*
 		   The method first tries to parse a compilercommand (equ, dc, ds, def) from the line. If
-		   succesfull then check whether name is valid and value correct.
+		   succesfull then Check whether name is valid and value correct.
 		   */
 		try { 
 			lineTemp = parseCompilerCommandLine(line); 
@@ -394,24 +394,32 @@ public class Compiler {
 					compileDebugger.setComment(comment);
 				}
 				if (lineTemp[1].equals("dc")) {
+					
 					compileDebugger.foundDC(lineTemp[0]);
+					
 					if (symbols.containsKey(lineTemp[0])) {
+					
 						symbolTableEntry[0] = lineTemp[0];
 						symbolTableEntry[1] = lineTemp[1] + " " + 
 							lineTemp[2];
 						symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
 								symbolTableEntry.clone());
+					
 					} else {
+					
 						symbols.put(lineTemp[0], new Integer(symbolTable.size()));
 						symbolTableEntry[0] = lineTemp[0];
 						symbolTableEntry[1] = lineTemp[1] + " " + 
 							lineTemp[2];
 						symbolTable.add(symbolTableEntry.clone());
+					
 					}
 					compileDebugger.foundDC(lineTemp[0]);
+					
 					comment = new Message("Found variable {0}.", 
 							lineTemp[0]).toString();
 					compileDebugger.setComment(comment);
+				
 				}
 				if (lineTemp[1].equalsIgnoreCase("def")) {
 					if (lineTemp[0].equals("stdin") || 
@@ -574,8 +582,10 @@ public class Compiler {
 				if (lineTemp[1].substring(0,2).equalsIgnoreCase("ds")) {
 					dataAreaSize += Integer.parseInt(lineTemp[1].substring(3));
 				} else {
+					
 					if (lineTemp[1].substring(0,2).equalsIgnoreCase("dc"))
 						++dataAreaSize;
+				
 				}
 			}
 		}
@@ -604,10 +614,13 @@ public class Compiler {
 					}
 					nextPosition += dsValue;
 				} else {
+					//Eeva: FIXME, insert the values of empty dc-commands here
 					if (lineTemp[1].substring(0,2).equalsIgnoreCase("dc")) {
 						if (lineTemp[1].trim().length() > 2) {
 							data[nextPosition] = lineTemp[1].substring(3);
-						} else { data[nextPosition] = "" + 0; }			
+						} else { 
+							data[nextPosition] = "" + 0; 
+						}			
 						newSymbolTableLine[0] = lineTemp[0];
 						newSymbolTableLine[1] = "" + nextMemorySlot;
 						symbolTable.set(i, newSymbolTableLine.clone());
@@ -1034,6 +1047,7 @@ public class Compiler {
 		line = line.trim();
 
 		/* LABEL opcode value */
+		//Eeva: FIXME, no label with nameless dc.
 		fieldEnd = line.indexOf(" ");
 		if (fieldEnd == -1) {
 			label = line.substring(nextToCheck);
