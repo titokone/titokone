@@ -117,6 +117,7 @@ public class Compiler {
         while (source.indexOf("\r\n") != -1) {
                 source = source.substring(0, source.indexOf("\r\n")) + source.substring(source.indexOf("\r\n") + 1);
         }
+	source = source.toLowerCase();
 	this.source = source.split("[\n\r\f\u0085\u2028\u2029]");
 // antti: removed + from the split and added the while loop (21.04.2004)
 
@@ -317,11 +318,10 @@ public class Compiler {
 				Integer.parseInt(lineTemp[4]);	
 		    } catch(NumberFormatException e) {	
 // variable used	
-			if (symbolicInterpreter.getRegisterId(lineTemp[4])== -1) {
+			if (symbolicInterpreter.getRegisterId(lineTemp[4]) == -1) {
 			    nothingFound = false; 	
 			    variableUsed = true;
 			    compileDebugger.foundSymbol(lineTemp[4]);
-			
 			    if (!symbols.containsKey(lineTemp[4])) {
 			        if (invalidLabels.get(lineTemp[4]) == null) {
 				    symbols.put(lineTemp[4], new 
@@ -428,7 +428,7 @@ public class Compiler {
 		    if (symbols.containsKey(lineTemp[0])) {
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[2];
-			symbolTable.set(Integer.parseInt((String) symbols.get(lineTemp[0])), 
+			symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(),
 					symbolTableEntry.clone());
 		    } else {
 			symbols.put(lineTemp[0], new Integer(symbolTable.size()));
@@ -449,15 +449,16 @@ public class Compiler {
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
-			symbolTable.set(Integer.parseInt((String)symbols.get(lineTemp[0])), 
-					symbolTableEntry.clone());
+			symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
+					symbolTableEntry.clone()
+			);
 			
 		    } else {
+			symbols.put(lineTemp[0], new Integer(symbolTable.size()));
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
-			symbolTable.add(symbolTableEntry.clone());
-			
+			symbolTable.add(symbolTableEntry.clone());			
 		    }
 		    compileDebugger.foundDS(lineTemp[0]);
 		    comment = new Message("Found variable {0}.", 
@@ -473,6 +474,7 @@ public class Compiler {
 			symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
 					symbolTableEntry.clone());
 		    } else {
+			symbols.put(lineTemp[0], new Integer(symbolTable.size()));
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
@@ -556,7 +558,6 @@ public class Compiler {
 	int dsValue = 0;
 
 // update variable values to symbolTable
-
 	for (int i = 0; i < symbolTable.size(); ++i) {
 	    lineTemp = (String[])symbolTable.get(i);
 	    if (lineTemp[1].trim().length() >= 2) {
@@ -567,8 +568,7 @@ public class Compiler {
 		    symbolTable.set(i, newSymbolTableLine.clone());
 		    ++nextMemorySlot;
 		    
-		    for (int j = 0; 
-			 j < dsValue; ++j) {
+		    for (int j = 0; j < dsValue; ++j) {
 			data[j + nextPosition] = "" + 0;		
 		    }
 		    nextPosition += dsValue;
