@@ -90,9 +90,7 @@ public class SymbolicInterpreter extends Interpreter {
 
 	int opcodeAsInt = getOpcode(opcode);
 	int firstRegisterAsInt = getRegisterId(firstRegister);
-System.out.println(addressingMode);
 	int addressingModeAsInt = getAddressingMode(addressingMode);
-System.out.println(addressingModeAsInt);
 	int addressAsInt = 0;
 	int secondRegisterIdAsInt = getRegisterId(otherRegister);
 
