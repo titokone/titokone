@@ -607,23 +607,4 @@ private void insertMenuBar(JFrame destFrame) {
 		} } );
 
 }
-
-
-
-    
-
-
-  
-
-public static void main( String[] args ) {
-  GUI gui = new GUI();
-}
-  
-  
-  
-  
-
-  
-  
-  
 }
