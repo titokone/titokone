@@ -51,7 +51,7 @@ public class Binary {
 	/* Calculating code area length.*/
 	String[] codeArea=b91[i].split("\\s");
 	Integer x,y;
-	
+	int lastCodeLine;
 	/* Try to get integers from values and check if they are valid*/
 	try{
 	    x=new Integer(codeArea[0]);
@@ -62,13 +62,14 @@ public class Binary {
 						 ""+(i+1)).toString(),i+1);
 	}
 	    
+	lastCodeLine=y.intValue();
 
 	if(x.intValue()!=0 || x.intValue()>y.intValue()+1)
 	    throw new ParseException(new Message("Invalid code area "+
 						 "length on line: {0}",
 						 ""+(i+1)).toString(),i+1);
 	int areaLength=y.intValue()+1;
-	System.out.println("area length"+areaLength);
+	
 	i++;
 	
 	//if(y.intValue()!=-1)
@@ -117,6 +118,10 @@ public class Binary {
 						 ""+(i+1)).toString(),i+1);
 	}
 	
+	if(x.intValue()!=lastCodeLine+1)
+	    throw new ParseException(new Message("Invalid data area " + 
+						 "value on line: {0}",
+						 ""+(i+1)).toString(),i+1);
 	if(x.intValue()>y.intValue()+1)
 
 		throw new ParseException(new Message("Invalid data area " + 
