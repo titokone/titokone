@@ -1,12 +1,12 @@
 package fi.hu.cs.titokone;
 
 /** This class represents a situation where a symboltable has been
-    queried for a symbol it does not contain. */
-public class InvalidSymbolException extends Exception {
+    queried for a definition it does not contain. */
+public class InvalidDefinitionException extends InvalidSymbolException {
     /** This constructor sets up an instance of the class. 
 	@param message The message to describe the problem more
 	verbosely, for the user's eyes. */
-    public InvalidSymbolException(String message) {
-      super(message);
+    public InvalidDefinitionException(String message) {
+	super(message);
     }
 }
