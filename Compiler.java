@@ -117,12 +117,39 @@ direct, indirect or from code), possible index register (3 bit) and 16 bits for 
 Once STORE is converted to a 00000001 and the rest of the code processed we get 32bit binary that
 is the opcode from symbolic opcode.
 
-Basic functionality:
+Antti 08.03.04
+Teemu said that we should support the machine spec instead of Koksi with this one. No need to 
+support opcodes like Muumuu LOAD R1, 100 kissa etc. Only tabs and extra spacing. So 
+we need to support opcodes like LOAD R1,           100 but not codes like LOAD R1, =R2.
+
+
+Teemu -->
+	Mielestäni kaikki ylimääräiset välilyönnit (ja tabit) sorsakoodissa ovat OK.
+    	Esimerkkinä vaikkapa STORE  R1,     100
+
+	Mielestäni voi vaatia, että ylimääräisiä tekstejä ei ole.
+	Puolipiste kommentti jatkuu rivin loppuun.
+	Esimerkiksi
+    		STORE R1, =100 mODASOMD
+	on virheellinen, koska m-kirjaimen kohdalla olisi voinut olla vaikkapa (R1).
+	Myös esim.
+    		store  R1, 200(R5)  kommentti
+	on virheellinen, vaikka sanan kommentti kohdalla ei voisikaan olla mitään laillista.
+	Tyhjät rivit sitä vastoin ovat OK.
+
+	Pysytään spekseissä.
+    		LOAD R1, =R2
+	on virheellinen, vaikka Koksi ei sitä napannutkaan.
+<-- Teemu
+
+Basic functionality: (Trim between each phase.) 
+	Check if there is a label (8 first are the meaningful ones also must have one non-number))
 	Convert opcode (8bit)
 	check which register (0 to 7)
-	=, Rj/addr or @ (00, 01, 10 or 11) CHECK FROM A DUMP!
+	=, Rj/addr or @ (00, 01 or 10)
 	if addr(Ri) or Rj(Ri)(0 to 7)
 	convert address (16bit)
+	check if the rest is fine (empty of starts with ;)
 
 	Store both formats to a data array (symbolic and binary).
 */

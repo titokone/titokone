@@ -1,14 +1,20 @@
 /** This class can load a TTK91Application. It changes the processor state
-    accordingly. */
+    accordingly. Everything is loaded when loadApplication is called. Function returns the state of 
+    memory after loading.
+  */
 public class Loader { 
 
-/**You can set the file to load.
+  private Application application;
+  private int nextLineToLoad;
+
+/**You can set the file to load. Each time an application is set to load, the counter is set to 
+one.
 */
 public void setFileToLoad(Application application){}
 
-/**Loads a single line to memory.
-	@return Info from the loaded line.
+/**Loads an application to memory. LoadInfo contains all the needed information about the process.
+	@return Info from the load procedure.
 */
-public LoadInfo loadALine(){} 
+public LoadInfo loadApplication(){} 
 
 }
