@@ -46,7 +46,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	Message.java
 0	Processor.java
 0	RandomAccessMemory.java
-0	Registers.java
+0	Registers.java                          SY              SY 19.3
 0	ResourceLoadFailedException.java
 0	RunDebugger.java
 0	RunInfo.java
