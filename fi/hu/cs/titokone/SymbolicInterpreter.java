@@ -137,7 +137,7 @@ public class SymbolicInterpreter extends Interpreter {
 	@return String representation of a said Int.
       */
     public String intToBinary(long value, int bits) {
-/* TODO if bits too few, i.e. 10,2 then result is "11" */
+/* if bits too few, i.e. 10,2 then result is "11" */
 	char[] returnValue = new char[bits];
 	boolean wasNegative = false;
 
@@ -173,7 +173,7 @@ public class SymbolicInterpreter extends Interpreter {
 	@return Int value of a Binary.
 	*/
     public int binaryToInt(String binaryValue, boolean signIncluded) {
-/* TODO ! returns 0 when error! exception perhaps? */
+/*  returns 0 when error! exception perhaps? */
 	boolean isNegative = false;
 	int value = 0;
 

@@ -37,6 +37,14 @@ public class Compiler {
     /** Minimum value of the EQU and DC. */
     private final int MININT = -2147483648;
 
+/* TODO */
+    /** Maximum value of the Address. */
+    private final int ADDRESSMAX = 32767;
+
+    /** Minimum value of the Address. */
+    private final int ADDRESSMIN = -32768;
+/* /TODO */
+
     /** This field holds the value of Stdin if it was set with DEF command. */
     private String defStdin;
     /** This field holds the value of Stdout if it was set with DEF command. */
@@ -112,16 +120,13 @@ public class Compiler {
 	the finished application. 
 	@param source The symbolic source code to be compiled. */
     public void compile(String source) { 
-	firstRound = true;
+	firstRound = true;			
 	compileFinished = false;
 
         while (source.indexOf("\r\n") != -1) {
                 source = source.substring(0, source.indexOf("\r\n")) + source.substring(source.indexOf("\r\n") + 1);
         }
-// Antti 040504 commented this to retain the casing in the source
-//	source = source.toLowerCase();
 	this.source = source.split("[\n\r\f\u0085\u2028\u2029]");
-// antti: removed + from the split and added the while loop (21.04.2004)
 
 	nextLine = 0;
 	defStdin = "";
@@ -204,6 +209,7 @@ public class Compiler {
 	    String[] tempSTLine;
 	    String symbolName;
 	    int symbolValue;
+
 	    for (int i = 0; i < symbolTable.size(); ++i) {
 		tempSTLine = (String[])symbolTable.get(i);
 		symbolName = tempSTLine[0];
@@ -267,8 +273,11 @@ public class Compiler {
 	boolean variableUsed = false;
 
 	compileDebugger.setStatusMessage(new Message("First round of compilation.").toString());
-
-
+ 
+/*
+The method first tries to parse a compilercommand (equ, dc, ds, def) from the line. If
+succesfull then check whether name is valid and value correct.
+*/
 	try { 
 	    lineTemp = parseCompilerCommandLine(line); 
 
@@ -410,7 +419,6 @@ public class Compiler {
 			} else {
 			    defStdout = lineTemp[2];
 			}		
-// Antti 04052004	compileDebugger.foundDEF(lineTemp[0], lineTemp[2]);
 			commentParameters = new String[2];
 			commentParameters[0] = lineTemp[0].toUpperCase();
 			commentParameters[1] = lineTemp[2];
@@ -425,6 +433,17 @@ public class Compiler {
 		}
 	    }		
 	} catch(TTK91CompileException e) {
+/*
+This means that line is not a valid compiler command. Now we try to parse a valid ttk91-command
+from it. ParseLine return line as an array with label in position 0, opcode in 1, first register in 
+2, addressingmode in 3, address in 4 and other register in position 5.
+
+However that is not all there is to it. Once a label is introduced it becomes unusable and
+cannot be defined twice, and address part must be within the limits.
+
+Address can be either a variable or a number and that must be noticed also.
+*/
+
 		lineTemp = parseLine(line);
 		
 		if (lineTemp[1].equals("")) {
@@ -448,9 +467,6 @@ public class Compiler {
 				symbolTableEntry[0] = lineTemp[0];
 				symbolTableEntry[1] = "" + 
 				    (code.size() - 1);
-				/* MUUTETTU 23.04. (OLLI)  
-                                */                                
-				
 				symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
 				symbolTableEntry.clone());
 			    } else {
@@ -518,8 +534,7 @@ public class Compiler {
 	
 			    }
 			}
-		    }
-		    
+		    }		    
 	    	}
 	}
 	return compileDebugger.lineCompiled();
@@ -551,7 +566,6 @@ public class Compiler {
 	compileDebugger.setStatusMessage(new Message(
 			"Initializing the second  round of compilation.").toString());
 
-
 	for (int i = 0; i < symbolTable.size(); ++i) {
 	    lineTemp = (String[])symbolTable.get(i);
 	    if (lineTemp[1].trim().length() >= 2) {
@@ -564,11 +578,6 @@ public class Compiler {
 	    }
 	}
 
-/* OLLI: POISTETTU MÄÄRITYKSET 26.4.04; ei DEF-määrityksiä dataan!
-		
-	if (!defStdin.equals("")) ++dataAreaSize;
-	if (!defStdout.equals("")) ++dataAreaSize;
-*/
 	data = new String[dataAreaSize];
 	String[] newSymbolTableLine = new String[2];
 	newSymbolTableLine[0] = "";
@@ -607,17 +616,6 @@ public class Compiler {
 	    }
         }
 
-	
-/*  OLLI: POISTETTU MÄÄRITYKSET 26.4.04; ei DEF-määrityksiä dataan!
-	if (!defStdin.equals("")) {
-	    data[nextPosition] = "STDIN " + defStdin;
-	    ++nextPosition;
-	}
-	if (!defStdout.equals("")) {
-	    data[nextPosition] = "STDOUT " + defStdout;
-	}
-*/		
-
 // make new SymbolTable
 	String[][] newSymbolTable = new String[symbolTable.size()][2];
 	for (int i = 0; i < newSymbolTable.length; ++i) { 
@@ -641,33 +639,6 @@ public class Compiler {
 	completed. */
     private CompileInfo secondRoundProcess(String line) throws TTK91CompileException { 
 
-	/* Antti: 04.03.04
-
-	Do a pure binary translation first, then when all sections are
-	complete, convert the binary to an integer. Needs variables for
-	opcode(8bit), first operand(3 bit)(r0 to r7), m-part(memory format,
-	direct, indirect or from code), possible index register (3 bit) and 16
-	bits for the address.  Once STORE is converted to a 00000001 and the
-	rest of the code processed we get 32bit binary that is the opcode from
-	symbolic opcode.
-	
-	Antti 08.03.04 Teemu said that we should support the machine
-	spec instead of Koksi with this one. No need to support opcodes like
-	Muumuu LOAD R1, 100 kissa etc. Only tabs and extra spacing. So we need
-	to support opcodes like LOAD R1, 100 but not codes like LOAD R1, =R2.
-
-	Basic functionality: (Trim between each phase.)  Check if there is a
-	label (8 first are the meaningful ones also must have one
-	non-number)) Convert opcode (8bit) check which register (0 to
-	7) =, Rj/addr or @ (00, 01 or 10) if addr(Ri) or Rj(Ri)(0 to
-	7) convert address (16bit) check if the rest is fine (empty or
-	starts with ;)
-
-	Store both formats to a data array (symbolic and binary).
-	*/
-
-// check if variable is set!
-
 	compileDebugger.setStatusMessage(new Message(
 			"Second round of compilation.").toString());
 
@@ -684,7 +655,6 @@ public class Compiler {
 		symbolTableEntry = (String[])tempObject;
 		if (symbolTableEntry[1].equals("")) {
 		    String missing = lineTemp[4];
-		    //OLLI: Kommentti lisätty 26.4.
 		    comment = new Message("Missing referred label {0}", missing).toString();
 		    throw new TTK91CompileException(comment);
 		}
@@ -904,7 +874,7 @@ public class Compiler {
 	    secondRegister = address;
 	    address = "";
         }
-	
+
 	if (lineAsArrayIndex < lineAsArray.length) { 
 		comment = new Message("Compilation failed: {0}",
                           new Message("end of line expected.").toString()).toString();
@@ -964,6 +934,28 @@ public class Compiler {
 		}
 	    }
 	}	
+
+/* TODO */
+
+	if (!address.equals("")) {
+		boolean isANumber = true;
+		for (int i=0; i< address.length(); ++i) {
+			if (!Character.isDigit(address.charAt(i)))
+				isANumber = false;
+		}
+		if (isANumber) {
+			if (address.length() > ("" + ADDRESSMIN).length() ||
+			    Integer.parseInt(address) > ADDRESSMAX ||
+			    Integer.parseInt(address) < ADDRESSMIN) {
+				comment = new Message("Compilation failed: {0}",
+					  new Message(
+			"Invalid address value.").toString()).toString();
+				throw new TTK91CompileException(comment);
+			}
+		}
+	}
+
+/* /TODO */
 
 	if (addressingMode.equals("=") && address.equals("")) {
 		comment = new Message("Compilation failed: {0}",
@@ -1030,7 +1022,6 @@ public class Compiler {
 	fieldEnd = line.indexOf(";");
 	if (fieldEnd != -1) { line = line.substring(0, fieldEnd); }
 	
-	//OLLI: 26.4., trim viimeiseksi preprocessingissa, käännös menee nyt läpi
 	line = line.trim();
 	
 /* LABEL opcode value */
@@ -1093,7 +1084,7 @@ public class Compiler {
 			}
 		    }
 	    }
-	} //OLLI: lisättiin ELSE 26.4., jotta rivit 'KISSA DC ' eivät mene läpi 
+	}
 	else { 
 		comment = new Message("Compilation failed: {0}",
                           new Message("value expected.").toString()).toString();
