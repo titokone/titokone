@@ -10,7 +10,7 @@ import java.util.ListResourceBundle;
     word 'File' as if you would see it on the common menu name" as 
     opposed to "?Utility item:File", which might mean "translate the 
     word 'File' as you would if it meant a nail file". */
-class Translations extends ListResourceBundle {
+public class Translations extends ListResourceBundle {
    public Object[][] getContents() { 
      // To be simultaneously compatible with the general ListResourceBundle
      // functionality and provide a base template array for other 
