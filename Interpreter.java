@@ -25,6 +25,7 @@ public class Interpreter {
         {"XOR", new Integer(24)},
         {"SHL", new Integer(25)},
         {"SHR", new Integer(26)},
+	{"SHRA"), new Integer(27)},
         {"COMP", new Integer(31)},
         {"JUMP", new Integer(32)},
         {"JNEG", new Integer(33)},
