@@ -4,43 +4,51 @@ package fi.hu.cs.titokone;
     command having been run. */
 public class RunDebugger{ 
 
-    public static final short NOOPERATION = 0;
+    public static final short NO_OPERATION = 0;
     public static final short DATA_TRANSFER_OPERATION = 1;
     public static final short ALU_OPERATION = 2;
-    public static final short JUMP_OPERATION = 3;
-    public static final short STACK_OPERATION = 4;
+    public static final short COMP_OPERATION = 3;
+    public static final short BRANCH_OPERATION = 4;
     public static final short SUB_OPERATION = 5;
-    public static final short EXTERNAL_OPERATION = 6;
+    public static final short STACK_OPERATION = 6;
     public static final short SVC_OPERATION = 7;
   
- 
-    public static final short IMMEDIATE = 0;
-    public static final short DIRECT = 1;
-    public static final short DIRECT_REGISTER = 2;
-    public static final short INDIRECT_REGISTER = 3;
-    public static final short INDEXED_DIRECT = 4;
-    public static final short INDEXED_INDIRECT= 5;
-    public static final short INDEXED_DIRECT_REGISTER = 6; 
-    public static final short INDEXED_INDERECT_REGISTER = 7;
+    
+ //nämä pois
+    public static final short IMMEDIATE = 0; // 23(R1)
+    public static final short DIRECT = 1; // =23
+    public static final short INDIRECT = 2 //@23
+    public static final short DIRECT_REGISTER = 3; // R1 = 0(R1)
+    public static final short INDIRECT_REGISTER = 4; //@R1 = @0(R1)
+    public static final short INDEXED_DIRECT = 5; // =vakio(r2)
+    public static final short INDEXED_IMMEDIATE= 6; // vakio(r2)
+    public static final short INDEXED_INDIRECT = 7; //@vakio(r2)
 
 
+    private int oldPC;
+    private int oldSP;
+    private int oldFP;
+    
+    private Integer registers[];
+    
     private RunInfo info;
     private String comments;
     private String statusMessage;
     private int[] pointers;
     private int lineNumber;
     private String lineContents;
-
+    
     /** This constructor initializes the RunDebugger. After initialization it
 	waits until processor starts new running cycle.
     */
     public RunDebugger(){
-    
+    	oldPC = 0;
+	oldFP = 0;
+	oldSP = 0;
     }
 
     /** This method tells debugger that a new cycle has been started. It
      initiates parameter values and stores old PC and IR.
-     @param lineNumber Line number of current line.
      @param lineContents String containing symbolic command.
      @param oldPC value of the old PC.
      @param newPC value of the new PC.
@@ -49,36 +57,43 @@ public class RunDebugger{
      @param oldFP value of the old FP.
      @param newFP value of the old FC.
     */
-    public void cycleStart(int lineNumber, String lineContents, int oldPC, 
-			   int newPC, int oldSP, int newSP, int oldFP,
-			   int newFP){ 
-				   
-		info = new RunInfo(lineNumber, lineContents, oldPC, newPC, oldSP, newSP,
+    public void cycleStart(String lineContents,
+			   int newPC, int newSP, int newFP){ 
+	
+					   
+		info = new RunInfo(lineContents, oldPC, newPC, oldSP, newSP,
 		                   oldFP, newFP);
 		 
-				   
-	}
+		this.oldPC = newPC;
+		this.oldFP = newFP;
+		this.oldSP = newSP;	   
+    }
 
-
-    /** This method tells what kind of memoryfetch was made.
+//tämä pois!
+    /** This method tells what kind of memoryfetch was made. Types 0-7
      @param i Type of fetchs.*/
-    public void memoryFetchType(int i){ }
+    public void memoryFetchType(int i) {
+	this.info.setFetchType(i);
+    }
 
-    /** This method tells haw many fetches were made.
-     @param i Number of fetches.*/
-    public void numberOfFetches(int i){ }
-    
+   
     /** This method sets the value of first memory fetch.
      @param value Value found in memory.*/
-    public void setFirstFetch(int value){}
+    public void setFirstFetch(int value){
+    	this.info.setFirstFetch(value);
+    }
 
     /** This method sets the value of second memory fetch.
      @param value Value found in memory.*/
-    public void setSecondFetch(int value){}
+    public void setSecondFetch(int value){
+    	this.info.setSecondFetch(value);
+    }
 
     /** This method tells what kind of operation was made. 
 	@param i Type of operation. */ 
-    public void setOperationType(int i){}
+    public void setOperationType(int i){
+    	this.info.setOperationType(i);
+    }
  
     /** This method tells what was operation run and its parts.
 	@param opcode Operation code of the command.
@@ -93,9 +108,12 @@ public class RunDebugger{
 	and presented as integers parted with doubledots. 
     */
     public void runCommand(int opcode, int firstOperand, 
-			   int valueOfFirstOperand, int memoryFetchType,
-			   int indexRegister, int valueOfIndex, int ADDR, 
-			   int numberOfFetches, String binaryString){ }
+			   int valueOfFirstOperand, int indexRegister, int valueOfIndex, int ADDR, 
+			   int numberOfFetches, String binaryString){
+	
+	this.info.setNumberOfFetches(i);
+			    
+    }
 
     /** This method tells debugger that something was written in the codearea.
 	@param lineNumber number of the line where something was written.
@@ -103,72 +121,89 @@ public class RunDebugger{
 	@param newContents String containing possible new symbolic command.
     */
     public void selfChangingCode(int lineNumber, int binary, 
-				 String newContents){}
+				 String newContents){
+				 
+    
+    }
 
     
     /** This method tells debugger that a NOP was executed.
      */
-    public void setNoOperation(){}
+    public void setNoOperation(){
+    
+    }
 
     /** This method tells debugger what value was found from the ADDR part of 
 	the command.
 	@param value int containing the value.
     */
-    public void setValueAtADDR(int value){}
+    public void setValueAtADDR(int value){
+    
+    }
 
     /** This method tells debugger that one or more registers were changed.
 	First cell contains number of the register and second the new value..
 	@param registers Array containing new values.
     */
-    public void setChangedRegisters(int[][] registers){}
+    public void setRegisters(Integer [] registers){
+    	
+	/**for(int i=0; i < ;i++)
+	if(this.registers[i] == registers[i])
+    		this.registers[i] = null; */
+    }
 
     /** This method tells debugger that one or more memorylines were changed.
 	First cell contains number of the line and second the new value..
 	@param lines Array containing new values.
     */
-    public void setChangedMemoryLines(int[][] lines){}
+    public void setChangedMemoryLines(int[][] lines){
+    
+    }
     
     /** This method sets the result of ALU operation. 
 	@param result Value of result. */
-    public void setALUResult(int result){}
+    public void setALUResult(int result){
+    
+    }
 
     /** This method tells what was the result of compare operation.
 	@param whichBit Number of SR bit changed.
 	@param status New status of the bit.
     */
-    public void setCompareResult(int whichBit, boolean status){}
+    public void setCompareResult(int whichBit){
+    
+    }
 
     /** This method tells debugger that something was read from the given
 	device. Devices are STDIN and KBD.
-	@param deviceName Name of the device.
 	@param deviceNumber Number of the device.
 	@param value Value written.
     */
-    public void setIN(String deviceName, int deviceNumber, int value){}
+    public void setIN(int deviceNumber, int value){
+    
+    }
 
     /** This method tells debugger that something was written to the given
 	device. Devices are STDOUT and CRT.
-	@param deviceName Name of the device.
 	@param deviceNumber Number of the device.
 	@param value Value written.
     */
-    public void setOUT(String deviceName, int deviceNumber, int value){}
+    public void setOUT(int deviceNumber, int value){
+    
+    }
 
-    /** This method tells debugger that a conditional jump was made and 
-	which SR bit was checked and what was its value.
-	@param whichSR Which SR bit is checked.
-	@param status status of the bit.
-    */
-    public void setConditionalJump(int whichSR, boolean status){}
-
-    /** This method tells debugger which SVC operation was done.
+     /** This method tells debugger which SVC operation was done.
 	@param operation Int containing operation type.
     */
-    public void setSVCOperation(int operation){}
+    public void setSVCOperation(int operation){
+    
+    }
 
     /** This method tells debugger if command was CALL or EXIT operation and
 	it comments accordingly. True stands for CALL and false for EXIT.
 	@param type Boolean containing information which operation was done.
     */
-    public void setSubOperation(boolean type){}
+    public void setSubOperation(int type){
+    
+    }
 }

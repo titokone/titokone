@@ -11,23 +11,23 @@ public class DebugInfo{
     public DebugInfo(){}
 
     /** This field contains message to the GUI's statusbar.*/
-    private Message statusMessage;
+    private String statusMessage;
     
     /** This field contains comments made by debugger. */
-    private Message comments;
+    private String comments;
 
     /** This method sets statusMessage field to given string.
 	@param statusMessage String containing the message.
     */
     public void setStatusMessge(String statusMessage){ 
-	this.statusMessage = new Message(statusMessage);
+	this.statusMessage = new Message(statusMessage).toString;
     }
 
     /** This method sets comments field to given string.
 	@param comments String containing comments.
     */
     public void setComments(String comments){
-	this.comments = new Message(comments);
+	this.comments = new Message(comments).toString;
     }
 
 
