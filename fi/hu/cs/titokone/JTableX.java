@@ -3,6 +3,7 @@ package fi.hu.cs.titokone;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import java.awt.event.MouseEvent;
 import java.util.logging.Logger;
 
 /** This class is basically just normal JTable with added functionality.
@@ -14,13 +15,30 @@ public class JTableX extends JTable {
 protected int[] selectedRows = { 0 };
 protected boolean areRowsSelected = false;
 protected int tryCounter = 0;
+protected String[] columnToolTips;
+
 
 
 public JTableX(TableModel dm) {
   super(dm);
-  //setAutoResizeMode(AUTO_RESIZE_OFF);
+  columnToolTips = new String[getColumnCount()];
 }
 
+
+
+public void setToolTipTextForColumns(String[] toolTips) {
+  columnToolTips = toolTips;
+}
+
+
+
+public String getToolTipText(MouseEvent e) {
+  String tip = null;
+  java.awt.Point p = e.getPoint();
+  int index = columnModel.getColumnIndexAtX(p.x);
+  int realIndex = columnModel.getColumn(index).getModelIndex();
+  return columnToolTips[realIndex];
+}
 
 
 
@@ -38,7 +56,9 @@ public int getTextLength(int row, int column) {
   int marginLength = this.getColumnModel().getColumnMargin();
   
   String cellValue = (String)(this.getValueAt(row,column));
-  
+  if (cellValue == null) 
+    cellValue = "";
+    
   int textLength = (int)(tblFontMetrics.getStringBounds(cellValue, tblGraphics).getWidth()) + 1;
   
   return textLength + 2*marginLength;

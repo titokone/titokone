@@ -26,6 +26,9 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -38,6 +41,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -47,6 +51,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -124,7 +129,8 @@ public class GUI extends JFrame implements ActionListener {
             its numeric contents and their symbolic equivalencies.
         */
         JTableX instructionsTable;
-        Object[] instructionsTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
+        //Object[] instructionsTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
+        Object[] instructionsTableIdentifiers = {"", "", ""};
         
         /** This holds (@link dataTable dataTable).
         */
@@ -133,7 +139,8 @@ public class GUI extends JFrame implements ActionListener {
             contents and their symbolic equivalencies.
         */
         JTableX dataTable;
-        Object[] dataTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
+        //Object[] dataTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
+        Object[] dataTableIdentifiers = {"", "", ""};
         
         /** This holds (@link instructionsTableScrollPane instructionsTableScrollPane) and 
             (@link dataTableScrollPane dataTableScrollPane).
@@ -213,6 +220,8 @@ public class GUI extends JFrame implements ActionListener {
         JToggleButton showAnimationToggleButton;
         
         JLabel statusBar;
+        
+        JPopupMenu dataTablePopupMenu;
         
         JMenu     fileMenu;
       	JMenuItem openFile;
@@ -356,6 +365,10 @@ public GUI() {
   
   print("Packing...");        
   this.pack();
+  
+  rightSplitPane.setDividerLocation(0.5);
+  setGUIView(1);
+  
   print("Setting visible...");        
   this.setVisible(true);
 	
@@ -441,13 +454,14 @@ public void setGUIView(int view) {
 
 
 
-/** GUIBrain can call this method to reset GUI, which means that all tables are
-    emptied and all their rows are unselected.
+/** GUIBrain can call this method to reset GUI, which means that all tables 
+    (except registers table) are emptied and all their rows are unselected.
 */
 public void resetAll() {
  
   unselectAll();
   insertSymbolTable(null);
+  ((DefaultListModel)commentList.getModel()).clear();
   outputTextArea.setText("");
 }
 
@@ -471,7 +485,11 @@ public void unselectAll() {
     @param str The text to be inserted.
 */
 public void updateStatusBar(String str) {
-  statusBar.setText(str+" ");
+  if (str == null)
+    statusBar.setText(" ");
+  else
+    statusBar.setText(str+" ");
+    
   statusBar.validate();
 }
 
@@ -520,6 +538,7 @@ public void insertToCodeTable(String[] src) {
 
 
 
+private static final int cellMargin = 4;
 
 
 /** Inserts data to instructionsTable. The data must be provided so that the dimension
@@ -538,14 +557,18 @@ public boolean insertToInstructionsTable(String[] binaryCommand, String[] symbol
     return false;
   }
   int rows = binaryCommand.length;
-  DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
   Object[][] tableContents = new Object[rows][3];
   for (int i=0 ; i<rows ; i++) {
     tableContents[i][0] = ""+i;
     tableContents[i][1] = binaryCommand[i];
     tableContents[i][2] = symbolicCommand[i];
   }
+  
+  DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
   instructionsTableModel.setDataVector(tableContents, instructionsTableIdentifiers);
+  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(0) + cellMargin);
+  instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(1) + cellMargin);
+  instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
   instructionsTable.validate();
   return true;
 }
@@ -565,14 +588,18 @@ public boolean insertToInstructionsTable(int[] binaryCommand, String[] symbolicC
     return false;
   }
   int rows = binaryCommand.length;
-  DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
   Object[][] tableContents = new Object[rows][3];
   for (int i=0 ; i<rows ; i++) {
     tableContents[i][0] = ""+i;
     tableContents[i][1] = ""+binaryCommand[i];
     tableContents[i][2] = symbolicCommand[i];
   }
+  
+  DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
   instructionsTableModel.setDataVector(tableContents, instructionsTableIdentifiers);
+  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(0) + cellMargin);
+  instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(1) + cellMargin);
+  instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
   return true;
 }
 
@@ -640,12 +667,32 @@ public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryComm
   if (lineNumber < 0) 
     return false;
   else if (lineNumber < instructionsTable.getRowCount()) {
-    ((DefaultTableModel)instructionsTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
+    DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel();
+    instructionsTableModel.setValueAt(""+binaryCommand, lineNumber, 1);
+    int newTextLength = instructionsTable.getTextLength(lineNumber, 1) + cellMargin;
+    
+    if ( newTextLength > instructionsTable.getColumnModel().getColumn(1).getWidth()) {
+      instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
+      dataTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
+    }
+    
+    validate();
+  
     return true;
   }
   else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
     lineNumber = lineNumber-instructionsTable.getRowCount();
-    ((DefaultTableModel)dataTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
+    DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel();
+    dataTableModel.setValueAt(""+binaryCommand, lineNumber, 1);
+    int newTextLength = dataTable.getTextLength(lineNumber, 1) + cellMargin;
+    
+    if ( newTextLength > dataTable.getColumnModel().getColumn(1).getWidth()) {
+      instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
+      dataTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
+    }
+    
+    validate();
+  
     return true;
   }
   else {
@@ -668,14 +715,26 @@ public void insertToDataTable(String[] dataContents) {
   int rows = dataContents.length;
   int instructionsTableRowCount = instructionsTable.getRowCount();
   
-  DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
   Object[][] tableContents = new Object[rows][3];
   for (int i=0 ; i<rows ; i++) {
     tableContents[i][0] = ""+ (i + instructionsTableRowCount);
     tableContents[i][1] = ""+dataContents[i];
     tableContents[i][2] = "";
   }
+  
+  DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
   dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
+  
+  for (int i=0 ; i<dataTable.getColumnCount() ; i++) {
+    if(instructionsTable.getMaxTextLengthInColumn(i) > dataTable.getMaxTextLengthInColumn(i) ) {
+      instructionsTable.getColumnModel().getColumn(i).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(i) + cellMargin);
+      dataTable.getColumnModel().getColumn(i).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(i) + cellMargin);
+    }
+    else {
+      instructionsTable.getColumnModel().getColumn(i).setPreferredWidth(dataTable.getMaxTextLengthInColumn(i) + cellMargin);
+      dataTable.getColumnModel().getColumn(i).setPreferredWidth(dataTable.getMaxTextLengthInColumn(i) + cellMargin);
+    }
+  }
 }
 
 
@@ -690,14 +749,26 @@ public void insertToDataTable(int[] data) {
   int rows = data.length;
   int instructionsTableRowCount = instructionsTable.getRowCount();
   
-  DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
   Object[][] tableContents = new Object[rows][3];
   for (int i=0 ; i<rows ; i++) {
     tableContents[i][0] = ""+ (i + instructionsTableRowCount);
     tableContents[i][1] = ""+data[i];
     tableContents[i][2] = "";
   }
+  
+  DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
   dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
+  
+  for (int i=0 ; i<dataTable.getColumnCount() ; i++) {
+    if(instructionsTable.getMaxTextLengthInColumn(i) > dataTable.getMaxTextLengthInColumn(i) ) {
+      instructionsTable.getColumnModel().getColumn(i).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(i) + cellMargin);
+      dataTable.getColumnModel().getColumn(i).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(i) + cellMargin);
+    }
+    else {
+      instructionsTable.getColumnModel().getColumn(i).setPreferredWidth(dataTable.getMaxTextLengthInColumn(i) + cellMargin);
+      dataTable.getColumnModel().getColumn(i).setPreferredWidth(dataTable.getMaxTextLengthInColumn(i) + cellMargin);
+    }
+  }
 }
 
 
@@ -765,12 +836,9 @@ public void updateRowInSymbolTable(String symbolName, Integer symbolValue) {
   /* symbolName is already in symbol table so a new row is not needed. The old
      value is just updated if there's any. Note that symbolValue may also be null,
      which means that the symbol was found, but not yet set. In that case the 
-     value in GUI is set to an empty string.
+     value in GUI is not modified.
   */
-    if (symbolValue == null) {
-      symbolTableModel.setValueAt("", row.intValue(), 1);
-    }
-    else {
+    if (symbolValue != null) {
       symbolTableModel.setValueAt(symbolValue, row.intValue(), 1);
     }
   }
@@ -871,6 +939,15 @@ public void setEnabled(short command, boolean b) {
       inputField.setEnabled(b);
       enterNumberButton.setEnabled(b);
       inputField.setText("");
+      if (b) {
+        inputPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder(Color.red) , "KBD") );
+        instructionsTable.setSelectionBackground(Color.yellow);
+      }
+      if (!b) {
+        inputPanel.setBorder( BorderFactory.createTitledBorder( BorderFactory.createLineBorder(Color.gray) , "KBD") );
+        instructionsTable.setSelectionBackground(registersTable.getSelectionBackground());
+      }
+        
       break;
     case CODE_TABLE_EDITING:
       codeTable.setEnabled(b);
@@ -965,15 +1042,28 @@ public static final short INSTRUCTIONS_AND_DATA_TABLE = 3;
              in the table or there's no such table.
 */
 public boolean centerToLine(int line, short table) {
-  
+  JScrollPane activeScrollPane = null;
+  JTableX activeTable = null;
+      
   switch (table) {
+    case CODE_TABLE:
+      
+      /* Check if there's no such line */
+      if ( line >= codeTable.getRowCount() || line < 0) {
+        return false;
+      }
+      activeScrollPane = codeTableScrollPane;
+      activeTable = codeTable;
+      break;
+      
+      
     case INSTRUCTIONS_AND_DATA_TABLE:
+      
+      /* Check if there's no such line */
       if ( line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) || line < 0) {
         return false;
       }
       
-      JScrollPane activeScrollPane;
-      JTableX activeTable;
       
       if (line < instructionsTable.getRowCount()) {
         activeScrollPane = instructionsTableScrollPane;
@@ -984,30 +1074,35 @@ public boolean centerToLine(int line, short table) {
         activeTable = dataTable;
         line -= instructionsTable.getRowCount();
       }
-        
-      int tableViewHeight = activeScrollPane.getHeight() - activeTable.getTableHeader().getHeight();
-      int y;
-      
-      if (tableViewHeight > activeTable.getHeight()) {
-        y = 0;
-      }
-      else {
-        y = line * activeTable.getRowHeight() - tableViewHeight/2 + activeTable.getRowHeight()/2;
-        y = (y<0)?0:y;
-        if (y + tableViewHeight > activeTable.getHeight()) {
-          y = activeTable.getHeight() - tableViewHeight + activeTable.getRowMargin() + 2; 
-          /* I don't know where that number 2 comes from, but I included it there, because the viewport
-             doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :) */
-        }          
-      }
-      activeScrollPane.getViewport().setViewPosition(new Point(0, y));
-        
-      return true;
+      break;
+    
     
     default:
       break;
   }
-  return false;
+  
+  if (activeScrollPane == null || activeTable == null)
+    return false;
+    
+  int tableViewHeight = activeScrollPane.getHeight() - activeTable.getTableHeader().getHeight();
+  int y;
+  
+  if (tableViewHeight > activeTable.getHeight()) {
+    y = 0;
+  }
+  else {
+    y = line * activeTable.getRowHeight() - tableViewHeight/2 + activeTable.getRowHeight()/2;
+    y = (y<0)?0:y;
+    if (y + tableViewHeight > activeTable.getHeight()) {
+      y = activeTable.getHeight() - tableViewHeight + activeTable.getRowMargin() + 2; 
+      /* I don't know where that number 2 comes from, but I included it there, because the viewport
+         doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :) */
+    }          
+  }
+  activeScrollPane.getViewport().setViewPosition(new Point(0, y));
+    
+  return true;
+
 }
       
 
@@ -1032,6 +1127,7 @@ public void selectLine(int line, short table) {
       if (line > codeTable.getRowCount()) {
         return;
       }
+      centerToLine(line, CODE_TABLE);       
       codeTable.selectRow(line);
       break;
     
@@ -1104,7 +1200,7 @@ public void updateAllTexts() {
   setLanguage.setText( new Message("Set language").toString() );
   selectLanguageFromFile.setText( new Message("Select from a file...").toString() );
 	
-	instructionsTableIdentifiers = new Object[] { new Message("Line").toString(),
+	/*instructionsTableIdentifiers = new Object[] { new Message("Line").toString(),
 	                                              new Message("Numeric").toString(),
 	                                              new Message("Symbolic").toString() };
   ((DefaultTableModel)instructionsTable.getModel()).setColumnIdentifiers(instructionsTableIdentifiers);
@@ -1113,7 +1209,7 @@ public void updateAllTexts() {
 	                                      new Message("Numeric").toString(),
 	                                      new Message("Symbolic").toString() };
   ((DefaultTableModel)dataTable.getModel()).setColumnIdentifiers(dataTableIdentifiers);
-	
+	*/
 	openFileButton.setToolTipText(new Message("Open a new file").toString());
   compileButton.setToolTipText(new Message("Compile the opened file").toString());
   runButton.setToolTipText(new Message("Run the loaded program").toString());
@@ -1220,13 +1316,16 @@ private void initGUI() {
     
   instructionsTable = new JTableX(new DefaultTableModel(instructionsTableIdentifiers,0));
   instructionsTable.setFont(tableFont);
+  instructionsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
   instructionsTable.setEnabled(false);
-  instructionsTable.getColumnModel().getColumn(0).setMinWidth(20);
-  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+  instructionsTable.setToolTipTextForColumns(new String[] {"Line", "Numeric value", "Symbolic value"});
+  //instructionsTable.getColumnModel().getColumn(0).setMinWidth(20);
+  //instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(20);
   instructionsTableScrollPane = new JScrollPane(instructionsTable);
   
   dataTable = new JTableX(new DefaultTableModel(dataTableIdentifiers,0));
   dataTable.setEnabled(false);
+  dataTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
   dataTable.setFont(tableFont);
   dataTable.setRowSelectionAllowed(false);
   dataTableScrollPane = new JScrollPane(dataTable);
@@ -1234,6 +1333,42 @@ private void initGUI() {
   dataTable.setDoubleBuffered(true);
   dataTableScrollPane.setDoubleBuffered(true);
   
+  dataTablePopupMenu = new JPopupMenu();
+  JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem("Show symbolic", true);
+  menuItem.addActionListener( new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+      if ( ((JCheckBoxMenuItem)e.getSource()).getState() ) {
+        int maxTextLength = (dataTable.getMaxTextLengthInColumn(2) > instructionsTable.getMaxTextLengthInColumn(2)) ?
+                            (dataTable.getMaxTextLengthInColumn(2) + cellMargin) :
+                            (instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
+        dataTable.getColumnModel().getColumn(2).setPreferredWidth(maxTextLength);
+      }
+      else {
+        dataTable.getColumnModel().getColumn(2).setMinWidth(0);
+        dataTable.getColumnModel().getColumn(2).setPreferredWidth(0);
+      }
+    }
+  } );
+  dataTablePopupMenu.add(menuItem);
+  
+    
+  MouseListener dataTablePopupListener = new MouseAdapter() {
+    public void mousePressed(MouseEvent e) {
+      maybeShowPopup(e);
+    }
+    
+    public void mouseReleased(MouseEvent e) {
+      maybeShowPopup(e);
+    }
+    
+    private void maybeShowPopup(MouseEvent e) {
+      if (e.isPopupTrigger()) {
+        dataTablePopupMenu.show(e.getComponent(), e.getX(), e.getY());
+      }
+    }
+  };
+  dataTable.addMouseListener(dataTablePopupListener);
+
   dataAndInstructionsTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
   dataAndInstructionsTableSplitPane.setTopComponent(instructionsTableScrollPane);
   dataAndInstructionsTableSplitPane.setBottomComponent(dataTableScrollPane);
@@ -1244,6 +1379,7 @@ private void initGUI() {
   ((DefaultListModel)commentList.getModel()).ensureCapacity(COMMENT_LIST_SIZE);
   
   symbolTable = new JTableX(new DefaultTableModel(new String[] {"",""}, 0));
+  symbolTable.setEnabled(false);
   symbolTable.setFont(tableFont);
   symbolTable.setRowSelectionAllowed(false);
   symbolTableScrollPane = new JScrollPane(symbolTable);
@@ -1251,8 +1387,8 @@ private void initGUI() {
   symbolTableScrollPane.setMinimumSize(new Dimension(200, 150));
  
   String[][] regTableContents = new String[][] 
-    { {"R0",""}, {"R1",""}, {"R2",""}, {"R3",""}, {"R4",""}, 
-      {"R5",""}, {"SP",""}, {"FP",""}, {"PC",""}};
+    { {"R0","0"}, {"R1","0"}, {"R2","0"}, {"R3","0"}, {"R4","0"}, 
+      {"R5","0"}, {"SP","0"}, {"FP","0"}, {"PC","0"}};
   
   registersTable = new JTableX(new DefaultTableModel(regTableContents, registersTableIdentifiers));
   registersTable.setEnabled(false);
@@ -1314,34 +1450,36 @@ private void initGUI() {
   commentList.setDoubleBuffered(true);
   commentListScrollPane.setDoubleBuffered(true);
   
-  commentList.addListSelectionListener( new ListSelectionListener() {
+  /*commentList.addListSelectionListener( new ListSelectionListener() {
     public void valueChanged( ListSelectionEvent e ) {
       JList src = (JList)(e.getSource());
       String str = (String)src.getSelectedValue();
       
-      Integer line = null;
-      int i = 1;
-      while (true) {
-        try {
-          line = new Integer(str.substring(0,i));
-          
+      if (str != null) {
+        Integer line = null;
+        int i = 1;
+        while (true) {
+          try {
+            line = new Integer(str.substring(0,i));
+            
+          }
+          catch (NumberFormatException excp) {
+            break;
+          }
+          catch (IndexOutOfBoundsException excp2) {
+            break;
+          }
+          i++;
         }
-        catch (NumberFormatException excp) {
-          break;
-        }
-        catch (IndexOutOfBoundsException excp2) {
-          break;
-        }
-        i++;
-      }
-      
-      if (line != null) {
-        if (activeView == 3) {
-          centerToLine(line.intValue(),INSTRUCTIONS_AND_DATA_TABLE);
+        
+        if (line != null) {
+          if (activeView == 3) {
+            centerToLine(line.intValue(),INSTRUCTIONS_AND_DATA_TABLE);
+          }
         }
       }
     }
-  } );
+  } );*/
   
   rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, commentListScrollPane);
   rightSplitPane.setResizeWeight(0.5);
@@ -1469,8 +1607,6 @@ private JToolBar makeToolBar() {
   JToolBar toolbar;
   
   toolbar = new JToolBar("Toolbar");
-  
-  System.out.println(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Open24.gif"));
   
   openFileButton = new JButton();
   try {
