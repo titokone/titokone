@@ -62,6 +62,7 @@ public class Processor implements TTK91Cpu {
 
     //Added by Harri Tuomikoski, 12.10.2004, Koskelo-project.
     private int stack_size = 0;
+    private int stack_max_size = 0;
     private int commands_executed = 0;
 
 /** The stdinData and kbdData fields stores buffer data to be read with 
@@ -79,6 +80,7 @@ public class Processor implements TTK91Cpu {
 
 	//Added by HT, 12.10.2004, Koskelo-project
 	this.stack_size = 0;
+	this.stack_max_size = 0;
 	this.commands_executed = 0;
     }
 
@@ -261,6 +263,11 @@ public class Processor implements TTK91Cpu {
 	return this.stack_size;
 
     }//giveStackSize
+
+    //Added by LL, 12.12.2004, Koskelo-project
+    public int giveStacMaxSize() {
+	return this.stack_max_size;
+    }
 
 /** Transfer-operations. */
     private void transfer(int opcode, int Rj, int M, int ADDR, int param) 
@@ -515,8 +522,8 @@ public class Processor implements TTK91Cpu {
             case 51 : // PUSH
             regs.setRegister (Rj, regs.getRegister(Rj) +1);
             writeToMemory (regs.getRegister(Rj), param);
-	    //Added by HT, 12.10.2004, Koskelo-project
-	    ++this.stack_size;
+	    //Added by HT, 12.10.2004, Koskelo-project, modified by LL, 12.12.2004
+	    addToStack();
             break;
             
             case 52 : // POP
@@ -530,23 +537,23 @@ public class Processor implements TTK91Cpu {
             for (int i=0; i < 7; i++) {
                 regs.setRegister (Rj, regs.getRegister(Rj) +1);
                 writeToMemory (regs.getRegister (Rj), regs.getRegister (TTK91Cpu.REG_R0 +i));
+		//Added by HT, 12.10.2004, Koskelo-project, modified by LL, 12.12.2004
+		addToStack();
             }
-	    //Added by HT, 12.10.2004, Koskelo-project
-	    ++this.stack_size;
             break;
             
             case 54 : // POPR
             for (int i=0; i < 7; i++) {
                 regs.setRegister (TTK91Cpu.REG_R6 -i, ram.getValue (regs.getRegister (Rj)));
                 regs.setRegister (Rj, regs.getRegister(Rj) -1);
+		//Added by HT, 12.10.2004, Koskelo-project
+		--this.stack_size;
             }
-	    //Added by HT, 12.10.2004, Koskelo-project
-	    --this.stack_size;
             break;
         }
     }
-
-/** Subroutine. */
+    
+    /** Subroutine. */
     private void subr(int opcode, int Rj, int ADDR, int param)
     throws TTK91AddressOutOfBounds {
         runDebugger.setOperationType (RunDebugger.SUB_OPERATION);
@@ -663,4 +670,12 @@ public class Processor implements TTK91Cpu {
         return (value > (long)Integer.MAX_VALUE || value < (long)Integer.MIN_VALUE);
     }
 
+    
+    //Added by LL, 12.12.2004, Koskelo-project
+    private void addToStack() {
+	this.stack_size++;
+	if (this.stack_size > this.stack_max_size) {
+	    ++stack_max_size;
+	}
+    }
 }
