@@ -85,7 +85,7 @@ public class Application implements TTK91Application {
 	method will not actually make the line show on any GUI.
 	@param line A new line to "write to the screen". This should
 	be a string representation of an integer, eg. "114422", but
-	no validity checking is done. */
+	no validity checking is done at this point. */
     public void writeToCrt(String line) {  }
 
     /** This method stores one more line to the StdOut ("file") memory 
@@ -93,34 +93,34 @@ public class Application implements TTK91Application {
 	method will not actually make the line show on any file.
 	@param line A new line to "write to the file". This should
 	be a string representation of an integer, eg. "114422", but
-	no validity checking is done. */
+	no validity checking is done at this point. */
     public void writeToStdOut(String line) {  }
 
     /** This method reads the next line from a keyboard "buffer" set up
 	before by setKbd(). If setKbd() is called after this method 
 	has been called, the previous keyboard buffer is ignored and 
 	reading continues from the top line of the new string. 
-	@return The next string corresponding to the kbd data set earlier
-	by setKbd(). This does not necessarily need to be an integer in
-	string form (like "114422"), as setKbd() does not check what is 
-	sent to it. The linebreak will be removed, however.
+	@return The next integer corresponding to the kbd data set earlier
+	by setKbd(). 
 	@throws NoInputException If there is no more keyboard data available
-	in the buffer. The caller may then decide to get their keyboard
+	in the buffer or if the data does not transform into an integer. 
+	The caller may then decide to get their keyboard
 	data via other routes, eg. the user. */
     public String readNextFromKbd() throws NoInputException { }
 
-    /** This method reads the next line from a file read "buffer" set up
-	before by setStdIn(). If setStdIn() is called after this method 
-	has been called, the previous file read buffer is ignored and 
-	reading continues from the top line of the new string. 
-	@return The next string corresponding to the file read data set 
-	earlier by setStdIn(). This does not necessarily need to be an 
-	integer in string form (like "114422"), as setStdIn() does not check
-	what is sent to it. The linebreak will be removed, however.
+    /** This method reads the next line from a file read "buffer" set
+	up before by setStdIn(), and transforms it to an integer. If
+	setStdIn() is called after this method has been called, the
+	previous file read buffer is ignored and reading continues
+	from the top line of the new string.
+	@return The next integer corresponding to the file read data set 
+	earlier by setStdIn(). 
 	@throws NoInputException If there is no more file read data 
-	available in the buffer. The caller may then decide to get their 
+	available in the buffer, or if the data does not transform into 
+	an integer. The caller may then decide to get their 
 	stdin data via other routes, eg. by reading from some actual file. */
-    public String readNextFromStdIn() throws NoInputException {  }
+    public int readNextFromStdIn() 
+	throws NoInputException, TTK91RuntimeException {  }
 
     /** This method returns the symbol table containing the application's 
 	local symbols. 
