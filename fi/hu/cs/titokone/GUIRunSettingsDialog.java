@@ -7,9 +7,8 @@ import javax.swing.event.*;
 
 
 
-public class GUIRunSettingsDialog extends JDialog {
+public class GUIRunSettingsDialog extends GUISettingsDialog {
   
-public JButton applyButton, closeButton;
 public JCheckBox lineByLineCheckBox;
 public JCheckBox showCommentsCheckBox;
 public JCheckBox showAnimationCheckBox;
@@ -32,18 +31,19 @@ public GUIRunSettingsDialog(Frame ownerFrame, boolean modal) {
 	
 	applyButton.setActionCommand(APPLY);
 	applyButton.addActionListener(ownerGUI);
+	applyButton.addActionListener(applyButtonActionListener);
 	
-	closeButton.addActionListener( new ActionListener() {
-		public void actionPerformed( ActionEvent e ) {
-			setVisible(false);
-		} 
-	} );
+	closeButton.addActionListener(closeButtonActionListener);
+	
+	this.addComponentListener(settingsDialogListener);
 	
 	
 	lineByLineCheckBox = new JCheckBox("Execute line by line");
+  lineByLineCheckBox.addChangeListener(stateChangeListener);
 	showCommentsCheckBox = new JCheckBox("Show comments");
+	showCommentsCheckBox.addChangeListener(stateChangeListener);
 	showAnimationCheckBox = new JCheckBox("Show animation");
-	
+	showAnimationCheckBox.addChangeListener(stateChangeListener);
 	
 	getContentPane().setLayout( new BorderLayout() );
 	

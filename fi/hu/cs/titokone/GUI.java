@@ -14,15 +14,52 @@
 
 package fi.hu.cs.titokone;
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import java.util.*;
-import javax.swing.border.*;
-import javax.swing.table.*;
-import javax.swing.filechooser.FileFilter;
-import javax.swing.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
+import java.net.URL;
+import java.util.HashMap;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JSplitPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
+import javax.swing.JToggleButton;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.DefaultCellEditor;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.table.DefaultTableModel;
 
 /** Class GUI is namely the class that implements the Graphical User Interface.
     It uses methods in GUIBrain to fire certain actions, such as compiling and
@@ -42,6 +79,8 @@ import java.io.File;
 
 public class GUI extends JFrame implements ActionListener {
   
+        GUI thisGUI;
+        
         GUIBrain guibrain;
         
         /** This holds (@link rightSplitPane rightSplitPane) and 
@@ -214,7 +253,8 @@ public class GUI extends JFrame implements ActionListener {
                                   STOP_COMMAND = 2,
                                   CONTINUE_COMMAND = 3,
                                   CONTINUE_WITHOUT_PAUSES_COMMAND = 4,
-                                  INPUT_FIELD = 5;
+                                  INPUT_FIELD = 5,
+                                  CODE_TABLE_EDITING = 6;
 
 	      
         private int activeView = 0;
@@ -223,9 +263,12 @@ public class GUI extends JFrame implements ActionListener {
         private JFileChooser openFileDialog;
         private JFileChooser selectDefaultStdinFileDialog;
         private JFileChooser selectDefaultStdoutFileDialog;
+        private JFileChooser selectLanguageFileDialog;
         
         private GUIRunSettingsDialog setRunningOptionsDialog;
         private GUICompileSettingsDialog setCompilingOptionsDialog;
+        
+        private GUIAboutDialog aboutDialog;
                 
         private Font tableFont = new Font("Courier", java.awt.Font.PLAIN, 12);
                 
@@ -235,6 +278,8 @@ public class GUI extends JFrame implements ActionListener {
         private static final int COMMENT_LIST_SIZE = 100;
 
         public static final String resourceHomeDir = "fi/hu/cs/titokone/";
+
+
 
 /** This is called when ActionEvent of some kind is fired.
 */
@@ -261,43 +306,29 @@ public void actionPerformed(ActionEvent e) {
 
 
 public GUI() {
-  
-  
-  
-  System.out.println("Setting title...");        
-  setTitle("Titokone");
-  System.out.println("Initializing openFileDialog...");        
-  openFileDialog = new JFileChooser();
-  
-  
-  System.out.println("Initializing selectDefaultStdinFileDialog...");        
-  /* This has to be while-looped this way, because of a bug in Java*/
-  while (true) {
-    try {
-      selectDefaultStdinFileDialog = new JFileChooser();
-      break;
-    }
-    catch (NullPointerException e) {
-      System.out.println("Darned that bug in Java! :(");
-    }
-  }
-  
-  System.out.println("Initializing selectDefaultStdoutFileDialog...");        
-  while (true) {
-    try {
-      selectDefaultStdoutFileDialog = new JFileChooser();
-      break;
-    }
-    catch (NullPointerException e) {
-      System.out.println("Darned that bug in Java! (2) :(");;
-    }
-  }
-  
-  
+
+  thisGUI = this;    
   System.out.println("Initializing setRunningOptionsDialog...");        
   setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
+  setRunningOptionsDialog.addComponentListener( new ComponentListener() {
+    public void componentShown(ComponentEvent e) {}
+    public void componentHidden(ComponentEvent e) {
+      guibrain.refreshRunningOptions();
+    }
+    public void componentMoved(ComponentEvent e) {}
+    public void componentResized(ComponentEvent e) {}
+  });
+  
   System.out.println("Initializing setCompilingOptionsDialog...");        
   setCompilingOptionsDialog = new GUICompileSettingsDialog(this, false);
+  setCompilingOptionsDialog.addComponentListener( new ComponentListener() {
+    public void componentShown(ComponentEvent e) {}
+    public void componentHidden(ComponentEvent e) {
+      guibrain.refreshCompilingOptions();
+    }
+    public void componentMoved(ComponentEvent e) {}
+    public void componentResized(ComponentEvent e) {}
+  });
   
   System.out.println("Initializing symbolsHashMap...");        
   symbolsHashMap = new HashMap();
@@ -314,6 +345,16 @@ public GUI() {
   disable(GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
   disable(GUI.STOP_COMMAND);
   
+  
+	System.out.println("Packing...");        
+  this.pack();
+	System.out.println("Setting visible...");        
+  this.setVisible(true);
+	
+	
+  System.out.println("Setting title...");        
+  setTitle("Titokone");
+  
   addWindowListener( new WindowAdapter () {
 		public void windowClosing(WindowEvent e) {
 			System.exit(0);
@@ -321,166 +362,41 @@ public GUI() {
 	}
 	);
 	
-	System.out.println("Updating texts...");        
+	
+  try {
+    System.out.println("Initializing selectDefaultStdinFileDialog...");        
+    selectDefaultStdinFileDialog = new JFileChooser();
+    System.out.println("Initializing selectDefaultStdoutFileDialog...");        
+    selectDefaultStdoutFileDialog = new JFileChooser();
+    System.out.println("Initializing openFileDialog...");        
+    openFileDialog = new JFileChooser();
+    System.out.println("Initializing selectLanguageFileDialog...");        
+    selectLanguageFileDialog = new JFileChooser();
+	
+  }
+  catch (NullPointerException e) {
+    System.out.println("Exiting due to a bug in recent Java version.\n"+
+                       "Please start again.");
+    System.exit(0);
+  }
+  
+  openFileDialog.setFileFilter(B91FileFilter);
+	openFileDialog.setFileFilter(K91FileFilter);
+	openFileDialog.setAcceptAllFileFilterUsed(false);
+  selectDefaultStdinFileDialog.setAcceptAllFileFilterUsed(true);
+  selectDefaultStdoutFileDialog.setAcceptAllFileFilterUsed(true);
+  selectLanguageFileDialog.setFileFilter(classFileFilter);
+  selectLanguageFileDialog.setAcceptAllFileFilterUsed(false);
+  
+  aboutDialog = new GUIAboutDialog(this, false);
+ 
+  
+  System.out.println("Updating texts...");        
   updateAllTexts();
   
-  System.out.println("Packing...");        
-  this.pack();
-	System.out.println("Setting visible...");        
-  this.setVisible(true);
+  
 	System.out.println("Complete!");        
-   
-}
-
-
-
-
-/** This is just a private assistance method for the creator. This prepares
-    all the graphical tables,lists and such as well as puts them into the
-    main frame. This won't be accessed but once in the creator method.
-*/
-private void initGUI() {
-  
-  codeTable = new JTableX(new DefaultTableModel(codeTableIdentifiers ,0));
-  codeTable.setFont(tableFont);
-  codeTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-  codeTable.setEnabled(false);
-  codeTable.setShowGrid(false);
-  codeTableScrollPane = insertTableToScrollPane(codeTable);
-  
-  instructionsTable = new JTableX(new DefaultTableModel(instructionsTableIdentifiers,0));
-  instructionsTable.setFont(tableFont);
-  instructionsTable.setEnabled(false);
-  instructionsTable.getColumnModel().getColumn(0).setMinWidth(20);
-  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(20);
-  instructionsTableScrollPane = insertTableToScrollPane(instructionsTable);
-  
-  dataTable = new JTableX(new DefaultTableModel(dataTableIdentifiers,0));
-  dataTable.setEnabled(false);
-  dataTable.setFont(tableFont);
-  dataTable.setRowSelectionAllowed(false);
-  dataTableScrollPane = insertTableToScrollPane(dataTable);
-  
-  dataTable.setDoubleBuffered(true);
-  dataTableScrollPane.setDoubleBuffered(true);
-  
-  dataAndInstructionsTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-  dataAndInstructionsTableSplitPane.setTopComponent(instructionsTableScrollPane);
-  dataAndInstructionsTableSplitPane.setBottomComponent(dataTableScrollPane);
-  dataAndInstructionsTableSplitPane.setOneTouchExpandable(true);
-  
-  statusBar = new JLabel();
-  commentList = new JList(new DefaultListModel());
-  ((DefaultListModel)commentList.getModel()).ensureCapacity(COMMENT_LIST_SIZE);
-  
-  symbolTable = new JTableX(new DefaultTableModel(new String[] {"",""}, 0));
-  symbolTable.setFont(tableFont);
-  symbolTable.setRowSelectionAllowed(false);
-  symbolTableScrollPane = new JScrollPane(symbolTable);
-  symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
-  symbolTableScrollPane.setMinimumSize(new Dimension(200, 150));
- 
-  String[][] regTableContents = new String[][] 
-    { {"R0",""}, {"R1",""}, {"R2",""}, {"R3",""}, {"R4",""}, 
-      {"R5",""}, {"SP",""}, {"FP",""}, {"PC",""}};
-  
-  registersTable = new JTableX(new DefaultTableModel(regTableContents, registersTableIdentifiers));
-  registersTable.setEnabled(false);
-  registersTable.setFont(tableFont);
-  registersTable.setRowSelectionAllowed(false);
-  (registersTable.getColumnModel().getColumn(0)).setPreferredWidth(15);
-  registersTableScrollPane = new JScrollPane(registersTable);
-  registersTableScrollPane.setPreferredSize(new Dimension(150, 150));
-  registersTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
-  
-  ioPanel = new JPanel(new BorderLayout());
-  inputPanel = new JPanel(new BorderLayout());
-  outputPanel = new JPanel(new BorderLayout());
- 
-  outputTextArea = new JTextArea(1,7);
-  outputTextArea.setLineWrap(true);
-  outputTextArea.setWrapStyleWord(true);
-  outputTextArea.setEditable(false);
-  
-  enterNumberLabel = new JLabel("");
-  enterNumberLabel.setSize(new Dimension(100,100));
-  
-  inputField = new JTextField(11);
-  
-  enterNumberButton = new JButton("Enter");
-
-  outputScrollPane = new JScrollPane(outputTextArea);
-  outputScrollPane.setPreferredSize(new Dimension(30,300));
-  outputScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "CRT"));
-  outputPanel.add(outputScrollPane, BorderLayout.CENTER);
-  
-  inputPanel.add(enterNumberLabel, BorderLayout.NORTH);
-  inputPanel.add(inputField, BorderLayout.CENTER);
-  inputPanel.add(enterNumberButton, BorderLayout.SOUTH);
-  inputPanel.setBorder(BorderFactory.createTitledBorder(blacklined, "KBD"));
-  
-  ioPanel.add(outputPanel, BorderLayout.CENTER);
-  ioPanel.add(inputPanel, BorderLayout.SOUTH);
-  
-  upperRightPanel = new JPanel(new BorderLayout());
-  upperRightPanel.add(registersTableScrollPane, BorderLayout.EAST);
-  upperRightPanel.add(symbolTableScrollPane, BorderLayout.CENTER);
-  upperRightPanel.add(ioPanel, BorderLayout.WEST);
-  
-  commentListScrollPane = new JScrollPane(commentList);
-  commentListScrollPane.setPreferredSize(new Dimension(1,50));
-  commentList.setDoubleBuffered(true);
-  commentListScrollPane.setDoubleBuffered(true);
-  
-  commentList.addListSelectionListener( new ListSelectionListener() {
-    public void valueChanged( ListSelectionEvent e ) {
-      JList src = (JList)(e.getSource());
-      String str = (String)src.getSelectedValue();
-      
-      //System.out.println(str);
-      
-      Integer line = null;
-      int i = 1;
-      while (true) {
-        try {
-          line = new Integer(str.substring(0,i));
-          
-        }
-        catch (NumberFormatException excp) {
-          break;
-        }
-        catch (IndexOutOfBoundsException excp2) {
-          break;
-        }
-        i++;
-      }
-      
-      if (line != null) {
-        if (activeView == 3) {
-          centerToLine(line.intValue(),INSTRUCTIONS_AND_DATA_TABLE);
-        }
-      }
-    }
-  } );
-  
-  rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, commentListScrollPane);
-  rightSplitPane.setResizeWeight(0.5);
-  
-  
-  leftPanel = new JPanel(new BorderLayout());
-  mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightSplitPane);
-  mainSplitPane.setResizeWeight(0.5);
-  
-  getContentPane().setLayout( new BorderLayout() );
-  getContentPane().add(mainSplitPane, BorderLayout.CENTER);
-  getContentPane().add( makeToolBar() , BorderLayout.NORTH);
-  
-  statusBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
-  getContentPane().add(statusBar, BorderLayout.SOUTH);
-  
-  disable(INPUT_FIELD);
-  setGUIView(1);
-  enterNumberButton.addActionListener(enterNumberButtonActionListener);
+	 
 }
 
 
@@ -550,159 +466,6 @@ public void unselectAll() {
 
 
 
-/** This creates the toolbar of this program and returns it.
-*/
-private JToolBar makeToolBar() {
-  
-  JToolBar toolbar;
-  
-  toolbar = new JToolBar("Toolbar");
-  
-  //System.out.println(getClass().getClassLoader().getResource("etc/open24.gif"));
-  
-  openFileButton = new JButton();
-  try {
-    openFileButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/open24.gif"), "Open file")
-    );
-  }
-  catch (Exception e) {
-  }
-  openFileButton.setToolTipText("Open a file");
-  openFileButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(openFileButton);
-  
-  toolbar.addSeparator();
-  
-  compileButton = new JButton();
-  try {  
-    compileButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource("etc/compile24.gif"), "Compile")
-    );
-  }
-  catch (Exception e) {
-  }
-  compileButton.setToolTipText("Compile the program");
-  compileButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(compileButton);
-  
-  runButton = new JButton();
-  try {  
-    runButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource("etc/run24.gif"), "Run")
-    );
-  }
-  catch (Exception e) {
-  }
-  runButton.setToolTipText("Run the program");
-  runButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(runButton);
-  
-  continueButton = new JButton();
-  try {  
-    continueButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/StepForward24.gif"), "Continue")
-    );
-  }
-  catch (Exception e) {
-  }
-  continueButton.setToolTipText("Continue operation");
-  continueButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(continueButton);
-  
-  continueToEndButton = new JButton();
-  try {  
-    continueToEndButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/FastForward24.gif"), "Continue w/o pauses")
-    );
-  }
-  catch (Exception e) {
-  }
-  continueToEndButton.setToolTipText("Continue operation without pauses");
-  continueToEndButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(continueToEndButton);
-  
-  stopButton = new JButton();
-  try {  
-    stopButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Stop24.gif"), "Stop")
-    );
-  }
-  catch (Exception e) {
-  }
-  stopButton.setToolTipText("Stop the current operation");
-  stopButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(stopButton);
-  
-  toolbar.addSeparator();
-  
-  
-  lineByLineToggleButton = new JToggleButton(); 
-  try {  
-    lineByLineToggleButton = new JToggleButton(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/RowInsertAfter24.gif"), "Run line by line")
-    );
-  }
-  catch (Exception e) {
-  }
-  lineByLineToggleButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(lineByLineToggleButton);
-  
-  showCommentsToggleButton = new JToggleButton(); 
-  try {  
-    showCommentsToggleButton = new JToggleButton(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/History24.gif"), "Show comments")
-    );
-  }
-  catch (Exception e) {
-  }
-  showCommentsToggleButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(showCommentsToggleButton);
-   
-  showAnimationToggleButton = new JToggleButton(); 
-  try {  
-    showAnimationToggleButton = new JToggleButton(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Movie24.gif"),"Show comments")
-    );
-  }
-  catch (Exception e) {
-  }
-  showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(showAnimationToggleButton);
-  
-  toolbar.setFloatable(false);
-  
-  openFileButton.addActionListener(openCommandActionListener);
-  compileButton.addActionListener(compileCommandActionListener);
-  runButton.addActionListener(runCommandActionListener);
-  continueButton.addActionListener(continueCommandActionListener);
-  continueToEndButton.addActionListener(continueToEndCommandActionListener);
-  stopButton.addActionListener(stopCommandActionListener);
-  lineByLineToggleButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-      boolean b = ((JToggleButton)e.getSource()).isSelected();
-      guibrain.menuSetRunningOption(GUIBrain.LINE_BY_LINE, b);
-    }
-  });
-  showCommentsToggleButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-      boolean b = ((JToggleButton)e.getSource()).isSelected();
-      guibrain.menuSetRunningOption(GUIBrain.COMMENTED, b);
-    }
-  });
-  showAnimationToggleButton.addActionListener(new ActionListener() {
-    public void actionPerformed(ActionEvent e) {
-      boolean b = ((JToggleButton)e.getSource()).isSelected();
-      guibrain.menuSetRunningOption(GUIBrain.ANIMATED, b);
-    }
-  });
- 
-  return toolbar;
-}
-
-
-
-
 /** Inserts a text into status bar at the bottom of the screen.
     @param str The text to be inserted.
 */
@@ -712,6 +475,11 @@ public void updateStatusBar(String str) {
 }
 
 
+/** Updates a value of a register in registersTable.
+    @param reg The register to be updated. Valid values are R1, R2, R3, R3, R4,
+               R5, R6, R7, SP and FP. (R6==SP and R7==FP).
+    @param newValue The new value.
+*/
 public void updateReg(short reg, int newValue) {
 	updateReg(reg, new Integer(newValue));
 }
@@ -732,11 +500,11 @@ public void updateReg(short reg, Integer newValue) {
 
 
 /** Inserts data into code table. The data must be provided as a String-array, where
-    one element corresponds to one line of original data. One elements will be shown
+    one element corresponds to one line of original data. One element will be shown
     as one row in GUI.
     @param src The data to be shown and one element corresponds to one line.
 */
-public boolean insertToCodeTable(String[] src) {
+public void insertToCodeTable(String[] src) {
   
   int rows = src.length;
   Object[][] tableContents = new Object[rows][1];
@@ -747,14 +515,22 @@ public boolean insertToCodeTable(String[] src) {
   DefaultTableModel codeTableModel = (DefaultTableModel)codeTable.getModel(); 
   codeTableModel.setDataVector(tableContents, codeTableIdentifiers);
   codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getMaxTextLengthInColumn(0));   
-  return true;
 }
 
 
 
 
 
-
+/** Inserts data to instructionsTable. The data must be provided so that the dimension
+    of both parameter is same. If they aren't, then false is returned and no insertion
+    made. The second column will be filled with binaryCommand's contents and the third
+    column with symbolicCommand's contents. The first column will contain line numbers
+    which are 0...N, where N is size of the table.
+    @param binaryCommand Contents of the second column.
+    @param symbolicCommand Contents of the third column.
+    @return True if operation was successful.
+            False if the dimension of the parameters is not same.
+*/
 public boolean insertToInstructionsTable(String[] binaryCommand, String[] symbolicCommand) {
   
   if (binaryCommand.length != symbolicCommand.length) {
@@ -774,6 +550,14 @@ public boolean insertToInstructionsTable(String[] binaryCommand, String[] symbol
 }
 
 
+/** Functionality of this method is exactly similar to insertToInstructionsTable(String[],String[]),
+    but here the first parameter's type is int[]. That's for convenience, because otherwise
+    it would require an additional for-loop to convert int[] to String[].
+    @param binaryCommand Contents of the second column.
+    @param symbolicCommand Contents of the third column.
+    @return True if operation was successful.
+            False if the dimension of the parameters is not same.
+*/
 public boolean insertToInstructionsTable(int[] binaryCommand, String[] symbolicCommand) {
   
   if (binaryCommand.length != symbolicCommand.length) {
@@ -793,6 +577,13 @@ public boolean insertToInstructionsTable(int[] binaryCommand, String[] symbolicC
 
 
 
+/** Functionality of this method is exactly similar to insertToInstructionsTable(String[],String[]),
+    but here the first parameter would be an array of empty Strings. Thus the second column
+    will empty after calling this method.
+    @param symbolicCommand Contents of the third column.
+    @return True if operation was successful.
+            False if the dimension of the parameters is not same.
+*/
 public boolean insertToInstructionsTable(String[] symbolicCommand) {
   String[] empty = new String[symbolicCommand.length];
   return insertToInstructionsTable(empty, symbolicCommand);
@@ -800,26 +591,21 @@ public boolean insertToInstructionsTable(String[] symbolicCommand) {
 
 
 
-public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryCommand) {
-  
-  if (lineNumber < instructionsTable.getRowCount()) {
-    ((DefaultTableModel)instructionsTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
-    return true;
-  }
-  else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
-    lineNumber = lineNumber-instructionsTable.getRowCount();
-    ((DefaultTableModel)dataTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
-    return true;
-  }
-  else {
-    return false;
-  }
-}
-
-
+/** Updates contents of a line in either instructions table or data table. Parameter lineNumber
+    decides which one to update - lines 0...N are rows in instructionsTable and lines N+1...N+P
+    are rows in dataTable, where N is the row count of instructionsTable and P is the row count
+    of dataTable.
+    @param lineNumber The line number of the row to update. Lines 0...N are rows in instructionsTable 
+                      and lines N+1...N+P are rows in dataTable, where N is the row count of 
+                      instructionsTable and P is the row count of dataTable. 
+    @param binaryCommand The content of the node in the second column.
+    @param symbolicCommand The content of the node in the third column.
+*/
 public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryCommand, String symbolicCommand) {
   
-  if (lineNumber < instructionsTable.getRowCount()) {
+  if (lineNumber < 0)
+    return false;
+  else if (lineNumber < instructionsTable.getRowCount()) {
     ((DefaultTableModel)instructionsTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
     ((DefaultTableModel)instructionsTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
     return true;
@@ -837,33 +623,46 @@ public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryComm
 
 
 
-public boolean insertToDataTable(int[] data) {
+/** Functionality of this method is otherwise similar to updateInstructionsAndDataTableLine(int,int,String),
+    but this one doesn't change the third column. This version is useful during compilation, where
+    the contents of the third column are set, but the second column is empty at first and as the compilation
+    goes on, it's contents are updated.
+    @param lineNumber The line number of the row to update. Lines 0...N are rows in instructionsTable 
+                      and lines N+1...N+P are rows in dataTable, where N is the row count of 
+                      instructionsTable and P is the row count of dataTable. 
+    @param binaryCommand The content of the node in the second column.
+    @return True if the operation was successful.
+            False is there's was no such line as lineNumber.
+*/
+public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryCommand) {
   
-  int rows = data.length;
-  int instructionsTableRowCount = instructionsTable.getRowCount();
-  
-  DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
-  Object[][] tableContents = new Object[rows][3];
-  for (int i=0 ; i<rows ; i++) {
-    tableContents[i][0] = ""+ (i + instructionsTableRowCount);
-    tableContents[i][1] = ""+data[i];
-    tableContents[i][2] = "";
+  if (lineNumber < 0) 
+    return false;
+  else if (lineNumber < instructionsTable.getRowCount()) {
+    ((DefaultTableModel)instructionsTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
+    return true;
   }
-  dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
-  return true;
+  else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
+    lineNumber = lineNumber-instructionsTable.getRowCount();
+    ((DefaultTableModel)dataTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 
 
-/** Inserts data into data table. Parameter lineNum is inserted into the first
-    column and dataContents into the second. Note that the dimension of both
-    parameters must be same. Otherwise false is returned and no update done.
-    The third column will be empty.
-    @param lineNum Contents of the first column, preferrably the line numbers.
+/** Inserts data into data table. Parameter dataContents is inserted into the 
+    second column and the third column will be left empty. The first column holds
+    numbers, which are line numbers. They will be calculated so that the first 
+    element will be one greater than the last element of instructionsTable. Because
+    of this, this method should only be called AFTER calling insertToInstructionsTable()
+    or otherwise line numbers will not be correct. 
     @param dataContents Contents of the second column.
-    @return True if operation was successful.
 */
-public boolean insertToDataTable(String[] dataContents) {
+public void insertToDataTable(String[] dataContents) {
   
   int rows = dataContents.length;
   int instructionsTableRowCount = instructionsTable.getRowCount();
@@ -876,10 +675,29 @@ public boolean insertToDataTable(String[] dataContents) {
     tableContents[i][2] = "";
   }
   dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
-
-  return true;
 }
 
+
+
+/** Functionally this is exactly similar to insertToDataTable(String[]), but this
+    just takes int[] as parameter. This is here just for convenience, because
+    converting a String-table to int-table would require an extra for-loop.
+    @param data Contents of the second column.
+*/
+public void insertToDataTable(int[] data) {
+  
+  int rows = data.length;
+  int instructionsTableRowCount = instructionsTable.getRowCount();
+  
+  DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
+  Object[][] tableContents = new Object[rows][3];
+  for (int i=0 ; i<rows ; i++) {
+    tableContents[i][0] = ""+ (i + instructionsTableRowCount);
+    tableContents[i][1] = ""+data[i];
+    tableContents[i][2] = "";
+  }
+  dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
+}
 
 
 
@@ -893,7 +711,7 @@ public boolean insertToDataTable(String[] dataContents) {
                             set empty.
     @return Returns false if parameter is not of correct form. It MUST be of such 
             type where the size of the second dimension is precisely two. 
-            Returns true if operation was successful.
+            It can however be null, which means an empty symbol table.
 */
 public boolean insertSymbolTable(String[][] symbolsAndValues) {
   
@@ -906,7 +724,7 @@ public boolean insertSymbolTable(String[][] symbolsAndValues) {
   symbolsHashMap.clear();
   DefaultTableModel symbolTableModel = (DefaultTableModel)symbolTable.getModel(); 
   
-  
+  /* Null parameter equals to setting an empty symbol table. */
   if (symbolsAndValues == null) {
     symbolTableModel.setDataVector(null, symbolTableIdentifiers);
     return true;
@@ -1052,6 +870,9 @@ public void setEnabled(short command, boolean b) {
       inputField.setEnabled(b);
       enterNumberButton.setEnabled(b);
       break;
+    case CODE_TABLE_EDITING:
+      codeTable.setEnabled(b);
+      break;
   }
 }
 
@@ -1125,18 +946,27 @@ public void setSelected(short option, boolean b) {
 
 /** No table - used in setGUIView() method */
 public static final short NONE = 1;
-/** Code table - used in selectRow() and setGUIView() methods */
+/** Code table - used in centerToLine(), selectRow() and setGUIView() methods */
 public static final short CODE_TABLE = 2;
-/** Instructions and data table - used in selectRow() and setGUIView() methods */
+/** Instructions and data table - used in centerToLine(), selectRow() and setGUIView() methods */
 public static final short INSTRUCTIONS_AND_DATA_TABLE = 3;
 
 
 
+
+/** Sets the viewport of a certain table so that the given line is visible.
+    @param line Number of the line, that is wanted to be visible.
+    @param table The table. Valid values for this parameter are CODE_TABLE 
+                 and INSTRUCTIONS_AND_DATA_TABLE
+    @returns True if the operation was successful.
+             False if the line number was not valid - ie there's no such line
+             in the table or there's no such table.
+*/
 public boolean centerToLine(int line, short table) {
   
   switch (table) {
     case INSTRUCTIONS_AND_DATA_TABLE:
-      if ( line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) ) {
+      if ( line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) || line < 0) {
         return false;
       }
       
@@ -1231,18 +1061,291 @@ public void selectLine(int line, short table) {
   this.repaint();
 }
 
-    
-    
-private JScrollPane insertTableToScrollPane(JTable tbl) {
-  
-  JScrollPane tableScrollPane = new JScrollPane(tbl);
-  tableScrollPane.setPreferredSize(new Dimension(200, 200));
-  tableScrollPane.setMinimumSize(new Dimension(200, 60));
-  
-  return tableScrollPane;
+
+
+/** Changes the text which is shown in KBD-frame above the text field. If
+    the new text is an empty string, then the label will disappear.
+    @para newText The new text to be shown. If this is empty, then the label
+                  will disappear.
+*/
+public void changeTextInEnterNumberLabel(String newText) {
+  enterNumberLabel.setText(newText);
 }
 
 
+
+/** Updates all texts that are shown in GUI to be shown in current language. If
+    language hasn't changed since last call of this method, then nothing will
+    happen, but if it has, then all the text will appear in it. GUIBrain calls
+    this method in setLanguage() method.
+*/
+public void updateAllTexts() {
+  fileMenu.setText( new Message("File").toString() );
+  openFile.setText( new Message("Open").toString() );
+	compileMenuItem.setText( new Message("Compile").toString() );
+  runMenuItem.setText( new Message("Run").toString() );
+	continueMenuItem.setText( new Message("Continue").toString() );
+	continueToEndMenuItem.setText( new Message("Continue without pauses").toString() );
+	stopMenuItem.setText( new Message("Stop").toString() );
+	eraseMem.setText( new Message("Erase memory").toString() );
+	quit.setText( new Message("Exit").toString() );
+	optionsMenu.setText( new Message("Options").toString() );
+  setMemSize.setText( new Message("Set memory size").toString() );
+  helpMenu.setText( new Message("Help").toString() );
+  manual.setText( new Message("Manual").toString() );
+	about.setText( new Message("About").toString() );
+	setCompilingOptions.setText( new Message("Set compiling options").toString() );
+  setRunningOptions.setText( new Message("Set running options").toString() );
+  configureFileSystem.setText( new Message("Configure file system").toString() );
+  selectDefaultStdinFile.setText( new Message("Select default stdin file").toString() );
+  selectDefaultStdoutFile.setText( new Message("Select default stdout file").toString() );
+  setLanguage.setText( new Message("Set language").toString() );
+  selectLanguageFromFile.setText( new Message("Select from a file...").toString() );
+	
+	instructionsTableIdentifiers = new Object[] { new Message("Line").toString(),
+	                                              new Message("Numeric").toString(),
+	                                              new Message("Symbolic").toString() };
+  ((DefaultTableModel)instructionsTable.getModel()).setColumnIdentifiers(instructionsTableIdentifiers);
+	
+  dataTableIdentifiers = new Object[] { new Message("Line").toString(),
+	                                      new Message("Numeric").toString(),
+	                                      new Message("Symbolic").toString() };
+  ((DefaultTableModel)dataTable.getModel()).setColumnIdentifiers(dataTableIdentifiers);
+	
+	openFileButton.setToolTipText(new Message("Open a new file").toString());
+  compileButton.setToolTipText(new Message("Compile the opened file").toString());
+  runButton.setToolTipText(new Message("Run the loaded program").toString());
+  continueButton.setToolTipText(new Message("Continue current operation").toString());
+  continueToEndButton.setToolTipText(new Message("Continue current operation without pauses").toString());
+  stopButton.setToolTipText(new Message("Stop current operation").toString());
+  
+  enterNumberButton.setText(new Message("Enter").toString());
+  
+  ((TitledBorder)symbolTableScrollPane.getBorder()).setTitle( new Message("Symbol table").toString() );
+  ((TitledBorder)registersTableScrollPane.getBorder()).setTitle( new Message("Registers").toString() );
+  
+  
+  UIManager.put ("FileChooser.lookInLabelText", new Message("Look in:").toString());
+  UIManager.put ("FileChooser.lookInLabelMnemonic", new Message("Look in:").toString());
+  UIManager.put ("FileChooser.fileNameLabelText", new Message("File name:").toString());
+  UIManager.put ("FileChooser.fileNameLabelMnemonic", new Message("File name:").toString());
+  UIManager.put ("FileChooser.filesOfTypeLabelText", new Message("Files of type:").toString());
+  UIManager.put ("FileChooser.filesOfTypeLabelMnemonic", new Message("Files of type:").toString());
+  UIManager.put ("FileChooser.upFolderToolTipText", new Message("Up one level").toString());
+  UIManager.put ("FileChooser.upFolderAccessibleName", new Message("Up").toString());
+  UIManager.put ("FileChooser.homeFolderToolTipText", new Message("Desktop").toString());
+  UIManager.put ("FileChooser.homeFolderAccessibleName", new Message("Desktop").toString());
+  UIManager.put ("FileChooser.newFolderToolTipText", new Message("Create new folder").toString());
+  UIManager.put ("FileChooser.newFolderAccessibleName", new Message("New folder").toString());
+  UIManager.put ("FileChooser.listViewButtonToolTipText", new Message("List").toString());
+  UIManager.put ("FileChooser.listViewButtonAccessibleName", new Message("List").toString());
+  UIManager.put ("FileChooser.detailsViewButtonToolTipText", new Message("Details").toString());
+  UIManager.put ("FileChooser.detailsViewButtonAccessibleName", new Message("Details").toString()); 
+  UIManager.put ("FileChooser.cancelButtonText", new Message("Cancel").toString());
+  UIManager.put ("FileChooser.cancelButtonMnemonic", new Message("Cancel").toString());
+  UIManager.put ("FileChooser.openButtonText", new Message("Open").toString());
+  UIManager.put ("FileChooser.openButtonMnemonic", new Message("Open").toString());
+  UIManager.put ("FileChooser.acceptAllFileFilterText", new Message("All files").toString());
+  UIManager.put ("FileChooser.FileChooser.openButtonText", new Message("Open").toString());
+  UIManager.put ("FileChooser.openButtonToolTipText", new Message("Open the selected file").toString());
+  
+  selectDefaultStdinFileDialog.updateUI();
+  selectDefaultStdoutFileDialog.updateUI();
+  
+  openFileDialog.setDialogTitle( new Message("Open a new file").toString() );
+  selectDefaultStdinFileDialog.setDialogTitle( new Message("Select default stdin file").toString() );
+  selectDefaultStdoutFileDialog.setDialogTitle( new Message("Select default stdout file").toString() );
+  
+  setRunningOptionsDialog.updateAllTexts();
+  setCompilingOptionsDialog.updateAllTexts();
+  aboutDialog.updateAllTexts();
+  
+  
+  UIManager.put("OptionPane.yesButtonText", new Message("Yes").toString());
+  UIManager.put("OptionPane.noButtonText", new Message("No").toString());
+    
+  invalidate();
+  validate();
+  repaint();
+}
+
+
+
+/** Shows an error in a message dialog.
+    @ param errorMsg The message to be shown.
+*/
+public void showError(String errorMsg) {
+  JOptionPane.showMessageDialog(null, errorMsg, new Message("Error").toString(), JOptionPane.ERROR_MESSAGE);
+}
+
+
+
+// Private methods. ---------------------------------------------------
+
+
+
+/** This is just a private assistance method for the creator. This prepares
+    all the graphical tables,lists and such as well as puts them into the
+    main frame. This won't be accessed but once in the creator method.
+*/
+private void initGUI() {
+  
+  codeTable = new JTableX(new DefaultTableModel(codeTableIdentifiers ,0));
+  codeTable.setFont(tableFont);
+  codeTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+  codeTable.setEnabled(false);
+  codeTable.setShowGrid(false);
+  ((DefaultCellEditor)codeTable.getDefaultEditor(codeTable.getColumnClass(0))).addCellEditorListener( new CellEditorListener() {
+     public void editingCanceled(ChangeEvent e) {}
+     
+     public void editingStopped(ChangeEvent e) {
+       codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getMaxTextLengthInColumn(0));   
+     }
+   });
+  
+  ((DefaultCellEditor)codeTable.getDefaultEditor(codeTable.getColumnClass(0))).getComponent().setFont(tableFont);
+  codeTableScrollPane = new JScrollPane(codeTable);
+  codeTableScrollPane.setForeground(Color.black);
+    
+  instructionsTable = new JTableX(new DefaultTableModel(instructionsTableIdentifiers,0));
+  instructionsTable.setFont(tableFont);
+  instructionsTable.setEnabled(false);
+  instructionsTable.getColumnModel().getColumn(0).setMinWidth(20);
+  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+  instructionsTableScrollPane = new JScrollPane(instructionsTable);
+  
+  dataTable = new JTableX(new DefaultTableModel(dataTableIdentifiers,0));
+  dataTable.setEnabled(false);
+  dataTable.setFont(tableFont);
+  dataTable.setRowSelectionAllowed(false);
+  dataTableScrollPane = new JScrollPane(dataTable);
+  
+  dataTable.setDoubleBuffered(true);
+  dataTableScrollPane.setDoubleBuffered(true);
+  
+  dataAndInstructionsTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
+  dataAndInstructionsTableSplitPane.setTopComponent(instructionsTableScrollPane);
+  dataAndInstructionsTableSplitPane.setBottomComponent(dataTableScrollPane);
+  dataAndInstructionsTableSplitPane.setOneTouchExpandable(true);
+  
+  statusBar = new JLabel();
+  commentList = new JList(new DefaultListModel());
+  ((DefaultListModel)commentList.getModel()).ensureCapacity(COMMENT_LIST_SIZE);
+  
+  symbolTable = new JTableX(new DefaultTableModel(new String[] {"",""}, 0));
+  symbolTable.setFont(tableFont);
+  symbolTable.setRowSelectionAllowed(false);
+  symbolTableScrollPane = new JScrollPane(symbolTable);
+  symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
+  symbolTableScrollPane.setMinimumSize(new Dimension(200, 150));
+ 
+  String[][] regTableContents = new String[][] 
+    { {"R0",""}, {"R1",""}, {"R2",""}, {"R3",""}, {"R4",""}, 
+      {"R5",""}, {"SP",""}, {"FP",""}, {"PC",""}};
+  
+  registersTable = new JTableX(new DefaultTableModel(regTableContents, registersTableIdentifiers));
+  registersTable.setEnabled(false);
+  registersTable.setFont(tableFont);
+  registersTable.setRowSelectionAllowed(false);
+  (registersTable.getColumnModel().getColumn(0)).setPreferredWidth(15);
+  registersTableScrollPane = new JScrollPane(registersTable);
+  registersTableScrollPane.setPreferredSize(new Dimension(150, 150));
+  registersTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
+  
+  ioPanel = new JPanel(new BorderLayout());
+  inputPanel = new JPanel(new BorderLayout());
+  outputPanel = new JPanel(new BorderLayout());
+ 
+  outputTextArea = new JTextArea(1,7);
+  outputTextArea.setLineWrap(true);
+  outputTextArea.setWrapStyleWord(true);
+  outputTextArea.setEditable(false);
+  
+  enterNumberLabel = new JLabel("");
+  enterNumberLabel.setSize(new Dimension(100,100));
+  
+  inputField = new JTextField(11);
+  
+  enterNumberButton = new JButton("Enter");
+
+  outputScrollPane = new JScrollPane(outputTextArea);
+  outputScrollPane.setPreferredSize(new Dimension(30,300));
+  outputScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "CRT"));
+  outputPanel.add(outputScrollPane, BorderLayout.CENTER);
+  
+  inputPanel.add(enterNumberLabel, BorderLayout.NORTH);
+  inputPanel.add(inputField, BorderLayout.CENTER);
+  inputPanel.add(enterNumberButton, BorderLayout.SOUTH);
+  inputPanel.setBorder(BorderFactory.createTitledBorder(blacklined, "KBD"));
+  
+  ioPanel.add(outputPanel, BorderLayout.CENTER);
+  ioPanel.add(inputPanel, BorderLayout.SOUTH);
+  
+  upperRightPanel = new JPanel(new BorderLayout());
+  upperRightPanel.add(registersTableScrollPane, BorderLayout.EAST);
+  upperRightPanel.add(symbolTableScrollPane, BorderLayout.CENTER);
+  upperRightPanel.add(ioPanel, BorderLayout.WEST);
+  
+  commentListScrollPane = new JScrollPane(commentList);
+  commentListScrollPane.setPreferredSize(new Dimension(1,50));
+  commentList.setDoubleBuffered(true);
+  commentListScrollPane.setDoubleBuffered(true);
+  
+  commentList.addListSelectionListener( new ListSelectionListener() {
+    public void valueChanged( ListSelectionEvent e ) {
+      JList src = (JList)(e.getSource());
+      String str = (String)src.getSelectedValue();
+      
+      Integer line = null;
+      int i = 1;
+      while (true) {
+        try {
+          line = new Integer(str.substring(0,i));
+          
+        }
+        catch (NumberFormatException excp) {
+          break;
+        }
+        catch (IndexOutOfBoundsException excp2) {
+          break;
+        }
+        i++;
+      }
+      
+      if (line != null) {
+        if (activeView == 3) {
+          centerToLine(line.intValue(),INSTRUCTIONS_AND_DATA_TABLE);
+        }
+      }
+    }
+  } );
+  
+  rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, commentListScrollPane);
+  rightSplitPane.setResizeWeight(0.5);
+  
+  
+  leftPanel = new JPanel(new BorderLayout());
+  mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightSplitPane);
+  mainSplitPane.setResizeWeight(0.5);
+  
+  getContentPane().setLayout( new BorderLayout() );
+  getContentPane().add(mainSplitPane, BorderLayout.CENTER);
+  getContentPane().add( makeToolBar() , BorderLayout.NORTH);
+  
+  statusBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+  getContentPane().add(statusBar, BorderLayout.SOUTH);
+  
+  disable(INPUT_FIELD);
+  setGUIView(1);
+  enterNumberButton.addActionListener(enterNumberButtonActionListener);
+}
+
+
+
+
+/** Inserts the menu into main window.
+    @param destFrame The frame the menu bar will be inserted.
+*/
 private void insertMenuBar(JFrame destFrame) {
 
   JMenuBar  mainMenuBar = new JMenuBar();
@@ -1273,8 +1376,6 @@ private void insertMenuBar(JFrame destFrame) {
   selectDefaultStdinFile     = configureFileSystem.add("Select default stdin file");
   selectDefaultStdoutFile    = configureFileSystem.add("Select default stdout file");
   optionsMenu.add(configureFileSystem);
-  
-  
   
   setCompilingOptions     = optionsMenu.add("Set compiling options");
   setRunningOptions     = optionsMenu.add("Set running options");
@@ -1319,122 +1420,173 @@ private void insertMenuBar(JFrame destFrame) {
 	setMemTo32768.addActionListener(new SetMemSizeActionListener(15));
 	setMemTo65536.addActionListener(new SetMemSizeActionListener(16));
 	selectLanguageFromFile.addActionListener(selectLanguageFromFileActionListener);
+	about.addActionListener(aboutActionListener);
   
 }
 
 
 
-
-/** Updates all texts that are shown in GUI to be shown in current language. If
-    language hasn't changed since last call of this method, then nothing will
-    happen, but if it has, then all the text will appear in it. GUIBrain calls
-    this method in setLanguage() method.
+/** This creates the toolbar of this program and returns it.
 */
-public void updateAllTexts() {
-  fileMenu.setText( new Message("File").toString() );
-  openFile.setText( new Message("Open").toString() );
-	compileMenuItem.setText( new Message("Compile").toString() );
-  runMenuItem.setText( new Message("Run").toString() );
-	continueMenuItem.setText( new Message("Continue").toString() );
-	continueToEndMenuItem.setText( new Message("Continue without pauses").toString() );
-	stopMenuItem.setText( new Message("Stop").toString() );
-	eraseMem.setText( new Message("Erase memory").toString() );
-	quit.setText( new Message("Exit").toString() );
-	optionsMenu.setText( new Message("Options").toString() );
-  setMemSize.setText( new Message("Set memory size").toString() );
-  helpMenu.setText( new Message("Help").toString() );
-  manual.setText( new Message("Manual").toString() );
-	about.setText( new Message("About").toString() );
-	setCompilingOptions.setText( new Message("Set compiling options").toString() );
-  setRunningOptions.setText( new Message("Set running options").toString() );
-  configureFileSystem.setText( new Message("Configure file system").toString() );
-  selectDefaultStdinFile.setText( new Message("Select default stdin file").toString() );
-  selectDefaultStdoutFile.setText( new Message("Select default stdout file").toString() );
-  setLanguage.setText( new Message("Set language").toString() );
-  selectLanguageFromFile.setText( new Message("Select from a file...").toString() );
-	
-  openFileButton.setToolTipText(new Message("Open a new file").toString());
-  compileButton.setToolTipText(new Message("Compile the opened file").toString());
-  runButton.setToolTipText(new Message("Run the loaded program").toString());
-  continueButton.setToolTipText(new Message("Continue current operation").toString());
-  continueToEndButton.setToolTipText(new Message("Continue current operation without pauses").toString());
-  stopButton.setToolTipText(new Message("Stop current operation").toString());
+private JToolBar makeToolBar() {
   
-  enterNumberButton.setText(new Message("Enter").toString());
+  JToolBar toolbar;
   
-  ((TitledBorder)symbolTableScrollPane.getBorder()).setTitle( new Message("Symbol table").toString() );
-  ((TitledBorder)registersTableScrollPane.getBorder()).setTitle( new Message("Registers").toString() );
+  toolbar = new JToolBar("Toolbar");
   
-  openFileDialog.setDialogTitle( new Message("Open a new file").toString() );
-  openFileDialog.setApproveButtonText(new Message("Open").toString());
-  openFileDialog.setApproveButtonToolTipText(new Message("Open the selected file").toString());
+  //System.out.println(getClass().getClassLoader().getResource("etc/open24.gif"));
   
-  UIManager.put ("FileChooser.lookInLabelText", new Message("Look in:").toString());
-  UIManager.put ("FileChooser.lookInLabelMnemonic", new Message("Look in:").toString());
-  UIManager.put ("FileChooser.fileNameLabelText", new Message("File name:").toString());
-  UIManager.put ("FileChooser.fileNameLabelMnemonic", new Message("File name:").toString());
-  UIManager.put ("FileChooser.filesOfTypeLabelText", new Message("Files of type:").toString());
-  UIManager.put ("FileChooser.filesOfTypeLabelMnemonic", new Message("Files of type:").toString());
-  UIManager.put ("FileChooser.upFolderToolTipText", new Message("Up one level").toString());
-  UIManager.put ("FileChooser.upFolderAccessibleName", new Message("Up").toString());
-  UIManager.put ("FileChooser.homeFolderToolTipText", new Message("Desktop").toString());
-  UIManager.put ("FileChooser.homeFolderAccessibleName", new Message("Desktop").toString());
-  UIManager.put ("FileChooser.newFolderToolTipText", new Message("Create new folder").toString());
-  UIManager.put ("FileChooser.newFolderAccessibleName", new Message("New folder").toString());
-  UIManager.put ("FileChooser.listViewButtonToolTipText", new Message("List").toString());
-  UIManager.put ("FileChooser.listViewButtonAccessibleName", new Message("List").toString());
-  UIManager.put ("FileChooser.detailsViewButtonToolTipText", new Message("Details").toString());
-  UIManager.put ("FileChooser.detailsViewButtonAccessibleName", new Message("Details").toString()); 
-  UIManager.put ("FileChooser.cancelButtonText", new Message("Cancel").toString());
-  UIManager.put ("FileChooser.cancelButtonMnemonic", new Message("Cancel").toString());
-  UIManager.put ("FileChooser.openButtonText", new Message("Open").toString());
-  UIManager.put ("FileChooser.openButtonMnemonic", new Message("Open").toString());
-  UIManager.put ("FileChooser.acceptAllFileFilterText", new Message("All files").toString());
+  openFileButton = new JButton();
+  try {
+    openFileButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/open24.gif"), "Open file")
+    );
+  }
+  catch (Exception e) {
+  }
+  openFileButton.setToolTipText("Open a file");
+  openFileButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(openFileButton);
   
-  openFileDialog.updateUI();
-  selectDefaultStdinFileDialog.updateUI();
-  selectDefaultStdoutFileDialog.updateUI();
+  toolbar.addSeparator();
+  
+  compileButton = new JButton();
+  try {  
+    compileButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/compile24.gif"), "Compile")
+    );
+  }
+  catch (Exception e) {
+  }
+  compileButton.setToolTipText("Compile the program");
+  compileButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(compileButton);
+  
+  runButton = new JButton();
+  try {  
+    runButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/run24.gif"), "Run")
+    );
+  }
+  catch (Exception e) {
+  }
+  runButton.setToolTipText("Run the program");
+  runButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(runButton);
+  
+  continueButton = new JButton();
+  try {  
+    continueButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/StepForward24.gif"), "Continue")
+    );
+  }
+  catch (Exception e) {
+  }
+  continueButton.setToolTipText("Continue operation");
+  continueButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(continueButton);
+  
+  continueToEndButton = new JButton();
+  try {  
+    continueToEndButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/FastForward24.gif"), "Continue w/o pauses")
+    );
+  }
+  catch (Exception e) {
+  }
+  continueToEndButton.setToolTipText("Continue operation without pauses");
+  continueToEndButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(continueToEndButton);
+  
+  stopButton = new JButton();
+  try {  
+    stopButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Stop24.gif"), "Stop")
+    );
+  }
+  catch (Exception e) {
+  }
+  stopButton.setToolTipText("Stop the current operation");
+  stopButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(stopButton);
+  
+  toolbar.addSeparator();
   
   
-  selectDefaultStdinFileDialog.setDialogTitle( new Message("Select default stdin file").toString() );
-  //selectDefaultStdinFileDialog.setApproveButtonText(new Message("Open").toString());
-  selectDefaultStdinFileDialog.setApproveButtonToolTipText(new Message("Open the selected file").toString());
+  lineByLineToggleButton = new JToggleButton(); 
+  try {  
+    lineByLineToggleButton = new JToggleButton(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/RowInsertAfter24.gif"), "Run line by line")
+    );
+  }
+  catch (Exception e) {
+  }
+  lineByLineToggleButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(lineByLineToggleButton);
   
+  showCommentsToggleButton = new JToggleButton(); 
+  try {  
+    showCommentsToggleButton = new JToggleButton(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/History24.gif"), "Show comments")
+    );
+  }
+  catch (Exception e) {
+  }
+  showCommentsToggleButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(showCommentsToggleButton);
+   
+  showAnimationToggleButton = new JToggleButton(); 
+  try {  
+    showAnimationToggleButton = new JToggleButton(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Movie24.gif"),"Show comments")
+    );
+  }
+  catch (Exception e) {
+  }
+  showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(showAnimationToggleButton);
   
+  toolbar.setFloatable(false);
   
-  selectDefaultStdoutFileDialog.setDialogTitle( new Message("Select default stdout file").toString() );
-  selectDefaultStdoutFileDialog.setApproveButtonText(new Message("Open").toString());
-  selectDefaultStdoutFileDialog.setApproveButtonToolTipText(new Message("Open the selected file").toString());
-  
-  setRunningOptionsDialog.updateAllTexts();
-  setCompilingOptionsDialog.updateAllTexts();
-  
-  
-  UIManager.put("OptionPane.yesButtonText", new Message("Yes").toString());
-  UIManager.put("OptionPane.noButtonText", new Message("No").toString());
-  
-  
-  
-  invalidate();
-  validate();
-  repaint();
+  openFileButton.addActionListener(openCommandActionListener);
+  compileButton.addActionListener(compileCommandActionListener);
+  runButton.addActionListener(runCommandActionListener);
+  continueButton.addActionListener(continueCommandActionListener);
+  continueToEndButton.addActionListener(continueToEndCommandActionListener);
+  stopButton.addActionListener(stopCommandActionListener);
+  lineByLineToggleButton.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+      boolean b = ((JToggleButton)e.getSource()).isSelected();
+      guibrain.menuSetRunningOption(GUIBrain.LINE_BY_LINE, b);
+    }
+  });
+  showCommentsToggleButton.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+      boolean b = ((JToggleButton)e.getSource()).isSelected();
+      guibrain.menuSetRunningOption(GUIBrain.COMMENTED, b);
+    }
+  });
+  showAnimationToggleButton.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+      boolean b = ((JToggleButton)e.getSource()).isSelected();
+      guibrain.menuSetRunningOption(GUIBrain.ANIMATED, b);
+    }
+  });
+ 
+  return toolbar;
 }
 
 
-public void showError(String errorMsg) {
-  JOptionPane.showMessageDialog(null, errorMsg, new Message("Error").toString(), JOptionPane.ERROR_MESSAGE);
-}
 
-
+/* Next comes ActionListeners that are used with buttons and menuitems in this
+   program. Their names are informative enough to tell which objects they are 
+   intended to listen.
+*/
 
 private ActionListener openCommandActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {
-	  
-	  openFileDialog.setFileFilter(B91FileFilter);
-	  openFileDialog.setFileFilter(K91FileFilter);
-	  openFileDialog.setAcceptAllFileFilterUsed(false);
-
-		int rv = openFileDialog.showOpenDialog(null);
+	 
+		int rv = openFileDialog.showOpenDialog(thisGUI);
 		if (rv == JFileChooser.APPROVE_OPTION) {
 		   new GUIThreader(GUIThreader.TASK_OPEN_FILE, guibrain, openFileDialog.getSelectedFile()).run();
 		}
@@ -1443,10 +1595,8 @@ private ActionListener openCommandActionListener = new ActionListener() {
 
 private ActionListener selectStdinFileActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {						
-    selectDefaultStdinFileDialog.resetChoosableFileFilters();
-	  selectDefaultStdinFileDialog.setAcceptAllFileFilterUsed(true);
 
-		int rv = selectDefaultStdinFileDialog.showOpenDialog(null);
+		int rv = selectDefaultStdinFileDialog.showOpenDialog(thisGUI);
 		if (rv == JFileChooser.APPROVE_OPTION) {
 		  guibrain.menuSetStdin(selectDefaultStdinFileDialog.getSelectedFile());
 		}
@@ -1455,10 +1605,8 @@ private ActionListener selectStdinFileActionListener = new ActionListener() {
 
 private ActionListener selectStdoutFileActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {						
-    selectDefaultStdoutFileDialog.resetChoosableFileFilters();
-	  selectDefaultStdoutFileDialog.setAcceptAllFileFilterUsed(true);
-
-		int rv = selectDefaultStdoutFileDialog.showOpenDialog(null);
+    
+		int rv = selectDefaultStdoutFileDialog.showOpenDialog(thisGUI);
 		if (rv == JFileChooser.APPROVE_OPTION) {
 		  JOptionPane confirmDialog = new JOptionPane();
 		  String[] param = { (String)UIManager.get("OptionPane.yesButtonText"), 
@@ -1542,13 +1690,19 @@ private ActionListener setLanguageActionListener = new ActionListener() {
 
 private ActionListener selectLanguageFromFileActionListener = new ActionListener() {
   public void actionPerformed(ActionEvent e) {
-    openFileDialog.resetChoosableFileFilters();
-	  openFileDialog.setAcceptAllFileFilterUsed(true);
+    //openFileDialog.resetChoosableFileFilters();
+	  //openFileDialog.setAcceptAllFileFilterUsed(true);
 
-		int rv = openFileDialog.showOpenDialog(null);
+		int rv = selectLanguageFileDialog.showOpenDialog(thisGUI);
 		if (rv == JFileChooser.APPROVE_OPTION) {
-		   guibrain.menuSetLanguage(openFileDialog.getSelectedFile());
+		   guibrain.menuSetLanguage(selectLanguageFileDialog.getSelectedFile());
 		}
+	} 
+};
+
+private ActionListener aboutActionListener = new ActionListener() {
+  public void actionPerformed(ActionEvent e) {
+    aboutDialog.setVisible(true);
 	} 
 };
 
@@ -1567,6 +1721,9 @@ private ActionListener enterNumberButtonActionListener = new ActionListener() {
   }
 };
 
+/* Instances of this class will be created for Options -> Set Memory Size
+   menu's menuitems.
+*/
 private class SetMemSizeActionListener implements ActionListener {
   private int memsize;
   public SetMemSizeActionListener(int memsize) {
@@ -1599,7 +1756,7 @@ private FileFilter B91FileFilter = new FileFilter() {
   }
   
   public String getDescription() {
-    return "B91 binary";
+    return new Message("B91 binary").toString();
   }
 };
 
@@ -1623,13 +1780,31 @@ private FileFilter K91FileFilter = new FileFilter() {
   }
   
   public String getDescription() {
-    return "K91 source";
+    return new Message("K91 source").toString();
   }
 };
 
+private FileFilter classFileFilter = new FileFilter() {
+  public boolean accept(File f) {
+    if (f.isDirectory()) {
+      return true;
+    }
 
+    String extension = GUIBrain.getExtension(f);
+    if (extension != null) {
+      if (extension.equals("class")) {
+        return true;
+      } 
+      else {
+        return false;
+      }
+    }
+    return false;
+  }
+  
+  public String getDescription() {
+    return new Message("Class file").toString();
+  }
+};
 
-public void changeTextInEnterNumberLabel(String newText) {
-  enterNumberLabel.setText(newText);
-}
-}
+} 

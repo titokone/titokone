@@ -7,35 +7,37 @@ import javax.swing.event.*;
 
 
 
-public class GUICompileSettingsDialog extends JDialog {
+
+public class GUICompileSettingsDialog extends GUISettingsDialog {
   
-public JButton applyButton, closeButton;
 public JCheckBox lineByLineCheckBox;
 public JCheckBox showCommentsCheckBox;
 	  
 public static String APPLY = "GUICompileSettingsDialog_Apply";
 
 
+ 
 public GUICompileSettingsDialog(Frame ownerFrame, boolean modal) {
 	
 	super(ownerFrame, modal);
 	setTitle("Set compiling options");
-	setSize(250,180);
+	//setSize(250,180);
 	
 	applyButton = new JButton("Apply");
 	closeButton = new JButton("Close");
 	
 	applyButton.setActionCommand(APPLY);
 	applyButton.addActionListener((GUI)ownerFrame);
-	closeButton.addActionListener( new ActionListener() {
-		public void actionPerformed( ActionEvent e ) {
-			setVisible(false);
-		} 
-	} );
+	applyButton.addActionListener(applyButtonActionListener);
+	 
+	closeButton.addActionListener(closeButtonActionListener);
 	
+	this.addComponentListener(settingsDialogListener);
 	
 	lineByLineCheckBox = new JCheckBox("Compile line by line");
+	lineByLineCheckBox.addChangeListener( stateChangeListener );
 	showCommentsCheckBox = new JCheckBox("Show comments");
+	showCommentsCheckBox.addChangeListener( stateChangeListener );
 	
 	getContentPane().setLayout( new BorderLayout() );
 	
@@ -66,6 +68,9 @@ public void updateAllTexts() {
   closeButton.setText(new Message("Close").toString());
   pack();
 }
+
+
+
 
 }
 

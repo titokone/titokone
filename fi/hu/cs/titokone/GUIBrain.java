@@ -14,11 +14,13 @@ package fi.hu.cs.titokone;
 import java.util.Locale;
 import java.io.File;
 import java.util.Hashtable;
-//import java.io.*;
 import java.io.IOException;
 import java.util.logging.Logger;
-import fi.hu.cs.ttk91.TTK91OutOfMemory;
-import fi.hu.cs.ttk91.*;
+import fi.hu.cs.ttk91.TTK91NoStdInData;
+import fi.hu.cs.ttk91.TTK91AddressOutOfBounds;
+import fi.hu.cs.ttk91.TTK91CompileException;
+import fi.hu.cs.ttk91.TTK91RuntimeException;
+import fi.hu.cs.ttk91.TTK91NoKbdData;
 import java.text.ParseException;
 import java.util.LinkedList;
 import java.net.URI;
@@ -204,7 +206,7 @@ public GUIBrain(GUI gui) {
   
   if ( availableLanguages.containsKey(language) ) {
     Translator.setLocale((Locale)availableLanguages.get(language));
-    gui.updateAllTexts();
+    //gui.updateAllTexts();
   }
   
   
@@ -216,183 +218,6 @@ public GUIBrain(GUI gui) {
 }
 
   
-
-private void getCurrentSettings() throws IOException {
-  String defaultStdinFile = System.getProperty("user.dir") + "/stdin";
-  String defaultStdinPath = "absolute";
-  String defaultStdoutFile = System.getProperty("user.dir") + "/stdout";
-  String defaultStdoutPath = "absolute";
-  String defaultStdoutUse = "overwrite";
-  int defaultMemorySize = Control.DEFAULT_MEMORY_SIZE;
-  String defaultUILanguage = "English";
-  int defaultRunningMode = 0;
-  int defaultCompilingMode = 0;
-  
-  URI fileURI;
-  
-  try {
-    fileURI = new URI( getClass().getClassLoader().getResource(programPath).toString() + "etc/settings.cfg" );
-    settingsFile = new File(fileURI);
-  }
-  catch (Exception e) {
-    System.out.println("Main path not found!...exiting");
-    System.exit(0);
-  }
-  
-    
-  
-  if (settingsFile.exists() == false) {
-    settingsFile.createNewFile(); // throws IOException
-  }
-  
-  String settingsFileContents;
-  try {
-     settingsFileContents = control.loadSettingsFileContents(settingsFile);
-  }
-  catch (IOException e) {
-    System.out.println("Error while reading settings file.");
-    throw e;
-  }
-    
-  try {
-    //System.out.println( control.loadSettingsFileContents(settingsFile) );
-    currentSettings = new Settings( control.loadSettingsFileContents(settingsFile) );
-  }
-  catch (Exception e) {
-    System.out.println("Parse error in settings file.");
-    try {
-      currentSettings = new Settings(null);
-    }
-    catch (ParseException parseError) {
-      System.out.println("This error shouldn't occur!");
-    }
-  }
-  
-  
-  
-  try {
-    if (currentSettings.getStrValue(Settings.STDIN_PATH) == null)
-      currentSettings.setValue(Settings.STDIN_PATH, defaultStdinPath);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.STDIN_PATH, defaultStdinPath);
-  }
-  
-  try {
-    if (currentSettings.getStrValue(Settings.DEFAULT_STDIN) == null)
-      currentSettings.setValue(Settings.DEFAULT_STDIN, defaultStdinFile);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.DEFAULT_STDIN, defaultStdinFile);
-  }
-  
-  try {
-    if (currentSettings.getStrValue(Settings.STDOUT_PATH) == null) 
-      currentSettings.setValue(Settings.STDOUT_PATH, defaultStdoutPath);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.STDOUT_PATH, defaultStdoutPath);
-  }
-  
-  try {
-    if (currentSettings.getStrValue(Settings.DEFAULT_STDOUT) == null)
-      currentSettings.setValue(Settings.DEFAULT_STDOUT, defaultStdoutFile);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.DEFAULT_STDOUT, defaultStdoutFile);
-  }
-  
-  try {
-    if (currentSettings.getStrValue(Settings.STDOUT_USE) == null)
-      currentSettings.setValue(Settings.STDOUT_USE, defaultStdoutUse);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.STDOUT_USE, defaultStdoutUse);
-  }
-  
-  try {
-    currentSettings.getIntValue(Settings.MEMORY_SIZE);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.MEMORY_SIZE, defaultMemorySize);
-  }
-  
-  try {
-    if (currentSettings.getStrValue(Settings.UI_LANGUAGE) == null) 
-      currentSettings.setValue(Settings.UI_LANGUAGE, defaultUILanguage);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.UI_LANGUAGE, defaultUILanguage);
-  }
-    
-  try {
-    currentSettings.getIntValue(Settings.RUN_MODE);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.RUN_MODE, defaultRunningMode);
-  }
-  
-  try {
-    currentSettings.getIntValue(Settings.COMPILE_MODE);
-  }
-  catch (Exception e) {
-    currentSettings.setValue(Settings.COMPILE_MODE, defaultCompilingMode);
-  }
-}
-
-  
-private LoadInfo load() {
-  
-  LoadInfo loadinfo;
-  try {
-    loadinfo = control.load();
-  }
-  catch (TTK91AddressOutOfBounds e) { 
-    gui.showError(new Message("Titokone out of memory").toString());
-    return null;
-  }
-  catch (TTK91NoStdInData e) {
-    File[] appDefs = control.getApplicationDefinitions();
-    String[] stdinFilePath = { getCurrentDefaultStdinFile().getPath() };
-    if ( appDefs[Control.DEF_STDIN_POS] != null ) {
-      stdinFilePath[0] = appDefs[Control.DEF_STDIN_POS].getPath();
-    }
-    
-    gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
-    return null;
-  }
-  
-  return loadinfo;
-  
-}
-
-
-
-private void loadAndUpdateGUI() {
-  LoadInfo loadinfo = load();
- 
-  if (loadinfo != null) {
-    gui.updateStatusBar(loadinfo.getStatusMessage());
-    gui.updateReg(GUI.SP, loadinfo.getSP());
-    gui.updateReg(GUI.FP, loadinfo.getFP());
-     
-    String[][] symbolsAndValues = loadinfo.getSymbolTable();
-    gui.insertSymbolTable(symbolsAndValues);
-      
-    int binaryCommands[] = loadinfo.getBinaryCommands();
-    String symbolicCommands[] = loadinfo.getSymbolicCommands();
-    int data[] = loadinfo.getData();
-    
-    gui.insertToInstructionsTable(binaryCommands, symbolicCommands);
-    gui.insertToDataTable(data);
-    
-    gui.addComment(loadinfo.getComments());
-    
-    currentState = B91_NOT_RUNNING;
-    setGUICommandsForCurrentState();
-    gui.setGUIView(3);
-  }
-}
 
 
 
@@ -556,7 +381,7 @@ public void menuRun() {
       }
     }
     
-    Integer[] newRegisterValues = runinfo.getRegisters();
+    int[] newRegisterValues = runinfo.getRegisters();
     gui.updateReg(GUI.R0, newRegisterValues[0]);
     gui.updateReg(GUI.R1, newRegisterValues[1]);
     gui.updateReg(GUI.R2, newRegisterValues[2]);
@@ -634,7 +459,7 @@ public void menuCompile() {
   /* This will be set to true once the compilation succeeds. The value
      of this variable will be used in case of an interrupted compilation
      or if an error occurs, when menuCompile() has to decide whether to
-     change back to pre-compilation-started state.
+     change back to pre-compilation-started state or not.
   */
   boolean compilingCompleted = false;
   
@@ -726,7 +551,7 @@ public void menuCompile() {
     else {
       synchronized(this) {
         try {
-          wait(700);
+          wait(700); // TODO: Muista muuttaa pienemmäksi lopulliseen versioon.
         }
         catch(InterruptedException e) {
           System.out.println("InterruptedException in menuRun()");
@@ -742,6 +567,12 @@ public void menuCompile() {
   }
   
   if (compilingCompleted == true) {
+    try {
+      control.saveBinary();
+    }
+    catch (IOException e) {
+      System.out.println(e);
+    }
     gui.resetAll();
     loadAndUpdateGUI();
   }
@@ -786,22 +617,27 @@ public void menuExit() {
 
 
 
-
+/** This method corresponds to the menu option Option -> Set language.
+    If the chosen language is one in the list, then this version is called.
+    @param language Name of the language. This should be one of those get
+                    from getAvailableLanguages() method.
+*/
 public void menuSetLanguage(String language) { 
   
  if (availableLanguages.containsKey(language)) {
-    //System.out.println((Locale)availableLanguages.get(language));
     Translator.setLocale((Locale)availableLanguages.get(language));
-    //gui.setLocale((Locale)availableLanguages.get(language));
     currentSettings.setValue(Settings.UI_LANGUAGE, language);
     saveSettings();
-    gui.updateAllTexts();
-    
+    gui.updateAllTexts(); 
   }
 }
 
 
-
+/** This method correspods as well to the menu option Option -> Set language.
+    This version is called, if user has chosen an external language file.
+    @param languageFile The language file. This must be class-file that
+                        extends ListResourceBundle.
+*/
 public void menuSetLanguage(File languageFile) { 
   
  if (languageFile.exists()) {
@@ -820,7 +656,10 @@ public void menuSetLanguage(File languageFile) {
 }
 
 
-
+/** This method corresponds to the menu option Option -> Set Default Stdin File.
+    It informs Control about the new default stdin file and saves it to 
+    settingsFile.
+*/
 public void menuSetStdin(File stdinFile) {
   try {
     control.setDefaultStdIn(stdinFile);
@@ -839,6 +678,10 @@ public void menuSetStdin(File stdinFile) {
 
 
 
+/** This method corresponds to the menu option Option -> Set Default Stdout File.
+    It informs Control about the new default stdout file and saves it to 
+    settingsFile.
+*/
 public void menuSetStdout(File stdoutFile, boolean append) {
   
   if (append == true) {
@@ -863,7 +706,8 @@ public void menuSetStdout(File stdoutFile, boolean append) {
 }
 
 
-
+/** This method corresponds to the menu option Option -> Set Memory Size.
+*/
 public void menuSetMemorySize(int newSize) {
   try { 
     control.changeMemorySize(newSize);
@@ -878,6 +722,16 @@ public void menuSetMemorySize(int newSize) {
 
 
 
+/** This methods refreshes GUI so that it shows running options as they
+    are declared currently.
+*/
+public void refreshRunningOptions() {
+  int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
+  gui.setSelected(GUI.OPTION_RUNNING_PAUSED, (runmode & PAUSED) != 0);
+  gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, (runmode & COMMENTED) != 0);
+  gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, (runmode & ANIMATED) != 0); 
+}
+
 public void menuSetRunningOption(int option,boolean b) {
   int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
   
@@ -891,8 +745,8 @@ public void menuSetRunningOption(int option,boolean b) {
     runmode += option;
   }
   
-  currentSettings.setValue(Settings.RUN_MODE, runmode);
   saveSettings();
+  currentSettings.setValue(Settings.RUN_MODE, runmode);
   
   switch (option) {
     case LINE_BY_LINE: // Synonym for case PAUSED:
@@ -908,8 +762,20 @@ public void menuSetRunningOption(int option,boolean b) {
 }
 
 
+/** This methods refreshes GUI so that it shows compiling options as they
+    are declared currently.
+*/
+public void refreshCompilingOptions() {
+  int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
+  gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
+  gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
+}    
+
+
+
+/** This method
+*/
 public void menuSetCompilingOption(int option,boolean b) {
-  //System.out.println(option + "" + b);
   int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
   
   if (((compilemode & option) != 0) == b) {
@@ -922,18 +788,17 @@ public void menuSetCompilingOption(int option,boolean b) {
     compilemode += option;
   }
   
-  currentSettings.setValue(Settings.COMPILE_MODE, compilemode);
   saveSettings();
+  currentSettings.setValue(Settings.COMPILE_MODE, compilemode);
    
   switch (option) {
     case PAUSED:
       gui.setSelected(GUI.OPTION_COMPILING_PAUSED, b);
-      break;    
+      break;
     case COMMENTED:
       gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, b);
-      break;    
-    
-  }    
+      break;
+  }
 }
  
 
@@ -953,48 +818,31 @@ public void menuManual() {}
                      can start right after calling this.                    
 */
 public void menuInterrupt(boolean immediate) { 
-  
   interruptCurrentTasks(immediate);
-  /*
-  switch (currentState) {
-    case B91_NOT_RUNNING:
-    case B91_RUNNING:
-    case B91_PAUSED:
-    case B91_WAIT_FOR_KBD:
-      try {
-        control.load();
-      }
-      catch (TTK91AddressOutOfBounds e) {
-        System.out.println("address out of bounds");
-      }
-      catch (TTK91NoStdInData e) {
-        System.out.println("no stdin data");
-     }
-      break;
-  }
-  */
 }
 
 
 
+/** Notifies all currents tasks to be interrupted once they are able to read the
+    new value of interruptSent. Immediate interruption means that all tasks should
+    end without any further activities, while non-immediate interruption means
+    that some tasks may pause to wait for continueTask() to notify them before
+    ending completely. 
+    @param immediate If this is true, then continueTask is being waited before
+                     the previous job ends.
+                     If this is false, then it stops immediately and next job
+                     can start right after calling this.                    
+*/
 private void interruptCurrentTasks(boolean immediate) {
-  if (immediate == true) {
+  if (immediate == true)
     currentState = INTERRUPTED_WITHOUT_PAUSE;
-    interruptSent = true;
-    synchronized(this) {
-      notifyAll();
-    }
-    /* This method must be notified that 
-    waitForContinueTask();*/
-  }
-  else {
+  else 
     currentState = INTERRUPTED_WITH_PAUSE;
-    interruptSent = true;
-    synchronized(this) {
-      notifyAll();
-    }
+   
+  interruptSent = true;
+  synchronized(this) {
+    notifyAll();
   }
-  
 }
 
 
@@ -1046,7 +894,9 @@ public void waitForContinueTask() {
 
 
 
-
+/** Returns all available languages. These (and only these) can be used as parameter
+    for setLanguge(String) method.
+*/
 public String[] getAvailableLanguages() {
   Object[] keys = availableLanguages.keySet().toArray();
   String[] str = new String[keys.length];
@@ -1056,33 +906,217 @@ public String[] getAvailableLanguages() {
   return str;
 }
   
-
-/* In addition: Some EventListeners which would eg. call continueTask
-   instead of GUI trying to determine which means that we should go on? */
-
-// Services for Control. ----------------------------------------------
-
-// Sini 17.3.: Control throws an exception to get keyboard input. It
-// does not call a method of a "higher" class.
-//public String getUserKeyboardInput() {}
-
+  
 
 
 // Private methods. ---------------------------------------------------
 
 
+/** Makes sure that currentSettings contains at least the default values for each
+    key, if they cannot be obtained from settingsFile.
+*/
+private void getCurrentSettings() throws IOException {
+  System.out.println(System.getProperty("user.dir"));
+  String defaultStdinFile = System.getProperty("user.dir") + "/stdin";
+  String defaultStdinPath = "absolute";
+  String defaultStdoutFile = System.getProperty("user.dir") + "/stdout";
+  String defaultStdoutPath = "absolute";
+  String defaultStdoutUse = "overwrite";
+  int defaultMemorySize = Control.DEFAULT_MEMORY_SIZE;
+  String defaultUILanguage = "English";
+  int defaultRunningMode = 0;
+  int defaultCompilingMode = 0;
+  
+  URI fileURI;
+  
+  try {
+    fileURI = new URI( getClass().getClassLoader().getResource(programPath).toString() + "etc/settings.cfg" );
+    settingsFile = new File(fileURI);
+  }
+  catch (Exception e) {
+    System.out.println("Main path not found!...exiting");
+    System.exit(0);
+  }
+  
+    
+  
+  if (settingsFile.exists() == false) {
+    settingsFile.createNewFile(); // throws IOException
+  }
+  
+  String settingsFileContents;
+  try {
+     settingsFileContents = control.loadSettingsFileContents(settingsFile);
+  }
+  catch (IOException e) {
+    System.out.println("Error while reading settings file.");
+    throw e;
+  }
+    
+  try {
+    //System.out.println( control.loadSettingsFileContents(settingsFile) );
+    currentSettings = new Settings( control.loadSettingsFileContents(settingsFile) );
+  }
+  catch (Exception e) {
+    System.out.println("Parse error in settings file.");
+    try {
+      currentSettings = new Settings(null);
+    }
+    catch (ParseException parseError) {
+      System.out.println("This error shouldn't occur!");
+    }
+  }
+  
+  
+  try {
+    if (currentSettings.getStrValue(Settings.STDIN_PATH) == null)
+      currentSettings.setValue(Settings.STDIN_PATH, defaultStdinPath);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.STDIN_PATH, defaultStdinPath);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.DEFAULT_STDIN) == null)
+      currentSettings.setValue(Settings.DEFAULT_STDIN, defaultStdinFile);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.DEFAULT_STDIN, defaultStdinFile);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.STDOUT_PATH) == null) 
+      currentSettings.setValue(Settings.STDOUT_PATH, defaultStdoutPath);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.STDOUT_PATH, defaultStdoutPath);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.DEFAULT_STDOUT) == null)
+      currentSettings.setValue(Settings.DEFAULT_STDOUT, defaultStdoutFile);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.DEFAULT_STDOUT, defaultStdoutFile);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.STDOUT_USE) == null)
+      currentSettings.setValue(Settings.STDOUT_USE, defaultStdoutUse);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.STDOUT_USE, defaultStdoutUse);
+  }
+  
+  try {
+    currentSettings.getIntValue(Settings.MEMORY_SIZE);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.MEMORY_SIZE, defaultMemorySize);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.UI_LANGUAGE) == null) 
+      currentSettings.setValue(Settings.UI_LANGUAGE, defaultUILanguage);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.UI_LANGUAGE, defaultUILanguage);
+  }
+    
+  try {
+    currentSettings.getIntValue(Settings.RUN_MODE);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.RUN_MODE, defaultRunningMode);
+  }
+  
+  try {
+    currentSettings.getIntValue(Settings.COMPILE_MODE);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.COMPILE_MODE, defaultCompilingMode);
+  }
+}
+
+  
+/** This just loads the opened b91-program into Titokone's memory without updating
+    GUI anyway. However, GUI is told to show an error message, if the loaded program
+    is too large and thus Titokone is out of memory.
+    @returns LoadInfo object, which contains information about the loading process.
+*/
+private LoadInfo load() {
+  
+  LoadInfo loadinfo;
+  try {
+    loadinfo = control.load();
+  }
+  catch (TTK91AddressOutOfBounds e) { 
+    gui.showError(new Message("Titokone out of memory").toString());
+    return null;
+  }
+  catch (TTK91NoStdInData e) {
+    File[] appDefs = control.getApplicationDefinitions();
+    String[] stdinFilePath = { getCurrentDefaultStdinFile().getPath() };
+    if ( appDefs[Control.DEF_STDIN_POS] != null ) {
+      stdinFilePath[0] = appDefs[Control.DEF_STDIN_POS].getPath();
+    }
+    
+    gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
+    return null;
+  }
+  
+  return loadinfo;
+  
+}
+
+
+/** Load the program into Titokone's memory and update's GUI to show the new memory contents
+    and register values and such.
+*/
+private void loadAndUpdateGUI() {
+  LoadInfo loadinfo = load();
+ 
+  if (loadinfo != null) {
+    gui.updateStatusBar(loadinfo.getStatusMessage());
+    gui.updateReg(GUI.SP, loadinfo.getSP());
+    gui.updateReg(GUI.FP, loadinfo.getFP());
+     
+    String[][] symbolsAndValues = loadinfo.getSymbolTable();
+    gui.insertSymbolTable(symbolsAndValues);
+      
+    int binaryCommands[] = loadinfo.getBinaryCommands();
+    String symbolicCommands[] = loadinfo.getSymbolicCommands();
+    int data[] = loadinfo.getData();
+    
+    gui.insertToInstructionsTable(binaryCommands, symbolicCommands);
+    gui.insertToDataTable(data);
+    
+    gui.addComment(loadinfo.getComments());
+    
+    currentState = B91_NOT_RUNNING;
+    setGUICommandsForCurrentState();
+    gui.setGUIView(3);
+  }
+}
+
+
+
+/** Saves currentSettings to settingsFile.
+*/
 private void saveSettings() {
   try {
     control.saveSettings(currentSettings.toString(), settingsFile);
   }
   catch (IOException e) {
-    //String[] name = { settingsFile.getName() };
-    //gui.showError(new Message("{0} is inaccessible", name).toString());
+    String[] name = { settingsFile.getName() };
+    gui.showError(new Message("{0} is inaccessible", name).toString());
   }
 }
   
   
 
+/** This method returns the default stdout file, which is the one declared in currentSettings. 
+*/
 private File getCurrentDefaultStdoutFile() {
   
   File currentStdoutFile = new File(System.getProperty("user.dir") + DEFAULT_STDOUT_FILENAME);
@@ -1103,7 +1137,8 @@ private File getCurrentDefaultStdoutFile() {
 }
 
 
-
+/** This method returns the default stdin file, which is the one declared in currentSettings.
+*/
 private File getCurrentDefaultStdinFile() {
   
   File currentStdinFile = new File(System.getProperty("user.dir") + DEFAULT_STDIN_FILENAME);
@@ -1132,7 +1167,19 @@ private File getCurrentDefaultStdinFile() {
 */
 private void findAvailableLanguages() {
   Logger logger;
-  File languageFile = new File("etc/languages.cfg");
+  
+  URI fileURI;
+  File languageFile = null;
+  
+  try {
+    fileURI = new URI( getClass().getClassLoader().getResource(programPath).toString() + "etc/languages.cfg" );
+    languageFile = new File(fileURI);
+  }
+  catch (Exception e) {
+    System.out.println("Main path not found!...exiting");
+    System.exit(0);
+  }
+  
   String languageName, language, country, variant;
   
   if (languageFile.exists()) {
@@ -1202,7 +1249,9 @@ public static String getExtension(File f) {
 
 
 
-
+/** Sets GUI to correspond the current state of program, which means that some
+    buttons should be enables while others not.
+*/
 private void setGUICommandsForCurrentState() {
   switch (currentState) {
     case NONE:
@@ -1251,6 +1300,7 @@ private void setGUICommandsForCurrentState() {
       gui.disable(GUI.CONTINUE_COMMAND);
       gui.disable(GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
       gui.disable(GUI.STOP_COMMAND);
+      gui.enable(GUI.CODE_TABLE_EDITING);
       break;
     
     case K91_COMPILING:
@@ -1259,6 +1309,7 @@ private void setGUICommandsForCurrentState() {
       gui.disable(GUI.CONTINUE_COMMAND);
       gui.disable(GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
       gui.enable(GUI.STOP_COMMAND);
+      gui.disable(GUI.CODE_TABLE_EDITING);
       break;
      
     case K91_PAUSED:
@@ -1267,6 +1318,7 @@ private void setGUICommandsForCurrentState() {
       gui.enable(GUI.CONTINUE_COMMAND);
       gui.enable(GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
       gui.enable(GUI.STOP_COMMAND);
+      gui.disable(GUI.CODE_TABLE_EDITING);
       break;
     
     case INTERRUPTED_WITH_PAUSE:
