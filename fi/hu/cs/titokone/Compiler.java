@@ -545,10 +545,12 @@ public class Compiler {
 		}
 	    }
 	}
-	
+
+/* OLLI: POISTETTU MÄÄRITYKSET 26.4.04; ei DEF-määrityksiä dataan!
+		
 	if (!defStdin.equals("")) ++dataAreaSize;
 	if (!defStdout.equals("")) ++dataAreaSize;
-
+*/
 	data = new String[dataAreaSize];
 	String[] newSymbolTableLine = new String[2];
 	newSymbolTableLine[0] = "";
@@ -587,6 +589,8 @@ public class Compiler {
 	    }
         }
 
+	
+/*  OLLI: POISTETTU MÄÄRITYKSET 26.4.04; ei DEF-määrityksiä dataan!
 	if (!defStdin.equals("")) {
 	    data[nextPosition] = "STDIN " + defStdin;
 	    ++nextPosition;
@@ -594,7 +598,8 @@ public class Compiler {
 	if (!defStdout.equals("")) {
 	    data[nextPosition] = "STDOUT " + defStdout;
 	}
-		
+*/		
+
 // make new SymbolTable
 	String[][] newSymbolTable = new String[symbolTable.size()][2];
 	for (int i = 0; i < newSymbolTable.length; ++i) { 
