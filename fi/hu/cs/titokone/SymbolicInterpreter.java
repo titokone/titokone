@@ -84,12 +84,18 @@ public class SymbolicInterpreter extends Interpreter {
     public int stringToBinary(String opcode, String firstRegister, String addressingMode, 
 							String address, String otherRegister) { 
 	boolean allOk = true;
+	boolean addressEmpty;
+
+	if (address.equals("")) addressEmpty = true;  else addressEmpty = false;
 
 	int opcodeAsInt = getOpcode(opcode);
 	int firstRegisterAsInt = getRegisterId(firstRegister);
+System.out.println(addressingMode);
 	int addressingModeAsInt = getAddressingMode(addressingMode);
+System.out.println(addressingModeAsInt);
 	int addressAsInt = 0;
 	int secondRegisterIdAsInt = getRegisterId(otherRegister);
+
 	if (address.equals("")) address = "0";
 
 	try { addressAsInt = Integer.parseInt(address); } catch(NumberFormatException e) {
@@ -106,7 +112,7 @@ public class SymbolicInterpreter extends Interpreter {
 		// if store or jump then addressinmode as int -= 1;
 		if (opcodeAsInt == 1 || 
 		    (opcodeAsInt >= 32 && opcodeAsInt <= 44) ||
-		    (address.equals("") && !otherRegister.equals(""))  ||
+		    (addressEmpty && !otherRegister.equals(""))  ||
 		    opcodeAsInt == 49
  		) {
 			addressingModeAsInt = addressingModeAsInt - 1;
