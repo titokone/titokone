@@ -1,4 +1,4 @@
-package fi.hu.cs.titokone.resources;
+﻿package fi.hu.cs.titokone.resources;
 
 import java.util.ListResourceBundle;
 
@@ -71,11 +71,104 @@ public class Translations extends ListResourceBundle {
       { "Settings successfully parsed, lines: {0}, unique keys found: {1}.", 
 	null },
 
-      // Class: 
-      // General messages: 
-      // Exception messages: 
-      // { , ""}, 
-      // ... 
+      // Class: Binary
+      {"___B91___ is missing.", null},
+      {"___code___ is missing.", null},
+      {"Invalid code area value on line: {0}", null},
+      {"Invalid code area length on line: {0}", null},
+      {"Invalid command on line: {0}", null},
+      {"Invalid command on line: {0}", null},
+      {"Invalid number of code lines.", null},
+      {"___data___ is missing.", null},
+      {"Invalid data area value on line: {0}", null},
+      {"Invalid data area length on line: {0}", null},
+      {"Invalid data on line: {0}", null},
+      {"___symboltable___ is missing.", null},
+      {"Invalid symbol on line: {0}", null},
+      {"Invalid symbol value on line: {0}", null},
+      {"___end___ is missing.", null},
+      {"Lines after ___end___", null},
+      
+      // Class: Control
+      {"No application to load.", null},
+      {"Application contained an odd definition key '{0}'.", null},
+      {"Trying to run an unsupported type of application. (The application " +
+       "must be created using the same program.)", null},
+      {"Cannot form a binary out of an unsupported type of an application. " +
+       "(The application must be created using the same program.)", null},
+      {"Memory size must be between 2^9 and 2^16, a change to 2^{0} failed.", 
+      null},
+      {"StdIn file contents are invalid; the file should contain only " +
+       "integers and separators.", null},
+      {"Writing STDOUT to {0} will not work; access check failed.", null},
+      {"Cannot deduce the file to store the binary into; no source " +
+       "file has been loaded.", null},
+      {"Cannot save binary to file; no application has been compiled or " +
+       "loaded.", null},
+
+      // Class: FileHandler
+      {"{0} in loadResourceBundle(): {1}", null},
+      {"No read access to {0}.", null},
+      {"No write access to {0}.", null},
+      
+      // Class: GUI
+      {"Open", null},
+      {"Compile", null},
+      {"Run", null},
+	  {"Continue", null},
+	  {"Continue without pauses", null},
+	  {"Stop", null},
+	  {"Options", null},
+      {"Set memory size", null},
+      {"Help", null},
+      {"Manual", null},
+	  {"About", null},
+	  {"Set compiling options", null},
+      {"Set running options", null},
+      {"Configure file system", null},
+      {"Select default stdin file", null},
+      {"Select default stdout file", null},
+      {"Set language", null},
+      {"Compile the opened file", null},
+      {"Run the loaded program", null},
+      {"Continue current operation", null},
+      {"Continue current operation without pauses", null},
+      {"Stop current operation", null},
+      {"Symbol table", null},
+      {"Registers", null},
+      
+      // Class: GUIBrain
+      {"Enter a number in the keyboard field above.", null},
+
+      // Class: Loader
+      {"Loading to memory failed on line {0}.", null},
+      {"Loads program", null},
+      
+      // Class: Processor
+      {"Invalid operation code", null},
+      {"Memory address out of bounds", null},
+      {"Invalid memory addressing mode", null},
+      {"Invalid memory access mode in branching command", null},
+      {"Invalid memory access mode in STORE", null},
+      {"No keyboard data available", null},
+      {"No standard input data available", null},
+      {"Invalid device number", null},
+      {"Integer overflow", null},
+      {"Division by zero", null},
+      
+      // Class: Settings
+      {"value", null},
+      {"Illegal {0}: null. Try an empty string instead.", null},
+      {"a linebreak", null},
+      {"Illegal {0} \"{1}\", contains {2}.", null},
+      {"key", null},
+      {"Syntax error on line {0}, which was: \"{1}\".", null},
+      {"Settings successfully parsed, lines: {0}, unique keys found: {1}.", 
+      null},
+      
+      // Class: SymbolTable
+      {"Definition key was null.", null},
+      {"Definition {0} not found.", null},
 
       // Localizable bit ends. 
       // TODO: poista rivi alta, viim. ylläolevan parin perästä pilkku pois. 
