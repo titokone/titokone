@@ -167,7 +167,7 @@ public class Control implements TTK91Core {
         exception. The input is passed on to the processor. Note that 
         primarily input is searched for in the Application instance.
         @param inputValue The input to pass on. */
-    public keyboardInput(int inputValue) {}
+    public void keyboardInput(int inputValue) {}
 
     // Control ei tarvitse naita metodeja, koska tiedot kasitellaan
     // joka tapauksessa GUIBrainissa vasta. --Sini 15.3.
