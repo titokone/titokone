@@ -603,11 +603,15 @@ public class Control implements TTK91Core {
     /** This is called when GUIBrain wants to load the settings from
 	a stream. It uses FileHandler for reading them.
         @return A string representation of the Settings object stored in 
-        the input stream.
+        the input stream, or null if the stream was null.
+	
     */
     public String loadSettingsStreamContents(InputStream settingsStream) 
 	throws IOException {
-	return fileHandler.loadSettings(settingsStream).toString();
+	if(settingsStream == null)
+	    return null;
+	else
+	    return fileHandler.loadSettings(settingsStream).toString();
     }
     
     /** This method stores the settings string to the given file. 
