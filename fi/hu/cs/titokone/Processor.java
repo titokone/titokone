@@ -145,7 +145,8 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Initializes processor with new program
-    set FP and SP, PC = 0  and return RunInfo */
+    set FP and SP, PC = 0  and return RunInfo
+    @return RunInfo created by RunDebugger. */
     public void runInit(int initSP, int initFP) {
         status = TTK91Cpu.STATUS_STILL_RUNNING;
         regs.setRegister (TTK91Cpu.CU_PC, 0);
@@ -412,18 +413,21 @@ public class Processor implements TTK91Cpu {
             sr[1] = false;
             sr[2] = false;
             runDebugger.setCompareResult (0);
+            regs.setRegister (TTK91Cpu.CU_SR, 1);
         }
         else if (regs.getRegister (Rj) < param) {
             sr[0] = false;
             sr[1] = false;
             sr[2] = true;
             runDebugger.setCompareResult (2);
+            regs.setRegister (TTK91Cpu.CU_SR, 4);
         }
         else { 
             sr[0] = false;
             sr[1] = true;
             sr[2] = false;
             runDebugger.setCompareResult (1);
+            regs.setRegister (TTK91Cpu.CU_SR, 2);
         }
     }
 
@@ -513,17 +517,17 @@ public class Processor implements TTK91Cpu {
             stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R3));      // PUSH R3
             stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R4));      // PUSH R4
             stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R5));      // PUSH R5
-            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R6));      // PUSH R6
+            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R6)+1);    // PUSH R6
             break;
             
             case 54 : // POPR
-            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R6), param);   // POP R6
-            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R5), param);   // POP R5
-            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R4), param);   // POP R4
-            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R3), param);   // POP R3
-            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R2), param);   // POP R2
-            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R1), param);   // POP R1
-            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R0), param);   // POP R0
+            stack(52, Rj, TTK91Cpu.REG_R6, param);   // POP R6
+            stack(52, Rj, TTK91Cpu.REG_R5, param);   // POP R5
+            stack(52, Rj, TTK91Cpu.REG_R4, param);   // POP R4
+            stack(52, Rj, TTK91Cpu.REG_R3, param);   // POP R3
+            stack(52, Rj, TTK91Cpu.REG_R2, param);   // POP R2
+            stack(52, Rj, TTK91Cpu.REG_R1, param);   // POP R1
+            stack(52, Rj, TTK91Cpu.REG_R0, param);   // POP R0
             break;
         }
     }
