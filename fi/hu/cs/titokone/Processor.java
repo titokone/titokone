@@ -204,9 +204,14 @@ public class Processor implements TTK91Cpu {
 
 /** Method for loading MemoryLines to Processor, Loader classes uses
     this for loading application to processor.
-    @return true if loading was ok, false otherwise (=memory full). */
-    public void memoryInput(int rowNumber, MemoryLine inputLine) {
-        ram.setMemoryLine (rowNumber, inputLine);
+    @throws IllegalArgumentException If RandomAccessMemory's setMemoryLine 
+    does; when inputLine is null.
+    @throws TTK91AddressOutOfBounds If the rownumber is either below 0 or
+    beyond the memory size.
+*/
+    public void memoryInput(int rowNumber, MemoryLine inputLine) 
+	throws TTK91AddressOutOfBounds {
+        ram.setMemoryLine(rowNumber, inputLine);
     }
 
 
