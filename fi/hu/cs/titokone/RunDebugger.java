@@ -78,7 +78,7 @@ public class RunDebugger{
 	@param valueOfFirstOperand Value of the register.
 	@param memoryFetchType Type of memoryfetch.
 	@param indexRegister Index register.
-	@param valueOfindex Value of the index register.
+	@param valueOfIndex Value of the index register.
 	@param ADDR ADDR part of the command.
 	@param numberOfFetches How many fetches were made.
 	@param binaryString String containing operation splitted into parts 
@@ -136,7 +136,7 @@ public class RunDebugger{
 	@param deviceNumber Number of the device.
 	@param value Value written.
     */
-    public void setIN(String deviceName, int devicenumber, int value){}
+    public void setIN(String deviceName, int deviceNumber, int value){}
 
     /** This method tells debugger that something was written to the given
 	device. Devices are STDOUT and CRT.

@@ -105,7 +105,7 @@ public class RunInfo extends DebugInfo{
     
     /** This method sets the type of operation performed.
 	@param type Type of operation.
-	/*
+	*/
     public void setOperationType(int type){}
 
     /** This method sets the binary value of the command.
@@ -120,7 +120,7 @@ public class RunInfo extends DebugInfo{
     public void setIndexRegister(int register, int value){}
    
     /** This method sets the first operand.
-	@param registers Number of the register.
+	@param register Number of the register.
 	@param value Value of the register.	
     */
     public void setFirstOperand(int register, int value){}
@@ -177,7 +177,7 @@ public class RunInfo extends DebugInfo{
     
     /** This method tells info what was read from given device and what was 
 	the value.
-	@param String deviceName Name of the device.
+	@param deviceName Name of the device.
 	@param device Number of the device.
 	@param value Value read.
     */
@@ -186,7 +186,7 @@ public class RunInfo extends DebugInfo{
 
     /** This method tells info what was written to the  given device and what 
 	was the value.
-	@param String deviceName Name of the device.
+	@param deviceName Name of the device.
 	@param device Number of the device.
 	@param value Value written.
     */
@@ -195,7 +195,7 @@ public class RunInfo extends DebugInfo{
     /** This method tells info that a conditional jump was made and what was 
 	checked SR bit and its value.
 	@param whichBit Int containig number of the bit.
-	@param boolean Value of the bit.
+	@param status  Value of the bit.
     */
     public void setConditionalJump(int whichBit, boolean status){}
 
@@ -240,50 +240,50 @@ public class RunInfo extends DebugInfo{
     
     /** This method returns value of the first memoryfetch.
 	@return int Integer containing the value of fetch.
-    */.
+    */
     public int getValueOfFirstFetch(){}
 
     /** This method returns value of the second memoryfetch.
 	@return int Integer containing the value of fetch.
-    */.
+    */
     public int getValueOfSecondFetch(){}
 
     /** This method returns the number of the line..
 	@return int Integer containing theline number.
-    */.
+    */
     public int getLineNumber(){}
     
     /** This method returns the symbolic command found on the line..
 	@return String String containing the symbolic command.
-    */.
+    */
     public String getLineContents(){}
     
     /** This method returns the binary command.
 	@return int Integer containing the binary command.
-    */.
+    */
     public int getBinary(){}
     
     /** This method tells GUIBrain which registers changed and what are new
 	values.
-	@param int[] Integer array containing register numbers and new values.
+	@return int[] Integer array containing register numbers and new values.
 */
     public int[] whatRegisterChanged(){}
     
     /** This method tells GUIBrain which lines in dataarea changed and what are
 	new values.
-	@param int[] Integer array containing line numbers and new values.
+	@return int[] Integer array containing line numbers and new values.
     */
     public int[] whatMemoryLineChanged(){}
     
     /** This method tells GUIBrain what was result of an OUT command (device 
 	and value).
-	@param int[] Integer array containing device number and new value.
+	@return int[] Integer array containing device number and new value.
     */
     public int[] whatOUT(){}
     
     /** This method tells GUIBrain what was result of an IN command (device and
      *value.
-	@param int[] Integer array containing device number and new value.
+	@return int[] Integer array containing device number and new value.
     */
     public int[] whatIN(){}
     
@@ -294,23 +294,23 @@ public class RunInfo extends DebugInfo{
     /** This method returns value of the first operand.
 	@return int[] Integer array containing the number and value of the 
 	first operand.
-    */.
+    */
     public int[] getFirstOperand(){}
 
     /** This method returns value of the index registers.
 	@return int[] Integer array containing  number and value of the index 
 	register.
-    */.
+    */
     public int[] getIndexRegister(){}
 
     /** This method returns value of the ADDR part of the command.
 	@return int Integer containing the value of the ADDR part of command.
-    */.
+    */
     public int getADDR(){}
 
     /** This method returns value found at the ADDR.
 	@return int Integer containing the value found at ADDR..
-    */.
+    */
     public int getValueAtADDR(){}
 
     /** This method returns the result of the ALU operation.
