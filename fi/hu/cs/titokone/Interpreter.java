@@ -62,7 +62,7 @@ public class Interpreter {
         {"JNLES", new Integer(42), ADDR_LESS_FETCHES},
         {"JNEQU", new Integer(43), ADDR_LESS_FETCHES},
         {"JNGRE", new Integer(44), ADDR_LESS_FETCHES},
-        {"CALL", new Integer(49), FULL},
+        {"CALL", new Integer(49), FULL_LESS_FETCHES},
         {"EXIT", new Integer(50), FULL},
         {"PUSH", new Integer(51), FULL},
         {"POP",  new Integer(52), SP_REG},	
