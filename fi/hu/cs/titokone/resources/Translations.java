@@ -156,16 +156,6 @@ public class Translations extends ListResourceBundle {
       {"Integer overflow", null},
       {"Division by zero", null},
       
-      // Class: Settings
-      {"value", null},
-      {"Illegal {0}: null. Try an empty string instead.", null},
-      {"a linebreak", null},
-      {"Illegal {0} \"{1}\", contains {2}.", null},
-      {"key", null},
-      {"Syntax error on line {0}, which was: \"{1}\".", null},
-      {"Settings successfully parsed, lines: {0}, unique keys found: {1}.", 
-      null},
-      
       // Class: SymbolTable
       {"Definition key was null.", null},
       {"Definition {0} not found.", null},
