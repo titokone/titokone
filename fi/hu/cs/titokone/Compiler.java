@@ -265,6 +265,8 @@ public class Compiler {
 	boolean labelFound = false;
 	boolean variableUsed = false;
 
+	compileDebugger.setStatusMessage(new Message("First round of compilation.").toString());
+
 	if (lineTemp == null) {
 	    lineTemp = parseLine(line);
 	    if (lineTemp == null) { 
@@ -507,7 +509,7 @@ public class Compiler {
 			} else {
 			    defStdout = lineTemp[2];
 			}		
-			compileDebugger.foundDEF(lineTemp[0], lineTemp[2]);
+// Antti 04052004	compileDebugger.foundDEF(lineTemp[0], lineTemp[2]);
 			commentParameters = new String[2];
 			commentParameters[0] = lineTemp[0].toUpperCase();
 			commentParameters[1] = lineTemp[2];
@@ -547,6 +549,10 @@ public class Compiler {
 	int dataAreaSize = 0;
 
 // calculate the size of data-area
+
+	compileDebugger.setStatusMessage(new Message(
+			"Initializing the second  round of compilation.").toString());
+
 
 	for (int i = 0; i < symbolTable.size(); ++i) {
 	    lineTemp = (String[])symbolTable.get(i);
@@ -664,6 +670,9 @@ public class Compiler {
 	*/
 
 // check if variable is set!
+
+	compileDebugger.setStatusMessage(new Message(
+			"Second round of compilation.").toString());
 
 	int addressAsInt = 0;
 	int lineAsBinary;

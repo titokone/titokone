@@ -125,33 +125,12 @@ public class CompileDebugger {
 
     }
 
-
-    /** This method tells that a label was found and it is added to the
-     symboltable. Boolean new tells debugger that if it was new.
-     @param name String containing name of the symbol.
-     @param isNew Boolean containing the onformation if the symbol was new.
-    */
-    public void foundLabel(String name, boolean isNew) {
-	//TODO this can't happen! label must have a line number
-    }
-
     /** This method tells that for given label points to given line.
 	@param name String containing name of the symbol.
 	@param lineNumber Int containing the linenumber of the label.
     */
     public void foundLabel(String name, int lineNumber) {
 	info.setLabelDefined(name, lineNumber);
-    }
-
-    /** This method tells that a DEF  was found and it is added to the
-     symboltable. 
-     @param name String containing name of the symbol.
-     @param value String containing the value.
-    */
-    public void foundDEF(String name, String value) {
-//TODO	info.setComment();
-//	info.setSymbolFound();
-//	info.setSymbolName(name, value);
     }
 
     /**	This method sets the compiled value of a line during
