@@ -14,8 +14,8 @@ public class Interpreter {
     public static final Integer REG = new Integer(1);
     public static final Integer SP_REG = new Integer(2);
     public static final Integer SP_ONLY = new Integer(3);
-    public static final Integer ADDR = new Integer(5); // Addr only.
-    public static final Integer FULL = new Integer(4);
+    public static final Integer ADDR = new Integer(4); // Addr only.
+    public static final Integer FULL = new Integer(5);
 
     /** This field contains a two-dimensional array of translations 
 	between opcodes as integers, as symbolic command names and the
@@ -27,21 +27,24 @@ public class Interpreter {
 	{"NOP", new Integer(0), NONE},
         {"STORE", new Integer(1), FULL},
         {"LOAD", new Integer(2), FULL},
-        {"IN", new Integer(3), FULL},	//I guess you could have KBD stored in some weird way
+        {"IN", new Integer(3), FULL},	//I guess you could have KBD stored in
+	                                //some weird way
         {"OUT", new Integer(4), FULL},
         {"ADD", new Integer(17), FULL},
         {"SUB", new Integer(18), FULL},
         {"MUL", new Integer(19), FULL},
         {"DIV", new Integer(20), FULL},
         {"MOD", new Integer(21), FULL},
-        {"AND", new Integer(22), FULL},		//not sure if compare needs to be between
+        {"AND", new Integer(22), FULL},		//not sure if compare needs 
+	                                        //to be between
         {"OR", new Integer(23), FULL},		//two registers.
         {"XOR", new Integer(24), FULL},		//(AND, OR and XOR
         {"SHL", new Integer(25), FULL},
         {"SHR", new Integer(26), FULL},
 	{"SHRA", new Integer(27), FULL},	//same int as NOT!,
         {"COMP", new Integer(31), FULL},
-        {"JUMP", new Integer(32), ADDR},	//Jump has only one param. Jump Address
+        {"JUMP", new Integer(32), ADDR},	//Jump has only one param. 
+	                                        //Jump Address
         {"JNEG", new Integer(33), FULL},	//JNEG Rj, Address
         {"JZER", new Integer(34), FULL},
         {"JPOS", new Integer(35), FULL},
