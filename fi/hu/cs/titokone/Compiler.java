@@ -1,9 +1,8 @@
 /*
 Ensimm‰isell‰ kierroksella jos tulee dc tai ds niin tehd‰‰n symbol found ja finalizing first 
-roundissa sitten tulee definingdc ja definingds.y
+roundissa sitten tehd‰‰n symbolitaulu (String[][]) joka palautetaan compileInfossa.
 
-finalizing_first_roundin lopussa pit‰‰ palauttaa sek‰ data-alue ett‰ koodi erikseen. kahtena 
-taulukkona siis.
+jos m‰‰ritell‰‰n label niin sit‰ ei voi m‰‰ritell‰ en‰‰ miksik‰‰n muuksi, vaan tulee poikkeus.
 */
 
 package fi.hu.cs.titokone;
@@ -65,8 +64,9 @@ public class Compiler {
       */
     private String[] code;
 
-    /** This array contains the data. During first round this array holds the values of 
-	variables defined.
+    /** This array contains the data. During first round this array holds the compiler 
+	commands, and when finalizing the first round those commands are converted to a 
+	data array.
       */
     private String[] data;
 
@@ -97,6 +97,7 @@ public class Compiler {
 	dataAreaSize = 0;
 	code = new String[this.source.length];
 	data = new String[this.source.length];
+	symbolCommands = new String[this.source.length];
 	defStdin = "";
 	defStdout = "";
     }
@@ -212,6 +213,7 @@ public class Compiler {
 					symbols.put((Object)lineTemp[0], 
 						(Object)new Integer(commandLineCount));
 					data[symbolsFoundSoFar] = "" + commandLineCount;
+					symbolCommands[symbolsFoundSoFar] = line;
 					++symbolsFoundSoFar;
 					compileDebugger.foundLabel(lineTemp[0], commandLineCount);
 //	TODO				compileDebugger.setComments("")
@@ -264,13 +266,12 @@ public class Compiler {
 			if (lineTemp[1].equals("ds")) {
 				if (symbols.containsKey(lineTemp[0])) {
 // TODO what is done if ds was defined earlier? 
+					data[intValue] = line;
 				} else {
 					symbols.put((Object)lineTemp[0], 
 						(Object)new Integer(symbolsFoundSoFar));
-					for (int i = 0; i < intValue; ++i) { 	
-						data[symbolsFoundSoFar] = "0";
-						++symbolsFoundSoFar;
-					}
+					datd[symbolsFoundSoFar] = line;
+					++symbolsFoundSoFar;
 				}
 				compileDebugger.foundDS(lineTemp[0]);
 // TODO				compileDebugger.setComment();
@@ -278,11 +279,11 @@ public class Compiler {
 			if (lineTemp[1].equals("dc")) {
 				compileDebugger.foundDC(lineTemp[0]);
 				if (symbols.containsKey(lineTemp[0])) {
-					data[intValue] = lineTemp[2];
+					data[intValue] = line;
 				} else {
 					symbols.put((Object)lineTemp[0], 
 						(Object)new Integer(symbolsFoundSoFar));
-					data[symbolsFoundSoFar] = "" + intValue;
+					data[symbolsFoundSoFar] = line;
 					++symbolsFoundSoFar;
 				}
 				compileDebugger.foundDC(lineTemp[0]);
@@ -321,11 +322,46 @@ public class Compiler {
 	String[] newCode = new String[commandLineCount];
 	for (int i= 0; i < commandLineCount; ++i) newCode[i] = code[i];
 
-	int symbolTableSize = symbolsFoundSoFar;
-	if (!defStdin.equals("")) ++ symbolTableSize;
-	if (!defStdout.equals("")) ++ symbolTableSize;
-	String[] newData = new String[symbolTableSize];
-	for (int i= 0; i < symbolsFoundSoFar; ++i) newData[i] = data[i];
+	String[] lineTemp;
+	int dataAreaSize = 0;
+
+	for (int i = 0; i < symbolsFoundSoFar; ++i) {
+		lineTemp = parseCompilerCommandLine(data[i]);
+		if (lineTemp[1].equalsIgnoreCase("ds")) {
+			try {
+				dataAreaSize = 
+					dataAreaSize + Integer.parseInt(lineTemp[0]);
+			} catch (exception e) {  }
+		} else {
+			if (!lineTemp[1].equalsIgnoreCase("equ")) {
+				++ dataAreaSize;
+			}
+		}
+	}
+	
+	if (!defStdin.equals("")) ++dataAreaSize;
+	if (!defStdout.equals("")) ++dataAreaSize;
+	String[] newData = new String[dataAreaSize];
+
+	int j = 0;
+	String[][] symbolTable = new String[symbolTableSize][2];
+
+	for (int i= 0; i < data.length; ++i) {
+		if (lineTemp[1].equalsIgnoreCase("ds") {
+			newData[i] = "";
+		} else { 
+			if (lineTemp[1].equalsIgnoreCase("dc") {
+				newData[i] = "";
+				symbolTable [j][0] = "";		
+				symbolTable [j][1] = "";		
+
+			} else {	// EQU
+				symbolTable [j][0] = "";
+				symbolTable [j][1] = "";
+
+			}
+		}
+	}
 
 	int nextPosition = symbolsFoundSoFar;
 	if (!defStdin.equals("")) {
