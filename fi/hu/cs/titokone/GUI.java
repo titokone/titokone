@@ -1041,8 +1041,8 @@ public void setSelected(short option, boolean b) {
     case OPTION_RUNNING_PAUSED:
       lineByLineToggleButton.setSelected(b);
       setRunningOptionsDialog.lineByLineCheckBox.setSelected(b);
-      if(!b)
-	  setSelected(OPTION_RUNNING_ANIMATED, false);
+      //if(!b)
+      //  setSelected(OPTION_RUNNING_ANIMATED, false);
       break;
     case OPTION_RUNNING_COMMENTED:
       showCommentsToggleButton.setSelected(b);
@@ -1051,8 +1051,8 @@ public void setSelected(short option, boolean b) {
     case OPTION_RUNNING_ANIMATED:
       showAnimationToggleButton.setSelected(b);
       setRunningOptionsDialog.showAnimationCheckBox.setSelected(b);
-      if(b)
-	  setSelected(OPTION_RUNNING_PAUSED, true);
+      //if(b)
+      //  setSelected(OPTION_RUNNING_PAUSED, true);
       break;  
   }
 }
