@@ -197,7 +197,7 @@ public class Processor implements TTK91Cpu {
             // fetch the next command to IR from memory and increase PC
             MemoryLine IR = ram.getMemoryLine(PC);
         
-            runDebugger.cycleStart (PC, IR.getSymbolic(), PC+1, regs.getRegister (TTK91Cpu.REG_SP), regs.getRegister (TTK91Cpu.REG_FP));
+            runDebugger.cycleStart (PC, IR.getSymbolic());
         
             regs.setRegister (TTK91Cpu.CU_IR, IR.getBinary());
             regs.setRegister (TTK91Cpu.CU_PC, PC+1);
@@ -209,7 +209,7 @@ public class Processor implements TTK91Cpu {
             int Ri = ((IR.getBinary()&0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
             int ADDR = IR.getBinary()&0xFFFF;                               // address
         
-            runDebugger.runCommand (IR.getBinary(), regs.getRegister (Rj), regs.getRegister(Ri));
+            runDebugger.runCommand (IR.getBinary());
 
             // fetch parameter from memory
             if (Ri != TTK91Cpu.REG_R0) ADDR += regs.getRegister (Ri);   // add indexing register Ri
@@ -252,9 +252,9 @@ public class Processor implements TTK91Cpu {
         regs.setRegister (TTK91Cpu.CU_PC_CURRENT, regs.getRegister (TTK91Cpu.CU_PC));
         
         // give registers to runDebugger
-        Integer[] registers = new Integer[8];
+        int[] registers = new int[8];
         for (int i=0; i < registers.length; i++) 
-            registers[i] = new Integer (regs.getRegister (i + TTK91Cpu.REG_R0));
+            registers[i] = regs.getRegister (i + TTK91Cpu.REG_R0);
         runDebugger.setRegisters (registers);
             
         return runDebugger.cycleEnd();
@@ -435,55 +435,55 @@ public class Processor implements TTK91Cpu {
         
         switch (opcode) {
             case 32 : // JUMP
-            regs.setRegister (TTK91Cpu.CU_PC, param);
+            setNewPC (param);
             break;
 
             case 33 : // JNEG
-            if (regs.getRegister (Rj) < 0) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (regs.getRegister (Rj) < 0) setNewPC (param);
             break;
 
             case 34 : // JZER
-            if (regs.getRegister (Rj) == 0) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (regs.getRegister (Rj) == 0) setNewPC (param);
             break;
 
             case 35 : // JPOS
-            if (regs.getRegister (Rj) > 0) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (regs.getRegister (Rj) > 0) setNewPC (param);
             break;
 
             case 36 : // JNNEG
-            if (regs.getRegister (Rj) >= 0) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (regs.getRegister (Rj) >= 0) setNewPC (param);
             break;
 
             case 37 : // JNZER
-            if (regs.getRegister (Rj) != 0) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (regs.getRegister (Rj) != 0) setNewPC (param);
             break;
 
             case 38 : // JNPOS
-            if (regs.getRegister (Rj) <= 0) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (regs.getRegister (Rj) <= 0) setNewPC (param);
             break;
 
             case 39 : // JLES
-            if (sr[2]) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (sr[2]) setNewPC (param);
             break;
 
             case 40 : // JEQU
-            if (sr[1]) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (sr[1]) setNewPC (param);
             break;
 
             case 41 : // JGRE
-            if (sr[0]) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (sr[0]) setNewPC (param);
             break;
 
             case 42 : // JNLES
-            if (sr[1] || sr[0]) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (sr[1] || sr[0]) setNewPC (param);
             break;
 
             case 43 : // JNEQU
-            if (sr[2] || sr[0]) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (sr[2] || sr[0]) setNewPC (param);
             break;
 
             case 44 : // JNGRE
-            if (sr[2] || sr[1]) regs.setRegister (TTK91Cpu.CU_PC, param);
+            if (sr[2] || sr[1]) setNewPC (param);
             break;
         }
     }
@@ -542,14 +542,14 @@ public class Processor implements TTK91Cpu {
             regs.setRegister (TTK91Cpu.REG_FP, sp);
             
             // set PC
-            regs.setRegister (TTK91Cpu.CU_PC, ADDR);
+            setNewPC (ADDR);
             break;
             
             case 50 : // EXIT
             // pop FP and PC from stack (Rj is stack pointer)
             sp = regs.getRegister (Rj);
             regs.setRegister (TTK91Cpu.REG_FP, ram.getValue (sp--));
-            regs.setRegister (TTK91Cpu.CU_PC, ram.getValue (sp--));
+            setNewPC (ram.getValue (sp--));
             
             // decrease number of parameters from stack
             regs.setRegister (Rj, sp -param);
@@ -629,8 +629,13 @@ public class Processor implements TTK91Cpu {
         MemoryLine memoryLine = new MemoryLine (value, new BinaryInterpreter().binaryToString(value));
         ram.setMemoryLine (row, memoryLine);
         runDebugger.addChangedMemoryLine (row, memoryLine);
-    }        
-        
+    }
+    
+    private void setNewPC (int newPC) {
+        regs.setRegister (TTK91Cpu.CU_PC, newPC);
+        runDebugger.setNewPC (newPC);
+    }
+    
 /** Tests if given long value is acceptable int value. */
     private boolean isOverflow (long value) {
         return (value > (long)Integer.MAX_VALUE || value < (long)Integer.MIN_VALUE);
