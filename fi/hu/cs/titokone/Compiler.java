@@ -166,7 +166,6 @@ public class Compiler {
 	    if (nextLine == source.length) {
 		compileDebugger.firstPhase();
 		info = initializeSecondRound();
-		System.out.println("Second round initialized.");
 		return info;
 	    } else {
 		compileDebugger.firstPhase(nextLine, source[nextLine]);
@@ -193,6 +192,7 @@ public class Compiler {
 	compilation is complete, or null otherwise. */
     public Application getApplication() throws IllegalStateException {
 	if (compileFinished) {
+	    if (data == null) { System.out.println("Data is null"); }
 	    dataMemoryLines = new MemoryLine[data.length];
 	    for (int i = 0; i < data.length; ++i) {
 		dataMemoryLines[i] = new MemoryLine(Integer.parseInt(data[i]), "");
