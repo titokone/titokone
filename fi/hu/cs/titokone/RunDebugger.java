@@ -68,47 +68,10 @@ public class RunDebugger{
 	info = new RunInfo(lineNumber, lineContents);
     }
 
-    // TO DO: Sini, miten kielikäännökset syötetään, mikä muoto täällä?  Tarvitaanko operaatioiden String-esitystä
-    //  tässä muodossa vai syötetäänkö suoraan debuggerissa osaksi kommenttia?
-
     /** This method sets the type of operation. 
         @param opcode Operation code of command. */ 
     public void setOperationType(int opcode){
         info.setOperationType(opcode);
-            
-        switch(opcode) {
-            case NO_OPERATION:
-                info.setOperation("No operation");
-            break;
-            
-            case DATA_TRANSFER_OPERATION:
-                info.setOperation("Data transfer");
-            break;
-            
-            case ALU_OPERATION:
-                info.setOperation("ALU-operation");
-            break;
-            
-            case COMP_OPERATION:
-                info.setOperation("Comparing");
-            break;
-            
-            case BRANCH_OPERATION:
-                info.setOperation("Branching");
-            break;
-            
-            case SUB_OPERATION:
-                info.setOperation("Subroutine");
-            break;
-            
-            case STACK_OPERATION:
-                info.setOperation("Stack operation");
-            break;
-        
-            case SVC_OPERATION:
-                info.setOperation("Supervisor call");
-            break;
-        }
     }
     
     /** This method tells what was operation run and its parts.

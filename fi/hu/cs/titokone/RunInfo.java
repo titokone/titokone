@@ -10,8 +10,6 @@ public class RunInfo extends DebugInfo{
 
     /** This field contains the number of operation type. */
     private int operationType;
-    /** This field contains the description of operation type */
-    private String operationDescription;
     /** This field contains line number.*/
     private int lineNumber;
     /** This field contains contents of the line, */
@@ -82,13 +80,6 @@ public class RunInfo extends DebugInfo{
 		this.operationType = type;
     }
 	
-    /** This method sets the description of operation. Can be used in a 
-	comment line.
-	@param String-representation of the description. */
-    public void setOperation(String description) {
-		this.operationDescription = description;
-    }
-    
     /** This method sets the colon-presentation of the command.
 	@param binary Binary value of the command. */
     public void setColonString(String colonString){
