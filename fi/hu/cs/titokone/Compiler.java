@@ -166,6 +166,7 @@ public class Compiler {
 	    if (nextLine == source.length) {
 		compileDebugger.firstPhase();
 		info = initializeSecondRound();
+		System.out.println("Second round initialized.");
 		return info;
 	    } else {
 		compileDebugger.firstPhase(nextLine, source[nextLine]);
