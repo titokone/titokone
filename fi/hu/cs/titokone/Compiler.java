@@ -803,6 +803,16 @@ public class Compiler {
 			}
 		}
 
+		
+		// Now supports addressing mode LOAD/STORE R1, (R2),
+		// which is equal to LOAD/STORE R1, 0(R2).
+		// 5.10.2004, Tom Bertell
+		if (lineAsArrayIndex < lineAsArray.length) {
+			if (lineAsArray[lineAsArrayIndex].charAt(0) == '(' && 
+				 (opcode.equalsIgnoreCase("store") || opcode.equalsIgnoreCase("load")))
+					lineAsArray[lineAsArrayIndex] = '0' + lineAsArray[lineAsArrayIndex];
+		}
+
 		/* addressingMode */
 		if (lineAsArrayIndex < lineAsArray.length) {
 			if (lineAsArray[lineAsArrayIndex].charAt(0) == '=' || 
@@ -988,7 +998,10 @@ public class Compiler {
 			throw new TTK91CompileException(comment);
 		}          
 
-		if (opcode.equalsIgnoreCase("store") && address.equals("")) {
+		// Modified to support '@' addressingmode with opcode store.
+		// Added !addressingMode.equals("@") to if. 5.10.2004, Tom Bertell
+		if (opcode.equalsIgnoreCase("store") && address.equals("") &&
+				!addressingMode.equals("@")) {
 			comment = new Message("Compilation failed: {0}",
 					new Message("address expected.").toString()).toString();
 			throw new TTK91CompileException(comment);
