@@ -14,6 +14,8 @@ public class BinaryInterpreter extends Interpreter {
 	Integer forms of their opcodes as keys. */
     private HashMap commands;
 
+    /** This hashmap contains parameters for each command with Integer forms
+	of their opcodes as keys.*/
     private HashMap parameters;
     /** This String[] contains a string for each addressing mode. They can 
 	be found by using the address mode number as index. */
@@ -24,7 +26,7 @@ public class BinaryInterpreter extends Interpreter {
 
     /** This constructor sets up a binaryinterpreter and initializes the 
 	internal command information data structures. */
-    //TODO
+    
     public BinaryInterpreter() {
 	commands = new HashMap(37);
 	parameters = new HashMap(37);
@@ -276,17 +278,11 @@ public class BinaryInterpreter extends Interpreter {
     public String getAddressFromBinary(int binaryCommand) {
 	int command = binaryCommand;
 	int i = command & 65535;
-
-	
-
 	Integer opcode = new Integer(getOpCodeFromBinary(command));
-
-     
-	
 	String mem = getMemoryModeFromBinary(binaryCommand);
 	Integer param = (Integer)parameters.get(opcode);
 	
-	
+	//Check if operation has less memoryfetches
 	switch(param.intValue()){
 	case 6:{
 	    if (mem.equals("="))  //HACK, Some commands use less fetches

@@ -10,7 +10,7 @@ import java.util.Vector;
 public class Binary {
     /** This field stores the application this binary represents, or 
 	null if it has not yet been resolved. */
-    private ApplicationStub application;
+    private __Stub_Application application;
     /** This field stores the binary contents of the application, or
 	an empty string if the contents have not yet been resolved 
 	(ie. the Application constructor has been used and toString() 
@@ -25,48 +25,86 @@ public class Binary {
     public Binary(String contents) throws ParseException {
 	BinaryInterpreter bini = new BinaryInterpreter();
 	this.contents=contents;
-	String[] b91=contents.split("\n");
+
+	//String[] b91=contents.split("\n");
+	String[] b91=contents.split(System.getProperty("line.separator",
+						       "\n"));
+
 	for (int i=0;i<b91.length;i++)
 	    b91[i]=b91[i].trim();
+	
+	/* From now on, i is used to tell which line in .b91 file method is
+	   parsing.*/
 	int i = 0;
+	
+	/* Check if reserved line ___b91___ is found.*/
 	if(!b91[i].equalsIgnoreCase("___b91___"))
-	   throw new ParseException("B91 missing", i+1);
+	   throw new ParseException(new Message("___B91___ is "+
+						"missing.").toString(), i+1);
 	i++;
-	
+	/* Check if reserved line ___code___ is found.*/
 	if(!b91[i].equalsIgnoreCase("___code___"))
-	    throw new ParseException("Code missing",i);
+	    throw new ParseException(new Message("___code__ is"+
+						 "missing.").toString(),i+1);
 	i++;
 	
+	/* Calculating code area length.*/
 	String[] codeArea=b91[i].split("\\s");
-	//	try{
-	    Integer x=new Integer(codeArea[0]);
-	    Integer y=new Integer(codeArea[1]);
-	    if(x.intValue()!=0 || x.intValue()>y.intValue())
-		throw new ParseException("Invalid code area length on line: ", i+1);
-	    int areaLength=y.intValue()+1;
-	    //}catch(Exception e){
-	    //	throw new ParseException("Invalid code area value on line: "+i,i);
-	    //}
+	Integer x,y;
+	
+	try{
+	    x=new Integer(codeArea[0]);
+	    y=new Integer(codeArea[1]);
+	}catch(Exception e){
+	    throw new ParseException(new Message("Invalid code area value "+
+						 "on line: {0}",
+						 ""+(i+1)).toString(),i+1);
+	}
+	    
+
+	if(x.intValue()!=0 || x.intValue()>y.intValue())
+	    throw new ParseException(new Message("Invalid code area "+
+						 "length on line: {0}",
+						 ""+(i+1)).toString(),i+1);
+	int areaLength=y.intValue()+1;
+	    /*	}catch(Exception e){
+	    throw new ParseException("Invalid code area value on line: "+i,i);
+	    }*/
 
 	i++;
-	while(!b91[i].startsWith("_")){
-	    //try{
-		Integer j=new Integer(b91[i]);
+	
+	if(y.intValue()!=0){
+	    while(!b91[i].startsWith("_")){
+		Integer j;
+		try{
+		    j=new Integer(b91[i]);
+		}catch(Exception e){
+		    throw new ParseException(new Message("Invalid command on "+
+							 "line: {0}",
+							 ""+(i+1)).toString(),
+					     i+1);
+		}
+		
 		int k = j.intValue();
 		String s = bini.binaryToString(k);
+		//System.out.println(s);
 		if(s.equals(""))
-		    throw new ParseException("Invalid command on line: ", i+1); 
-		// }catch(Exception e){
-		//	throw new ParseException("invalid command on line: "+i,i);
-		//}
-
-	    i++;	    
+		    throw new ParseException(new Message("Invalid command on"+
+							 "line: {0}", 
+							 ""+(i+1)).toString(),
+					     i+1); 
+		
+		i++;	    
 	    }
-	if(i-3!=areaLength)
-	    throw new ParseException("Wrong number of datalines", i+1);
+	
+	    if(i-3!=areaLength)
+		throw new ParseException(new Message("Invalid number of " + 
+						 "datalines").toString(), i+1);
+	}
 
 	if(!b91[i].equalsIgnoreCase("___data___"))
-	    throw new ParseException("Data area missing", i+1);
+	    throw new ParseException(new Message("___data___ is " + 
+						 "missing.").toString(), i+1);
 	i++;
 
 	String[] dataArea=b91[i].split("\\s");
@@ -74,33 +112,51 @@ public class Binary {
 	try{
 	    x=new Integer(dataArea[0]);
 	    y=new Integer(dataArea[1]);
-	    if(x.intValue()>y.intValue())
-		throw new ParseException("Invalid data area length",i+1);
 	}catch(Exception e){
-	    throw new ParseException("Invalid data area length",i+1);
+	    throw new ParseException(new Message("Invalid data area " + 
+						 "value on line: {0}",
+						 ""+(i+1)).toString(),i+1);
 	}
-	    areaLength=y.intValue()-x.intValue()+1;
+
+	if(x.intValue()>y.intValue())
+	    throw new ParseException(new Message("Invalid data area " + 
+						 "length on line: {0}",
+						 ""+(i+1)).toString(),i+1);
+	//	}catch(Exception e){
+	//throw new ParseException(new Message("Invalid data area " + 
+	//"length on line: {0}",
+	//""+(i+1)).toString(),i+1);
+	//}
+	
+	areaLength=y.intValue()-x.intValue()+1;
 
 	i++;
 	areaLength +=i;
+	System.out.println(i+" " +areaLength);
 	for (int j = i;j<areaLength;j++){
 	    //System.out.println(b91[j]+" "+j);
 	    try{
 		Integer value = new Integer(b91[j]);
 	    }catch(Exception e){
-		throw new ParseException("Invalid data", i+1);
+		throw new ParseException(new Message("Invalid data on line: "+
+						     "{0}",
+						     ""+(i+1)).toString(),i+1);
 	    }
 	    i++;
 	}
        
 	
 	if(!b91[i].equalsIgnoreCase("___symboltable___"))
-	    throw new ParseException("symboltable missing", i+1);
+	    throw new ParseException(new Message("___symboltable___ is "+
+						 "missing.").toString(), i+1);
 	i++;
 	while(!b91[i].startsWith("_")){
 	    String[] s=b91[i].split("\\s");
 	    if(s.length!=2)
-		throw new ParseException("Invalid symbol on line: ",i+1);
+		throw new ParseException(new Message("Invalid symbol on "+
+						     "line: {0}",
+						     ""+(i+1)).toString(), 
+					 i+1);
 
 	    if(!s[0].equalsIgnoreCase("STDIN")&&
 	       !s[0].equalsIgnoreCase("STDOUT")){
@@ -108,19 +164,26 @@ public class Binary {
 		try{
 		    Integer value=new Integer(s[1]);
 		}catch(Exception e){
-		    throw new ParseException("Invalid symbol value on line: ",i+1);
+		    throw new ParseException(new Message("Invalid symbol "+
+							 "value on line: {0}"
+							 ,""+(i+1)).toString(),
+					     i+1);
 		}
 	    }
 	    i++;
 	}
 	
 	if(!b91[i].equalsIgnoreCase("___end___"))
-	    throw new ParseException("End missing", i+1);
+	    throw new ParseException(new Message("___end___ is "+
+						 "missing.").toString(),
+				     i+1);
 
 	this.contents="";
 
 	for (int l=0;l<b91.length;l++){
-	    this.contents= this.contents +b91[l]+"\n";
+	    //this.contents= this.contents +b91[l]+"\n";
+	    this.contents= this.contents +b91[l];
+	    this.contents+=System.getProperty("line.separator","\n");
 	}
 
 
@@ -131,7 +194,7 @@ public class Binary {
 	the binary to string form until toString() is called. 
 	@param application The application to form a binary of. */
 
-    public Binary(ApplicationStub application) {
+    public Binary(__Stub_Application application) {
 	this.application=application;
     }
 
@@ -144,13 +207,13 @@ public class Binary {
 	@throws ParseException If the binary contents are not 
 	syntatically correct. */
     //TODO Symboltableen muutokset uupuvat
-    public ApplicationStub toApplication() throws ParseException {
+    public __Stub_Application toApplication() throws ParseException {
        
 	BinaryInterpreter bini=new BinaryInterpreter();
-	ApplicationStub app;
+	__Stub_Application app;
 	Integer command;
-	MemoryLineStub line;
-	SymbolTableStub symbolTable = new SymbolTableStub();
+	__Stub_MemoryLine line;
+	__Stub_SymbolTable symbolTable = new __Stub_SymbolTable();
 
 	Vector code = new Vector();
 	Vector data = new Vector();
@@ -166,13 +229,18 @@ public class Binary {
 		command=new Integer(b91[i]);
 		String symbolic = bini.binaryToString(command.intValue());
 		if (symbolic.equals(""))
-		    throw new ParseException("Invalid command",i+1);
-		line = new MemoryLineStub(command.intValue(), symbolic);
+		    throw new ParseException(new Message("Invalid command "+
+							 "on line: {0}"
+							 ,""+(i+1)).toString(),
+					     i+1);
+		line = new __Stub_MemoryLine(command.intValue(), symbolic);
 		code.add(line);
 		i++;
 	    }
 	}catch(Exception e){
-	    throw new ParseException("Invalid command on line: ", i+1);
+	    throw new ParseException(new Message("Invalid command on line:"+
+						 " {0}",""+(i+1)).toString(),
+				     i+1);
 	}
 	i++;//Pass ___data___
 	
@@ -181,37 +249,48 @@ public class Binary {
 	    while(!b91[i].startsWith("_")){
 		command=new Integer(b91[i]);
 		String symbolic = bini.binaryToString(command.intValue());
-		line = new MemoryLineStub(command.intValue(), symbolic);
+		line = new __Stub_MemoryLine(command.intValue(), symbolic);
 		data.add(line);
 		i++;	    
 	}
 	}catch(Exception e){
-	    throw new ParseException("Invalid symbol value on line: ",i+1);
+	    throw new ParseException(new Message("Invalid symbol value on "+
+						 "line: {0}",
+						 ""+(i+1)).toString(),i+1);
 	}
 	
-	i++; //pass __Symboltable___
+	i++; //pass __symboltable___
 	while(!b91[i].startsWith("_")){
 	    
 	    String[] symbol=b91[i].split("\\s");
-	    try {
-	    Integer j = new Integer(symbol[1]);
-	    symbolTable.defineSymbol(symbol[0], j.intValue());
-	    }catch(Exception e){
-		throw new ParseException("Invalid symbol value on line: ",i+1);
+	    if(symbol[0].equalsIgnoreCase("STDOUT")
+	       ||symbol[0].equalsIgnoreCase("STDIN")){
+		symbolTable.defineSymbol(symbol[0], symbol[1]);
+	    }
+	    else{
+
+		try {
+		    Integer j = new Integer(symbol[1]);
+		    symbolTable.defineSymbol(symbol[0], j.intValue());
+		}catch(Exception e){
+		    throw new ParseException(new Message("Invalid symbol "+
+							 "value on line: {0}",
+						     ""+(i+1)).toString(),i+1);
+		}
 	    }
 	    i++;	    
 	}	
 	
-	MemoryLineStub[] codeLines = new MemoryLineStub[code.size()];
+	__Stub_MemoryLine[] codeLines = new __Stub_MemoryLine[code.size()];
 	for (int j = 0;j<codeLines.length;j++){
-	    codeLines[j]=(MemoryLineStub)code.get(j);
+	    codeLines[j]=(__Stub_MemoryLine)code.get(j);
 	}
 	
-	MemoryLineStub[] dataLines = new MemoryLineStub[data.size()];
+	__Stub_MemoryLine[] dataLines = new __Stub_MemoryLine[data.size()];
 	for (int j = 0;j<dataLines.length;j++){
-	    codeLines[j]=(MemoryLineStub)data.get(j);
+	    codeLines[j]=(__Stub_MemoryLine)data.get(j);
 	}
-	app = new ApplicationStub(codeLines, dataLines, symbolTable);
+	app = new __Stub_Application(codeLines, dataLines, symbolTable);
 	return app;
      }
 
@@ -249,39 +328,55 @@ public class Binary {
        
 	@return The String representation of this binary. */
     public String toString() {  //TODO Symboltablen muutokset uupuvat
-	
+	//System.out.println(contents);
 	if (contents!=null)
 	    return contents;
 	
 	
-	MemoryLineStub[] code=application.getCode();
-	MemoryLineStub[] data=application.getInitialData();
-	SymbolTableStub symbol=application.getSymbolTable();
+	__Stub_MemoryLine[] code=application.getCode();
+	__Stub_MemoryLine[] data=application.getInitialData();
+	__Stub_SymbolTable symbol=application.getSymbolTable();
 	String[] symNames = symbol.getAllSymbols();
 
 	int length = code.length;
 	
-	String s="___b91___\n";
-	s+="___code___\n";
-	s+=+0+" "+(length-1)+"\n"; //HUOM Jos code = 0
+	String s="___b91___";
+	s+=System.getProperty("line.separator", "\n");
+
+	s+="___code___";
+	s+=System.getProperty("line.separator", "\n");
+
+	s+=+0+" "+(length-1); //HUOM Jos code = 0
+	s+=System.getProperty("line.separator", "\n");
 
 	for(int i =0; i<length;i++)
-	    s+=code[i].getBinary()+"\n";
+	    s+=code[i].getBinary()+System.getProperty("line.separator", "\n");
 	
 	length=code.length+data.length;
-	s+="___data___\n"; //HUOM jos data = 0
+	s+="___data___"; //HUOM jos data = 0
+	s+=System.getProperty("line.separator", "\n");
 	s+=""+code.length+" "+(length-1)+"\n";
 
-	for(int i = 0; i<data.length;i++)
-	    s+=""+data[i].getBinary()+"\n";
-	
-	s+="___symboltable___\n";
+	for(int i = 0; i<data.length;i++){
+	    s+=""+data[i].getBinary();
+	    s+=System.getProperty("line.separator", "\n");
+	}
+	s+="___symboltable___";
+	s+=System.getProperty("line.separator", "\n");
 	for(int i=0;i<symNames.length;i++){
-	    s+=""+symNames[i]+" "+symbol.getSymbolValue(symNames[i])+"\n";
+	    if(symNames[0].equalsIgnoreCase("STDOUT")
+	       ||symNames[0].equalsIgnoreCase("STDIN")){ 
+		//TODO tähän korjaus kun symboltable valmistuu
+		s+=""+symNames[i]+" "+symbol.getSymbolValue(symNames[i]);
+	    }
+	    else{
+	    s+=""+symNames[i]+" "+symbol.getSymbolValue(symNames[i]);
+	    s+=System.getProperty("line.separator", "\n");
+	    }
 	}
 	
-	s+="___end___\n";
-
+	s+="___end___";
+	s+=System.getProperty("line.separator", "\n");
 	return s;
 	  
 	   
