@@ -58,6 +58,12 @@ public class Translator {
 			"current set."); // No Message used here.
 	    result = null;
 	}
+	catch(NullPointerException oddity) {
+	  logger.fine("ResourceBundle getString would not just return " +
+		      "null, it insists on casting. Trasnslating string " +
+		      "'" + keyString + "' failed.");
+	  result = null;
+	}
 	if(result == null) { // If there was no luck, try the untranslated.
 	    try {
 		result = defaultTranslations.getString(keyString);
@@ -67,6 +73,11 @@ public class Translator {
 			    "in default set either.");
 		result = null;
 	    }
+	    catch(NullPointerException oddity) {
+   	        logger.fine("Null pointer exception repeated when trying " +
+		   	    "default translations.");
+		result = null;
+	    } 
 	}
 	if(result == null) // If there was still no luck, go for the keystr.
 	    result = keyString;
