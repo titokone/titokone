@@ -171,7 +171,7 @@ public class Compiler {
 			return null;
 		} else {
 			compileDebugger.secondPhase(nextLine, source[nextLine]);
-			info = secondRoundProcess((String)code.get(nextLine), nextLine);
+			info = secondRoundProcess((String)code.get(nextLine));
 			++nextLine;
 			return info;
 		}
@@ -181,14 +181,27 @@ public class Compiler {
 
     /** This method returns the readily-compiled application if the compilation
 	is complete, or null otherwise. */
-    public Application getApplication() throws TODOException {
+    public Application getApplication() throws InvalidStateException {
 	if (compileFinished) {
 		dataMemoryLines = new MemoryLine[data.length];
 		for (int i = 0; i < data.length; ++i) {
-			dataMemoryLines[i] = new MemoryLine(data[i], "");
+			dataMemoryLines[i] = new MemoryLine(Integer.parseInt(data[i]), "");
 		}
+
 		SymbolTable st = new SymbolTable();
-	} else { return new (); }
+		String[] tempSTLine;
+		for (int i = 0; i < symbolTable.size(); ++i) {
+			tempSTLine = (String[])symbolTable.get(i);
+			st.addSymbol(tempSTLine[0], Integer.parseInt(tempSTLine[1]));
+		}
+		
+		if (!defStdin.equals("")) { st.addDefinition("stdin", defStdin); }
+		if (!defStdout.equals("")) { st.addDefinition("stdout", defStdout); }
+
+		return new Application(codeMemoryLines, dataMemoryLines, st);
+
+	} else { throw new InvalidStateException(new Message("").toString()); }
+// TODO
     }
 
     /** This function transforms a binary command number to a MemoryLine 
