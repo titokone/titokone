@@ -102,10 +102,28 @@ public class Translations_fi extends ListResourceBundle {
       {"{0} defined as {1}.", 
        "Asetukselle {0} määriteltiin arvoksi {1}."},	// 449
       {"Invalid DEF operation.", "Epäkelpo DEF-komento."}, // 454
+      {"{0} --> {1} ({2}) ", "{0} --> {1} ({2})"}, // symb --> bin (:-sep. bin); 650
       //ADDED 26.4. OLLi
       {"Missing referred label {0}.", "Käytetty muistiviite {0} puuttuu."}, //662
-      {"{0} --> {1} ({2}) ", "{0} --> {1} ({2})"}, // symb --> bin (:-sep. bin); 650
+      
 
+      {"Compilation failed: {0}", "Käännös epäonnistui: {0}"},         //  767
+      {"invalid label {0}.", "epäkelpo muistiviite {0}."},       //  768
+      {"invalid opcode {0}.", "epäkelpo komento {0}."},             //  781, 787, 1057
+      {"second register expected.", "jälkimmäinen rekisteri on virheellinen."},       //  836, 877, 886
+      {"invalid register {0}.", "epäkelpo rekisteri {0}."},           //  859
+      {"end of line expected.", "rivi päättyy virheellisesti."},           //  908
+      {"first register expected.","ensimmäinen rekisteri on virheellinen."},        //  920, 948
+      {"address expected.", "osoiteosa on virheellinen."},               //  927, 968, 974
+      {"invalid argument.", "epäkelpo argumentti."},               //  939
+      {"address or register expected.", "osoiteosa tai rekisteri on virheellinen."},   //  956
+      {"invalid addressing mode {0}.", "epäkelpo muistinoudon tyyppi {0}."},    //  980
+      {"opcode missing.", "komento puuttuu."},                 //  991
+      {"invalid value {0}.", "arvo {0} on virheellinen."},              // 1072, 1088
+      {"invalid value for a DS {0}.", "virheellinen DS:n arvo: {0}."},     // 1082
+      {"value expected.", "arvo puuttuu."},                // 1097, 1104
+      
+      
       // Class: Control
       {"No default STDIN file set.", "Oletus-STDIN-tiedostoa ei asetettu."},
       {"No default STDOUT file set.", "Oletus-STDOUT-tiedostoa ei asetettu."},

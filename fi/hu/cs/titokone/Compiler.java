@@ -772,6 +772,9 @@ public class Compiler {
 	    ++lineAsArrayIndex;
 	} 
 
+	
+//SOMETHING IS CHANGED!
+	
 /* opcode */
 	if (lineAsArrayIndex < lineAsArray.length) {
 		opcode = lineAsArray[lineAsArrayIndex];

@@ -155,10 +155,26 @@ public class Translations_en extends ListResourceBundle {
       {"Found variable {0}.", null},			// 419 and 436
       {"{0} defined as {1}.", null},			// 449
       {"Invalid DEF operation.", null},			// 454
+      {"{0} --> {1} ({2}) ", null}, // symb --> bin (:-sep. bin); 650
       //ADDED 26.4. OLLI
       {"Missing referred label {0}.", null},		//662
       
-      {"{0} --> {1} ({2}) ", null}, // symb --> bin (:-sep. bin); 650
+      {"Compilation failed: {0}", null},         //  767
+      {"invalid label {0}.", null},             //  768
+      {"invalid opcode {0}.", null},             //  781, 787, 1057
+      {"second register expected.", null},       //  836, 877, 886
+      {"invalid register {0}.", null},           //  859
+      {"end of line expected.", null},           //  908
+      {"first register expected.", null},        //  920, 948
+      {"address expected.", null},               //  927, 968, 974
+      {"invalid argument.", null},               //  939
+      {"address or register expected.", null},   //  956
+      {"invalid addressing mode {0}.", null},    //  980
+      {"opcode missing.", null},                 //  991
+      {"invalid value {0}.", null},              // 1072, 1088
+      {"invalid value for a DS {0}.", null},     // 1082
+      {"value expected.", null},                // 1097, 1104
+      
 
       // Class: Control
       {"No default STDIN file set.", null},
