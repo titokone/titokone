@@ -38,6 +38,11 @@ public class Translations extends ListResourceBundle {
       // Remove lines which you do not wish to translate completely. Leaving
       // in a value of "" will translate the message to "" as well.
 
+      // Class: Animator
+      // General messages: (none)
+      // Exception messages: (none)
+      // Log messages: (none)
+
       // Class: Application.
       // General messages: (none)
       // Exception messages:
@@ -45,10 +50,10 @@ public class Translations extends ListResourceBundle {
         null },
       { "No more stdin data stored on application.", 
 	null },
-      {	"Keyboard input string \"{0}\" invalid, should be eg. \n-separated " +
+      {	"Keyboard input string \"{0}\" invalid, should be eg. \\n-separated " +
 	"list of integers." , 
 	null },
-      { "Stdin input string \"{0}\" invalid, should be eg. \n-separated " +
+      { "Stdin input string \"{0}\" invalid, should be eg. \\n-separated " +
 	"list of integers.", 
 	null },
       // Log messages:
@@ -62,24 +67,13 @@ public class Translations extends ListResourceBundle {
       { "Accepted \"{0}\" as stdin input, tokens found: {1}.", 
 	null }, 
 
-      // Class: Settings.
-      // General messages: (none)
-      // Exception messages: 
-      { "value", null },
-      { "a linebreak", null },
-      { "Illegal {0} \"{1}\", contains {2}.", null },
-      { "Illegal {0}: null. Try an empty string instead.", null },
-      { "Syntax error on line {0}, which was: \"{1}\".", null },
-      // Log messages: 
-      { "Settings successfully parsed, lines: {0}, unique keys found: {1}.", 
-	null },
+      // Class: BinaryInterpreter, no messages.
 
       // Class: Binary
-      {"___B91___ is missing.", null},
+      {"___b91___ is missing.", null},
       {"___code___ is missing.", null},
       {"Invalid code area value on line: {0}", null},
       {"Invalid code area length on line: {0}", null},
-      {"Invalid command on line: {0}", null},
       {"Invalid command on line: {0}", null},
       {"Invalid number of code lines.", null},
       {"___data___ is missing.", null},
@@ -92,22 +86,8 @@ public class Translations extends ListResourceBundle {
       {"___end___ is missing.", null},
       {"Lines after ___end___", null},
       
-      // Class: Control
-      {"No application to load.", null},
-      {"Application contained an odd definition key '{0}'.", null},
-      {"Trying to run an unsupported type of application. (The application " +
-       "must be created using the same program.)", null},
-      {"Cannot form a binary out of an unsupported type of an application. " +
-       "(The application must be created using the same program.)", null},
-      {"Memory size must be between 2^9 and 2^16, a change to 2^{0} failed.", 
-      null},
-      {"StdIn file contents are invalid; the file should contain only " +
-       "integers and separators.", null},
-      {"Writing STDOUT to {0} will not work; access check failed.", null},
-      {"Cannot deduce the file to store the binary into; no source " +
-       "file has been loaded.", null},
-      {"Cannot save binary to file; no application has been compiled or " +
-       "loaded.", null},
+      // Class: CompileDebugger, no messages.
+      // Class: CompileInfo, no messages.
 
       // Class: Compiler				// line (approx)
       {"Compilation is not finished yet.", null},	// 203
@@ -117,19 +97,45 @@ public class Translations extends ListResourceBundle {
       {"Variable {0} used.", null},			// 328
       {"Label {0} found.", null},			// 333
       {"Invalid size for a DS.", null},			// 358 and 362
-      {"Invalid size for a DC.", null},			// 373
+      {"Invalid value for a DC.", null},		// 373
       {"Variable {0} defined as {1}.", null},		// 401
       {"Found variable {0}.", null},			// 419 and 436
       {"{0} defined as {1}.", null},			// 449
       {"Invalid DEF operation.", null},			// 454
-      {"{0} --> {1} ({2}) ", null},			// 650
+      {"{0} --> {1} ({2}) ", null}, // symb --> bin (:-sep. bin); 650
+
+      // Class: Control
+      {"No application to load.", null},
+      {"STDIN data file unreadable: {0}", null}, 
+      {"STDIN data file contains invalid data: {0}", null},
+      {"Application contained an odd definition key '{0}'.", null},
+      {"Trying to run an unsupported type of application. (The application " +
+       "must be created using the same program.)", null},
+      {"Cannot form a binary out of an unsupported type of an application. " +
+       "(The application must be created using the same program.)", null},
+      {"There is no application available to run from!", null},
+      {"Memory size must be between 2^9 and 2^16, a change to 2^{0} failed.", 
+      null},
+      {"StdIn file contents are invalid; the file should contain only " +
+       "integers and separators.", null},
+      {"Cannot deduce the file to store the binary into; no source " +
+       "file has been loaded.", null},
+      {"Cannot save binary to file; no application has been compiled or " +
+       "loaded.", null},
+
+      // Class: DebugInfo, no messages.
 
       // Class: FileHandler
       {"{0} in loadResourceBundle(): {1}", null},
       {"No read access to {0}.", null},
       {"No write access to {0}.", null},
       
-      // Class: GUI
+      // Class: GUIBrain (not fully processed) - TODO
+      {"Enter a number in the keyboard field above.", null},
+
+      // Class: GUICompileSettingsDialog - not processed yet - TODO
+
+      // Class: GUI (not fully processed) - TODO
       {"Open", null},
       {"Compile", null},
       {"Run", null},
@@ -155,15 +161,24 @@ public class Translations extends ListResourceBundle {
       {"Symbol table", null},
       {"Registers", null},
       
-      // Class: GUIBrain
-      {"Enter a number in the keyboard field above.", null},
+      // Class: GUIRunSettingsDialog - not processed yet - TODO
+      // Class: GUIThreader, no messages.
+      // Class: Interpreter, no messages.
+      // Class: InvalidDefinitionException, no messages.
+      // Class: InvalidSymbolException, no messages.
+      // Class: JTableX, no messages.
 
       // Class: Loader
-      {"Loading to memory failed on line {0}.", null},
-      {"Loads program", null},
+      {"Null is an invalid parameter, instance of {0} required.", null},
+      {"Program loaded into memory. FP set to {0} and SP to {1}.", null},
       
+      // Class: LoadInfo, no messages.
+      // Class: MemoryLine, no messages.
+      // Class: Message, no messages. (Surprising, huh?)
+      
+     
       // Class: Processor
-      {"Invalid operation code", null},
+      {"Invalid operation code {0}", null},
       {"Memory address out of bounds", null},
       {"Invalid memory addressing mode", null},
       {"Invalid memory access mode in branching command", null},
@@ -173,14 +188,53 @@ public class Translations extends ListResourceBundle {
       {"Invalid device number", null},
       {"Integer overflow", null},
       {"Division by zero", null},
-      {"Rownumber {0} is beyond memory limits.", null}, // in memoryInput
+      {"Row number {0} is beyond memory limits.", null}, // in memoryInput
+      
+      // Class: RandomAccessMemory
+      {"Memory size cannot be negative.", null},
+      {"Tried to set symbol table to null.", null}, 
+      {"Trying to load a null memory line.", null},
+      {"Address {0} too large, memory size {1} (indexing starts at 0).",
+       null},
+      {"Address {0} below zero.", null},
+      {"Code area size cannot be negative.", null},
+      {"Code area size cannot be bigger than the size of the whole memory.", 
+       null},
+      {"Data area size cannot be negative.", null},
+      {"Data area size cannot be bigger than the size of the whole memory.",
+       null},
+      
+      // Class: Registers
+      {"Unknown registerId: {0}", null},
+      {"Unknown registerName: {0}", null},
+      
+      // Class: ResourceLoadFailedException, no messages.
+      // Class: RunDebugger, not processed yet - TODO.
+      // Class: RunInfo, no messages.
+      
+      // Class: Settings.
+      // General messages: (none)
+      // Exception messages: 
+      { "value", null },
+      { "a linebreak", null },
+      { "Illegal {0} \"{1}\", contains {2}.", null },
+      { "Illegal {0}: null. Try an empty string instead.", null },
+      { "Syntax error on line {0}, which was: \"{1}\".", null },
+      // Log messages: 
+      { "Settings successfully parsed, lines: {0}, unique keys found: {1}.", 
+	null },
+
+      // Class: Source, no messages.
+      // Class: SymbolicInterpreter, no messages.
       
       // Class: SymbolTable
+      {"SymbolName was null.", null},
       {"Definition key was null.", null},
-      {"Definition {0} not found.", null},
+      {"Definition {0} not found.", null}
+
+      // Class: Translator: no translateable strings set to avoid 
+      // looping bugs.
 
       // Localizable bit ends. 
-      // TODO: poista rivi alta, viim. ylläolevan parin perästä pilkku pois. 
-      { "Eliminator of comma-problems.", "Remove when ready!" } 
   };
 }
