@@ -1,3 +1,5 @@
+//TODO hashtables, methods that check opcodes, registers etc.
+
 package fi.hu.cs.titokone;
 
 import java.util.HashMap;
