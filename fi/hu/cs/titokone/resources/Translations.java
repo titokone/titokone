@@ -206,7 +206,11 @@ public class Translations extends ListResourceBundle {
       {"Unknown registerName: {0}", null},
       
       // Class: ResourceLoadFailedException, no messages.
-      // Class: RunDebugger, not processed yet - TODO.
+      // Class: RunDebugger, comments
+      {"{0}{1} Indexing {2}, direct", null},
+      {"{0}{1} Indexing {2}, direct addressing", null},
+      {"{0}{1} Indexing {2}, indirect addressing", null},
+      
       // Class: RunInfo, no messages.
       
       // Class: Settings.

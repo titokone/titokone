@@ -346,9 +346,6 @@ public class RunInfo extends DebugInfo{
     public String getSVC(){
 		return svcOperation;    
 	}
-    
-	//TODO, Guille. Pitää kysyä Artolta mihin käyttöön!
-	public String getSymbolUsed() {
-        return "something";
-	}
+  
+
 }
