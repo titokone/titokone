@@ -1359,7 +1359,7 @@ private void initGUI() {
      
      public void editingStopped(ChangeEvent e) {
        codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getMaxTextLengthInColumn(0));   
-       guibrain.saveSource(); // Added by Sini 5.5.
+       guibrain.saveSource(); 
      }
    });
   
