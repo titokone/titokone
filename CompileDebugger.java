@@ -9,7 +9,7 @@ package fi.hu.cs.titokone;
 public class CompileDebugger {
     
     private CompileInfo info;
-    private String language = "English";
+
 
     private String statusMessage;
     private String comments;
@@ -48,7 +48,7 @@ public class CompileDebugger {
 
     
     
-    public CompileDebugger(String Language){}
+    public CompileDebugger(){}
 
     public void firstPhase(int lineNumber, boolean lineEmpty){}
     public void firstPhase(int lineNumber, String lineContents){}

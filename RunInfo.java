@@ -76,6 +76,8 @@ public class RunInfo extends DebugInfo{
     private int device;
     private int value;
 
+    private int SVCOperation;
+
        
     private int[][] changedRegisters;
     private int[][] changedMemory;
@@ -108,6 +110,10 @@ public class RunInfo extends DebugInfo{
     
 
     public void setConditionalJump(int whichBit, boolean status){}
+
+    public void setSVCOperation(int operation){}
+
+
 
     public boolean returnConditionalJump(){}
     public int returnWhichBit(){}
@@ -170,7 +176,7 @@ public class RunInfo extends DebugInfo{
 	new value.*/
     public int[] returnCompareResult(){}
 
-   
+    public int returnSVC;
        
     
     

@@ -19,7 +19,7 @@ public class CompileInfo extends DebugInfo {
       -1 during the finalizing phase. */
   private int lineNumber;
   private String lineContents;
-  // Variables for first round.
+ 
 
     /** This array contains codelines after first round. */
     String[] memory;
@@ -29,8 +29,7 @@ public class CompileInfo extends DebugInfo {
       that other checks can be skipped. */
   private boolean lineEmpty = false;
   /** This field contains the name of a symbol found on this line 
-      from the parameter field (this also includes labels in the parameter
-      field, but not ones defined). It will be set to "" if no symbol 
+      from the parameter field. It will be set to "" if no symbol 
       was found on this line. See also symbolValue, symbolDefined and
       label variables. */
   private String symbolName = "";
@@ -44,16 +43,22 @@ public class CompileInfo extends DebugInfo {
     /** This field contains the address of the symbol.*/
     private int symbolAddress;
 
-  // First or second round variable:
+    /** This field contains information if a symbol was foud.*/
+    private boolean symbolFound;
+    /** This field contains information if a label was found.*/
+    private boolean labelFound;
+
+ 
   /** This field contains the name of a label found from the beginning of
       this line. It will be set to "" if no label was found on this line.*/
   private String labelName = "";
   
-  // Variables for the second round.
-
+    /** This field contains line as a binary.*/
   private int lineBinary;
 
+    /** This field is true if found label was defined before. */
   private boolean labelDefined = false;
+    /** This field contains value of the current label.*/
   private int labelValue;
 
   // Variables for finalization phase.
@@ -93,7 +98,13 @@ public class CompileInfo extends DebugInfo {
     /** This method sets lineEmpty value to true. */
     public void setLineEmpty(){}
 
-    /** This field sets the name of a found symbol.
+    /** This method sets symbolFound field.*/
+    public void setSymbolFound(){}
+
+    /** This method sets labelFound field.*/
+    public void setLabelFound(){}
+
+    /** This method sets the name of a found symbol.
 	@param name String containing the symbol name.
     */
     public void setSymbolName(String name){}
@@ -170,10 +181,20 @@ public class CompileInfo extends DebugInfo {
     */
     public String returnSymbolName(){}
 
-    /** This method returns true if symbol was defined.
+    /** This method returns true if a symbol was defined.
 	@return boolean containing information if symbol was defined.
     */
     public boolean returnSymbolDefined(){}
+
+    /** This method returns true if a label was found.
+	@return boolean containing information if label was found.
+    */
+    public boolean returnLabelFound(){}
+
+    /** This method returns true if a symbol was found.
+	@return boolean containing information if symbol was found.
+    */
+    public boolean returnSymbolFound(){}
 
     /** This method returns value of current symbol.
 	@return An integer containing symbol's value.
