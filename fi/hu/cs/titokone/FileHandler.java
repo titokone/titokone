@@ -18,6 +18,15 @@ public class FileHandler {
     /** This class has its own logger. */
     public static String loggerName = "fi.hu.cs.titokone.filehandler";
 
+    /** Read only access to file */
+    public static final int READ_ACCESS = 1;
+
+    /** Append access to file */
+    public static final int APPEND_ACCESS = 2;
+
+    /** Write access to file */
+    public static final int WRITE_ACCESS = 3;
+    
     /** This class sets up a new FileHandler and sets up its Logger. */
     public FileHandler() {}
 
