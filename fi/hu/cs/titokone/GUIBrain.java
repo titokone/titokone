@@ -213,7 +213,9 @@ public GUIBrain(GUI gui) {
   
   noPauses = false;
   interruptSent = false;
-  saveSettings();
+  // Removed 26.4./Sini. The settings have not really changed into anything
+  // interesting at this point.
+  //saveSettings();
   
   currentState = NONE;
 }
