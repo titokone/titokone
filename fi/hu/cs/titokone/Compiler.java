@@ -113,7 +113,8 @@ public class Compiler {
     public void compile(String source) { 
 	firstRound = true;
 	compileFinished = false;
-	this.source = source.split("[\n\r\f\u0085\u2028\u2029]+");
+	this.source = source.split("[\n\r\f\u0085\u2028\u2029]");
+// antti: removed + from the split
 
 	nextLine = 0;
 	defStdin = "";
