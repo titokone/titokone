@@ -1,5 +1,7 @@
 package fi.hu.cs.titokone;
 
+import java.util.HashMap;
+
 /** This class contains the information to translate a command in 
     binary form to its symbolic string form. Naturally, if a command
     has been transformed from its symbolic form to binary, the transformation
