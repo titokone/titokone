@@ -110,6 +110,23 @@ public class Compiler {
 	completed. */
     private CompileInfo secondRoundProcess(String line) {  }
 
+/* Antti: 04.03.04
+Do a pure binary translation first, then when all sections are complete, convert the binary to an 
+integer. Needs variables for opcode(8bit), first operand(3 bit)(r0 to r7), m-part(memory format, 
+direct, indirect or from code), possible index register (3 bit) and 16 bits for the address.
+Once STORE is converted to a 00000001 and the rest of the code processed we get 32bit binary that
+is the opcode from symbolic opcode.
+
+Basic functionality:
+	Convert opcode (8bit)
+	check which register (0 to 7)
+	=, Rj/addr or @ (00, 01, 10 or 11) CHECK FROM A DUMP!
+	if addr(Ri) or Rj(Ri)(0 to 7)
+	convert address (16bit)
+
+	Store both formats to a data array (symbolic and binary).
+*/
+
     /** This function generates a StringTokenizer from the source string. 
 	The delimiters used are \r\n\f.
 	@param source The source string to tokenize.
