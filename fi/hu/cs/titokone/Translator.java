@@ -2,6 +2,7 @@ package fi.hu.cs.titokone;
 
 import java.util.ResourceBundle;
 import java.util.Locale;
+import java.util.logging.Logger;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.net.URL;
@@ -11,9 +12,16 @@ import java.net.URLClassLoader;
     language is currently set, but does not know specifically what 
     languages are currently available. */
 public class Translator {
+    /** This field should be false during normal operation. It can be 
+	set to true to enable some testability quirks. */
+    private static final boolean TESTING = false; 
+
     /** This name identifies the resource files containing translations 
 	for this software. */
-    public static final String resourceFamilyName = "Translations";
+    public static final String resourceFamilyName = 
+	(TESTING ? "fi/hu/cs/titokone/__stub_translations" : 
+	 "fi/hu/cs/titokone/resources/Translations");
+
     /** This field contains the default locale. */
     public static final Locale defaultLocale = Locale.ENGLISH;
 
@@ -22,9 +30,10 @@ public class Translator {
     private static Locale currentLocale = defaultLocale;
     /** This field stores the default ResourceBundle. */
     private static ResourceBundle defaultTranslations = 
-	ResourceBundle.getBundle(resourceFamilyName, defaultLocale);
+	(TESTING ? new __stub_translations() : 
+	 ResourceBundle.getBundle(resourceFamilyName, defaultLocale));
     /** This field stores the current ResourceBundle in use. */
-    private static ResourceBundle translations = defaultTranslations;
+    private static ResourceBundle translations = defaultTranslations; 
 
     /** This function translates a fixed string to the currently used 
 	language. If the current language has no string corresponding to
@@ -37,10 +46,14 @@ public class Translator {
 	usable. */
     public static String translate(String keyString) { 
 	String result = null;
+	Logger logger = 
+	    Logger.getLogger(Translator.class.getPackage().getName());
 	try {
 	    result = translations.getString(keyString);
 	}
 	catch(MissingResourceException untranslatedKey) {
+	    logger.fine("Translation for " + keyString + " not found in " +
+			"current set."); // No Message used here.
 	    result = null;
 	}
 	if(result == null) { // If there was no luck, try the untranslated.
@@ -48,6 +61,8 @@ public class Translator {
 		result = defaultTranslations.getString(keyString);
 	    }
 	    catch(MissingResourceException totallyUnknownKey) {
+		logger.fine("Translation for " + keyString + " not found " +
+			    "in default set either.");
 		result = null;
 	    }
 	}
@@ -92,9 +107,17 @@ public class Translator {
 	@param newLocale The locale to switch to, eg. new Locale("fi", 
 	"FI"). */
     public static void setLocale(Locale newLocale) { 
+	Logger logger = 
+	    Logger.getLogger(Translator.class.getPackage().getName());
+	if(newLocale == null)
+	    throw new IllegalArgumentException("Trying to set locale to " +
+					       "null.");
 	currentLocale = newLocale;
 	translations = ResourceBundle.getBundle(resourceFamilyName,
-						currentLocale);
+						newLocale);
+	logger.fine("Locale changed, new locale " + newLocale.toString() + 
+		    ", translations from class " + 
+		    translations.getClass().getName() + ".");
     }
 
     /** This method sets the current locale in use and tries to fetch the
@@ -108,8 +131,20 @@ public class Translator {
 	setLocale(Locale) can be used. */
     public static void setLocale(Locale newLocale, 
 				 ResourceBundle newTranslations) {
+	Logger logger = 
+	    Logger.getLogger(Translator.class.getPackage().getName());
+	if(newLocale == null)
+	    throw new IllegalArgumentException("Trying to set locale to " +
+					       "null.");
+	if(newTranslations == null)
+	    throw new IllegalArgumentException("Trying to set translations " +
+					       "to null.");
 	currentLocale = newLocale;
 	translations = newTranslations;
+	logger.fine("Locale changed with set translations, new locale " + 
+		    newLocale.toString() + 
+		    ", translations from class " + 
+		    translations.getClass().getName() + ".");
     }
 
     /** This method returns the resource bundle in use.
@@ -118,5 +153,4 @@ public class Translator {
     public static ResourceBundle getResourceBundle() {
 	return translations;
     }
-
 }
