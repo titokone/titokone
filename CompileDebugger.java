@@ -6,7 +6,7 @@ package fi.hu.cs.titokone;
 
 
 
-public class CompileDebugger extends Debugger {
+public class CompileDebugger {
     
     private CompileInfo info;
     private String statusMessage;
@@ -38,9 +38,9 @@ public class CompileDebugger extends Debugger {
 
     /** This method tells that a label was found and it is added to the
      symboltable. */
-    public void labelName(String name){}
+    public void foundLabel(String name){}
     /** This method tells that for given label points to given line. */ 
-    public void labelADDR(String name, int lineNumber){}
+    public void foundLabel(String name, int lineNumber){}
 
     
     
@@ -49,8 +49,9 @@ public class CompileDebugger extends Debugger {
     public void firstPhase(int lineNumber, boolean lineEmpty){}
     public void firstPhase(int lineNumber, String lineContents){}
     public void firstPhase(){}		   
-    
-    public void setInitPointers(int sp, int fp){}
+    public void finalFirstPhase(String[] memory){}
+
+
 
 
 
@@ -59,17 +60,18 @@ public class CompileDebugger extends Debugger {
 
 	 */
     
-    public void secondPhase( int lineNumber, String lineContents, String IR){
-    }
-    
+    public void secondPhase(int lineNumber, String lineContents, int binary,
+			     String IR){}
+
+
     public void finalPhase(){}
     
 
-
+    public void setInitPointers(int sp, int fp){}
     
     public void setMemoryline(int line, int value){}
   
-    public void binary(int binary){}
+
     private void setStatusMessage(String message){}
     
     /** This private method sets collected comments to the CompileInfo.*/
