@@ -18,9 +18,9 @@ public class Translator {
 
     /** This name identifies the resource files containing translations 
 	for this software. */
-    public static final String resourceFamilyName = 
-	(TESTING ? "fi/hu/cs/titokone/__stub_translations" : 
-	 "fi/hu/cs/titokone/resources/Translations");
+    public static final String resourceFamilyName = "fi/hu/cs/titokone/resources/Translations";
+	/*(TESTING ? "fi/hu/cs/titokone/__stub_translations" :
+	 "fi/hu/cs/titokone/resources/Translations");*/
 
     /** This field contains the default locale. */
     public static final Locale defaultLocale = Locale.ENGLISH;
@@ -29,9 +29,9 @@ public class Translator {
 	defaultLocale. */
     private static Locale currentLocale = defaultLocale;
     /** This field stores the default ResourceBundle. */
-    private static ResourceBundle defaultTranslations = 
-	(TESTING ? new __stub_translations() : 
-	 ResourceBundle.getBundle(resourceFamilyName, defaultLocale));
+    private static ResourceBundle defaultTranslations =  ResourceBundle.getBundle(resourceFamilyName, defaultLocale);
+	/*(TESTING ? new __stub_translations() : 
+	 ResourceBundle.getBundle(resourceFamilyName, defaultLocale));*/
     /** This field stores the current ResourceBundle in use. */
     private static ResourceBundle translations = defaultTranslations; 
 

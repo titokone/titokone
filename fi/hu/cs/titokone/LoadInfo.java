@@ -9,26 +9,26 @@ code area and the data area as a MemoryLine array. The code is in its
 numeric form as well as a list of symbolic operation codes with comments and
 symbols in place, if known. LoadInfo also stores the values of FP and 
 SP.*/
-public class LoadInfo extends DebugInfo {
+public class LoadInfo extends __stupid_DebugInfo {
   /** This field contains the contents of the code area after the loading
       is complete. */
-  private MemoryLine[] codeArea;
+  private __stupid_MemoryLine[] codeArea;
 
  /** 
    This field contains the symbotable
  */
-  private SymbolTable symbolTable;
+  private __stupid_SymbolTable symbolTable;
 
 
   /** This field contains the contents of the data area after the loading
       is complete. */
-  private MemoryLine[] dataArea;
+  private __stupid_MemoryLine[] dataArea;
   /** This field contains the value to be stored to the SP register. */
   private int initSP;
   /** This field contains the value to be stored to the FP register. */
   private int initFP;
   /** This fiels stores the status message to be shown to user in GUI. */
-  private String statusMessage;
+  //private String statusMessage;
   
   /**
      @param codeArea Has the opcodes as MemoryLine array
@@ -38,22 +38,22 @@ public class LoadInfo extends DebugInfo {
      @param initFP The initial value of FP
      @param statusMessage Message to GUI to be displayed at the status bar.
     */ 
-  public LoadInfo(MemoryLine[] codeArea, MemoryLine[] dataArea, 
-                  SymbolTable symbolTable, int initSP, int initFP, String statusMessage) { 
+  public LoadInfo(__stupid_MemoryLine[] codeArea, __stupid_MemoryLine[] dataArea, 
+                  __stupid_SymbolTable symbolTable, int initSP, int initFP, String statusMessage) { 
   
     this.codeArea = codeArea;
     this.dataArea = dataArea;
     this.symbolTable = symbolTable;
     this.initSP = initSP;
     this.initFP = initFP;
-    this.statusMessage = statusMessage;
-    }
+    super.setStatusMessage(statusMessage);
+  }
   
   /**@return String array that contains the symbolic operation codes.
    */
   public String[] getSymbolicCommands() { 
-    String[] retString = new String[codeArea.size];
-    for (int i=0 ; i<codeArea.size ; i++) {
+    String[] retString = new String[codeArea.length];
+    for (int i=0 ; i<codeArea.length ; i++) {
       retString[i] = codeArea[i].getSymbolic();
     }
     return retString;
@@ -62,8 +62,8 @@ public class LoadInfo extends DebugInfo {
   /**@return Int array that contains operation codes in their numeric form.
     */
   public int[] getBinaryCommands() { 
-    int[] retInt = new int[codeArea.size];
-    for (int i=0 ; i<codeArea.size ; i++) {
+    int[] retInt = new int[codeArea.length];
+    for (int i=0 ; i<codeArea.length ; i++) {
       retInt[i] = codeArea[i].getBinary();
     }
     return retInt;
@@ -72,8 +72,8 @@ public class LoadInfo extends DebugInfo {
   /**@return Int array that contains the data segment of a program in memory.
     */
   public int[] getData() { 
-    int[] retInt = new int[dataArea.size];
-    for (int i=0 ; i<dataArea.size ; i++) {
+    int[] retInt = new int[dataArea.length];
+    for (int i=0 ; i<dataArea.length ; i++) {
       retInt[i] = dataArea[i].getBinary();
     }
     return retInt;
@@ -85,7 +85,7 @@ public class LoadInfo extends DebugInfo {
     String[][] symbolsValues = new String[symbols.length][2];
     for (int i = 0 ; i < symbols.length ; i++) {
       symbolsValues[i][0] = symbols[i];
-      symbolsValues[i][1] = symbolTable.getSymbolValue(symbols[i]);
+      symbolsValues[i][1] = ""+symbolTable.getSymbolValue(symbols[i]);
     }
     return symbolsValues;
   }
@@ -106,8 +106,9 @@ public class LoadInfo extends DebugInfo {
   
    /**@return The message for GUI to be displayed at the status bar.
     */
-  public String getStatusMessage() { 
+  /*public String getStatusMessage() { 
     return statusMessage;
-  }
+    //This is not needed, because DebugInfo already implements it.
+  }*/
 
 }

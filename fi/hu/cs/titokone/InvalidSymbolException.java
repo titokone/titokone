@@ -6,7 +6,5 @@ public class InvalidSymbolException extends Exception {
     /** This constructor sets up an instance of the class. 
 	@param message The message to describe the problem more
 	verbosely, for the user's eyes. */
-    public InvalidSymbolException(String message) {
-      super(message);
-    }
+    public InvalidSymbolException(String message) {}
 }

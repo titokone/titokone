@@ -232,11 +232,16 @@ public void menuCompile() {
   gui.enable(__stupid_GUI.STOP_COMMAND);
   
   compileinfo = control.compileLine();
-
+  
+  /* This is a variable for debugging */int n = 0; 
+  
   while ( interruptSent == false ) {
-      
+    
+    /* This is for debugging */ if(n++ > 20) interruptSent = true;
+        
     int phase = compileinfo.getPhase();
-
+    
+    
     if (phase == __stupid_CompileInfo.FIRST_ROUND) {
       
       if (compileinfo.symbolFound()) {
@@ -285,14 +290,17 @@ public void menuCompile() {
 	    
 
     
-
-	
-    if ( ((compilemode & PAUSED) != 0) && compileinfo.getComments().equals("") ) {
+    gui.selectRow(GUI.CODE_TABLE, compileinfo.getLineNumber());
+    gui.repaint();
+            
+	  if ( ((compilemode & PAUSED) != 0) && !compileinfo.getComments().equals("") ) {
       gui.enable(__stupid_GUI.CONTINUE_COMMAND);
       gui.enable(__stupid_GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
+      System.out.println("wait");
       waitForContinueTask();
       gui.disable(__stupid_GUI.CONTINUE_COMMAND);
-      gui.disable(__stupid_GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
+      gui.disable(__stupid_GUI.CONTINUE_WITHOUT_PAUSES_COMMAND); 
+      
     }
     compileinfo = control.compileLine();
   }
@@ -410,16 +418,23 @@ public void menuManual() {}
     commented task can continue. 
 */
 public void continueTask() {
-  sleeping = false;
+  //sleeping = false;
+  synchronized(this) {
+    notify();
+  }
   return;
 }
 
 
 public void waitForContinueTask() {
   
-  sleeping = true;
-  while (sleeping) {
-    //do nothing at all, just wait until continueTask() changes sleeping to false.
+  synchronized(this) {
+    try {
+      wait();
+    }
+    catch (InterruptedException e) {
+      System.out.println("InterruptedException");
+    }
   }
   return;
 }

@@ -12,6 +12,13 @@ public class Loader {
     */
   private Application application;
   
+  
+  private Processor processor; 
+
+public Loader(Processor processor) {
+  this.processor = processor;
+}
+
 /**You can set the file to load. Each time an application is set to load, the counter is set to 
 one.
 */
