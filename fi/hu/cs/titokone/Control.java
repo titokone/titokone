@@ -1,3 +1,5 @@
+/* Copyright 2004 University of Helsinki, Department of Computer
+   Science. See license.txt for details. */
 package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.*;

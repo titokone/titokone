@@ -1,3 +1,6 @@
+/* Copyright 2004 University of Helsinki, Department of Computer
+   Science. See license.txt for details. */
+    
 package fi.hu.cs.titokone.resources;
 
 import java.util.ListResourceBundle;

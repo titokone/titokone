@@ -1,3 +1,5 @@
+/* Copyright 2004 University of Helsinki, Department of Computer
+   Science. See license.txt for details. */
 package fi.hu.cs.titokone;
 
 /** This class represents a situation where a symboltable has been
