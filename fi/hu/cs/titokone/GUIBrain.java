@@ -854,17 +854,25 @@ public void refreshRunningOptions() {
 
 public void menuSetRunningOption(int option,boolean b) {
   int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
+  boolean adjustAnimationOff = false, adjustLineByLineOn = false;
   
+  // First, update running mode. If the option LINE_BY_LINE was turned
+  // off, turn ANIMATED off. If the option ANIMATED was turned on,
+  // turn LINE_BY_LINE on.
   if (((runmode & option) != 0) == b) {
     // do nothing
   }
   else if ((runmode & option) != 0) {
-    runmode -= option;
+    runmode -= option; // Something was turned off.
+    if(option == LINE_BY_LINE) // Was it LINE_BY_LINE? 
+      adjustAnimationOff = true;
   }
   else if ((runmode & option) == 0) {
-    runmode += option;
+    runmode += option; // Something was turned on.
+    if(option == ANIMATED) // Was it ANIMATED?
+      adjustLineByLineOn = true;
   }
-  
+
   currentSettings.setValue(Settings.RUN_MODE, runmode);
   saveSettings();
   
@@ -885,6 +893,14 @@ public void menuSetRunningOption(int option,boolean b) {
         gui.hideAnimator();
       break;
   }    
+  // Finally, we repeat the process to a) turn animation off if line-by-line
+  // running was turned off, and b) turn line-by-line running on if animation
+  // was turned on. Note the lack of infinite looping which we are proud of.
+  if(adjustAnimationOff)
+    menuSetRunningOption(ANIMATED, false); 
+  if(adjustLineByLineOn)
+    menuSetRunningOption(LINE_BY_LINE, true); 
+
 }
 
 
