@@ -80,3 +80,12 @@ FileHandler  SR 5.4.    checkAccess palauttaa vain booleanin, tehtiin privaatist
                         testAccessista checkAccess joka heittää poikkeuksia ja poistettiin 
                         checkAccess, joka oli sekin lisätty suunnittelun jälkeen. SaveStdOut 
                         poistettu turhana.
+
+Processor    SY 16.4.  	lisdtty: getMemoryLine (int row)
+			status-kenttd lisdtty, jotta prossu tietdd tilansa.
+			getStatus-metodi palauttaa TTK91Cpu rajapinnan mukaisi arvoja
+			kentdt pc ja ir poistettu koska ne lvytyvdt prosessorin rekistereistd
+			kentdt mar ja mbr poistettu turhina
+			kdskyjd kdsittelevien metodien svc, subr, stack, branch, comp ja alu parametreja muutettu.
+			boolean MemoryInput (MemoryLine inputLine)->void memoryInput (int rowNumber, MemoryLine inputLine)
+			boolean eraseMemory() -> void eraseMemory()
