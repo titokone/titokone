@@ -313,18 +313,18 @@ public class Compiler {
 			variableUsed = true;
 			compileDebugger.foundSymbol(lineTemp[4]);
 			
-			if (!symbols.containsKey(lineTemp[0])) {
+			if (!symbols.containsKey(lineTemp[4])) {
 			    if (invalidLabels.get(lineTemp[4]) == null) {
 				symbols.put(lineTemp[4], new 
 					    Integer(symbolTable.size()));
-				symbolTableEntry[0] = lineTemp[0];
+				symbolTableEntry[0] = lineTemp[4];
 				symbolTableEntry[1] = "";
 				symbolTable.add(symbolTableEntry);
 			    } else {
 // reserver word was used	
 				symbols.put(lineTemp[4], 
 					    new Integer(symbolTable.size()));
-				symbolTableEntry[0] = lineTemp[0];
+				symbolTableEntry[0] = lineTemp[4];
 				symbolTableEntry[1] = "" + 
 				    (Integer) invalidLabels.get(lineTemp[4]);
 				symbolTable.add(symbolTableEntry);
@@ -588,7 +588,7 @@ public class Compiler {
 	
 // make new SymbolTable
 	String[][] newSymbolTable = new String[symbolTable.size()][2];
-	for (int i= 0; i < newSymbolTable.length; ++i) { 
+	for (int i = 0; i < newSymbolTable.length; ++i) { 
 	    newSymbolTable[i] = (String[])symbolTable.get(i);
 	}
 
