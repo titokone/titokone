@@ -209,7 +209,7 @@ public class Translations extends ListResourceBundle {
       // Class: RunDebugger, comments
       {"{0}{1} Indexing {2}, direct.", null},
       {"{0}{1} Indexing {2}, direct addressing.", null},
-      {"{0}{1} Indexing {2}, indirect addressing"., null},
+      {"{0}{1} Indexing {2}, indirect addressing.", null},
       
       // Comment with value (=KBD, =CRT =STDIN =STDOUT)
       {"{0}{1} Indexing {2}, direct, value {3}.", null},
