@@ -499,9 +499,9 @@ public class Animator extends JPanel implements Runnable {
     }
     
     /** Initalizes animation.
-    @param registers Start values of the registers.
-    @param base Value of the BASE register in MMU.
-    @param limit Value of the LIMIT register in MMU. */
+    @param cpu A TTK91Cpu, giving the start values of the registers.
+    @param baseValue Value of the BASE register in MMU.
+    @param limitValue Value of the LIMIT register in MMU. */
     public void init (TTK91Cpu cpu, int baseValue, int limitValue) {
         value[R0] = cpu.getValueOf (TTK91Cpu.REG_R0);
         value[R1] = cpu.getValueOf (TTK91Cpu.REG_R1);
