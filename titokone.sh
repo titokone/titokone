@@ -25,5 +25,8 @@ INSTALL_DIRECTORY=.
 # turning this script into something more sophisticated.
 # The additional '/' between titokone.jar and INSTALL_DIRECTORY
 # exists to allow both directories with or without / in their end.
+# If you wish to pass additional parameters to the command, you can just
+# add them after the ./titokone.sh. For example, ./titokone.sh -vvv 
+# starts up titokone.jar in verbose debugging mode.
 
-java -classpath ${INSTALL_DIRECTORY}/titokone.jar -jar ${INSTALL_DIRECTORY}/titokone.jar
+java -classpath ${INSTALL_DIRECTORY}/titokone.jar -jar ${INSTALL_DIRECTORY}/titokone.jar $@
