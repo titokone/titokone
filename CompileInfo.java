@@ -57,13 +57,14 @@ public class CompileInfo extends DebugInfo {
   private int[] initPointers;
 
   private boolean definingDS; // or DC.
+  private boolean definingDC;
   private int value; // DC/DS.
 
   public CompileInfo(String statusMessage, short phase, int lineNumber,
 		     String lineContents) {}
   // (final phase constructor)
   public CompileInfo(String statusMessage, short phase, int lineNumber) {}
-
+    
   /* Vielä metodit tueksi näille:
      all: set statusmessage (in parent), set phase, set linenumber
      and line contents if applicable (not final phase).
@@ -76,5 +77,17 @@ public class CompileInfo extends DebugInfo {
      - set definingDS, value, symbolName, symbolValue
      final phase final: 
      - set SP, FP in initPointers. */
+
+    
+    
+    /** This method sets lineEmpty value to true. */
+    public void setLineEmpty(boolean empty){}
+
+    public void setSymbolName(String name, boolean defined, int value){}
+    
+    
+    
+    
+
 }
 
