@@ -335,9 +335,6 @@ public void menuRun() {
   RunInfo runinfo;
   int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
   
-  currentState = B91_RUNNING;
-  setGUICommandsForCurrentState();
-   
   do { 
     currentState = B91_RUNNING;
     setGUICommandsForCurrentState();
@@ -449,13 +446,34 @@ public void menuRun() {
 */
 public void menuCompile() { 
   
+  try {
+    control.modifySource(gui.getCodeTableContents());
+  }
+  catch (IOException e) {
+    System.out.println(e.getMessage());
+  }
+  
   interruptSent = false;
   noPauses = false;
-
+  
+  /*String[] joo = gui.getCodeTableContents();
+  for (int i=0 ; i<joo.length ; i++) {
+    System.out.println(joo[i]);
+  }*/
+  
+  
   currentState = K91_COMPILING;
   setGUICommandsForCurrentState();
   
-  CompileInfo compileinfo;
+  /* compileinfo is set to null now. Null as CompileInfo object means also that
+     compilation has finished successfully. We may think that if no line was
+     compiled then it would mean a successful compilation as well, so this isn't
+     in contradiction to that anyway. 
+     Really this is set to null because we need compileinfo to be initialized somehow
+     in compileLine() methods try-catch clause a few lines below.
+  */
+  CompileInfo compileinfo = null;
+  
   int compilemode;
   int phase;
   
@@ -475,105 +493,124 @@ public void menuCompile() {
       compileinfo = control.compileLine();
     }
     catch (TTK91CompileException e) {
-      gui.addComment(e.getMessage());
+      /* This section is executed if an error occured during compilation. First
+         we preset errorLine and phase to what they would be, if there hasn't
+         been any compileinfo before.
+      */
+      int errorLine = 0;
+      phase = CompileInfo.FIRST_ROUND;
+      
+      /* Then we check if there has been some compileinfos before and set errorLine
+         and phase accordingly if positive.
+      */
+      if (compileinfo != null) {
+        errorLine = compileinfo.getLineNumber() + 1;
+        phase = compileinfo.getPhase();
+      }
+      
+      gui.addComment(errorLine + ": " + e.getMessage());
+      if (phase == CompileInfo.FIRST_ROUND)
+        gui.selectLine(errorLine, GUI.CODE_TABLE);
+      else if (phase == CompileInfo.SECOND_ROUND)
+        gui.selectLine(errorLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
+      
       currentState = K91_PAUSED;
       setGUICommandsForCurrentState();
       waitForContinueTask();
       break;
     }
     
+    /* Compilation is finished once compileLine() returns null */
     if (compileinfo == null) {
       compilingCompleted = true;
       break;
     }
     else {
-    String comments = compileinfo.getComments();
-	  if (comments == null) 
-	    comments = "";
-	  
-	  if (!comments.equals(""))
-	      gui.addComment(compileinfo.getLineNumber() + ": " + comments);
-	    
-    compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);    
-    phase = compileinfo.getPhase();
-    
-    if (phase == CompileInfo.FIRST_ROUND) {  
-	System.out.println(compileinfo.getSymbolFound());
-	System.out.println(compileinfo.getLabelFound());
-      if (compileinfo.getSymbolFound()) {      	
-      	String symbolName = compileinfo.getSymbolName();
-      	Integer symbolValue = null;
-      	if (compileinfo.getSymbolDefined()) {
-	        symbolValue = new Integer(compileinfo.getSymbolValue());
-	      }
-      	gui.updateRowInSymbolTable(symbolName, symbolValue);
-      }
-      if (compileinfo.getLabelFound()) {
-        String symbolName = compileinfo.getLabelName();
-      	Integer symbolValue = new Integer(compileinfo.getLabelValue());
-        gui.updateRowInSymbolTable(symbolName, symbolValue);
-      }
+      String comments = compileinfo.getComments();
+  	  if (comments == null) 
+  	    comments = "";
+  	  
+  	  if (!comments.equals(""))
+  	      gui.addComment(compileinfo.getLineNumber() + ": " + comments);
+  	    
+      compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);    
+      phase = compileinfo.getPhase();
       
-      System.out.println(compileinfo.getLineContents());
-      System.out.println(compileinfo.getLineNumber() + ": " + comments);
-      System.out.println("");
-      gui.selectLine(compileinfo.getLineNumber(), GUI.CODE_TABLE);
-    }
-
-    else if (phase == CompileInfo.FINALIZING_FIRST_ROUND) {
-	    String[][] symbolTable = compileinfo.getSymbolTable();
-	    if (symbolTable != null) {
-  	    for (int i=0 ; i<symbolTable.length ; i++) {
-          String symbolName = symbolTable[i][0];
-          Integer symbolValue = null;
-	  try {
-            symbolValue = new Integer(symbolTable[i][1]);
-	  }
-	  catch (NumberFormatException e) {
-	  }  
-          gui.updateRowInSymbolTable(symbolName, symbolValue);  
-      	}
+      if (phase == CompileInfo.FIRST_ROUND) {  
+  	    if (compileinfo.getSymbolFound()) {      	
+        	String symbolName = compileinfo.getSymbolName();
+        	Integer symbolValue = null;
+        	if (compileinfo.getSymbolDefined()) {
+  	        symbolValue = new Integer(compileinfo.getSymbolValue());
+  	      }
+        	gui.updateRowInSymbolTable(symbolName, symbolValue);
+        }
+        if (compileinfo.getLabelFound()) {
+          String symbolName = compileinfo.getLabelName();
+        	Integer symbolValue = new Integer(compileinfo.getLabelValue());
+          gui.updateRowInSymbolTable(symbolName, symbolValue);
+        }
+        
+        System.out.println(compileinfo.getLineContents());
+        System.out.println(compileinfo.getLineNumber() + ": " + comments);
+        System.out.println("");
+        gui.selectLine(compileinfo.getLineNumber(), GUI.CODE_TABLE);
       }
+  
+      else if (phase == CompileInfo.FINALIZING_FIRST_ROUND) {
+  	    String[][] symbolTable = compileinfo.getSymbolTable();
+  	    if (symbolTable != null) {
+    	    for (int i=0 ; i<symbolTable.length ; i++) {
+            String symbolName = symbolTable[i][0];
+            Integer symbolValue = null;
+  	  try {
+              symbolValue = new Integer(symbolTable[i][1]);
+  	  }
+  	  catch (NumberFormatException e) {
+  	  }  
+            gui.updateRowInSymbolTable(symbolName, symbolValue);  
+        	}
+        }
+        
+        String[] newInstructionsContents = compileinfo.getInstructions();
+  	    String[] newDataContents = compileinfo.getData();
+  	    gui.insertToInstructionsTable(newInstructionsContents);
+  	    gui.insertToDataTable(newDataContents);
+  	    gui.setGUIView(3);
       
-      String[] newInstructionsContents = compileinfo.getInstructions();
-	    String[] newDataContents = compileinfo.getData();
-	    gui.insertToInstructionsTable(newInstructionsContents);
-	    gui.insertToDataTable(newDataContents);
-	    gui.setGUIView(3);
-    
-    }
-    else if (phase == CompileInfo.SECOND_ROUND) {
-      int line = compileinfo.getLineNumber();
-      int binary = compileinfo.getLineBinary();
-      gui.updateInstructionsAndDataTableLine(line, binary);
-      gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
-    }
-    /*else if (phase == CompileInfo.FINALIZING) {
-      if (compileinfo.getFinalPhase() == true) {
-        compilingCompleted = true;
-        break;
       }
-    }*/
-    
-    gui.repaint();
-            
-	  
-	  
-	  if ( ((compilemode & PAUSED) != 0) && !comments.equals("")  && noPauses == false) {
-      currentState = K91_PAUSED;
-      setGUICommandsForCurrentState();
-      waitForContinueTask();
-    }
-    else {
-      synchronized(this) {
-        try {
-          wait(700); // TODO: Muista muuttaa pienemmäksi lopulliseen versioon.
+      else if (phase == CompileInfo.SECOND_ROUND) {
+        int line = compileinfo.getLineNumber();
+        int binary = compileinfo.getLineBinary();
+        gui.updateInstructionsAndDataTableLine(line, binary);
+        gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
+      }
+      /*else if (phase == CompileInfo.FINALIZING) {
+        if (compileinfo.getFinalPhase() == true) {
+          compilingCompleted = true;
+          break;
         }
-        catch(InterruptedException e) {
-          System.out.println("InterruptedException in menuRun()");
+      }*/
+      
+      gui.repaint();
+              
+  	  
+  	  
+  	  if ( ((compilemode & PAUSED) != 0) && !comments.equals("")  && noPauses == false) {
+        currentState = K91_PAUSED;
+        setGUICommandsForCurrentState();
+        waitForContinueTask();
+      }
+      else {
+        synchronized(this) {
+          try {
+            wait(700); // TODO: Muista muuttaa pienemmäksi lopulliseen versioon.
+          }
+          catch(InterruptedException e) {
+            System.out.println("InterruptedException in menuRun()");
+          }
         }
       }
-    }
     }
     
   } while ( interruptSent == false ); // End of do-loop
@@ -586,6 +623,7 @@ public void menuCompile() {
   if (compilingCompleted == true) {
     try {
       control.saveBinary();
+      System.out.println(new Message("Program saved to binary file!").toString());
     }
     catch (IOException e) {
       System.out.println(e);
@@ -735,6 +773,8 @@ public void menuSetMemorySize(int newSize) {
   currentSettings.setValue(Settings.MEMORY_SIZE, newSize);
   saveSettings();
   gui.setGUIView(1);
+  currentState = NONE;
+  setGUICommandsForCurrentState();
 }
 
 
@@ -951,9 +991,7 @@ private void getCurrentSettings() throws IOException {
     settingsFile = new File(fileURI);
   }
   catch (Exception e) {
-    System.out.println(new Message("Main path not found! (Trying to locate " +
-				   "etc/settings.cfg.) " +
-				   "...exiting.").toString());
+    System.out.println("Main path not found!...exiting");
     System.exit(0);
   }
   
@@ -968,8 +1006,7 @@ private void getCurrentSettings() throws IOException {
      settingsFileContents = control.loadSettingsFileContents(settingsFile);
   }
   catch (IOException e) {
-    System.out.println(new Message("I/O error while reading settings "+
-				   "file: {0}", e.getMessage()).toString());
+    System.out.println("Error while reading settings file.");
     throw e;
   }
     
@@ -977,10 +1014,14 @@ private void getCurrentSettings() throws IOException {
     //System.out.println( control.loadSettingsFileContents(settingsFile) );
     currentSettings = new Settings( control.loadSettingsFileContents(settingsFile) );
   }
-  catch (ParseException e) {
-    System.out.println(new Message("Parse error in settings file: {0}", 
-				   e.getMessage()).toString());
-    currentSettings = new Settings();
+  catch (Exception e) {
+    System.out.println("Parse error in settings file.");
+    try {
+      currentSettings = new Settings(null);
+    }
+    catch (ParseException parseError) {
+      System.out.println("This error shouldn't occur!");
+    }
   }
   
   
@@ -1067,8 +1108,7 @@ private LoadInfo load() {
     loadinfo = control.load();
   }
   catch (TTK91AddressOutOfBounds e) { 
-    gui.showError(new Message("Titokone out of memory: {0}", 
-			      e.getMessage()).toString());
+    gui.showError(new Message("Titokone out of memory").toString());
     return null;
   }
   catch (TTK91NoStdInData e) {
@@ -1077,8 +1117,8 @@ private LoadInfo load() {
     if ( appDefs[Control.DEF_STDIN_POS] != null ) {
       stdinFilePath[0] = appDefs[Control.DEF_STDIN_POS].getPath();
     }
-    gui.showError(e.getMessage());
-
+    
+    gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
     return null;
   }
   
@@ -1125,9 +1165,8 @@ private void saveSettings() {
     control.saveSettings(currentSettings.toString(), settingsFile);
   }
   catch (IOException e) {
-    String[] errorParameters = { settingsFile.getName(), e.getMessage() };
-    gui.showError(new Message("{0} is inaccessible: {1}", 
-			      errorParameters).toString());
+    String[] name = { settingsFile.getName() };
+    gui.showError(new Message("{0} is inaccessible", name).toString());
   }
 }
   
@@ -1194,9 +1233,7 @@ private void findAvailableLanguages() {
     languageFile = new File(fileURI);
   }
   catch (Exception e) {
-    System.out.println(new Message("Main path not found! (Trying to locate " +
-				   "etc/settings.cfg.) " +
-				   "...exiting.").toString());
+    System.out.println("Main path not found!...exiting");
     System.exit(0);
   }
   
@@ -1208,8 +1245,7 @@ private void findAvailableLanguages() {
       languageFileContents = control.loadSettingsFileContents(languageFile);
     }
     catch (IOException e) {
-      System.out.println(new Message("I/O error while reading settings " +
-				     "file: {0}", e.getMessage()).toString());
+      System.out.println("IOException in settings file");
       return;
     }
     String[] languageFileRow = languageFileContents.split("\n|\r|\r\n");
@@ -1220,7 +1256,6 @@ private void findAvailableLanguages() {
        tokens on each row, then everything goes well. Otherwise
        the language.cfg is not a proper language file for this program.
     */
-    // TODO: This should just use a new Settings(String) and .getKeys().
     for (int i=0 ; i<languageFileRow.length ; i++) {
       String[] token = languageFileRow[i].split("=");
       if (token.length != 2) {

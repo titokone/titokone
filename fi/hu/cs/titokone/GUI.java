@@ -24,11 +24,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Vector;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -869,6 +873,7 @@ public void setEnabled(short command, boolean b) {
       enterNumberLabel.setEnabled(b);
       inputField.setEnabled(b);
       enterNumberButton.setEnabled(b);
+      inputField.setText("");
       break;
     case CODE_TABLE_EDITING:
       codeTable.setEnabled(b);
@@ -1180,6 +1185,19 @@ public void showError(String errorMsg) {
 
 
 
+public String[] getCodeTableContents() {
+
+  Vector codeTableContents = ((DefaultTableModel)codeTable.getModel()).getDataVector();
+  String[] codeTableContentsString = new String[codeTableContents.size()];
+  
+  int i = 0;
+  for (Enumeration e = codeTableContents.elements(); e.hasMoreElements() ; i++) {
+    codeTableContentsString[i] = (String)((Vector)e.nextElement()).get(0);
+  }
+  return codeTableContentsString;
+}
+  
+
 // Private methods. ---------------------------------------------------
 
 
@@ -1265,9 +1283,21 @@ private void initGUI() {
   enterNumberLabel.setSize(new Dimension(100,100));
   
   inputField = new JTextField(11);
+  inputField.addKeyListener( new KeyListener() {
+    public void keyPressed(KeyEvent e) {}
+    
+    public void keyReleased(KeyEvent e) {
+      if ( e.getKeyCode() == KeyEvent.VK_ENTER ) {
+        enterInput();
+      }
+    }
+    
+    public void keyTyped(KeyEvent e) {}
+  });
   
   enterNumberButton = new JButton("Enter");
-
+  enterNumberButton.addActionListener(enterNumberButtonActionListener);
+  
   outputScrollPane = new JScrollPane(outputTextArea);
   outputScrollPane.setPreferredSize(new Dimension(30,300));
   outputScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "CRT"));
@@ -1337,10 +1367,21 @@ private void initGUI() {
   
   disable(INPUT_FIELD);
   setGUIView(1);
-  enterNumberButton.addActionListener(enterNumberButtonActionListener);
+  
 }
 
 
+
+private void enterInput() {
+  String input;
+  input = inputField.getText();
+  
+	if(guibrain.enterInput(input) == false) {  
+	  return;
+	}
+	
+	guibrain.continueTask();
+}
 
 
 /** Inserts the menu into main window.
@@ -1421,6 +1462,8 @@ private void insertMenuBar(JFrame destFrame) {
 	setMemTo65536.addActionListener(new SetMemSizeActionListener(16));
 	selectLanguageFromFile.addActionListener(selectLanguageFromFileActionListener);
 	about.addActionListener(aboutActionListener);
+	quit.addActionListener(quitActionListener);
+	
   
 }
 
@@ -1708,16 +1751,16 @@ private ActionListener aboutActionListener = new ActionListener() {
 
 private ActionListener enterNumberButtonActionListener = new ActionListener() {
   public void actionPerformed(ActionEvent e) {						
-  
-    String input;
-    input = inputField.getText();
+    enterInput();
     
-  	if(guibrain.enterInput(input) == false) {  
-  	  return;
-  	}
-  	
-  	guibrain.continueTask();
      
+  }
+};
+
+private ActionListener quitActionListener = new ActionListener() {
+  public void actionPerformed(ActionEvent e) {
+    guibrain.menuExit();
+    System.exit(0);
   }
 };
 
