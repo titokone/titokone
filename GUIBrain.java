@@ -1,8 +1,4 @@
-package fi.hu.cs.titokone;
-
 import java.util.Locale;
-import java.util.Hashtable;
-import java.io.File;
 
 /** This class contains the intellect the GUI class needs to provide 
     services to the Control class. It also hides the GUI and Control from
@@ -11,7 +7,7 @@ public class GUIBrain {
     /** This field contains the languages available, with the long,
 	English names like "Finnish" or "English (GB)" as keys and 
 	the locales corresponding to the languages as values. */
-    private Hashtable availableLanguages;
+    private HashTable availableLanguages;
     
     private Settings currentSettings;
     /** This field is set when menuInterrupt is called, and all continuous
@@ -48,7 +44,7 @@ public class GUIBrain {
 	were doing once it becomes possible. */
     public void menuInterrupt() { }
 
-    public void menuSetLanguage(String language) {}
+    public void menuSetLanguage(String language) 
     public void menuSetStdIn(File stdinFile) {}
 
     public void menuSetStdOut(File stdoutFile) {}
@@ -61,7 +57,7 @@ public class GUIBrain {
                                       int     speed) {}
     
     public void menuSetCompilingOptions(boolean isCommentedExecution, 
-                                        boolean isPausedExecutionm,
+                                        boolean isPausedExecution,
                                         int     speed) {}
 
     public void menuAbout() {}

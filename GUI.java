@@ -6,23 +6,46 @@ import javax.swing.border.*;
 import javax.swing.table.*;
 
 
-public class GUI extends JFrame {
+/** Class GUI is namely the class that implements the Graphical User Interface.
+    It uses methods in GUIBrain to fire certain actions, such as compiling and
+    running the programs. If GUIBrain wants to inform GUI about something, like
+    new register values or about a new symbol in symbol table, then an Event of
+    some kind if fired. Various ActionListeners are added here to catch those 
+    events.
+    
+    This GUI has three views hardcoded, one for the state when no file has been
+    opened, one for the state when a symbolic code file has been opened and one
+    one for the state when a binary code file has been opened. The view can be
+    changed with setView(int) method and once it is launched, the GUI's view is
+    changed into the selected view's basic state. A basic state for a view means
+    which of the buttons are enabled and which of the menuselections are enabled
+    for a certain view. 
+*/
+
+public class GUI extends JFrame implements ActionListener {
   
   
-private JPanel  upperRightPanel,
-                lowerRightPanel;
-        JTableX instructionsTable;
-        JTable dataTable;
-        JTableX codeTable;
+        JPanel  upperRightPanel;
+        JPanel  lowerRightPanel;
         
-        JTable registersTable;
+        JTableX codeTable;
+        JTableX instructionsTable;
+        JTableX dataTable;
+        JScrollPane codeTableScrollPane;
+        JScrollPane instructionsTableScrollPane;
+        JScrollPane dataTableScrollPane;
+        JSplitPane dataAndInstructionsTableSplitPane;   
+        
+        JTableX registersTable;
+        JScrollPane registersTableScrollPane;
+        
+        JTableX symbolTable;
         
         JTextArea outputTextArea;
         JLabel enterNumberLabel;
         JTextField inputField;
         JButton enterNumberButton;
     
-        JSplitPane dataAndInstructionsTableSplitPane;   
         
         JButton compileButton;
         JButton runButton;
@@ -36,19 +59,32 @@ private JPanel  upperRightPanel,
 	      
 	      String[][] codeTableContents;
         
-        JFileChooser openFileDialog;
-        GUIRunSettingsDialog setRunningOptionsDialog;
+private JFileChooser openFileDialog;
+
+private GUIRunSettingsDialog setRunningOptionsDialog;
+private GUICompileSettingsDialog setCompileOptionsDialog;
         
-        Font tableFont = new Font("Courier", java.awt.Font.PLAIN, 12);
+private Font tableFont = new Font("Courier", java.awt.Font.PLAIN, 12);
+        
+private Border blacklined = BorderFactory.createLineBorder(Color.black);
+  
        
+
+
+/** This is called when ActionEvent of some kind is fired.
+*/
+public void actionPerformed(ActionEvent e) { }
+
 
 public GUI() {
   
   setTitle("Kälidemo");
   openFileDialog = new JFileChooser();
   this.setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
+  this.setCompileOptionsDialog = new GUICompileSettingsDialog(this, false);
   
   initGUI();
+  
   addWindowListener( new WindowAdapter () {
 		public void windowClosing(WindowEvent tapahtuma) {
 			
@@ -72,20 +108,39 @@ public GUI() {
 
 
 
-
-public void initGUI() {
+/** This is just a private assistance method for the creator. This takes
+    the responsibility to prepare GUI so that it looks right when the
+    program starts. This won't be accessed but once in the creator method.
+*/
+private void initGUI() {
   
   insertMenuBar(this);
   
+    
+  codeTable = prepareCodeTable();
+  codeTableScrollPane = insertTableToScrollPane(codeTable);
+  
+  instructionsTable = prepareInstructionsTable();
+  instructionsTableScrollPane = insertTableToScrollPane(instructionsTable);
+  
+  dataTable = prepareDataTable();
+  dataTableScrollPane = insertTableToScrollPane(dataTable);
+  
+  dataAndInstructionsTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionsTableScrollPane, dataTableScrollPane);
+  dataAndInstructionsTableSplitPane.setOneTouchExpandable(true);
+       
   setGUIView(1);
   setGUIView(2);
-  addRowToCodeTable("", "Jaahas");
+  /*addRowToCodeTable("", "Jaahas");
   addRowToCodeTable("", "Jaahah56h4hu4u5nej5j53j65s");
   addRowToCodeTable("", "Jaaha321515555432523gewrs");
   addRowToCodeTable("", "Jaaha543gj429 tg95nt53hyu6h386uhu3985hg09hg53m9s");
   addRowToCodeTable("", "Jaahas");
-  addRowToCodeTable("", "Jaaha543s");
-  //setGUIView(3);
+  addRowToCodeTable("", "Jaaha543s");*/
+  setGUIView(3);
+  
+  addRowToInstructionsTable("0","24372932","LOAD R1, =100");
+  addRowToInstructionsTable("1","65463464","Alku: STORE R1, R2");
   
   //instructionsTable.selectRow(1,true);
 }
@@ -100,71 +155,28 @@ private void setGUIView(int view) {
   getContentPane().removeAll();
   
   if (view == 1) {
-    
+    // nothing is done 
   }
-  
   else if (view == 2) {
-    
-    JScrollPane codeTableScrollPane;
-    
-    codeTable = prepareCodeTable();
-    
-    codeTableScrollPane = insertTableToScrollPane(codeTable);
-    
     leftPanel.add(codeTableScrollPane);
   }
-    
-    
-  
   else if (view == 3) {
-    
-    JScrollPane dataTableScrollPane;
-    JScrollPane instructionsTableScrollPane;
-    
-    instructionsTable = prepareInstructionsTable();
-    dataTable = prepareDataTable();
-    
-    instructionsTableScrollPane = insertTableToScrollPane(instructionsTable);
-    dataTableScrollPane = insertTableToScrollPane(dataTable);
-    
-    dataAndInstructionsTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionsTableScrollPane, dataTableScrollPane);
-    dataAndInstructionsTableSplitPane.setOneTouchExpandable(true);
-    
     leftPanel.add(dataAndInstructionsTableSplitPane);
-    
-    
   }
   
   
     
+    registersTableScrollPane = prepareRegistersTableScrollPane();
     
-    
-    JPanel registersPanel = new JPanel();
-    
-    String[][] regTableContents = new String[][] 
-      { {"R0",""}, {"R1",""}, {"R2",""}, {"R3",""}, {"R4",""}, 
-        {"SP",""}, {"FP",""}, {"PC",""}, {"IR",""}};
-    registersTable = new JTable(new DefaultTableModel(regTableContents, new String[] {"",""}));
-    JScrollPane registersScrollPane = new JScrollPane(registersTable);
-    
-    registersScrollPane.setPreferredSize(new Dimension(150, 150));
-   
-    Border blacklined = BorderFactory.createLineBorder(Color.black);
-    
-    registersScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
-    
-    registersTable.setFont(tableFont);
-    registersTable.setRowSelectionAllowed(false);
-    (registersTable.getColumnModel().getColumn(0)).setPreferredWidth(15);
-    
-    
-    upperRightPanel.add(registersScrollPane, BorderLayout.WEST);
+    upperRightPanel.add(registersTableScrollPane, BorderLayout.WEST);
     
     
     
     
     JPanel symbolTablePanel = new JPanel();
-    JTable symbolTable = new JTable(new SymbolTableModel());
+    //JTable symbolTable = new JTable(new SymbolTableModel());
+    symbolTable = new JTableX(new DefaultTableModel(new String[] {"",""}, 0));
+    
     JScrollPane symbolTableScrollPane = new JScrollPane(symbolTable);
     
     symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
@@ -289,8 +301,10 @@ private void setGUIView(int view) {
 
 
 
-
-private void setInputFieldEnabled(boolean b) {
+/** This sets the input field enabled or disabled. Input field is the field
+    where kbd-inputs are entered.
+*/
+public void setInputFieldEnabled(boolean b) {
   enterNumberLabel.setEnabled(b);
   inputField.setEnabled(b);
   enterNumberButton.setEnabled(b);
@@ -363,6 +377,8 @@ private JToolBar makeToolBar() {
   showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showAnimationToggleButton);
   
+  toolbar.setFloatable(false);
+  
   return toolbar;
 }
 
@@ -376,7 +392,6 @@ private JTableX prepareCodeTable() {
   codeTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
   codeTable.setEnabled(false);
   codeTable.setShowGrid(false);
-  codeTable.selectRow(3,true);
   codeTable.getColumnModel().getColumn(0).setMinWidth(0);
   codeTable.getColumnModel().getColumn(1).setMinWidth(0);
   codeTable.getColumnModel().getColumn(0).setPreferredWidth(0);
@@ -386,18 +401,16 @@ private JTableX prepareCodeTable() {
 }
 
 
-private void addRowToCodeTable(String rowNum, String str) {
+
+public void addRowToCodeTable(String rowNum, String str) {
   
   DefaultTableModel tableModel = (DefaultTableModel)codeTable.getModel();
   String[] data = {""+rowNum, ""+str};
   tableModel.addRow(data);
-  
-   
+    
   int nowAddedRowNumber = codeTable.getRowCount() - 1;
   int column0Width = codeTable.getColumnModel().getColumn(0).getWidth();
   int column1Width = codeTable.getColumnModel().getColumn(1).getWidth();
-  
-  //System.out.println(column1Width + ", " + codeTable.getTextLength(nowAddedRowNumber, 1));
   
   if (column0Width < codeTable.getTextLength(nowAddedRowNumber, 0)) {
     codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 0));   
@@ -407,47 +420,64 @@ private void addRowToCodeTable(String rowNum, String str) {
     codeTable.getColumnModel().getColumn(1).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 1));
   }
   codeTable.getRootPane().validate();
-  //codeTable.getColumnModel().getColumn(1).setPreferredWidth(joo);
-  
-  //System.out.println(joo);;
 }
+
+
+
+public void addRowToInstructionsTable(String rowNum, String code, String symbolic) {
   
-/*
-private int getMaxTextLengthInColumn(JTableX tbl, int column) {
-  
-  Font tblFont = tbl.getFont();
-  Graphics tblGraphics = tbl.getGraphics();
-  FontMetrics tblFontMetrics = tbl.getFontMetrics(tblFont);
-  int marginLength = tbl.getColumnModel().getColumnMargin();
-  
-  int maximumLength = 0;
-  
-  for (int i=0; i<tbl.getRowCount(); i++) {
+  DefaultTableModel tableModel = (DefaultTableModel)instructionsTable.getModel();
+  String[] data = {""+rowNum, ""+code, ""+symbolic};
+  tableModel.addRow(data);
     
-    String cellValue = (String)(tbl.getValueAt(i,column));
-    int textLength = (int)(tblFontMetrics.getStringBounds(cellValue, tblGraphics).getWidth()) + 1;
-    int totalLength = textLength + 2*marginLength;
-    
-    if (totalLength > maximumLength) {
-      maximumLength = totalLength;
-    }
+  /*int nowAddedRowNumber = codeTable.getRowCount() - 1;
+  int column0Width = codeTable.getColumnModel().getColumn(0).getWidth();
+  int column1Width = codeTable.getColumnModel().getColumn(1).getWidth();
+  
+  if (column0Width < codeTable.getTextLength(nowAddedRowNumber, 0)) {
+    codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 0));   
   }
   
-  return maximumLength;
-}
-  */
-    
+  if (column1Width < codeTable.getTextLength(nowAddedRowNumber, 1)) {
+    codeTable.getColumnModel().getColumn(1).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 1));
+  }*/
+  instructionsTable.getRootPane().validate();
+} 
+
+
+
+public void addRowToDataTable(String rowNum, String code, String symbolic) {
   
+  DefaultTableModel tableModel = (DefaultTableModel)dataTable.getModel();
+  String[] data = {""+rowNum, ""+code, ""+symbolic};
+  tableModel.addRow(data);
     
+  /*int nowAddedRowNumber = codeTable.getRowCount() - 1;
+  int column0Width = codeTable.getColumnModel().getColumn(0).getWidth();
+  int column1Width = codeTable.getColumnModel().getColumn(1).getWidth();
+  
+  if (column0Width < codeTable.getTextLength(nowAddedRowNumber, 0)) {
+    codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 0));   
+  }
+  
+  if (column1Width < codeTable.getTextLength(nowAddedRowNumber, 1)) {
+    codeTable.getColumnModel().getColumn(1).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 1));
+  }*/
+  dataTable.getRootPane().validate();
+} 
 
-
+    
 
 private JTableX prepareInstructionsTable() {
   
-  JTableX instructionsTable = new JTableX(new InstructionsTableModel());
+  //JTableX instructionsTable = new JTableX(new InstructionsTableModel());
+  
+  String[] columnNames = {"Line", "Code", "Symbolic instruction"};
+  JTableX instructionsTable = new JTableX(new DefaultTableModel(columnNames,0));
   
   instructionsTable.setFont(tableFont);
   
+  instructionsTable.setEnabled(false);
   instructionsTable.getColumnModel().getColumn(0).setMinWidth(20);
   instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(20);
    
@@ -456,14 +486,14 @@ private JTableX prepareInstructionsTable() {
 
 
 
-
-
-
-
-private JTable prepareDataTable() {
+private JTableX prepareDataTable() {
  
-  JTable dataTable = new JTable(new DataTableModel());
+  //JTable dataTable = new JTable(new DataTableModel());
   
+  String[] columnNames = {"Line", "Code", "Symbolic instruction"};
+  JTableX dataTable = new JTableX(new DefaultTableModel(columnNames,0));
+  
+  dataTable.setEnabled(false);
   dataTable.setFont(tableFont);
   dataTable.setRowSelectionAllowed(false);
   
@@ -472,6 +502,31 @@ private JTable prepareDataTable() {
 
 
 
+private JScrollPane prepareRegistersTableScrollPane() {
+  JPanel registersPanel = new JPanel();
+    
+  String[][] regTableContents = new String[][] 
+    { {"R0",""}, {"R1",""}, {"R2",""}, {"R3",""}, {"R4",""}, 
+      {"SP",""}, {"FP",""}, {"PC",""}, {"IR",""}};
+  
+  registersTable = new JTableX(new DefaultTableModel(regTableContents, new String[] {"",""}));
+  JScrollPane registersScrollPane = new JScrollPane(registersTable);
+  
+  registersScrollPane.setPreferredSize(new Dimension(150, 150));
+ 
+  
+  registersScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
+  
+  registersTable.setEnabled(false);
+  registersTable.setFont(tableFont);
+  registersTable.setRowSelectionAllowed(false);
+  (registersTable.getColumnModel().getColumn(0)).setPreferredWidth(15);
+  
+  return registersScrollPane;
+}
+ 
+ 
+    
 private JScrollPane insertTableToScrollPane(JTable tbl) {
   
   JScrollPane tableScrollPane = new JScrollPane(tbl);
@@ -513,6 +568,7 @@ private void insertMenuBar(JFrame destFrame) {
   JMenuItem chooseSTDOUT          = configureFileSystem.add("Set default stdout");
   optionsMenu.add(configureFileSystem);
   
+  JMenuItem setCompileOptions     = optionsMenu.add("Set compiling options");
   JMenuItem setRunningOptions     = optionsMenu.add("Set running options");
   
   JMenuItem setLanguage           = optionsMenu.add("Set language");
@@ -537,7 +593,13 @@ private void insertMenuBar(JFrame destFrame) {
   		  System.out.println(openFileDialog.getSelectedFile().exists());
   		}
   	} } );
-  	
+
+  setCompileOptions.addActionListener( new ActionListener() {
+		public void actionPerformed(ActionEvent e) {						
+
+			setCompileOptionsDialog.setVisible(true);
+		} } );
+
   setRunningOptions.addActionListener( new ActionListener() {
 		public void actionPerformed(ActionEvent e) {						
 
@@ -550,194 +612,6 @@ private void insertMenuBar(JFrame destFrame) {
 
     
 
-class MyTableModel extends javax.swing.table.AbstractTableModel {
-  
-  protected String[] columnNames;
-  protected Object[][] data;
-  
-  /**
-   *  inserts a row at the end of the table model
-   */
-  /*public void insertRow() {
-  
-    Vector data = new Vector();
-    int length = getColumnCount();
-    for (int i=0; i<length ; i++)
-    //just add blank string values in this instance but your code will initialise a default object no doubt
-    data.addElement("");
-    //baseData is the vector containing all your row vectors
-    baseData.addElement(data);
-    fireTableDataChanged();
-  }*/
-  
-  public int getColumnCount() {
-      return columnNames.length;
-  }
-
-  public int getRowCount() {
-      return data.length;
-  }
-
-  public String getColumnName(int col) {
-      return columnNames[col];
-  }
-
-  public Object getValueAt(int row, int col) {
-      return data[row][col];
-  }
-
-  public Class getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
-  }
-
-  public void setValueAt(Object value, int row, int col) {
-      data[row][col] = value;
-      fireTableCellUpdated(row, col);
-  }
-}
-
-
-
-class InstructionsTableModel extends MyTableModel {
-  protected String[] columnNames = {"Rivi", "Koodi", "Symbolinen käsky"};
-  protected Object[][] data = {{"0", "12378912","     STORE R1,=100"},
-                            {"1", "32131234","Alku: LOAD R2,=R1"},
-                            };
- 
-  public int getColumnCount() {
-      return columnNames.length;
-  }
-
-  public int getRowCount() {
-      return data.length;
-  }
-
-  public String getColumnName(int col) {
-      return columnNames[col];
-  }
-
-  public Object getValueAt(int row, int col) {
-      return data[row][col];
-  }
-
-  public Class getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
-  }
-
-  public void setValueAt(Object value, int row, int col) {
-      data[row][col] = value;
-      fireTableCellUpdated(row, col);
-  }                          
-}
-
-
-class DataTableModel extends MyTableModel {
-  protected String[] columnNames = {"Rivi", "Koodi", "Symbolinen käsky"};
-  protected Object[][] data = {{"10", "321",""},
-                            {"11", "52",""},
-                            {"12", "420",""},
-                            };
-  
-  public int getColumnCount() {
-      return columnNames.length;
-  }
-
-  public int getRowCount() {
-      return data.length;
-  }
-
-  public String getColumnName(int col) {
-      return columnNames[col];
-  }
-
-  public Object getValueAt(int row, int col) {
-      return data[row][col];
-  }
-
-  public Class getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
-  }
-
-  public void setValueAt(Object value, int row, int col) {
-      data[row][col] = value;
-      fireTableCellUpdated(row, col);
-  }                          
-}
-
-
-class SymbolTableModel extends MyTableModel {
-  protected String[] columnNames = {"Symboli", "Arvo"};
-  protected Object[][] data = {{"Sum", "10"},
-                            {"KBD", "1"},
-                            {"Alku","1"}
-                            };
-  //protected Object[][] data = {{"",""}};
-  
-  public int getColumnCount() {
-      return columnNames.length;
-  }
-
-  public int getRowCount() {
-      return data.length;
-  }
-
-  public String getColumnName(int col) {
-      return columnNames[col];
-  }
-
-  public Object getValueAt(int row, int col) {
-      return data[row][col];
-  }
-
-  public Class getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
-  }
-
-  public void setValueAt(Object value, int row, int col) {
-      data[row][col] = value;
-      fireTableCellUpdated(row, col);
-  }
-} 
-
-
-
-
-class RegistersTableModel extends MyTableModel {
-  protected String[] columnNames = {"Register", "Value"};
-  protected Object[][] data = {{"R0", "3"},
-                            {"R2", "1"},
-                            {"R3", "5"},
-                            {"R4", "1"},
-                            {"SP", "11"},
-                            {"FP", "1"},
-                            {"PC", "2"},
-                            {"IR", "3213213"},
-                            };
-  public int getColumnCount() {
-      return columnNames.length;
-  }
-
-  public int getRowCount() {
-      return data.length;
-  }
-
-  public String getColumnName(int col) {
-      return columnNames[col];
-  }
-
-  public Object getValueAt(int row, int col) {
-      return data[row][col];
-  }
-
-  public Class getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
-  }
-
-  public void setValueAt(Object value, int row, int col) {
-      data[row][col] = value;
-      fireTableCellUpdated(row, col);
-  }
-}
 
   
 
