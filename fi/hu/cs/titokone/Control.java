@@ -65,7 +65,6 @@ public class Control implements TTK91Core {
 	  logger.info(new Message("No default STDOUT file set.").toString());
 	fileHandler = new FileHandler(); 
 	compiler = new Compiler(); 
-	//compiler = new __stub_compiler();//TEST
 	// Create a new processor with a memory size of 2^9.
 	changeMemorySize(DEFAULT_MEMORY_SIZE);
 	this.defaultStdInFile = defaultStdInFile;
@@ -400,7 +399,7 @@ public class Control implements TTK91Core {
 		// OutData becomes an array where slot 0 is the device 
 		// number and slot 1 the value written there.
 		outData = info.whatOUT();
-		if(outData != null) {
+		if(info.isExternalOp() && outData != null) {
 		    if(outData[0] == Processor.CRT)
 			application.writeToCrt(outData[1]); 
 		    if(outData[0] == Processor.STDOUT) {
