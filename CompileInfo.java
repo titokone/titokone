@@ -37,6 +37,9 @@ public class CompileInfo extends DebugInfo {
       is false, the value in this field should be ignored. */
   private int symbolValue;
 
+    /** This field contains the address of the symbol.*/
+    private int symbolAddress;
+
   // First or second round variable:
   /** This field contains the name of a label found from the beginning of
       this line. It will be set to "" if no label was found on this line. 
@@ -63,13 +66,26 @@ public class CompileInfo extends DebugInfo {
       according to SP_POS and FP_POS. */
   private int[] initPointers;
 
+    /** These fields tells GUIBrain if compiler is setting DC and DS values.
+     */
   private boolean definingDS; // or DC.
   private boolean definingDC;
   private int value; // DC/DS.
 
+  
+    /** This is normal constructor for CompileInfo. It sets initial values for
+	phase, lineNumber and lineContents.
+	@param phase Short indicating which phase is going on.
+	@param lineNumber Integer value of the current line number.
+	@param lineContents String containing symbolic command.
+    */
   public CompileInfo(short phase, int lineNumber, String lineContents) {}
-  // (final phase constructor)
-  public CompileInfo(short phase, int lineNumber) {}
+  
+    /** This constructor is used when no actual line is compiled but other
+	actions are made like setting DC or DS.
+	@param phase short indicating which phase is going on.
+    */
+  public CompileInfo(short phase) {}
     
   /* Vielä metodit tueksi näille:
      all: set statusmessage (in parent), set phase, set linenumber
@@ -107,8 +123,9 @@ public class CompileInfo extends DebugInfo {
     /** This method sets the name of a found symbol and its value.
 	@param name Name of the symbol.
 	@param value Value of the symbol.
+	@param address Memoryaddress of the symbol.
     */
-    public void setSymbolName(String name, int value){}
+    public void setSymbolName(String name, int address, int value){}
  
     /** This method sets the name of a found label and sets the labelDefined 
 	field to true.
