@@ -1,5 +1,3 @@
-//TODO hashtables, methods that check opcodes, registers etc.
-
 package fi.hu.cs.titokone;
 
 import java.util.HashMap;
@@ -104,11 +102,21 @@ public class SymbolicInterpreter extends Interpreter {
 	if (secondRegisterIdAsInt < 0) { allOk = false;}
 
 	if (allOk) {
+
+		// if store or jump then addressinmode as int -= 1;
+		if (opcodeAsInt == 1 || (opcodeAsInt >= 32 && opcodeAsInt <= 44  )) {
+			addressingModeAsInt = addressingModeAsInt - 1;
+			if (addressingModeAsInt == -1) { ++addressingModeAsInt; }
+		}
+
+
 		String binary = intToBinary(opcodeAsInt, 8) + intToBinary(firstRegisterAsInt, 3) + 
 			intToBinary(addressingModeAsInt, 2) + 
 			intToBinary(secondRegisterIdAsInt, 3) + intToBinary(addressAsInt, 16);
 		return binaryToInt(binary, true);		
 	}
+
+
 	return -1;
     }
 

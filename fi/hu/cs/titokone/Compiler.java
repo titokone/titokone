@@ -676,7 +676,8 @@ Basic functionality: (Trim between each phase.)
 
 	if (opcode.length() > 0) {
 		if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
-			if ("jneg-jzer-jpos-jnneg-jnzer-jnpos".indexOf(opcode.toLowerCase()) != -1) {
+			if ("-jneg-jzer-jpos-jnneg-jnzer-jnpos-".indexOf("-" + 
+opcode.toLowerCase() + "-") != -1) {
 				if (firstRegister.equals("")) return null;
 			} 
 			if (addressingMode.equals("=") || address.equals("")) return null;	

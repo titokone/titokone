@@ -219,7 +219,10 @@ public class CompileDebugger {
     @param symbolTable 2-dimensional String array containing the symbol table.
     */
     public void finalFirstPhase(String[] codeArea, String[] dataArea, String[][] symbolTable) {
-// String because of the DEF command
+
+	info.setInstructions(codeArea);
+	info.setData(dataArea);
+	info.setSymbolTable(symbolTable);
 
     }
 

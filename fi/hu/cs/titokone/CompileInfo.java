@@ -21,10 +21,10 @@ public class CompileInfo extends DebugInfo {
   /** This field hold the contents of a compiled line. */
   private String lineContents;
  
-  /** These arrays contain codelines and data after first round. */
+  /** These arrays contain codelines, data and the symboltable after first round. */
   String[] instructions;
   String[] data;
-
+  String[][] symbolTable;
 
   /** This field is by default false, but if the compiled line was 
       empty (or consisted of whitespace only), the true value here says 
@@ -235,6 +235,10 @@ public class CompileInfo extends DebugInfo {
 	this.data = data;	
     }
 
+    public void setSymbolTable(String[][] symbolTable) {
+	this.symbolTable = symbolTable;
+    }
+
 
 /*---------- get-methods ----------*/
 
@@ -379,6 +383,16 @@ public class CompileInfo extends DebugInfo {
     */
     public String[] getData() {
 	return data;
+    }
+
+
+    /**	This method returns the symboltable gathered during the first round.
+	@return Array representing the symboltable. Each entry has 2 values.
+	First position (0) tells the name of the symbol and the second one 
+	(1) holds the value of that symbol. "" If it wasn't set.
+    */
+    public String[][] getSymbolTable() {
+	return symbolTable;
     }
 
 }
