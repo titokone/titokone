@@ -115,6 +115,8 @@ public class Translations extends ListResourceBundle {
       null},
       {"StdIn file contents are invalid; the file should contain only " +
        "integers and separators.", null},
+      {"Modified source was null.", null},
+      {"No source file set, use openSource first.", null},
       {"Cannot deduce the file to store the binary into; no source " +
        "file has been loaded.", null},
       {"Cannot save binary to file; no application has been compiled or " +
