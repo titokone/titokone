@@ -31,7 +31,6 @@ public class Compiler {
     private final int NOTVALID = -1;
     private final int EMPTY = -1;
 
-
     /** Maximum value of the EQU and DC. */
     private final int MAXINT = 2147483647;
 
@@ -119,7 +118,8 @@ public class Compiler {
         while (source.indexOf("\r\n") != -1) {
                 source = source.substring(0, source.indexOf("\r\n")) + source.substring(source.indexOf("\r\n") + 1);
         }
-	source = source.toLowerCase();
+// Antti 040504 commented this to retain the casing in the source
+//	source = source.toLowerCase();
 	this.source = source.split("[\n\r\f\u0085\u2028\u2029]");
 // antti: removed + from the split and added the while loop (21.04.2004)
 
@@ -952,8 +952,6 @@ public class Compiler {
 	String[] parsedLine;
 
 /* preprosessing */
-
-	
 	line = line.toLowerCase();
 	line = line.replace('\t',' ');
 	fieldEnd = line.indexOf(";");
