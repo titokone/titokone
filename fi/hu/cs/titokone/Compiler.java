@@ -435,6 +435,21 @@ public class Compiler {
 			symbolTableEntry[1] = lineTemp[2];
 			symbolTable.add(symbolTableEntry.clone());
 		    }
+
+                    try {
+                            intValue = Integer.parseInt(lineTemp[2]);
+                    } catch(NumberFormatException e) {
+                            comment = new Message("Invalid value for an " +
+                                                  "EQU.").toString();
+                            throw new TTK91CompileException(comment);
+                    }
+                                              
+                    if (intValue < MININT || intValue > MAXINT) {
+                            comment = new Message("Invalid value for an " +
+                                                  "EQU.").toString();
+                            throw new TTK91CompileException(comment);
+                    }
+
 		    compileDebugger.foundEQU(lineTemp[0], intValue);
 		    commentParameters = new String[2];
 		    commentParameters[0] = lineTemp[0];
