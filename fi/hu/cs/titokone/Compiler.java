@@ -113,8 +113,12 @@ public class Compiler {
     public void compile(String source) { 
 	firstRound = true;
 	compileFinished = false;
+
+        while (source.indexOf("\r\n") != -1) {
+                source = source.substring(0, source.indexOf("\r\n")) + source.substring(source.indexOf("\r\n") + 1);
+        }
 	this.source = source.split("[\n\r\f\u0085\u2028\u2029]");
-// antti: removed + from the split
+// antti: removed + from the split and added the while loop (21.04.2004)
 
 	nextLine = 0;
 	defStdin = "";
