@@ -39,7 +39,7 @@ public class Binary {
 	
 	/* Check if reserved line ___b91___ is found.*/
 	if(!b91[i].equalsIgnoreCase("___b91___"))
-	   throw new ParseException(new Message("___B91___ is "+
+	   throw new ParseException(new Message("___b91___ is "+
 						"missing.").toString(), i+1);
 	i++;
 	/* Check if reserved line ___code___ is found.*/
