@@ -192,6 +192,7 @@ public class Translations extends ListResourceBundle {
       {"first register expected.", null},        //  920, 948
       {"address expected.", null},               //  927, 968, 974
       {"invalid argument.", null},               //  939
+      {"invalid address value.", null},		 //  953
       {"address or register expected.", null},   //  956
       {"invalid addressing mode {0}.", null},    //  980
       {"opcode missing.", null},                 //  991

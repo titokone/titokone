@@ -174,8 +174,9 @@ public class Translations_fi extends ListResourceBundle {
       {"invalid register {0}.", "ep‰kelpo rekisteri {0}."},           //  859
       {"end of line expected.", "rivi p‰‰ttyy virheellisesti."},           //  908
       {"first register expected.","ensimm‰inen rekisteri on virheellinen."},        //  920, 948
-      {"address expected.", "osoiteosa on virheellinen."},               //  927, 968, 974
-      {"invalid argument.", "ep‰kelpo argumentti."},               //  939
+      {"address expected.", "osoiteosa on virheellinen."},              //  927, 968, 974
+      {"invalid argument.", "ep‰kelpo argumentti."},               	//  939
+      {"invalid address value.", "virheellinen osoiteosa."}, 		// 953
       {"address or register expected.", "osoiteosa tai rekisteri on virheellinen."},   //  956
       {"invalid addressing mode {0}.", "ep‰kelpo muistinoudon tyyppi {0}."},    //  980
       {"opcode missing.", "komento puuttuu."},                 //  991
