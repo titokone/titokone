@@ -15,7 +15,6 @@ import fi.hu.cs.ttk91.TTK91Cpu;
     needed information from a RunInfo instance. */
 public class Animator extends JPanel implements Runnable {
     
-  	private final static File backgroundImageFile = new File("animator.gif");
     private final static Font textFont = new Font ("Arial", Font.BOLD, 16);
 
     private final static int R0 = 0;
@@ -110,8 +109,8 @@ public class Animator extends JPanel implements Runnable {
         {261,80},                       // Control unit
         {261,270},                      // MMU
         {35,305},                       // ALU
-        {466,384},                      // External device
-        {608,157},                      // Memory
+        {525,385},                      // External device
+        {525,70},                       // Memory
     };
 
     private final static String[] labels = {
@@ -175,7 +174,8 @@ public class Animator extends JPanel implements Runnable {
         @throws IOException If there are problems reading background image throw IOException. */
     public Animator () throws IOException {
         // read the background image
-        BufferedImage bi = ImageIO.read (backgroundImageFile);
+        ClassLoader foo = getClass ().getClassLoader();
+        BufferedImage bi = ImageIO.read (foo.getResourceAsStream ("fi/hu/cs/titokone/resources/animator.gif"));
 		backgroundImage = new BufferedImage (bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
         doubleBuffer = new BufferedImage (bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
 		backgroundImage.createGraphics().drawImage (bi, 0,0, null);
@@ -230,7 +230,7 @@ public class Animator extends JPanel implements Runnable {
         animateAnEvent (MAR, MEMORY);
         animateAnEvent (MEMORY, MBR, info.getBinary());
         animateAnEvent (MBR, IR);
-        currentCommand = info.getLineContents() + "   (" + info.getColonString() + ")";
+        currentCommand = info.getLineContents(); //+ "   (" + info.getColonString() + ")";
         pause();
         
         int opcode = info.getBinary() >>> 24;
@@ -297,14 +297,18 @@ public class Animator extends JPanel implements Runnable {
                 case 3 : // IN
                 int inValue = info.whatIN()[1];
                 comment1 = new Message ("Read value {0} from device {1} to register R{2}.", new String[] {""+inValue, info.whatDevice(), ""+Rj}).toString();
-                animateAnEvent (whereIsSecondOperand, EXTERNAL_DEVICE);
-                animateAnEvent (EXTERNAL_DEVICE, Rj, inValue);
+        	animateAnEvent (whereIsSecondOperand, MAR);
+		animateAnEvent (MAR, EXTERNAL_DEVICE);
+                animateAnEvent (EXTERNAL_DEVICE, MBR, inValue);
+                animateAnEvent (MBR, Rj);
                 break;
                 
                 case 4 : // OUT
                 int outValue = info.whatOUT()[1];
                 comment1 = new Message ("Write value {0} from register R{1} to device {2}.", new String[] {""+value[Rj], ""+Rj, info.whatDevice()}).toString();
-                animateAnEvent (Rj, EXTERNAL_DEVICE);
+                animateAnEvent (Rj, MBR);
+		animateAnEvent (MBR, EXTERNAL_DEVICE);
+		
                 break;
             }
             pause();
@@ -543,6 +547,16 @@ public class Animator extends JPanel implements Runnable {
             route[i +routeToBus[from].length] =    routeToBus[to][routeToBus[to].length -i -2];
             route[i +1 +routeToBus[from].length] = routeToBus[to][routeToBus[to].length -i -1];
         }
+	
+	// fixes...
+	if (from == MAR && to == MEMORY) route = new int[] {378,340, 470,340, 470,90, 516,90};
+	if (from == MBR && to == MEMORY) route = new int[] {378,362, 470,362, 470,90, 516,90};
+	if (from == MEMORY && to == MBR) route = new int[] {516,90, 470,90, 470,362, 378,362};
+	
+	if (from == MAR && to == EXTERNAL_DEVICE) route = new int[] {378,340, 470,340, 470,405, 516,405};
+	if (from == MBR && to == EXTERNAL_DEVICE) route = new int[] {378,362, 470,362, 470,405, 516,405};
+	if (from == EXTERNAL_DEVICE && to == MBR) route = new int[] {516,405, 470,405, 470,362, 378,362};
+	
         
         int x1 = route[0];
         int y1 = route[1];
@@ -585,7 +599,7 @@ public class Animator extends JPanel implements Runnable {
     
     public static void main (String[] args) throws IOException {
         Animator a = new Animator();
-        a.setAnimationDelay (40);
+        a.setAnimationDelay (80);
         a.init (new Processor(512), 0, 512);
 
         JFrame f = new JFrame();
@@ -596,6 +610,23 @@ public class Animator extends JPanel implements Runnable {
         f.show();
         
         RunDebugger runDebugger = new RunDebugger();
+	
+        runDebugger.cycleStart (0, "IN R7, 10(R1)");
+        runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
+        runDebugger.setIN (1, 75);
+        runDebugger.runCommand (65601546);
+        a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
+        try {Thread.sleep(3000);} catch (Exception e) {}
+
+        runDebugger.cycleStart (0, "OUT R3, =0");
+        runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
+        runDebugger.setOUT (0, -1);
+        runDebugger.runCommand (73400320);
+        a.animate (runDebugger.cycleEnd());
+        while (a.isAnimationRunning());
+        try {Thread.sleep(3000);} catch (Exception e) {}
+	
         
         runDebugger.cycleStart (1, "STORE R1, @100");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
@@ -639,22 +670,6 @@ public class Animator extends JPanel implements Runnable {
         while (a.isAnimationRunning());
         try {Thread.sleep(3000);} catch (Exception e) {}
         
-        runDebugger.cycleStart (0, "IN R7, 10(R1)");
-        runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
-        runDebugger.setIN (1, 75);
-        runDebugger.runCommand (65601546);
-        a.animate (runDebugger.cycleEnd());
-        while (a.isAnimationRunning());
-        try {Thread.sleep(3000);} catch (Exception e) {}
-
-        runDebugger.cycleStart (0, "OUT R3, =0");
-        runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
-        runDebugger.setOUT (0, -1);
-        runDebugger.runCommand (73400320);
-        a.animate (runDebugger.cycleEnd());
-        while (a.isAnimationRunning());
-        try {Thread.sleep(3000);} catch (Exception e) {}
-
         runDebugger.cycleStart (0, "ADD R6, =20");
         runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
         runDebugger.setALUResult (20);
