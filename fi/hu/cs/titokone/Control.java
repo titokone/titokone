@@ -51,6 +51,8 @@ public class Control implements TTK91Core {
     private File defaultStdInFile, defaultStdOutFile, currentStdOutFile, 
 	sourceFile;
 
+    private LoadInfo pendingLoadInfo = null;
+
     /** This constructor sets up the Control instance.
     */
     public Control(File defaultStdInFile, File defaultStdOutFile) { 
@@ -107,6 +109,7 @@ public class Control implements TTK91Core {
 	boolean pendingException = false;
 	File[] appDefinitions;
 	LoadInfo result;
+	pendingLoadInfo = null;
 	if(application == null) {
 	    errorMessage = new Message("No application to load.").toString();
 	    throw new IllegalStateException(errorMessage);
@@ -139,10 +142,22 @@ public class Control implements TTK91Core {
 	Loader loader = new Loader(processor);
 	loader.setApplicationToLoad(application);
 	result = loader.loadApplication();
-	if(pendingException)
+	if(pendingException) {
+	    pendingLoadInfo = result;
 	    throw new TTK91NoStdInData(errorMessage);
+	}
 	return result;
     }    
+
+    /** Sometimes load() throws an exception when the situation is not
+	really requiring an error message. This causes the caller to 
+	not recieve their LoadInfo. To avoid causing unnecessary 
+	suffering, the LoadInfo can be fetched by calling this 
+	method. The LoadInfo will be null if the loading was really 
+	not successful or if there has been no load. */
+    public LoadInfo getPendingLoadInfo() {
+	return pendingLoadInfo;
+    }
 
     /** This method does the actual inserting STDIN datat to an application.
 	@param applicationStdin The application's suggestion for a file
