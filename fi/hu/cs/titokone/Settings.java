@@ -20,6 +20,15 @@ public class Settings {
     /** This field stores the comment marker to put before any comment 
 	lines. */
     private static final String COMMENT_MARKER = "#";
+    /** This pattern matches against 1 or more characters (there is a
+	start of a line in the start of each String, hence ignore the
+	first character), then 1 or more periods where there is at
+	least one start of line (\n\n would match ^^) and then 0 or
+	more other characters.  We assume here that since
+	Pattern.MULTILINE mode is on by default now, it will be on in
+	other places as well. */
+    private static final String LINEBREAK_CHECK_REGEXP = ".+[\n\r\f" + 
+	System.getProperty("line.separator") + "]+.*";
     
     /** This is one of the default settings keys of values that can be 
 	stored here. */
@@ -57,28 +66,21 @@ public class Settings {
 	String[] parameters = new String[3];
 
 	parameters[0] = new Message("value").toString();
-	// Check that the value string does not contain linebreaks
-	// in other positions than its end. To check that, match against
-	// a pattern of 1 or more characters (there is a start of a line
-	// in the start of each String, hence ignore the first character),
-	// then 1 or more periods where there is at least one start of
-	// line (\n\n would match ^^) and then 0 or more other characters.
-	// We assume here that since Pattern.MULTILINE mode is on 
-	// by default now, it will be on in other places as well.
-	if(value.matches(".+[^+&&.*]+")) { 
-	    parameters[1] = value;
-	    parameters[2] = new Message("a linebreak");
-	    expMessage = new Message("Illegal {0} \"{1}\", contains {2}.",
-				     parameters).toString();
-	    throw new IllegalArgumentException(expMessage);
-	}
 	if(value == null) {
 	    expMessage = new Message("Illegal {0}: null. Try an empty " +
 				     "string instead.", 
 				     parameters).toString();
 	    throw new IllegalArgumentException(expMessage);
 	}
-
+	// Check that the value string does not contain linebreaks
+	// in other positions than its end. 
+	if(value.matches(LINEBREAK_CHECK_REGEXP + ".+")) { 
+	    parameters[1] = value;
+	    parameters[2] = new Message("a linebreak").toString();
+	    expMessage = new Message("Illegal {0} \"{1}\", contains {2}.",
+				     parameters).toString();
+	    throw new IllegalArgumentException(expMessage);
+	}
 	doSetValue(key, value);
     }
 
@@ -97,8 +99,14 @@ public class Settings {
 	@throws IllegalArgumentException If the key contains 
 	KEY_VALUE_SEPARATOR or is null. */
     private void doSetValue(String key, Object value) {
+	String expMessage;
 	String[] parameters = new String[3];
 	parameters[0] = new Message("key").toString();
+	if(key == null) {
+	    expMessage = new Message("Illegal {0}: null. Try an empty " +
+				     "string instead.", parameters).toString();
+	    throw new IllegalArgumentException(expMessage);
+	}
     	// The regular expression below matches any character (.) 
 	// 0 or more times (*) followed by a KEY_VALUE_SEPARATOR, 
 	// followed by any character 0 or more times.
@@ -109,9 +117,11 @@ public class Settings {
 				     parameters).toString();
 	    throw new IllegalArgumentException(expMessage);
 	}
-	if(key == null) {
-	    expMessage = new Message("Illegal {0}: null. Try an empty " +
-				     "string instead.", parameters).toString();
+	if(key.matches(LINEBREAK_CHECK_REGEXP)) { 
+	    parameters[1] = key;
+	    parameters[2] = new Message("a linebreak").toString();
+	    expMessage = new Message("Illegal {0} \"{1}\", contains {2}.",
+				     parameters).toString();
 	    throw new IllegalArgumentException(expMessage);
 	}
 	settings.put(key, value);
@@ -127,16 +137,22 @@ public class Settings {
 	problem is that int cannot be null, while String in getStrValue 
 	can. */
     public int getIntValue(String key) {
-	return ((Integer) settings.get(key)).toInt();
+	return ((Integer) settings.get(key)).intValue();
     }
     
     /** This method returns the value of a certain key. It will try to 
 	cast it to a string before returning. 
 	@param key The key pointing to the value to be returned. 
-	@return The value the key points to, cast to a String. 
+	@return The value the key points to, cast to a String, or null
+	if there was no such value.
 	@throws ClassCastException If the value was not a String. */
     public String getStrValue(String key) {
 	return (String) settings.get(key);
+    }
+
+    /** This method returns all the keys defined here. */
+    public String[] getKeys() {
+	return (String[]) settings.keySet().toArray(new String[0]);
     }
 
     /** This method transforms this settings class into a format which
@@ -147,12 +163,12 @@ public class Settings {
 	StringBuffer result;
 	Object value;
 	Iterator keyIterator = settings.keySet().iterator();
-	result = "";
-	while(iterator.hasNext()) {
-	    keyString = (String) iterator.next();
-	    value = settings.get(key);
+	result = new StringBuffer("");
+	while(keyIterator.hasNext()) {
+	    keyString = (String) keyIterator.next();
+	    value = settings.get(keyString);
             try {
-		valueString = (String) settings.get(key);
+		valueString = (String) settings.get(keyString);
 	    }
 	    catch(ClassCastException mustBeAnIntegerThen) {
 		valueString = "" + ((Integer) value).intValue();
@@ -173,40 +189,36 @@ public class Settings {
 	correct. */
     private void parseSettingsFile(String fileContent) 
 	throws ParseException {
-	StringTokenizer rowenizer;
-	String[] parameters = new String[2], parts;
+	String[] parameters = new String[2], rows, parts;
 	String line, errorMessage, key, valueString;
-	int lineCounter;
 	Logger logger;
 
 	// We accept \n,\r and whatever this system uses as a line separator.
 	// StringTokenizer will not mind matching against eg. \r\r; it will
 	// be considered the same as \r.
-	rowenizer = new StringTokenizer(fileContent, "\n\r" + 
-					System.getProperty("line.separator",
-							   "\n"));
-	int lineCounter = 0;
-	while(rowenizer.hasMoreTokens()) {
-	    lineCounter++;
-	    line = rowenizer.nextToken();
+	rows = fileContent.split("[\n\r\f" + 
+				 System.getProperty("line.separator") + 
+				 "]");
+	for(int i = 0; i < rows.length; i++) {
+	    line = rows[i];
 	    // First, check if it is an empty line or a comment line. 
 	    // Ignore those.
 	    // (Trimming does not modify the string.)
-	    if(line.trim() != "" && !line.startsWith(COMMENT_MARKER)) {
+	    if(!line.trim().equals("") && !line.startsWith(COMMENT_MARKER)) {
 		parts = line.split(KEY_VALUE_SEPARATOR);
 		// parts.length can be > 2, because KEY_VALUE_SEPARATOR
 		// is allowed in the value string, even if not in the key
 		// string.
 		if(parts.length < 2) {
 		    // Log where we failed and on what.
-		    parameters[0] = "" + lineCounter;
+		    parameters[0] = "" + (i + 1);
 		    parameters[1] = line;
 		    errorMessage = new Message("Syntax error on line {0}, " +
 					       "which was: \"{1}\".",  
 					       parameters).toString();
-		    throw new ParseException(errorMessage);
+		    throw new ParseException(errorMessage, i + 1);
 		}
-		else { // Line has 2 parts as it should.
+		else { // Line has 2 (or more) parts as it should.
 		    key = parts[0].trim();
 		    valueString = parts[1].trim();
 		    try {
@@ -218,12 +230,12 @@ public class Settings {
 		}
 	    }
 	}
-	parameters[0] = "" + lineCounter;
+	parameters[0] = "" + rows.length;
 	parameters[1] = "" + settings.size();
-	logger = Logger.getLogger(this.getClass().getPackage());
+	logger = Logger.getLogger(this.getClass().getPackage().getName());
 	logger.info(new Message("Settings successfully parsed, lines: " +
 				"{0}, unique keys found: {1}.", 
-				parameters));
+				parameters).toString());
 		    
     }
 
