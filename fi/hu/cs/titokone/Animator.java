@@ -92,11 +92,21 @@ public class Animator extends JFrame {
     private String currentCommand = "";
     
     /** Comment label */
-    private String comment = "";
+    private String comment1 = "";
+    private String comment2 = "";
+    
+    /** String presentation of status register. */
+    private String SR_String = "";
 
     private BufferedImage backgroundImage, doubleBuffer;
     private int pointX=-1, pointY=-1;
+    private int animationDelay = 25;
     
+    /** Creats new animator. 
+        @param width Width of created Frame.
+        @param height Height of created Frame.
+        @param title Title of created Frame.
+        @throws IOException If there are problems reading background image throw IOException. */
     public Animator (int wide, int height, String title)
     throws IOException {
         // read the background image
@@ -122,11 +132,15 @@ public class Animator extends JFrame {
     	g2.setFont (textFont);
         
         for (int i=0; i < whereWriteValueTo.length; i++)
-            g2.drawString ("" + value[i], whereWriteValueTo[i][0], whereWriteValueTo[i][1]);
+            if (i != SR)
+                g2.drawString ("" + value[i], whereWriteValueTo[i][0], whereWriteValueTo[i][1]);
+            else
+                g2.drawString (SR_String, whereWriteValueTo[i][0], whereWriteValueTo[i][1]);
             
         // write current command and comments
         g2.drawString (currentCommand, 355, 48);
-        g2.drawString (comment, 106, 559);
+        g2.drawString (comment1, 106, 564);
+        g2.drawString (comment2, 106, 585);
         
         // draw red animation spot
         if (pointX != -1) {
@@ -142,34 +156,36 @@ public class Animator extends JFrame {
     the information in the RunInfo parameter.
     @param info A RunInfo to base the animation on. */
     public void animate(RunInfo info) {
-    /*
-* Move PC to MAR
-* Get a command to IR from MBR
-* Upadte PC
-* Convert it to a command
-* Get operands  (not all)
-* Do ALU etc.
-* Store result  (not all)
-http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
-    */
+        // Information about command cycle:
+        // http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
+
         currentCommand = "";        
+        
         // animate instruction fetch
-        comment = new Message ("Fetch the next instruction from memory slot {0} to IR.", ""+value[PC]).toString();
-        value[PC]++;
-        animateAnEvent (PC, MAR, value[PC]-1);
+        comment1 = new Message ("Fetch the next instruction from memory slot {0} to IR and increase PC by one.", ""+value[PC]).toString();
+        animateAnEvent (PC, MAR);
+        animateAnEvent (PC, PC, value[PC]+1);
         animateAnEvent (MAR, MEMORY);
         animateAnEvent (MEMORY, MBR, info.getBinary());
         animateAnEvent (MBR, IR);
-        currentCommand = info.getLineContents();
+        currentCommand = info.getLineContents() + "   (" + info.getColonString() + ")";
         pause();
         
         int opcode = info.getBinary() >>> 24;
-        int Rj = info.getFirstOperand()[0];
-        int Rj_value = info.getFirstOperand()[1];
-        int Ri = info.getIndexRegister()[0];
-        int Ri_value = info.getIndexRegister()[1];
+        int Rj = info.getFirstOperand();
+        int Ri = info.getIndexRegister();
         int ADDR = info.getADDR();
         int memoryFetches = info.getMemoryfetches();
+        int[] regs = info.getRegisters();
+        int Rj_value = value[Rj];
+        int Ri_value = value[Ri];
+        
+        // if NOP interrupt immediately
+        if (opcode == 0) {
+            comment1 = new Message ("No-operation command completed.").toString();
+            pause();
+            return;
+        }
         
         if (Ri != 0) ADDR += Ri_value;
         int param = ADDR;
@@ -177,7 +193,7 @@ http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
         if (memoryFetches == 1) {
             param = info.getValueAtADDR();
             whereIsSecondOperand = MBR;
-            comment = new Message ("Fetch second operand from memory slot {0}.", ""+ADDR).toString();
+            comment1 = new Message ("Fetch second operand from memory slot {0}.", ""+ADDR).toString();
             animateAnEvent (IR, MAR, ADDR);
             animateAnEvent (MAR, MEMORY);
             animateAnEvent (MEMORY, MBR, param);
@@ -185,138 +201,233 @@ http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
         else if (memoryFetches == 2) {
             param = info.getSecondFetchValue();
             whereIsSecondOperand = MBR;
-            comment = new Message ("Indirect memory accessing mode. 1: Fetch indexing value from memory slot {0}.", ""+ADDR).toString();
+            comment1 = new Message ("Indirect memory accessing mode.").toString();
+            comment2 = new Message ("1: Fetch indexing value from memory slot {0}.", ""+ADDR).toString();
             animateAnEvent (IR, MAR, ADDR);
             animateAnEvent (MAR, MEMORY);
             animateAnEvent (MEMORY, MBR, info.getValueAtADDR());
-            comment = new Message ("Indirect memory accessing mode. 2: Fetch second operand from memory slot {0}.", ""+value[MBR]).toString();
+            comment1 = new Message ("Indirect memory accessing mode.").toString();
+            comment2 = new Message ("2: Fetch second operand from memory slot {0}.", ""+value[MBR]).toString();
             pause();
             animateAnEvent (MBR, MAR);
             animateAnEvent (MAR, MEMORY);
             animateAnEvent (MEMORY, MBR, param);
+            comment2 = "";
         }
   
         
         switch (info.getOperationtype()) {
-            case RunDebugger.NO_OPERATION :
-            comment = new Message ("No-operation command compleated.").toString();
-            pause();
-            break;
-            
             case RunDebugger.DATA_TRANSFER_OPERATION :
             switch (opcode) {
                 case 1 : // STORE
-                comment = new Message ("Write value {0} from register R{1} to memory slot {2}.", new String[] {""+Rj_value, ""+Rj, ""+param}).toString();
+                comment1 = new Message ("Write value {0} from register R{1} to memory slot {2}.", new String[] {""+Rj_value, ""+Rj, ""+param}).toString();
                 animateAnEvent (whereIsSecondOperand, MAR, param);
                 animateAnEvent (Rj, MBR);
                 animateAnEvent (MBR, MEMORY);
-                pause();
                 break;
                 
                 case 2 : // LOAD
-                comment = new Message ("Load value {0} to register R{1}.", new String[] {""+param, ""+Rj}).toString();
+                comment1 = new Message ("Load value {0} to register R{1}.", new String[] {""+param, ""+Rj}).toString();
                 animateAnEvent (whereIsSecondOperand, Rj, param);
-                pause();
                 break;
                 
                 case 3 : // IN
                 int inValue = info.whatIN()[1];
-                comment = new Message ("Read value {0} from device {1} to register R{2}.", new String[] {""+inValue, info.whatDevice(), ""+Rj}).toString();
+                comment1 = new Message ("Read value {0} from device {1} to register R{2}.", new String[] {""+inValue, info.whatDevice(), ""+Rj}).toString();
                 animateAnEvent (whereIsSecondOperand, EXTERNAL_DEVICE);
                 animateAnEvent (EXTERNAL_DEVICE, Rj, inValue);
-                pause();
+                break;
                 
                 case 4 : // OUT
                 int outValue = info.whatOUT()[1];
-                comment = new Message ("Write value {0} from register R{1} to device {2}.", new String[] {""+value[Rj], ""+Rj, info.whatDevice()}).toString();
+                comment1 = new Message ("Write value {0} from register R{1} to device {2}.", new String[] {""+value[Rj], ""+Rj, info.whatDevice()}).toString();
                 animateAnEvent (whereIsSecondOperand, EXTERNAL_DEVICE);
                 animateAnEvent (Rj, EXTERNAL_DEVICE);
-                pause();
+                break;
             }
+            pause();
             break;
 
             case RunDebugger.ALU_OPERATION :
-            comment = new Message ("Copy register R{0} to ALU IN1.", ""+Rj).toString();
+            comment1 = new Message ("Copy register R{0} to ALU IN1.", ""+Rj).toString();
             animateAnEvent (Rj, ALU_IN1);
-            comment = new Message ("Copy second operand to ALU IN2.").toString();
+            comment1 = new Message ("Copy second operand to ALU IN2.").toString();
             animateAnEvent (whereIsSecondOperand, ALU_IN2, param);
-            comment = new Message ("ALU computes the result.").toString();
+            comment1 = new Message ("ALU computes the result.").toString();
             pause();
-            comment = new Message ("Copy ALU result to register R{0}", ""+Rj).toString();
+            comment1 = new Message ("Copy ALU result to register R{0}", ""+Rj).toString();
             value[ALU_OUT] = info.getALUResult();
             animateAnEvent (ALU_OUT, Rj);
             pause();
             break;
 
             case RunDebugger.COMP_OPERATION :
-            
+            comment1 = new Message ("Copy register R{0} to ALU IN1.", ""+Rj).toString();
+            animateAnEvent (Rj, ALU_IN1);
+            comment1 = new Message ("Copy second operand to ALU IN2.").toString();
+            animateAnEvent (whereIsSecondOperand, ALU_IN2, param);
+            comment1 = new Message ("ALU computes the comparision result.").toString();
+            comment2 = new Message ("0=greater, 1=equals, 2=less").toString();
+            pause();
+            value[ALU_OUT] = info.getCompareStatus();
+            comment1 = new Message ("Set comparision result to SR").toString();
+            animateAnEvent (ALU_OUT, SR);
+            switch (info.getCompareStatus()) {
+                case  0 : SR_String = "1 0 0...";break;
+                case  1 : SR_String = "0 1 0...";break;
+                case  2 : SR_String = "0 0 1...";break;
+                default : SR_String = "0 0 0...";break;
+            }
+            pause();
             break;
 
             case RunDebugger.BRANCH_OPERATION :
+            if (value[PC] == info.getNewPC()) {
+                comment1 = new Message ("Branching command - branching condition is false, so do nothing.").toString();
+            }
+            else {
+                comment1 = new Message ("Branching command - branching condition is true, so update PC.").toString();
+                animateAnEvent (whereIsSecondOperand, PC, param);
+            }
+            pause();
             break;
 
             case RunDebugger.SUB_OPERATION :
+            if (opcode == 49) { // CALL
+                comment1 = new Message ("Save new PC to TR").toString();
+                animateAnEvent (whereIsSecondOperand, TR, param);
+                
+                comment1 = new Message ("Increase stack pointer R{0} by one and push PC to stack.", ""+Rj).toString();
+                animateAnEvent (Rj, Rj, value[Rj]+1);
+                animateAnEvent (Rj, MAR);
+                animateAnEvent (PC, MBR);
+                animateAnEvent (MBR, MEMORY);
+
+                comment1 = new Message ("Increase stack pointer R{0} by one and push FP to stack.", ""+Rj).toString();
+                animateAnEvent (Rj, Rj, value[Rj]+1);
+                animateAnEvent (Rj, MAR);
+                animateAnEvent (R7, MBR);
+                animateAnEvent (MBR, MEMORY);
+                
+                comment1 = new Message ("Copy stack pointer to FP.").toString();
+                animateAnEvent (Rj, R7);
+                
+                comment1 = new Message ("Update PC.").toString();
+                animateAnEvent (TR, PC);
+            }
+            else if (opcode == 50) {
+                comment1 = new Message ("Pop PC from stack and decrease stack pointer R{0} by one.", ""+Rj).toString();
+                animateAnEvent (Rj, MAR);
+                animateAnEvent (Rj, Rj, value[Rj]-1);
+                animateAnEvent (MAR, MEMORY);
+                animateAnEvent (MEMORY, MBR, info.getNewPC());
+                animateAnEvent (MBR, PC);
+                
+                comment1 = new Message ("Pop FP from stack and decrease stack pointer R{0} by one.", ""+Rj).toString();
+                animateAnEvent (Rj, MAR);
+                animateAnEvent (Rj, Rj, value[Rj]-1);
+                animateAnEvent (MAR, MEMORY);
+                animateAnEvent (MEMORY, MBR, regs[7]);
+                animateAnEvent (MBR, R7);
+                
+                comment1 = new Message ("Decrease {0} parameters from stack pointer R{1}.", new String[] {""+param, ""+Rj}).toString();
+                animateAnEvent (Rj, Rj, regs[Rj]);
+            }
+            pause();
             break;
 
             case RunDebugger.STACK_OPERATION :
+            int popValue;
+            switch (opcode) {
+                case 51 : // PUSH
+                comment1 = new Message ("Incrase stack pointer R{0} by one then write second operand to stack", ""+Rj).toString();
+                animateAnEvent (Rj, Rj, value[Rj]+1);
+                animateAnEvent (Rj, MAR);
+                animateAnEvent (whereIsSecondOperand, MBR);
+                animateAnEvent (MBR, MEMORY);
+                break;
+                
+                case 52 : // POP
+                comment1 = new Message ("Read value from stack to R{0} then decrease stack pointer R{1} by one.", new String[] {""+Ri,""+Rj}).toString();
+                popValue = regs[Ri];    // popped value founds at destination register
+                if (Ri == Rj) popValue++;
+                animateAnEvent (Rj, MAR);
+                animateAnEvent (MAR, MEMORY);
+                animateAnEvent (MEMORY, MBR, popValue);
+                animateAnEvent (MBR, Ri);
+                animateAnEvent (Rj, Rj, value[Rj]-1);
+                
+                case 53 : // PUSHR
+                for (int i=0; i <= 6; i++) {
+                    comment1 = new Message ("Incrase stack pointer R{0} by one then write R{1} to stack.", new String[] {""+Rj, ""+i}).toString();
+                    animateAnEvent (Rj, Rj, value[Rj]+1);
+                    animateAnEvent (Rj, MAR);
+                    animateAnEvent (i, MBR);
+                    animateAnEvent (MBR, MEMORY);
+                }
+                break;
+                
+                case 54 : // POPR
+                for (int i=6; i >= 0; i--) {
+                    comment1 = new Message ("Read value from stack then decrease stack pointer R{0} by one.", ""+Rj).toString();
+                    popValue = regs[i];    // popped value founds at destination register
+                    if (i == Rj) popValue += Rj+1;
+                    
+                    animateAnEvent (Rj, MAR);
+                    animateAnEvent (MAR, MEMORY);
+                    animateAnEvent (MEMORY, MBR, popValue);
+                    animateAnEvent (MBR, i);
+                    animateAnEvent (Rj, Rj, value[Rj]-1);
+                }
+                break;
+            }
+            pause();
             break;
 
             case RunDebugger.SVC_OPERATION :
+            comment1 = new Message ("Super visor call to operating system's services.").toString();
+            pause();
+            // update possibly changed registers
+            for (int i=0; i < 8; i++)
+                value[i] = regs[i];
             break;
         }
-/*
-        currentCommand = "LOAD R0, 2";
-        value[PC] = 5;
-        repaint();
-        pause();
-        comment = "Fetch next instruction from memory to IR";
-        value[PC] = 6;
-        animateAnEvent (PC, MAR, 5);
-        animateAnEvent (MAR, MEMORY);
-        animateAnEvent (MEMORY, MBR, 34078722);
-        animateAnEvent (MBR, IR);
-        comment = "Fetch second parameter from memory";
-        repaint();
-        pause();
-        animateAnEvent (IR, MAR, 2);
-        animateAnEvent (MAR, MEMORY);
-        animateAnEvent (MEMORY, MBR, 101);
-        comment = "Store result to R0";
-        repaint();
-        pause();
-        animateAnEvent (MBR, R0);
-        
-        currentCommand = "MUL R0, =10";
-        comment = "Fetch next instruction from memory to IR";
-        repaint();
-        pause();
-        value[PC] = 7;
-        animateAnEvent (PC, MAR, 6);
-        animateAnEvent (MAR, MEMORY);
-        animateAnEvent (MEMORY, MBR, 318767114);
-        animateAnEvent (MBR, IR);
-        comment = "Transfer first parameter to ALU IN1";
-        repaint();
-        pause();
-        animateAnEvent (R0, ALU_IN1);
-        comment = "Transfer second parameter to ALU IN2";
-        animateAnEvent (IR, ALU_IN2, 10);
-        value[ALU_OUT] = 1010;
-        comment = "Transfer ALU result to R0";
-        try {Thread.sleep(500);} catch (Exception e) {}
-        repaint();
-        pause();
-        animateAnEvent (ALU_OUT, R0);
-*/     
+    }
+    
+    /** Initalizes animation.
+    @param registers Start values of the registers.
+    @param base Value of the BASE register in MMU.
+    @param limit Value of the LIMIT register in MMU. */
+    public void init (TTK91Cpu cpu, int baseValue, int limitValue) {
+        value[R0] = cpu.getValueOf (TTK91Cpu.REG_R0);
+        value[R1] = cpu.getValueOf (TTK91Cpu.REG_R1);
+        value[R2] = cpu.getValueOf (TTK91Cpu.REG_R2);
+        value[R3] = cpu.getValueOf (TTK91Cpu.REG_R3);
+        value[R4] = cpu.getValueOf (TTK91Cpu.REG_R4);
+        value[R5] = cpu.getValueOf (TTK91Cpu.REG_R5);
+        value[R6] = cpu.getValueOf (TTK91Cpu.REG_R6);
+        value[R7] = cpu.getValueOf (TTK91Cpu.REG_R7);
+        value[PC] = cpu.getValueOf (TTK91Cpu.CU_PC);
+        value[IR] = cpu.getValueOf (TTK91Cpu.CU_IR);
+        value[TR] = cpu.getValueOf (TTK91Cpu.CU_TR);
+        value[SR] = 0;
+        SR_String = "0 0 0...";
+        value[BASE] = baseValue;
+        value[LIMIT] = limitValue;
+    }
+    
+    /** Sets animation frequency.
+        @param frequency Frames drawn per second. */
+    public void setAnimationFrequency (int frequency) {
+        animationDelay = 1000 / frequency;
     }
 
     /** This method animates one event like "move 7 from R1 to In2 in ALU using
         the bus in between" The building block of a more complex operations like 
-    "STORE R1, 100" where one needs to fetch an instruction, decipher it etc.
-    Each time something changes wait for user input (space-bar) to continue.
+        "STORE R1, 100" where one needs to fetch an instruction, decipher it etc.
         @param from From where does the value come from.
         @param to Where is the value going to be transported.
-        @param value Value to be moved. tos new value.      */
+        @param newValue New value replaces the old value in destination. */
     private void animateAnEvent(int from, int to, int newValue) {
         
         // form the route
@@ -345,7 +456,7 @@ http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
                 pointY = y1;
                 repaint();
                 try {
-                    Thread.sleep(40*2);
+                    Thread.sleep(animationDelay);
                 } catch (Exception e) {}
             }
         }
@@ -358,7 +469,6 @@ http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
         animateAnEvent (from, to, value[from]);
     }
     
-    
     private void pause() {
         repaint();
         try {Thread.sleep(3000);} catch (Exception e) {}
@@ -366,45 +476,95 @@ http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
     
     public static void main (String[] args) throws IOException {
         Animator a = new Animator(800, 600, "Animator");
+        a.setAnimationFrequency (40);
+        a.init (new Processor(512), 0, 512);
         RunDebugger runDebugger = new RunDebugger();
+        
 /*
         
-        runDebugger.cycleStart (0, "NOP", 1, 2,2);
+        runDebugger.cycleStart (0, "NOP");
         runDebugger.setOperationType (RunDebugger.NO_OPERATION);
-        runDebugger.runCommand (0, 0, 0);
+        runDebugger.runCommand (0);
         a.animate (runDebugger.cycleEnd());
         
-        runDebugger.cycleStart (1, "STORE R1, @100", 2, 2,2);
+        runDebugger.cycleStart (1, "STORE R1, @100";
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.setValueAtADDR (666);
-        runDebugger.runCommand (27787365, 0,0);
+        runDebugger.runCommand (27787365);
         a.animate (runDebugger.cycleEnd());
         
-        runDebugger.cycleStart (0, "LOAD R2, @10(R1)", 1, 2,2);
+        runDebugger.cycleStart (0, "LOAD R2, @10(R1)");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.setValueAtADDR (100);
         runDebugger.setSecondFetchValue (1000);
-        runDebugger.runCommand (38862858, 0,0);
+        runDebugger.runCommand (38862858);
         a.animate (runDebugger.cycleEnd());
         
-        runDebugger.cycleStart (0, "IN R7, 10(R1)", 1, 2,2);
+        runDebugger.cycleStart (0, "IN R7, 10(R1)");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.setIN (1, 75);
-        runDebugger.runCommand (65601546, 0,0);
+        runDebugger.runCommand (65601546);
         a.animate (runDebugger.cycleEnd());
 
-        runDebugger.cycleStart (0, "OUT R3, =0", 1, 2,2);
+        runDebugger.cycleStart (0, "OUT R3, =0");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.setOUT (0, -1);
-        runDebugger.runCommand (73400320, 0,0);
+        runDebugger.runCommand (73400320);
         a.animate (runDebugger.cycleEnd());
-*/
-        runDebugger.cycleStart (0, "ADD R6, =20", 1, 2,2);
-        runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
-        runDebugger.setALUResult (20);
-        runDebugger.runCommand (297795604, 0,0);
+
+        runDebugger.cycleStart (0, "JZER R2, 100");
+        runDebugger.setOperationType (RunDebugger.BRANCH_OPERATION);
+        runDebugger.setNewPC (32);
+        runDebugger.runCommand (574619748);
         a.animate (runDebugger.cycleEnd());
         
+        runDebugger.cycleStart (0, "ADD R6, =20");
+        runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
+        runDebugger.setALUResult (20);
+        runDebugger.runCommand (297795604);
+        a.animate (runDebugger.cycleEnd());
+
+        runDebugger.cycleStart (0, "LOAD R1, =100");
+        runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
+        runDebugger.runCommand (35651684);
+        a.animate (runDebugger.cycleEnd());
+        
+        runDebugger.cycleStart (0, "CALL R3, 40(R1)");
+        runDebugger.setOperationType (RunDebugger.SUB_OPERATION);
+        runDebugger.runCommand (828440616);
+        runDebugger.setNewPC (140);
+        a.animate (runDebugger.cycleEnd());
+        
+        runDebugger.cycleStart (0, "EXIT SP, =4");
+        runDebugger.setOperationType (RunDebugger.SUB_OPERATION);
+        runDebugger.runCommand (851443716);
+        runDebugger.setNewPC (5);
+        runDebugger.setRegisters (new int[] {0,0,0,0,0,0,-6,100});
+        a.animate (runDebugger.cycleEnd());
+
+        runDebugger.cycleStart (0, "COMP R0, @30");
+        runDebugger.setOperationType (RunDebugger.COMP_OPERATION);
+        runDebugger.runCommand (521142302);
+        runDebugger.setCompareResult (2);
+        a.animate (runDebugger.cycleEnd());
+
+        runDebugger.cycleStart (0, "PUSH R6, 100(R4)");
+        runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
+        runDebugger.runCommand (869007460);
+        a.animate (runDebugger.cycleEnd());
+
+        runDebugger.cycleStart (0, "POP R6, R6");
+        runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
+        runDebugger.runCommand (885391360);
+        runDebugger.setRegisters (new int[] {1, 2,3,4,5,6,99,8});
+        a.animate (runDebugger.cycleEnd());
+*/
+
+        runDebugger.cycleStart (0, "POPR R0");
+        runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
+        runDebugger.setRegisters (new int[] {107,106,105,104,103,102,101,100});
+        runDebugger.runCommand (905969664);
+        a.animate (runDebugger.cycleEnd());
         
         
      }
