@@ -45,7 +45,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	JTableX.java				AÅ		AÅ
 2	LoadInfo.java						AÅ
 2	Loader.java						AÅ
-3	MemoryLine.java                         SY              SY 18.3.
+5	MemoryLine.java                         SY              SY 18.3.        SY 4.4.
 3	Message.java                            ?               SY 20.3
 1	Processor.java                                          SY 21.3
 3	RandomAccessMemory.java                 ?               SY 19.3
