@@ -338,7 +338,8 @@ public class Compiler {
 			commentParameters[0] = lineTemp[0];
 			commentParameters[1] = lineTemp[4];
 			comment = new Message("Found label {0} and variable " +
-					      "{1}.").toString();
+					      "{1}.", 
+					      commentParameters).toString();
 			compileDebugger.setComment(comment);
 
 		    } else {
