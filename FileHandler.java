@@ -4,7 +4,6 @@
     files and I/O operations anymore, and therefore will not throw 
     eg. IOExceptions when read. */
 public class FileHandler {
-    
     /** This function loads up a Source file from a given file.
 	@param filename The full or relative path to the file to read from.
 	@return A source instance which is no longer dependent on I/O. 
@@ -32,61 +31,23 @@ public class FileHandler {
     public void saveSettings(StringBuffer settingsData, String filename) 
 	throws IOException {}
 
-    /** This function loads an Application from a binary .b91 file and
-	returns the result. The Application's source will consist of
-	integers only, even though integers + symbolic code is supported
-	by the class as well. It calls a private method parseApplication() 
-	to do the actual interpretation work.
+    /** This function loads a Binary from a binary .b91 file and
+	returns the result. 
 	@param filename The full or relative path to the file to read the 
-	application from. 
-	@return An Application instance containing the data gotten from the
-	application file. 
+	binary from. 
+	@return An Binary instance containing the contents of the
+	.b91 file. 
 	@throws IOException If an I/O error occurs. Eg. one of the possible
-	IOExceptions is FileNotFoundException. 
-	@throws InvalidBinaryException If the binary file is not syntactically
-	correct. */
-    public Application loadApplication(String filename) 
-	throws IOException, InvalidBinaryException {}
+	IOExceptions is FileNotFoundException. */
+    public Binary loadBinary(String filename) throws IOException {}
    
-    /** This method saves an Application to file in a .b91 binary format 
-	which can be read by loadApplication. It calls a private method
-	transformApplication() to take care of translating the application
-	to a StringBuffer. The standard binary format is 
-	described in more detail in the project's design documentation. The
-	line delimiter will be System.getProperty("line.separator", "\n").
-	An example program in .b91 format might look like this (comments 
-	in parentheses are not a part of the file format):<br>
-	<pre>
-        ___b91___
-        ___code___
-        0 9          (numbers of the first and the last line of code,
-        52428801      the latter also being the initial value of FP)
-	18874378
-	572522503
-	36175883
-	287834122
-	18874379
-	538968064
-	36175883
-	69206016
-	1891631115
-	___data___
-	10 11         (numbers the first and the last line of the data 
-	0              area, the latter also being the initial value of SP;
-	0              then follow the contents of the data area in order)
-	___symboltable___
-	luku 10        (only local symbols are included, eg. HALT is 
-	summa 11        considered built-in)
-	___end___
-	</pre>
-	@param binary The application to save to file. (The TTK91Application 
-	interface is insufficient for the saving, since it does not reveal 
-	the application's symbol table.)
+    /** This method saves a Binary to file in a .b91 binary format.
+	@param binary The binary to save to file. 
 	@param filename The full or relative path of the file to save the 
 	binary to. 
 	@throws IOException If an I/O error occurs, eg. the given file 
 	cannot be written to. */
-    public void saveApplication(Application binary, String filename)
+    public void saveBinary(Binary binary, String filename)
 	throws IOException {}
 
     /** This method loads a "stdin" file representing the disk into 
@@ -109,22 +70,4 @@ public class FileHandler {
     public void saveStdOut(String contents, String filename) 
 	throws IOException {}
 
-    /** This method parses a binary in text form given to it and creates
-	an instance of Application from it. 
-	@param binaryCode A StringBuffer containing the text contained in
-	the binary. 
-	@return An Application constructed from the parsed code. 
-	@throws InvalidBinaryException If the binary string is not 
-	syntactically correct. */
-    private Application parseApplication(StringBuffer binaryCode) 
-	throws InvalidBinaryException {}
-
-    /** This method transforms an instance of an Application class to 
-	a StringBuffer containing the code from it, in the standard .b91
-	format described in saveApplication(). 
-	@param binary The application to transform to text form.
-	@return A StringBuffer containing the binary in the aforementioned
-	format. The line delimiter will be 
-	System.getProperty("line.separator", "\n"). */
-    private StringBuffer transformApplication(Application binary) {}
 }

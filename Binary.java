@@ -28,14 +28,42 @@ public class Binary {
 	stores the result internally to avoid needing to redo the 
 	interpretation. If the class already knows what the application
 	class corresponding to the binary is, it will just return that.
-	@return An application instance corresponding to the binary. */
-    public Application toApplication() { }
+	@return An application instance corresponding to the binary. 
+	@throws InvalidBinaryException If the binary contents are not 
+	syntatically correct. */
+    public Application toApplication() throws InvalidBinaryException { }
 
     /** This method determines (if it is not done already), stores and
-	returns the String representation of this binary. The linebreaks
-	used vary, as one of the constructors accepts a premade string; 
-	if the Application constructor has been used, the linebreak will
-	be System.getProperty(line.separator).
+	returns the String representation in .b91 format of this
+	binary.  The linebreaks used vary, as one of the constructors
+	accepts a premade string; if the Application constructor has
+	been used, the linebreak will be
+	System.getProperty(line.separator, "\n"). An example program in .b91
+	format might look like this (comments in parentheses are not 
+	a part of the file format):<br>
+	<pre>
+        ___b91___
+        ___code___
+        0 9          (numbers of the first and the last line of code,
+        52428801      the latter also being the initial value of FP)
+	18874378
+	572522503
+	36175883
+	287834122
+	18874379
+	538968064
+	36175883
+	69206016
+	1891631115
+	___data___
+	10 11         (numbers the first and the last line of the data 
+	0              area, the latter also being the initial value of SP;
+	0              then follow the contents of the data area in order)
+	___symboltable___
+	luku 10        (only local symbols are included, eg. HALT is 
+	summa 11        considered built-in)
+	___end___
+	</pre>
 	@return The String representation of this binary. */
     public String toString() { }
 }
