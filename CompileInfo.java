@@ -9,16 +9,16 @@ package fi.hu.cs.titokone;
 public class CompileInfo extends DebugInfo {
   // Variables common to both rounds.
   
-  public static final short FIRST_ROUND = 0;
-  public static final short SECOND_ROUND = 1;
-  public static final short FINALIZING = 2; 
-  private short phase;
+    public static final short FIRST_ROUND = 0;
+    public static final short FINALIZING_FIRST_ROUND =1;
+    public static final short SECOND_ROUND = 2;
+    public static final short FINALIZING = 3; 
+ 
+    private short phase;
   /** This field contains the number of the line being processed or 
       -1 during the finalizing phase. */
   private int lineNumber;
   private String lineContents;
-  private String statusMessage;
-  private String comments;
   // Variables for first round.
 
   /** This field is by default false, but if the compiled line was 
@@ -90,16 +90,6 @@ public class CompileInfo extends DebugInfo {
     /** This method sets lineEmpty value to true. */
     public void setLineEmpty(){}
 
-    /** This method sets the statusMessage.
-	@param statusMessage String containing the message.
-    */
-    public void setStatusMessage(String statusMessage){}
-    
-    /** This method sets the comments going to the GUI.
-	@param comment String containing the comments.
-    */
-    public void setComments(String comment){}
-
     /** This field sets the name of a found symbol.
 	@param name String containing the symbol name.
     */
@@ -148,16 +138,6 @@ public class CompileInfo extends DebugInfo {
     */
     public void setMemoryline(int lineNumber, int value){}
 
-    /** This method returns the statusmessage.
-	@return String containing the message.
-    */
-    public String returnStatusMessage(){}
- 
-    /** This method returns comments made by CompileDebugger.
-	@return String containing the comments.
-    */
-    public String returnComments(){}
-    
     /** This message tells that an empty line or line containing only 
 	whitespaces was compiled.
     */
@@ -228,6 +208,12 @@ public class CompileInfo extends DebugInfo {
     */
     public int[] returnInitPointers(){}
 
+    /** This method returns memorylines after compiler has finished first 
+	round of compilation. This array contains all codelines but all white
+	spaces and empty lines has been removed.
+	@return String array containing symbolic lines.
+    */
+    public String[] returnMemory(){}
 
 }
 
