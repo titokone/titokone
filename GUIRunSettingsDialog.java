@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
