@@ -1,4 +1,3 @@
-// TODO: Poista pause() ellei sitä tarvita?
 package fi.hu.cs.titokone;
 
 import java.awt.*;
@@ -593,8 +592,11 @@ public class Animator extends JPanel implements Runnable {
     private void pause() {
         if (executeAnimationImmediately) return;
         
+        /*
+	pause is disabled, because there is no need for pausing(?)
         repaint();
-        //try {Thread.sleep(3000);} catch (Exception e) {}
+        try {Thread.sleep(3000);} catch (Exception e) {}
+	*/
     }
     
     public static void main (String[] args) throws IOException {
