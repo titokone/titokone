@@ -149,6 +149,7 @@ public class CompileInfo extends DebugInfo {
 	labelName = name;
 	labelValue = value;
 	labelDefined = true;
+	labelFound = true;
     }
     
     /** This method tells what integer represents the compiled line of the

@@ -192,7 +192,6 @@ public class Compiler {
 	compilation is complete, or null otherwise. */
     public Application getApplication() throws IllegalStateException {
 	if (compileFinished) {
-	    if (data == null) { System.out.println("Data is null"); }
 	    dataMemoryLines = new MemoryLine[data.length];
 	    for (int i = 0; i < data.length; ++i) {
 		dataMemoryLines[i] = new MemoryLine(Integer.parseInt(data[i]), "");
@@ -307,28 +306,31 @@ public class Compiler {
 		    }
 		    
 		    try {
-			Integer.parseInt(lineTemp[4]);	
+			if (!lineTemp[4].equals(""))
+				Integer.parseInt(lineTemp[4]);	
 		    } catch(NumberFormatException e) {	
 // variable used	
-			nothingFound = false; 	
-			variableUsed = true;
-			compileDebugger.foundSymbol(lineTemp[4]);
+			if (symbolicInterpreter.getRegisterId(lineTemp[4])== -1) {
+			    nothingFound = false; 	
+			    variableUsed = true;
+			    compileDebugger.foundSymbol(lineTemp[4]);
 			
-			if (!symbols.containsKey(lineTemp[4])) {
-			    if (invalidLabels.get(lineTemp[4]) == null) {
-				symbols.put(lineTemp[4], new 
+			    if (!symbols.containsKey(lineTemp[4])) {
+			        if (invalidLabels.get(lineTemp[4]) == null) {
+				    symbols.put(lineTemp[4], new 
 					    Integer(symbolTable.size()));
-				symbolTableEntry[0] = lineTemp[4];
-				symbolTableEntry[1] = "";
-				symbolTable.add(symbolTableEntry);
-			    } else {
+				    symbolTableEntry[0] = lineTemp[4];
+				    symbolTableEntry[1] = "";
+				    symbolTable.add(symbolTableEntry);
+				} else {
 // reserver word was used	
-				symbols.put(lineTemp[4], 
+				    symbols.put(lineTemp[4], 
 					    new Integer(symbolTable.size()));
-				symbolTableEntry[0] = lineTemp[4];
-				symbolTableEntry[1] = "" + 
-				    (Integer) invalidLabels.get(lineTemp[4]);
-				symbolTable.add(symbolTableEntry);
+				    symbolTableEntry[0] = lineTemp[4];
+				    symbolTableEntry[1] = "" + 
+					    (Integer) invalidLabels.get(lineTemp[4]);
+				    symbolTable.add(symbolTableEntry);
+				}
 			    }
 			} 
 		    }
