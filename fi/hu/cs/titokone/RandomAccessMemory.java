@@ -5,7 +5,7 @@ import fi.hu.cs.ttk91.TTK91Memory;
 
 /** This class represents the memory of a TTK-91 computer. */
 public class RandomAccessMemory implements TTK91Memory {
-    private SymbolTable symbols;
+    private SymbolTable symbols = new SymbolTable();
     private int size;
     private MemoryLine[] memory;
     private int codeAreaSize=0;
@@ -93,7 +93,7 @@ public class RandomAccessMemory implements TTK91Memory {
         used by RandomAccessMemory, but can be returned as a HashMap.
         @param symbols The new symboltable to store here. */
     public void setSymbolTable(SymbolTable symbols) {
-        if (symbols == null) throw new IllegalArgumentException ("Parameter symbols=null.");
+        if (symbols == null) throw new IllegalArgumentException ("symbols=null.");
         this.symbols = symbols;
     }
 
@@ -101,7 +101,7 @@ public class RandomAccessMemory implements TTK91Memory {
         @param index Index to memory.
         @param memoryLine New memory line which will replace the old. */
     public void setMemoryLine(int index, MemoryLine memoryLine) {
-        if (memoryLine == null) throw new IllegalArgumentException ("Parameter memoryLine=null.");
+        if (memoryLine == null) throw new IllegalArgumentException ("memoryLine=null.");
         memory[index] = memoryLine;
     }
 
