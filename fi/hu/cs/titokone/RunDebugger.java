@@ -138,39 +138,35 @@ public class RunDebugger{
 		}
 	    
     }
- 
+    
     /** This method tells what was operation run and its parts.
-	@param opcode Operation code of the command.
-	@param firstOperand First operand.
+	@param binary Binary presentation of command.
 	@param valueOfFirstOperand Value of the register.
-	@param memoryFetchType Type of memoryfetch.
-	@param indexRegister Index register.
 	@param valueOfIndex Value of the index register.
-	@param ADDR ADDR part of the command.
-	@param numberOfFetches How many fetches were made.
-	@param binaryString String containing operation splitted into parts 
-	and presented as integers parted with doubledots. 
     */
-    public void runCommand(int opcode, int firstOperand, 
-			   int valueOfFirstOperand, int indexRegister, int valueOfIndex, int addr, 
-			   int numberOfFetches, String binaryString){
-	
-		  
-		  this.info.setFirstOperand(firstOperand, valueOfFirstOperand);
-		  this.info.setIndexRegister(indexRegister, valueOfIndex);
-		  this.info.setADDR(addr);	 
-		  this.info.setNumberOfFetches(numberOfFetches);
-		  this.info.setBinary(binaryString);
-			    
+    public void runCommand (int binary, int valueOfFirstOperand, int valueOfIndex) {
+        
+        // cut up the command
+        int opcode = binary >>> 24;                             
+        int Rj = (binary&0xE00000) >>> 21;  
+        int M  = (binary&0x180000) >>> 19;                      
+        int Ri = (binary&0x070000) >>> 16;   
+        int ADDR = binary&0xFFFF;
+        
+        info.setBinary (binary);
+        info.setFirstOperand (Rj, valueOfFirstOperand);
+        info.setIndexRegister (Ri, valueOfIndex);
+        info.setADDR (ADDR);
+        info.setNumberOfFetches (M);
+        info.setColonString (opcode + ":" + Rj + ":" + M + ":" + Ri + ":" + ADDR);
     }
-
     
     /** This method tells debugger what value was found from the ADDR part of 
 	the command.
 	@param value int containing the value.
     */
     public void setValueAtADDR(int value){
-    	this.info.setADDR(value);
+    	this.info.setValueAtADDR(value);
     }
 
     /** This method tells debugger that one or more registers were changed.
@@ -204,9 +200,16 @@ public class RunDebugger{
 	@param status New status of the bit.
     */
     public void setCompareResult(int whichBit){
-    		this.info.setCompareOperation(whichBit);
+        this.info.setCompareOperation(whichBit);
     }
-
+    
+    /** This method sets value of second memory fetch. Indirect memory
+        accessing mode needs two memory fetches.
+    @param secondFetchValue Value which have got at second memory fetch. */
+    public void setSecondFetchValue (int secondFetchValue) {
+        info.setSecondFetchValue(secondFetchValue);
+    }
+    
     /** This method tells debugger that something was read from the given
 	device. Devices are STDIN and KBD.
 	@param deviceNumber Number of the device.
