@@ -77,7 +77,7 @@ public class Processor implements TTK91Cpu {
 /** Returns the value of given registerID. The index numbers
     are available from the TTK91CPU interface.
     @param registerID Identifying number of the register.
-    @return Value of given register. Inproper value returns -1. */
+    @return Value of given register. Improper value returns -1. */
     public int getValueOf(int registerID) {
         return regs.getRegister (registerID);
     }
@@ -202,7 +202,7 @@ public class Processor implements TTK91Cpu {
             int Rj = ((IR.getBinary()&0xE00000) >>> 21) + TTK91Cpu.REG_R0;  // first operand (register 0..7)
             int M  = (IR.getBinary()&0x180000) >>> 19;                      // memory addressing mode
             int Ri = ((IR.getBinary()&0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
-            int ADDR = IR.getBinary()&0xFFFF;                               // address
+            int ADDR = IR.getBinary()&0xFFFF;                               // address; assume always positive here.
         
 
             runDebugger.runCommand (opcode, Rj, regs.getRegister (Rj), 
@@ -309,8 +309,7 @@ public class Processor implements TTK91Cpu {
     }
 
 
-/** ALU-operations.
-    @return Result of the ALU-operation. */
+/** ALU-operations. */
     private void alu(int opcode, int Rj, int param) 
     throws TTK91IntegerOverflow, TTK91DivisionByZero {
     runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
@@ -622,7 +621,7 @@ public class Processor implements TTK91Cpu {
         runDebugger.addChangedMemoryLine (row, memoryLine);
     }        
         
-/** Tests if given long value is acceptable int value. */
+/** Tests if given long value is an acceptable int value. Returns false if it is. */
     private boolean isOverflow (long value) {
         return (value > (long)Integer.MAX_VALUE || value < (long)Integer.MIN_VALUE);
     }
