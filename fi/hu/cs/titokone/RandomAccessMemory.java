@@ -16,7 +16,7 @@ public class RandomAccessMemory implements TTK91Memory {
         rows containing 0.
         @param size Size of the memory. */
     public RandomAccessMemory(int size) {
-        if (size < 0) throw new IllegalArgumentException ("Memory size cannot be negative.");
+        if (size < 0) throw new IllegalArgumentException (new Message("Memory size cannot be negative.").toString());
         this.size = size;
         memory = new MemoryLine[size];
         for (int i=0; i < size; i++)
@@ -94,7 +94,10 @@ public class RandomAccessMemory implements TTK91Memory {
         used by RandomAccessMemory, but can be returned as a HashMap.
         @param symbols The new symboltable to store here. */
     public void setSymbolTable(SymbolTable symbols) {
-        if (symbols == null) throw new IllegalArgumentException ("symbols=null.");
+        if (symbols == null) 
+	    throw new IllegalArgumentException (new Message("Tried to set " +
+							    "symbol table to " +
+							    "null.").toString());
         this.symbols = symbols;
     }
 
@@ -133,7 +136,7 @@ public class RandomAccessMemory implements TTK91Memory {
         @param size Size of the code area. */
     public void setCodeAreaLength(int size) {
         if (size < 0) throw new IllegalArgumentException ("Code area size cannot be negative.");
-        if (size > this.size) throw new IllegalArgumentException ("Code area size cannot be bigger than size of the whole memory.");
+        if (size > this.size) throw new IllegalArgumentException ("Code area size cannot be bigger than the size of the whole memory.");
         codeAreaSize = size;
     }
 

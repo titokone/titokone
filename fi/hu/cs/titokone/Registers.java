@@ -19,7 +19,8 @@ public class Registers {
         if (index != -1) 
             return registerValues[index];
         else
-            throw new IllegalArgumentException("unknow registerId: " + registerId);
+            throw new IllegalArgumentException(new Message("Unknown registerId: {0}", 
+							   "" + registerId).toString());
     }
 
     /** Returns the value of a register. 
@@ -30,7 +31,8 @@ public class Registers {
         if (index != -1) 
             return registerValues[index];
         else
-            throw new IllegalArgumentException("unknow registerName: " + registerName);
+            throw new IllegalArgumentException(new Message("Unknown registerName: {0}", 
+							   "" + registerName).toString());
     }
 
     /** Sets a new value to a register.
@@ -41,7 +43,8 @@ public class Registers {
         if (index != -1) 
             registerValues[index] = value;
         else
-            throw new IllegalArgumentException("unknow registerId: " + registerId);
+            throw new IllegalArgumentException(new Message("Unknown registerId: {0}", 
+							   "" + registerId).toString());
     }
     
     /** Sets a new value to a register.
@@ -52,7 +55,8 @@ public class Registers {
         if (index != -1) 
             registerValues[index] = value;
         else
-            throw new IllegalArgumentException("unknow registerName: " + registerName);
+            throw new IllegalArgumentException(new Message("Unknown registerName: {0}", 
+							   "" + registerName).toString());
     }
     
     /** Converts TTK91Cpu register to the corresponding index to registerValues array.
