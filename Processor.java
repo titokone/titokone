@@ -60,8 +60,8 @@ This field has the current instruction being processed
 
 /** The stdinData and kbdData fields stores buffer data to be read with 
     the IN operation. When the data has been read, the field should be 
-    cleared. */
-   private int stdinData, kbdData;
+    set to be null. */
+   private Integer stdinData, kbdData;
 
 /** This boolean stores whether the previous command should be run again
     instead of fetching a new command (eg. because it was an IN 
