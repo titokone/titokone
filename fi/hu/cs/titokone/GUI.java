@@ -1434,12 +1434,12 @@ private JToolBar makeToolBar() {
   
   toolbar = new JToolBar("Toolbar");
   
-  //System.out.println(getClass().getClassLoader().getResource("etc/open24.gif"));
+  System.out.println(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Open24.gif"));
   
   openFileButton = new JButton();
   try {
     openFileButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/open24.gif"), "Open file")
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Open24.gif"), "Open file")
     );
   }
   catch (Exception e) {
@@ -1453,7 +1453,7 @@ private JToolBar makeToolBar() {
   compileButton = new JButton();
   try {  
     compileButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/compile24.gif"), "Compile")
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Compile24.gif"), "Compile")
     );
   }
   catch (Exception e) {
@@ -1465,7 +1465,7 @@ private JToolBar makeToolBar() {
   runButton = new JButton();
   try {  
     runButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/run24.gif"), "Run")
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Run24.gif"), "Run")
     );
   }
   catch (Exception e) {
