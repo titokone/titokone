@@ -290,14 +290,14 @@ public class Compiler {
 				symbolTableEntry[1] = "" + 
 				    (code.size() - 1);
 				symbolTable.add(Integer.parseInt((String) symbols.get(lineTemp[0])), 
-						symbolTableEntry);
+						symbolTableEntry.clone());
 			    } else {
 				symbols.put(lineTemp[0], 
 					    new Integer(code.size() - 1));
 				symbolTableEntry[0] = lineTemp[0];
 				symbolTableEntry[1] = "" +
 				    (code.size() - 1);
-				symbolTable.add(symbolTableEntry);
+				symbolTable.add(symbolTableEntry.clone());
 			    }
 			    
 			    compileDebugger.foundLabel(lineTemp[0], 
@@ -321,15 +321,16 @@ public class Compiler {
 					    Integer(symbolTable.size()));
 				    symbolTableEntry[0] = lineTemp[4];
 				    symbolTableEntry[1] = "";
-				    symbolTable.add(symbolTableEntry);
+				    symbolTable.add(symbolTableEntry.clone());
 				} else {
-// reserver word was used	
+// predefined word (halt etc) was used	
 				    symbols.put(lineTemp[4], 
 					    new Integer(symbolTable.size()));
 				    symbolTableEntry[0] = lineTemp[4];
 				    symbolTableEntry[1] = "" + 
 					    (Integer) invalidLabels.get(lineTemp[4]);
-				    symbolTable.add(symbolTableEntry);
+				    symbolTable.add(symbolTable.size(), 
+							symbolTableEntry.clone()); 
 				}
 			    }
 			} 
@@ -422,12 +423,12 @@ public class Compiler {
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[2];
 			symbolTable.add(Integer.parseInt((String) symbols.get(lineTemp[0])), 
-					symbolTableEntry);
+					symbolTableEntry.clone());
 		    } else {
 			symbols.put(lineTemp[0], new Integer(symbolTable.size()));
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[2];
-			symbolTable.add(symbolTableEntry);
+			symbolTable.add(symbolTableEntry.clone());
 		    }
 		    compileDebugger.foundEQU(lineTemp[0], intValue);
 		    commentParameters = new String[2];
@@ -443,13 +444,13 @@ public class Compiler {
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
 			symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), 
-					symbolTableEntry);
+					symbolTableEntry.clone());
 			
 		    } else {
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
-			symbolTable.add(symbolTableEntry);
+			symbolTable.add(symbolTableEntry.clone());
 			
 		    }
 		    compileDebugger.foundDS(lineTemp[0]);
@@ -464,12 +465,12 @@ public class Compiler {
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
 			symbolTable.add(Integer.parseInt((String)symbols.get(lineTemp[0])), 
-					symbolTableEntry);
+					symbolTableEntry.clone());
 		    } else {
 			symbolTableEntry[0] = lineTemp[0];
 			symbolTableEntry[1] = lineTemp[1] + " " + 
 			    lineTemp[2];
-			symbolTable.add(symbolTableEntry);
+			symbolTable.add(symbolTableEntry.clone());
 		    }
 		    compileDebugger.foundDC(lineTemp[0]);
 		    comment = new Message("Found variable {0}.", 
