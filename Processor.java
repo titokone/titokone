@@ -58,6 +58,16 @@ This field has the current instruction being processed
  */ 
    private MemoryLine mbr;
 
+/** The stdinData and kbdData fields stores buffer data to be read with 
+    the IN operation. When the data has been read, the field should be 
+    cleared. */
+   private int stdinData, kbdData;
+
+/** This boolean stores whether the previous command should be run again
+    instead of fetching a new command (eg. because it was an IN 
+    operation and required more data, which has now been supplied). */
+   private boolean rerun = false;
+
 /** 
   Creates new processor, memory(with defaultsize) and registers.
   Processor state, program counter get initial values
@@ -137,6 +147,22 @@ This field has the current instruction being processed
     public boolean MemoryInput(MemoryLine inputLine) {}
 
 
+/** 
+    This method adds a line of keyboard data to a buffer the Processor
+    can read it from during its next command cycle (or previous cycle 
+    repeated). 
+    @param kbdInput An int to be "read from the keyboard".
+*/
+    public void keyboardInput(int kbdInput) {}
+
+
+/** 
+    This method adds a line of stdin data to a buffer the Processor
+    can read it from during its next command cycle (or previous cycle 
+    repeated). 
+    @param stdinInput An int to be "read from STDIN (file)".
+*/
+    public void stdinInput(int stdinInput) {}
 
 /**
    Transfer-operations  
