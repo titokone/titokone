@@ -278,7 +278,7 @@ public class Translations_fi extends ListResourceBundle {
        "Jatka nykyoperaatiota tauotta"},
       {"Stop current operation", "Keskeyt‰ nykyoperaatio"},
       {"Enable/disable animated execution", "Animoitu suoritus p‰‰lle/pois"},
-      {"Enable/disable extra comments during execution", "Suorituksen ylim‰‰r‰inen kommentointi p‰‰lle/pois"},
+      {"Enable/disable extra comments while execution", "Suorituksen ylim‰‰r‰inen kommentointi p‰‰lle/pois"},
       {"Enable/disable line by line execution", "Riveitt‰in suoritus p‰‰lle/pois"},
       {"about.html", "about_fi.html"},
       {"manual.html", "manual_fi.html"},

@@ -1263,7 +1263,7 @@ public void updateAllTexts() {
   continueButton.setToolTipText(new Message("Continue current operation").toString());
   continueToEndButton.setToolTipText(new Message("Continue current operation without pauses").toString());
   stopButton.setToolTipText(new Message("Stop current operation").toString());
-  lineByLineToggleButton.setToolTipText(new Message("Enable/disable animated execution").toString());
+  lineByLineToggleButton.setToolTipText(new Message("Enable/disable line by line execution").toString());
   showCommentsToggleButton.setToolTipText(new Message("Enable/disable extra comments while execution").toString());
   showAnimationToggleButton.setToolTipText(new Message("Enable/disable animated execution").toString());
   
