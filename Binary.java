@@ -18,8 +18,10 @@ public class Binary {
 
     /** This constructor sets up a binary instance. 
 	@param contents A linebreak-delimited string containing the 
-	contents of a binary file. */
-    public Binary(String contents) { }
+	contents of a binary file. 
+	@throws ParseException If the string does not represent a 
+	syntactically correct binary. */
+    public Binary(String contents) throws ParseException { }
 
     /** This constructor sets up a binary instance which has already
 	been interpreted into an application. It delays interpreting
