@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 /** This class represents an error condition where the string translation 
     system has been asked to use a language which it cannot offer any 
     support for. */
