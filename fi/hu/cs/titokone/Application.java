@@ -142,12 +142,13 @@ public class Application implements TTK91Application {
 	their keyboard data via other routes, eg. the user. */
     public int readNextFromKbd() throws TTK91NoKbdData {
 	Logger logger;
+	String[] messageParams = { kbdpointer, kbdcontent.length };;
 
 	if(kbdpointer >= kbdcontent.length) {
 	    logger = Logger.getLogger(this.getClass().getPackage());
 	    logger.fine(new Message("Application has no more keyboard data, read: " + 
 				    "{0}, buffer length {1}.", 
-	                            {kbdpointer, kbdcontent.length}));
+	                            messageParams));
 	    throw new TTK91NoKbdData(new Message("No more keyboard data " +
 						 "stored on application."));
 	}
@@ -168,12 +169,13 @@ public class Application implements TTK91Application {
 	data via other routes, eg. by reading from some actual file. */
     public int readNextFromStdIn() throws TTK91NoStdInData {
 	Logger logger;
+	String[] messageParams = { stdinpointer, stdincontent.length };
 	
 	if(stdinpointer >= stdincontent.length) {
 	    logger = Logger.getLogger(this.getClass().getPackage());
 	    logger.fine(new Message("Application has no more stdin data, read: " +
 				    "{0}, buffer length {1}.", 
-				    {stdinpointer, stdincontent.length}));
+				    messageParams));
 	    throw new TTK91NoStdInData(new Message("No more stdin data stored " +
 						   "on application."));
 	}
@@ -234,6 +236,7 @@ public class Application implements TTK91Application {
 	@throws IllegalArgumentException If the input string is not valid. */ 
     public void setKbd(String input) {
 	String errorMessage;
+	String logMessageParams = { input, "" };
 	StringTokenizer stringChopper;
 	Logger logger;
 	int i;
@@ -253,8 +256,9 @@ public class Application implements TTK91Application {
 		kbdcontent[i++] = Integer.parseInt(stringChopper.nextToken());
 	    }
 	    logger = Logger.getLogger(this.getClass().getPackage());
+	    logMessageParams[1] = "" + kbdcontent.length;
 	    logger.fine(new Message("Accepted \"{0}\" as keyboard input, tokens " +
-				    "found: {1}."), {input, "" + kbdcontent.length});
+				    "found: {1}.", logMessageParams));
 	}
 							   
     }
@@ -267,6 +271,7 @@ public class Application implements TTK91Application {
 	@throws IllegalArgumentException If the input string is not valid. */ 
     public void setStdIn(String input) {
 	String errorMessage;
+	String logMessageParams = { input, "" };
 	StringTokenizer stringChopper;
 	int i;
 
@@ -285,9 +290,10 @@ public class Application implements TTK91Application {
 		stdincontent[i++] = Integer.parseInt(stringChopper.nextToken());
 	    }
 	    logger.getLogger(this.getClass().getPackage());
+	    logMessageParams[1] = "" + stdincontent.length;
 	    logger.fine(new Message("Accepted \"{0}\" as stdin input, tokens " +
 				    "found: {1}.", 
-	                            {input, "" + stdincontent.length}));
+	                            logMessageParams));
 	}
     }
 }
