@@ -21,5 +21,7 @@ Control      SR 23.3.   compile-metodin parametrin‰ TTK91Source, ei Source.
                         ignoroida jos lyst‰‰/n‰ytt‰‰ varoituksen.)
                         Control tarvitsee oletusstdinin ja stdoutin 
                         konstruktorissaan.
+                        openSource(File):n pit‰‰ k‰yttˆtapauksen mukaan 
+                        palauttaa l‰hdekoodi stringin‰, oli void.
 
 CompileInfo  AT 23.3.	SetMemoryLine-metodin parametri value on String, ei int.
