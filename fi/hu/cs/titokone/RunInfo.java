@@ -9,7 +9,9 @@ creates objects from this class and passes them to onwards.*/
 public class RunInfo extends DebugInfo{
 
    
-    public static final short NOOPERATION = 0;
+
+// these constants are not needed!
+/*  public static final short NOOPERATION = 0;
     public static final short DATA_TRANSFER_OPERATION = 1;
     public static final short ALU_OPERATION = 2;
     public static final short JUMP_OPERATION = 3;
@@ -25,10 +27,19 @@ public class RunInfo extends DebugInfo{
     public static final short INDEXED_DIRECT = 4;
     public static final short INDEXED_INDIRECT= 5;
     public static final short INDEXED_DIRECT_REGISTER = 6; 
-    public static final short INDEXED_INDERECT_REGISTER = 7;
+    public static final short INDEXED_INDERECT_REGISTER = 7; */
    
+    /**
+    	this field is set to true if register value has changed
+    */
     private boolean registerChanged;
+	/**
+    	this field is set to true if something is stored to memory
+    */
     private boolean memoryChanged;
+    /**
+    	this field is set to true if something is stored to code area of memory
+    */
     private boolean selfChangingCode;
 
 
@@ -41,9 +52,10 @@ public class RunInfo extends DebugInfo{
     /** This field contains the command in binary format. */
     private int binary;
    
-   
+    /** This String represents the binary / data value of changed code */
     private String changedCodeAreaData;
     
+    /** This field defines the type of memory fetch. */
     private int memoryFetchType;
     private int numberOfMemoryfetches;
 
@@ -115,6 +127,9 @@ public class RunInfo extends DebugInfo{
 		this.registerChanged = false;	
 		this.memoryChanged = false;
 		this.selfChangingCode = false;
+		
+		this.compareOp = false;
+		this.conditionalJump = false;
 	}
     
     /** This method sets the type of operation performed.
@@ -136,8 +151,8 @@ public class RunInfo extends DebugInfo{
 	@param value Value of the register.
     */
     public void setIndexRegister(int register, int value){
-	this.ri = register;
-	this.valueOfRi = value;
+		this.ri = register;
+		this.valueOfRi = value;
     }
    
     /** This method sets the first operand.
@@ -146,7 +161,7 @@ public class RunInfo extends DebugInfo{
     */
     public void setFirstOperand(int register, int value){
     	this.rj = register;
-	this.valueOfRj = value;
+		this.valueOfRj = value;
     }
 
     /** This method sets the type of the fetch.
@@ -160,7 +175,7 @@ public class RunInfo extends DebugInfo{
 	@param fetches Number of fetches.
     */
     public void setNumberOfFetches(int fetches){
-    	this.numberOfMemoryFetches = fetches;
+    	this.numberOfMemoryfetches = fetches;
     }
 
     /** This method sets the value of the first fetch.
@@ -174,7 +189,7 @@ public class RunInfo extends DebugInfo{
 	@param value Value of the second fetch.
 */
    public void setSecondFetch(int value){
-   	this.valueOfSecondFetch = value;
+   		this.valueOfSecondFetch = value;
    }
 
 
@@ -199,8 +214,7 @@ public class RunInfo extends DebugInfo{
     */
     public void setChangedCodeAreaData(int line, int binary, String symbolic){
     	this.selfChangingCode = true;
-	if(symbolic != null)
-    		this.changedCodeAreaData = symbolic;
+		this.changedCodeAreaData = symbolic;
     }
     
     /** This sets the result of performed ALU operation
@@ -215,10 +229,12 @@ public class RunInfo extends DebugInfo{
 	@param whichBit Number of the bit.
 	@param newValue New value of the bit.
     */
+    
+    // vaihtuvatko muut arvot, vai ovatko oletuksena nollia alussa?
     public void setCompareOperation(int whichBit, boolean newValue){
-    	this.srBit = whichBit;
-	this.srStatus = true; //onko tarpeellinen?
-			      // voiko useita bittejä asettaa kerralla?
+    	this.compareOp = true;
+	    this.srBit = whichBit;
+		this.compareResult= newValue;
     }
     
     /** This method tells info what was read from given device and what was 
@@ -229,7 +245,7 @@ public class RunInfo extends DebugInfo{
     */
     public void setIN(String deviceName, int device, int value){
     	this.externalOperation = true;
-	this.deviceName = deviceName;
+		this.deviceName = deviceName;
     	this.deviceNumber = device;
     	this.value = value;
     }
@@ -242,10 +258,10 @@ public class RunInfo extends DebugInfo{
 	@param value Value written.
     */
     public void setOUT(String deviceName, int device, int value){
-    	this.externalOperation = false;
-	this.deviceName = deviceName;
-	this.device = device;
-	this.value = value;
+    	this.externalOperation = true;
+		this.deviceName = deviceName;
+		this.deviceNumber = device;
+		this.value = value;
     }
     
     /** This method tells info that a conditional jump was made and what was 
@@ -254,7 +270,9 @@ public class RunInfo extends DebugInfo{
 	@param status  Value of the bit.
     */
     public void setConditionalJump(int whichBit, boolean status){
-    
+    	this.conditionalJump = true;
+    	this.whichSRBit = whichBit;
+    	this.srStatus = status;
     }
 
 
@@ -268,132 +286,217 @@ public class RunInfo extends DebugInfo{
     /** This returns information if conditional jump was made.
 	@return boolean True if conditional jump was made.
     */
-    public boolean getConditionalJump(){}
+    public boolean getConditionalJump(){
+	    return this.conditionalJump;
+	}
  
     /** This method returns information which SR bit was used.
 	@return int Number of the SR bit.
     */
-    public int getWhichBit(){}
+    public int getWhichBit(){
+		return this.whichSRBit;    
+	}
     /** This method returns value of the SR bit.
 	@return boolean Value of the bit.
     */
-    public boolean getBit(){}
+    public boolean getBit(){
+	    return this.srStatus;
+	}
 
     /** This method tells GUIBrain what kind of operation happened.
         @return int value which represents operation type.*/
-    public int whatOperationHappened(){}
+    public int whatOperationHappened(){
+		return this.operationType;    
+	}
     
     /** This method returns both old and new PC, SP and FP.
     @return int[] Array containing pointers.
     */
-    public int[] getPointers(){}
+    public int[] getPointers(){
+	   int [] pointers = new int[4];
+	   pointers[0] = oldPC;
+	   pointers[1] = newPC;
+	   pointers[2] = newSP;
+	   pointers[3] = newFP;
+	   
+	   return pointers; 
+	}
     
     /** This methot tells GUIBrain how many memoryfetches were made.
 	@return int How many fetches were made.
     */
-    public int getMemoryfetches(){}
+    public int getMemoryfetches(){
+		return this.numberOfMemoryfetches;    
+	}
 
     /** This method tells what kind of memoryfetch was made.
-    @return int What kind of memorygetch was done.
+    @return int What kind of memoryfetch was done.
     */
-    public int getFetchType(){}
+    public int getFetchType(){
+		return this.memoryFetchType;    
+	}
     
     /** This method returns value of the first memoryfetch.
 	@return int Integer containing the value of fetch.
     */
-    public int getValueOfFirstFetch(){}
+    public int getValueOfFirstFetch(){
+		return this.valueOfFirstFetch;    
+	}
 
     /** This method returns value of the second memoryfetch.
 	@return int Integer containing the value of fetch.
     */
-    public int getValueOfSecondFetch(){}
+    public int getValueOfSecondFetch(){
+		return this.valueOfSecondFetch;
+	}
 
     /** This method returns the number of the line..
 	@return int Integer containing theline number.
     */
-    public int getLineNumber(){}
+    public int getLineNumber(){
+		return this.lineNumber;    
+	}
     
     /** This method returns the symbolic command found on the line..
 	@return String String containing the symbolic command.
     */
-    public String getLineContents(){}
+    public String getLineContents(){
+	    return this.lineContents;
+	}
     
     /** This method returns the binary command.
 	@return int Integer containing the binary command.
     */
-    public int getBinary(){}
+    public int getBinary(){
+		return this.binary;    
+	}
     
     /** This method tells GUIBrain which registers changed and what are new
 	values.
 	@return int[] Integer array containing register numbers and new values.
-*/
-    public int[] whatRegisterChanged(){}
+	*/
+    
+	//näitä ei koskaan aseteta!
+	public int[] whatRegisterChanged(){
+
+	}
     
     /** This method tells GUIBrain which lines in dataarea changed and what are
 	new values.
 	@return int[] Integer array containing line numbers and new values.
     */
+    // ja mistä helkkarista tämä tieto saadaan?
+  
     public int[] whatMemoryLineChanged(){}
     
     /** This method tells GUIBrain what was result of an OUT command (device 
 	and value).
 	@return int[] Integer array containing device number and new value.
     */
-    public int[] whatOUT(){}
+    
+  	//MISTÄ GUIBRAIN TIETÄÄ ONKO KYSEESSÄ IN VAI OUT?
+    
+    public int[] whatOUT(){
+	    int [] outD = new int[2];
+	    outD[0] = this.deviceNumber;
+	    outD[1] = this.value;
+
+	    return outD;
+	}
     
     /** This method tells GUIBrain what was result of an IN command (device and
      *value.
 	@return int[] Integer array containing device number and new value.
     */
-    public int[] whatIN(){}
+    public int[] whatIN(){
+		int [] inD = new int[2];
+		inD[0] = this.deviceNumber;
+		inD[1] = this.value;
+		
+		return inD;
+	}
     
     /** This method returns name of the used device.
 	@return String devicename. */
-    public String whatDevice(){}
+    public String whatDevice(){
+		return this.deviceName;    
+	}
 
     /** This method returns value of the first operand.
 	@return int[] Integer array containing the number and value of the 
 	first operand.
     */
-    public int[] getFirstOperand(){}
+    public int[] getFirstOperand(){
+		int [] reg = new int[2];
+		reg[0] = this.rj;
+		reg[1] = this.valueOfRj;
+		
+		return reg;
+	}
 
     /** This method returns value of the index registers.
 	@return int[] Integer array containing  number and value of the index 
 	register.
     */
-    public int[] getIndexRegister(){}
+    public int[] getIndexRegister(){
+		int [] reg = new int[2];
+		reg[0] = this.ri;
+		reg[1] = this.valueOfRi;
+		
+		return reg;
+	}
 
     /** This method returns value of the ADDR part of the command.
 	@return int Integer containing the value of the ADDR part of command.
     */
-    public int getADDR(){}
+    public int getADDR(){
+		return this.addr;    
+	}
 
     /** This method returns value found at the ADDR.
 	@return int Integer containing the value found at ADDR..
     */
-    public int getValueAtADDR(){}
+    public int getValueAtADDR(){
+	    return this.valueAtADDR;
+	}
 
     /** This method returns the result of the ALU operation.
 	@return int Integer containing the result.
     */
-    public int getALUResult(){}
+    public int getALUResult(){
+	    return this.aluResult;
+	}
 
 
     /** This method tells GUIBrain that if a compare operation was made.
 	@return boolean telling if operation was made.
     */
-    public boolean getCompareOP(){}
+    public boolean getCompareOP(){
+		return this.compareOp;
+	}
 
     /** This method returns both which SR bit was set and what is new value.
 	0 represents false and 1 true.
 	@return An integer array containing which SR bit was changed and it's
 	new value.*/
-    public int[] getCompareResult(){}
+    public int[] getCompareResult(){
+	    int [] compare = new int[2];
+	    
+	    compare[0] = srBit;
+	    if(compareResult)
+	    	compare[1] = 1;
+	    else
+	        compare[0] = 0;
+	    
+	    return compare;     
+	}
 
     /** This method returns type of the SVC operation.
 	@return int Integer containing the operation type.
     */
-    public int getSVC(){}
+    public int getSVC(){
+		return this.svcOperation;    
+	}
        
     
     

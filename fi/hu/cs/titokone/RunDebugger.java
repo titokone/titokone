@@ -34,7 +34,9 @@ public class RunDebugger{
     /** This constructor initializes the RunDebugger. After initialization it
 	waits until processor starts new running cycle.
     */
-    public RunDebugger(){}
+    public RunDebugger(){
+    
+    }
 
     /** This method tells debugger that a new cycle has been started. It
      initiates parameter values and stores old PC and IR.
@@ -49,7 +51,13 @@ public class RunDebugger{
     */
     public void cycleStart(int lineNumber, String lineContents, int oldPC, 
 			   int newPC, int oldSP, int newSP, int oldFP,
-			   int newFP){ }
+			   int newFP){ 
+				   
+		info = new RunInfo(lineNumber, lineContents, oldPC, newPC, oldSP, newSP,
+		                   oldFP, newFP);
+		 
+				   
+	}
 
 
     /** This method tells what kind of memoryfetch was made.
