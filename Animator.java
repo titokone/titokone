@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 
 /** This class takes care of the animation window. It digs the 
     needed information from a RunInfo instance. 
+*/
 
 public class Animator extends JFrame {
 

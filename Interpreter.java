@@ -34,7 +34,7 @@ public class Interpreter {
         {"XOR", new Integer(24), FULL},		//(AND, OR and XOR
         {"SHL", new Integer(25), FULL},
         {"SHR", new Integer(26), FULL},
-	{"SHRA", new Integer(27), FULL}		//same int as NOT!,
+	{"SHRA", new Integer(27), FULL},	//same int as NOT!,
         {"COMP", new Integer(31), FULL},
         {"JUMP", new Integer(32), FULL},	//Jump has only one param. Jump Address
         {"JNEG", new Integer(33), FULL},	//JNEG Rj, Address
