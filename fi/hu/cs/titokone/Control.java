@@ -47,7 +47,6 @@ public class Control implements TTK91Core {
       processor = new Processor(DEFAULT_MEMORY_SIZE);
       this.defaultStdInFile = defaultStdInFile;
       this.defaultStdOutFile = defaultStdOutFile;
-      // TODO: Tarvitseeko tänne jotain muuta?
     }
     
     /** Compiles a symbolic TTK91-assembly language to binary executable
@@ -80,6 +79,7 @@ public class Control implements TTK91Core {
 	@throws IllegalStateException If application is null. */
     public void load() throws TTK91AddressOutOfBounds, ParseException,
 			      IOException {
+	insertStdinToApplication();
 	Loader loader = new Loader(processor);
 	loader.setApplicationToLoad(application);
 	loader.loadApplication();
