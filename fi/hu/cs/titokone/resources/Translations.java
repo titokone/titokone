@@ -106,6 +106,21 @@ public class Translations extends ListResourceBundle {
       {"Cannot save binary to file; no application has been compiled or " +
        "loaded.", null},
 
+      // Class: Compiler				// line (approx)
+      {"Compilation is not finished yet.", null},	// 203
+      {"Not a valid command.", null},			// 255
+      {"Invalid label.", null},				// 271, 328, 345 and 349
+      {"Found label {0} and variable {1}."", null},	// 323
+      {"Variable {0} used.", null},			// 328
+      {"Label {0} found.", null},			// 333
+      {"Invalid size for a DS.", null},			// 358 and 362
+      {"Invalid size for a DC.", null},			// 373
+      {"Variable {0} defined as {1}.", null},		// 401
+      {"Found variable {0}.", null},			// 419 and 436
+      {"{0} defined as {1}.", null},			// 449
+      {"Invalid DEF operation.", null},			// 454
+      {"{0} --> {1} ({2}) ", null},			// 650
+
       // Class: FileHandler
       {"{0} in loadResourceBundle(): {1}", null},
       {"No read access to {0}.", null},
