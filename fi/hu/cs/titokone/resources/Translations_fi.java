@@ -183,8 +183,8 @@ public class Translations_fi extends ListResourceBundle {
       {"Select from a file...", "Valitse tiedostosta..."},
 
       {"Line", "Rivi"},   
-      {"Numeric", "Numeromuoto"},    
-      {"Symbolic", "Symbolinen muoto"},
+      {"Numeric value", "Numeromuoto"},    
+      {"Symbolic content", "Symbolinen muoto"},
 
       {"Open a new file", "Avaa uusi tiedosto"},
       {"Compile the opened file", "Käännä avattu tiedosto"},
@@ -193,7 +193,11 @@ public class Translations_fi extends ListResourceBundle {
       {"Continue current operation without pauses", 
        "Jatka nykyoperaatiota tauotta"},
       {"Stop current operation", "Keskeytä nykyoperaatio"},
-      {"Open the selected file", "Avaa valittu tiedosto"},
+      {"Enable/disable animated execution", "Animoitu suoritus päälle/pois"},
+      {"Enable/disable extra comments while execution", "Suorituksen ylimääräinen kommentointi päälle/pois"},
+      {"Enable/disable line by line execution", "Riveittäin suoritus päälle/pois"},
+      
+      
       {"Enter", "Syötä"}, // button used to enter a number to the KBD device.
       {"Symbol table", "Symbolitaulu"}, 
       {"Registers", "Rekisterit"}, 
@@ -230,6 +234,10 @@ public class Translations_fi extends ListResourceBundle {
       {"Do you want to overwrite the file? Select {1} to append or {0} " +
        "to overwrite.", "Haluatko ylikirjoittaa tiedoston? Valitse {1} " +
        "liittämiseksi, tai {0} tiedoston ylikirjoittamiseksi."},
+      {"Waiting for KBD input...", "Odotetaan KBD-syötettä..."},
+      {"Execution aborted due to an error", "Suoritus keskeytyi virhetilanteen vuoksi"},
+      {"Compilation aborted due to an error", "Kääntäminen keskeytyi virhetilanteen vuoksi"},
+      {"Current operation aborted", "Meneillään ollut operaatio keskeytettiin"},
       {"B91 binary", "B91-binääri"},   
       {"K91 source", "K91-lähdekooditiedosto"},  
       {"Class file", "Luokkatiedosto"},
@@ -271,6 +279,8 @@ public class Translations_fi extends ListResourceBundle {
       {"List", "Lista"},    
       {"Details", "Yksityiskohtaiset tiedot"},    
       {"All files", "Kaikki tiedostot"},    
+      {"Abort file selection", "Peruuta tiedoston valinta"},  
+      {"Open the selected file", "Avaa valittu tiedosto"},
       
       // Class: JOptionPane    
       {"Yes", "Kyllä"},    
@@ -382,10 +392,13 @@ public class Translations_fi extends ListResourceBundle {
       // Class: SymbolTable
       {"SymbolName was null.", "SymbolName oli arvoltaan null."},
       {"Definition key was null.", "Asetuksen tunniste oli null."},
-      {"Definition {0} not found.", "Asetusta {0} ei löytynyt."}
+      {"Definition {0} not found.", "Asetusta {0} ei löytynyt."},
 
       // Class: Translator: no translateable strings set to avoid 
       // looping bugs.
+      
+      {"__ABOUT_FILENAME__", "about_fi.html"},
+      {"__MANUAL_FILENAME__", "manual_fi.html"}
 
       // Localizable bit ends. 
   };

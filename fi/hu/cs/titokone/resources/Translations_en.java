@@ -216,8 +216,8 @@ public class Translations_en extends ListResourceBundle {
       {"Select from a file...", null},
 
       {"Line", null},   
-      {"Numeric", null},    
-      {"Symbolic", null},
+      {"Numeric value", null},    
+      {"Symbolic content", null},
 
       {"Open a new file", null},
       {"Compile the opened file", null},
@@ -225,7 +225,9 @@ public class Translations_en extends ListResourceBundle {
       {"Continue current operation", null},
       {"Continue current operation without pauses", null},
       {"Stop current operation", null},
-      {"Open the selected file", null},
+      {"Enable/disable animated execution", null},
+      {"Enable/disable extra comments while execution", null},
+      {"Enable/disable line by line execution", null},
       {"Enter", null}, // button used to enter a number to the KBD device.
       {"Symbol table", null}, 
       {"Registers", null}, 
@@ -250,6 +252,10 @@ public class Translations_en extends ListResourceBundle {
       {"Overwrite?", null},    
       {"Do you want to overwrite the file? Select {1} to append or {0} " +
        "to overwrite.", null},
+      {"Waiting for KBD input...", null},
+      {"Execution aborted due to an error", null},
+      {"Compilation aborted due to an error", null},
+      {"Current operation aborted", null},
       {"B91 binary", null},   
       {"K91 source", null},  
       {"Class file", null},
@@ -290,7 +296,9 @@ public class Translations_en extends ListResourceBundle {
       {"New folder", null},    
       {"List", null},    
       {"Details", null},    
-      {"All files", null},    
+      {"All files", null},
+      {"Abort file selection", null},  
+      {"Open the selected file", null},
       
       // Class: JOptionPane    
       {"Yes", null},    
@@ -377,11 +385,14 @@ public class Translations_en extends ListResourceBundle {
       // Class: SymbolTable
       {"SymbolName was null.", null},
       {"Definition key was null.", null},
-      {"Definition {0} not found.", null}
+      {"Definition {0} not found.", null},
 
       // Class: Translator: no translateable strings set to avoid 
       // looping bugs.
-
+      
+      
+      {"__ABOUT_FILENAME__", "about.html"},
+      {"__MANUAL_FILENAME__", "manual.html"}
       // Localizable bit ends. 
   };
 }
