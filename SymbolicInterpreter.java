@@ -12,7 +12,7 @@ public class SymbolicInterpreter extends Interpreter {
     private HashMap addressModes;
     private HashMap registers;
     private final int NOTVALID = -1;
-    private final int EMPTY = -1;
+    private final int EMPTY = 0;
     private final String validLabelChars = "0123456789abcdefghijklmnopqrstuvwxyzåäö_";
 
     /** This constructor sets up a SymbolicInterpreter instance. It calls
@@ -25,6 +25,8 @@ public class SymbolicInterpreter extends Interpreter {
     /** This method checks if a command is a valid opCode.
 	@param command String form of a possible opCode.*/
     public int getOpcode(String command) { }
+	
+
 
     /** This method transforms an addressing mode (=, @ or nothing) to 
 	a number identifying it. 
@@ -95,11 +97,11 @@ public class SymbolicInterpreter extends Interpreter {
 	/* TODO if jump or other not normal then do something.*/
 
 
-	/*register*/
+/*first register*/
 	if (nextToCheck < symbolicOpCode.length()) {
 		if (symbolicOpCode.charAt(nextToCheck) != ' ') { return NOTVALID; }
 		while (nextToCheck == ' ') { ++nextToCheck }	// needs a space, then R0-R7, SP or FP
-		fieldEnd = symbolicOpCode.indexOf(" ", nextToCheck);
+		fieldEnd = symbolicOpCode.indexOf(",", nextToCheck);
                 if (fieldEnd == -1) {
                         fieldEnd = symbolicOpCode.length();
                 }
@@ -110,7 +112,7 @@ public class SymbolicInterpreter extends Interpreter {
 		nextToCheck = fieldEnd + 1;
 	}
 
-	/*addressingMode*/
+/*addressingMode*/
 	if (nextToCheck < symbolicOpCode.length()) {
 		while (nextToCheck == ' ') { ++nextToCheck; }
 		if (symbolicOpCode.charAt(nextToCheck) == '=' || 
@@ -120,10 +122,26 @@ public class SymbolicInterpreter extends Interpreter {
 		} else { addressingMode = getAddressingMode(""); }
 	}
 
-	/*otherRegister*/
+/*address and other register*/
 	while (nextToCheck == ' ') { ++nextToCheck; }
-	/*Check if r0-r7 sp or fp*/
-
-	/*address*/
-
+	if (symbolicOpCode.charAt(nextToCheck).isDigit) {
+		if (symbolicOpCode.indexOf("(", nextToCheck) != -1) {
+			if (symbolicOpCode.indexOf(")", nextToCheck) < 
+						symbolicOpCode.indexOf("(", nextToCheck)) {
+				return NOTVALID; 
+			} else {
+				address = symbolicOpCode.substring(nextToCheck, 
+						symbolicOpCode.indexOf("(", nextToCheck));
+			
+				otherRegister = getRegisterId(
+					symbolicOpCode.substring(
+						symbolicOpCode.indexOf("(", nextToCheck)
+						, symbolicOpCode.indexOf(")", nextToCheck)));
+			}
+		} else {
+			address = symbolicOpCode.substring(nextToCheck);
+		}
+	} else {
+		otherRegister = getRegisterId(symbolicOpCode.substring(nextToCheck).trim());
+	}
 }
