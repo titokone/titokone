@@ -410,7 +410,7 @@ public class Animator extends JFrame {
         value[PC] = cpu.getValueOf (TTK91Cpu.CU_PC);
         value[IR] = cpu.getValueOf (TTK91Cpu.CU_IR);
         value[TR] = cpu.getValueOf (TTK91Cpu.CU_TR);
-        value[SR] = 0;
+        value[SR] = -1;
         SR_String = "0 0 0...";
         value[BASE] = baseValue;
         value[LIMIT] = limitValue;
