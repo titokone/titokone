@@ -300,8 +300,7 @@ public class Compiler {
 				symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
 				symbolTableEntry.clone());
 			    } else {
-				symbols.put(lineTemp[0], 
-					    new Integer(code.size() - 1));
+				symbols.put(lineTemp[0], new Integer(symbolTable.size()));
 				symbolTableEntry[0] = lineTemp[0];
 				symbolTableEntry[1] = "" +
 				    (code.size() - 1);
