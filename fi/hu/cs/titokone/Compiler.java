@@ -367,21 +367,6 @@ public class Compiler {
 		// not a valid label;
 		comment = new Message("Invalid label.").toString();
 		throw new TTK91CompileException(comment); 
-		// REMOVED CODE (This did what the above now does)	
-		//for (int i = 0; i < lineTemp[0].length(); ++i) {
-		//	if (atLeastOneNonNumber == false) {
-		//	    if (VALIDLABELCHARS.indexOf(lineTemp[0].charAt(i)) > 9) {
-		//		atLeastOneNonNumber = true;
-		//	    }
-		//	}			
-		//	if (VALIDLABELCHARS.indexOf(lineTemp[0].charAt(i)) < 0) {
-		//	    allCharsValid = false;
-		//	}
-		//}
-		//if (atLeastOneNonNumber == false || allCharsValid == false) { 
-		// (report)
-
-
 	    } else {
 		if (invalidLabels.containsKey(lineTemp[0])) {
 		    comment = new Message("Invalid label.").toString();
@@ -720,8 +705,10 @@ public class Compiler {
 	int lineAsArrayIndex = 0;
 
 
-	if (lineAsArrayIndex = lineAsArray.length) { 
-		return new String[] = {"", "", "", "", "", ""}; 
+	if (lineAsArrayIndex == lineAsArray.length) { 
+		parsedLine = new String[6];
+		for (int i = 0; i < parsedLine.length; ++i) parsedLine[i] = "";
+		return parsedLine; 
 	}
 
 /* label */
@@ -748,7 +735,9 @@ public class Compiler {
 			lineAsArray[lineAsArrayIndex].length() -1) == ',') {
 
 		        if (symbolicInterpreter.getRegisterId(
-					lineAsArray[lineAsArrayIndex]) != -1) {
+		lineAsArray[lineAsArrayIndex].substring(0, 
+					lineAsArray[lineAsArrayIndex].length() - 1)
+			) != -1) {
                     		firstRegister = lineAsArray[lineAsArrayIndex].substring(0, 
 					lineAsArray[lineAsArrayIndex].length() -1);
                     		++lineAsArrayIndex;
@@ -803,15 +792,14 @@ public class Compiler {
 	    address = "";
         }
 	
+	
+
 	if (opcode.length() > 0) {
 	    if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
 		// Opcode matches jneg/jzer/jpos or the negations 
 		// jnneg/jnzer/jnpos.
 		if(opcode.toLowerCase().matches("j" + "n?" + 
 						"((neg)|(zer)|(pos))")) {
-		    // REMOVED CODE (this did what the above now does)
-		    //if ("-jneg-jzer-jpos-jnneg-jnzer-jnpos-".indexOf("-" + 
-		    //opcode.toLowerCase() + "-") != -1) {
 		    if (firstRegister.equals("")) return null;
 		} 
 		if (addressingMode.equals("=") || address.equals("")) return null;	
@@ -907,10 +895,6 @@ public class Compiler {
 	    if (!opcode.matches("((dc)|(ds)|(equ)|(def))")) {
 		return null;
 	    }
-	    // REMOVED CODE (this did what the above does now)
-	    //if ("dcdsequdef".indexOf(opcode) == -1) {
-	    //  return null;			
-	    //}
 	    nextToCheck = fieldEnd;	
 	}
 
