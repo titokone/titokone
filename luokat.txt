@@ -22,7 +22,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 
 0	Animator.java
-0	Application.java
+2	Application.java                        SR              SR 19.3.
 0	AssariUI.java
 0	Binary.java
 0	BinaryInterpreter.java
