@@ -447,6 +447,39 @@ public class Control implements TTK91Core {
 	return sourceString;
     }
 
+    /** This method makes it possible to re-open the same source file, 
+        only modified. The opened file stays the same, the new string is 
+	passed to the compiler and the modifications are saved in 
+	the source file. 
+	@param modifiedSource The modified source as a string array, one
+	line per cell. The format is optimized for GUI/GUIBrain use. The
+	source must not be null.
+	@return The source string.  
+	@throws IOException Just before the last return if the saving of
+	the modified source failed. 
+	@throws IllegalStateException If there is no source file set. 
+	The method openSource() must be called before this method. */
+    public String modifySource(String[] modifiedSource) throws IOException {
+        StringBuffer result = new StringBuffer();
+	String sourceString;
+	if(modifiedSource == null)
+	  throw new IllegalArgumentException(new Message("Modified source " +
+							  "was null.").toString());
+	if(sourceFile == null)
+	  throw new IllegalStateException(new Message("No source file set, " +
+						      "use openSource " +
+						      "first.").toString());
+	for(int i = 0; i < modifiedSource.length; i++) {
+	  result.append(modifiedSource[i] + "\n");
+	}
+	sourceString = result.toString();
+	compiler.compile(sourceString); // Prepare the compiler.
+	application = null;
+	currentStdOutFile = defaultStdOutFile;
+	fileHandler.saveSource(new Source(sourceString), sourceFile);
+	return sourceString;
+    }
+  
     /** This method saves the opened source file to a binary of the 
 	same filename as the previous source file was loaded from,
 	with the extension changed (probably from .k91) to .b91. 

@@ -46,8 +46,14 @@ public class FileHandler {
 	return new Source(loadFileContentsToString(srcFile).toString());
     }
 
-    // (No saveSource is needed.)
-
+    /** This method is used to save a source that has been modified. 
+	@param src The source object to save to file. 
+	@param srcFile The file to save the source to. 
+	@throws IOException If an I/O error occurds. */
+    public void saveSource(Source src, File srcFile) throws IOException {
+      saveStringToFile(src.toString(), srcFile);
+    }
+    
     /** This function loads a settings file into a StringBuffer.
 	@param filename The identifier of the file to read from.
 	@return A StringBuffer which no longer depends on I/O.
