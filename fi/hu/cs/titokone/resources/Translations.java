@@ -38,10 +38,7 @@ public class Translations extends ListResourceBundle {
       // Remove lines which you do not wish to translate completely. Leaving
       // in a value of "" will translate the message to "" as well.
 
-      // Class: Animator
-      // General messages: (none)
-      // Exception messages: (none)
-      // Log messages: (none)
+      // Class: Animator, not processed yet - TODO.
 
       // Class: Application.
       // General messages: (none)
