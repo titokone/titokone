@@ -236,19 +236,19 @@ public class Translations_fi extends ListResourceBundle {
 
       // Class: GUICompileSettingsDialog
       // (Set compiling options already defined in GUI.)
-      {"Apply", null},
-      {"Close", null},
-      {"Compile line by line", null},
-      {"Show comments", null},
-      {"Set compiling options", null},
+      {"Apply", "Muuta"},
+      {"Close", "Sulje"},
+      {"Compile line by line", "Käännä rivittäin"},
+      {"Show comments", "Näytä kommentit"},
+      {"Set compiling options", "Muokkaa käännösasetuksia"},
       // Pause whenever a comment occurs & show extra comments while compiling
       // represented in JOptionPane.
 
       // Class: GUIRunSettingsDialog
       // (Set running options already defined in GUI, as are Apply and Close.)
-      {"Execute line by line", null},
-      {"Show comments", null},
-      {"Show animation", null},
+      {"Execute line by line", "Suorita rivittäin"},
+      {"Show comments", "Näytä kommentit"},
+      {"Show animation", "Näytä animointi"},
       // (execute code line by line, show extra comments while executing
       // and show animation while executing are represented in JOptionPane.
 
