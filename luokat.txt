@@ -45,7 +45,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 3	MemoryLine.java                         SY              SY 18.3.
 0	Message.java
 0	Processor.java
-0	RandomAccessMemory.java
+3	RandomAccessMemory.java                 ?               SY 19.3
 3	Registers.java                          SY              SY 19.3
 0	ResourceLoadFailedException.java
 0	RunDebugger.java
