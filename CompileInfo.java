@@ -1,10 +1,11 @@
+package fi.hu.cs.titokone;
+
  /** This class is used to tell GUIBrain what compiler has done at the moment.
     CompileDebugger creates objects from this class and passes them to the 
     GUIBrain.
 */
 
-//Tdlld hetkelld melkein valmis, tiettyd toiminnallisuutta pitdd vield miettid
-//ja javadoc puutteellinen
+
 public class CompileInfo extends DebugInfo {
   // Variables common to both rounds.
   
@@ -68,7 +69,7 @@ public class CompileInfo extends DebugInfo {
 
     /** These fields tells GUIBrain if compiler is setting DC and DS values.
      */
-  private boolean definingDS; // or DC.
+  private boolean definingDS; 
   private boolean definingDC;
   private int value; // DC/DS.
 
@@ -86,21 +87,6 @@ public class CompileInfo extends DebugInfo {
 	@param phase short indicating which phase is going on.
     */
   public CompileInfo(short phase) {}
-    
-  /* Vielä metodit tueksi näille:
-     all: set statusmessage (in parent), set phase, set linenumber
-     and line contents if applicable (not final phase).
-     first round:
-     - set lineempty, symbolName, -defined and -value if applicable,
-     labelname if applicable.
-     second round:
-     - set line binary, label name and value if applicable.
-     final phase processing DC/DS:
-     - set definingDS, value, symbolName, symbolValue
-     final phase final: 
-     - set SP, FP in initPointers. */
-
-    
     
     /** This method sets lineEmpty value to true. */
     public void setLineEmpty(){}
@@ -157,7 +143,10 @@ public class CompileInfo extends DebugInfo {
     */
     public void setInitPointers(int SP, int FP){}
 
-    
+    /** This method sets given line to given value.
+	@param lineNumber Number of the line.
+	@param value New value for the line.
+    */
     public void setMemoryline(int lineNumber, int value){}
 
     /** This method returns the statusmessage.
@@ -216,8 +205,12 @@ public class CompileInfo extends DebugInfo {
 	@return An integer containing value of the label. */
     public int returnLabelValue(){} 
 
-
+    /** This method tells GUIBrain that compiler is setting DS area.
+     */
     public boolean returnDefiningDS(){} // samoin
+
+    /** This methot tells GUIBrain that compiler is setting DC.
+     */
     public boolean returnDefiningDC(){} //samoin
 
     /** This method returns the value of DC or DS.
