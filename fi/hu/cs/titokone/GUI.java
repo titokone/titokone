@@ -1,17 +1,3 @@
-/* TODO:
-    updateStatusLine(String str) updates the status line by replacing its contents with str
-    
-    updateReg(int reg, int value) updates reg with a new value
-    
-    disable(int)
-    
-    insertToCodeTable(int[], int[], String[])
-    
-    Lisäsin kentän HashMap symbolsHashMap
-    
-    Poistin metodin public void setInputFieldEnabled(boolean b)
-*/
-
 package fi.hu.cs.titokone;
 
 import java.awt.BorderLayout;
@@ -32,8 +18,10 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.HashMap;
 import java.util.logging.Logger;
 import java.util.Vector;
@@ -42,6 +30,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -52,8 +41,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JSplitPane;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -63,6 +53,8 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.DefaultCellEditor;
@@ -247,8 +239,13 @@ public class GUI extends JFrame implements ActionListener {
 	      JMenu     helpMenu;
         JMenuItem manual;
 	      JMenuItem about;
-	
 	      
+	      JFrame animatorFrame;
+	      Animator animator;
+	      JSlider animatorSpeedSlider;
+        public static final int ANIMATOR_SPEED_MIN = 0;
+        public static final int ANIMATOR_SPEED_MAX = 100;
+  	      
 	      public static final short R0 = 0,
         	                        R1 = 1,
         	                        R2 = 2,
@@ -268,22 +265,19 @@ public class GUI extends JFrame implements ActionListener {
                                   CONTINUE_COMMAND = 3,
                                   CONTINUE_WITHOUT_PAUSES_COMMAND = 4,
                                   INPUT_FIELD = 5,
-                                  CODE_TABLE_EDITING = 6;
+                                  CODE_TABLE_EDITING = 6,
+                                  OPEN_FILE_COMMAND = 7;
 
 	      
         private int activeView = 0;
         
         
         private JFileChooser generalFileDialog;
-        //  private JFileChooser openFileDialog;
-        //  private JFileChooser selectDefaultStdinFileDialog;
-        //  private JFileChooser selectDefaultStdoutFileDialog;
-        //  private JFileChooser selectLanguageFileDialog;
         
         private GUIRunSettingsDialog setRunningOptionsDialog;
         private GUICompileSettingsDialog setCompilingOptionsDialog;
         
-        private GUIAboutDialog aboutDialog;
+        private GUIHTMLDialog aboutDialog, manualDialog;
                 
         private Font tableFont = new Font("Courier", java.awt.Font.PLAIN, 12);
                 
@@ -323,9 +317,9 @@ public void actionPerformed(ActionEvent e) {
 
 
 public GUI() {
-  thisGUI = this;    
+  thisGUI = this;
   logger = Logger.getLogger(getClass().getPackage().getName());
-  print("Initializing setRunningOptionsDialog...");        
+  print("Initializing setRunningOptionsDialog...");
   setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
   setRunningOptionsDialog.addComponentListener( new ComponentListener() {
     public void componentShown(ComponentEvent e) {}
@@ -352,8 +346,43 @@ public GUI() {
   
   print("Initializing GUI...");        
   initGUI();
+
+  try {
+    animator = new Animator();
+  }
+  catch (IOException e) {
+    System.out.println(e.getMessage());
+  }
+  
+  animatorFrame = new JFrame();
+  animatorFrame.setSize(810, 636);
+  animatorFrame.setTitle("Animator");
+  animatorFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+  
+  animatorSpeedSlider = new JSlider(JSlider.HORIZONTAL, ANIMATOR_SPEED_MIN, ANIMATOR_SPEED_MAX, 50);
+  Hashtable labelTable = new Hashtable();
+  labelTable.put( new Integer( 0 ), new JLabel("Slow") );
+  labelTable.put( new Integer( ANIMATOR_SPEED_MAX ), new JLabel("Fast") );
+  animatorSpeedSlider.setLabelTable( labelTable );
+  
+  animatorSpeedSlider.setPaintLabels(true);
+  animatorSpeedSlider.addChangeListener( new ChangeListener() {
+    public void stateChanged(ChangeEvent e) {
+      int speed = ANIMATOR_SPEED_MAX - animatorSpeedSlider.getValue();
+      animator.setAnimationDelay(speed);
+    }
+  });
+  
+  JPanel animatorPanel = new JPanel(new BorderLayout());
+  animatorPanel.add(animator, BorderLayout.CENTER);
+  animatorPanel.add(animatorSpeedSlider, BorderLayout.NORTH);
+  
+  animatorFrame.getContentPane().add(animatorPanel);
+   
+     
+  
   print("Initializing GUIBrain...");        
-  guibrain = new GUIBrain(this);
+  guibrain = new GUIBrain(this, animator);
   print("Inserting menubar...");        
   insertMenuBar(this);
   disable(GUI.COMPILE_COMMAND);
@@ -361,14 +390,15 @@ public GUI() {
   disable(GUI.CONTINUE_COMMAND);
   disable(GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
   disable(GUI.STOP_COMMAND);
-  
+  disable(GUI.OPEN_FILE_COMMAND);
   
   print("Packing...");        
   this.pack();
   
   rightSplitPane.setDividerLocation(0.5);
   setGUIView(1);
-  
+
+
   print("Setting visible...");        
   this.setVisible(true);
 	
@@ -385,14 +415,6 @@ public GUI() {
 	
 	
   try {
-    //System.out.println("Initializing selectDefaultStdinFileDialog...");        
-    //selectDefaultStdinFileDialog = new JFileChooser();
-    //System.out.println("Initializing selectDefaultStdoutFileDialog...");        
-    //selectDefaultStdoutFileDialog = new JFileChooser();
-    //System.out.println("Initializing openFileDialog...");        
-    //openFileDialog = new JFileChooser();
-    //System.out.println("Initializing selectLanguageFileDialog...");        
-    //selectLanguageFileDialog = new JFileChooser();
     generalFileDialog = new JFileChooser();
 	
   }
@@ -401,13 +423,14 @@ public GUI() {
                        "Please start again.");
     System.exit(0);
   }
+  enable(GUI.OPEN_FILE_COMMAND);
   
-  aboutDialog = new GUIAboutDialog(this, false);
+  manualDialog = new GUIHTMLDialog(this, false, "__MANUAL_FILENAME__");
+  aboutDialog = new GUIHTMLDialog(this, false, "__ABOUT_FILENAME__");
  
-  
   print("Updating texts...");        
   updateAllTexts();
-  
+
   
   print("Complete!");        
 	 
@@ -538,7 +561,7 @@ public void insertToCodeTable(String[] src) {
 
 
 
-private static final int cellMargin = 4;
+private static final int cellMargin = 6;
 
 
 /** Inserts data to instructionsTable. The data must be provided so that the dimension
@@ -952,6 +975,9 @@ public void setEnabled(short command, boolean b) {
     case CODE_TABLE_EDITING:
       codeTable.setEnabled(b);
       break;
+    case OPEN_FILE_COMMAND:
+      openFile.setEnabled(b);
+      openFileButton.setEnabled(b);
   }
 }
 
@@ -1161,6 +1187,15 @@ public void selectLine(int line, short table) {
 
 
 
+public void showAnimator() {
+  animatorFrame.setVisible(true);
+}
+
+public void hideAnimator() {
+  animatorFrame.setVisible(false);
+}
+
+
 /** Changes the text which is shown in KBD-frame above the text field. If
     the new text is an empty string, then the label will disappear.
     @para newText The new text to be shown. If this is empty, then the label
@@ -1200,22 +1235,27 @@ public void updateAllTexts() {
   setLanguage.setText( new Message("Set language").toString() );
   selectLanguageFromFile.setText( new Message("Select from a file...").toString() );
 	
-	/*instructionsTableIdentifiers = new Object[] { new Message("Line").toString(),
-	                                              new Message("Numeric").toString(),
-	                                              new Message("Symbolic").toString() };
-  ((DefaultTableModel)instructionsTable.getModel()).setColumnIdentifiers(instructionsTableIdentifiers);
-	
-  dataTableIdentifiers = new Object[] { new Message("Line").toString(),
-	                                      new Message("Numeric").toString(),
-	                                      new Message("Symbolic").toString() };
-  ((DefaultTableModel)dataTable.getModel()).setColumnIdentifiers(dataTableIdentifiers);
-	*/
-	openFileButton.setToolTipText(new Message("Open a new file").toString());
+	instructionsTable.setToolTipTextForColumns(new String[] { 
+	  new Message("Line").toString(), 
+	  new Message("Numeric value").toString(), 
+	  new Message("Symbolic content").toString()
+	});
+  
+	dataTable.setToolTipTextForColumns(new String[] { 
+	  new Message("Line").toString(), 
+	  new Message("Numeric value").toString(), 
+	  new Message("Symbolic content").toString()
+	});
+  
+  openFileButton.setToolTipText(new Message("Open a new file").toString());
   compileButton.setToolTipText(new Message("Compile the opened file").toString());
   runButton.setToolTipText(new Message("Run the loaded program").toString());
   continueButton.setToolTipText(new Message("Continue current operation").toString());
   continueToEndButton.setToolTipText(new Message("Continue current operation without pauses").toString());
   stopButton.setToolTipText(new Message("Stop current operation").toString());
+  lineByLineToggleButton.setToolTipText(new Message("Enable/disable animated execution").toString());
+  showCommentsToggleButton.setToolTipText(new Message("Enable/disable extra comments while execution").toString());
+  showAnimationToggleButton.setToolTipText(new Message("Enable/disable animated execution").toString());
   
   enterNumberButton.setText(new Message("Enter").toString());
   
@@ -1246,14 +1286,16 @@ public void updateAllTexts() {
   UIManager.put ("FileChooser.acceptAllFileFilterText", new Message("All files").toString());
   UIManager.put ("FileChooser.FileChooser.openButtonText", new Message("Open").toString());
   UIManager.put ("FileChooser.openButtonToolTipText", new Message("Open the selected file").toString());
+  UIManager.put ("FileChooser.cancelButtonToolTipText", new Message("Abort file selection").toString());
   
-  //selectDefaultStdinFileDialog.updateUI();
-  //selectDefaultStdoutFileDialog.updateUI();
   generalFileDialog.updateUI(); // Title updates done for each show..().
   
   setRunningOptionsDialog.updateAllTexts();
   setCompilingOptionsDialog.updateAllTexts();
   aboutDialog.updateAllTexts();
+  aboutDialog.setTitle(new Message("About").toString());
+  manualDialog.updateAllTexts();
+  manualDialog.setTitle(new Message("Manual").toString());
   
   UIManager.put("OptionPane.yesButtonText", new Message("Yes").toString());
   UIManager.put("OptionPane.noButtonText", new Message("No").toString());
@@ -1318,15 +1360,14 @@ private void initGUI() {
   instructionsTable.setFont(tableFont);
   instructionsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
   instructionsTable.setEnabled(false);
-  instructionsTable.setToolTipTextForColumns(new String[] {"Line", "Numeric value", "Symbolic value"});
-  //instructionsTable.getColumnModel().getColumn(0).setMinWidth(20);
-  //instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+  instructionsTable.setToolTipTextForColumns(new String[] {"Line", "Numeric value", "Symbolic content"});
   instructionsTableScrollPane = new JScrollPane(instructionsTable);
   
   dataTable = new JTableX(new DefaultTableModel(dataTableIdentifiers,0));
-  dataTable.setEnabled(false);
-  dataTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
   dataTable.setFont(tableFont);
+  dataTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+  dataTable.setEnabled(false);
+  dataTable.setToolTipTextForColumns(new String[] {"Line", "Numeric value", "Symbolic content"});
   dataTable.setRowSelectionAllowed(false);
   dataTableScrollPane = new JScrollPane(dataTable);
   
@@ -1394,9 +1435,10 @@ private void initGUI() {
   registersTable.setEnabled(false);
   registersTable.setFont(tableFont);
   registersTable.setRowSelectionAllowed(false);
-  (registersTable.getColumnModel().getColumn(0)).setPreferredWidth(15);
+  registersTable.getColumnModel().getColumn(0).setMinWidth(1);
+  registersTable.getColumnModel().getColumn(0).setPreferredWidth(registersTable.getMaxTextLengthInColumn(0) + cellMargin);
   registersTableScrollPane = new JScrollPane(registersTable);
-  registersTableScrollPane.setPreferredSize(new Dimension(150, 150));
+  registersTableScrollPane.setPreferredSize(new Dimension(140, 150));
   registersTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
   
   ioPanel = new JPanel(new BorderLayout());
@@ -1523,6 +1565,7 @@ private void insertMenuBar(JFrame destFrame) {
   JMenuBar  mainMenuBar = new JMenuBar();
 	fileMenu              = new JMenu("File");
 	openFile              = fileMenu.add("Open");
+	openFile.setEnabled(false);
 	compileMenuItem       = fileMenu.add("Compile");
 	runMenuItem           = fileMenu.add("Run");
 	continueMenuItem      = fileMenu.add("Continue");
@@ -1593,6 +1636,7 @@ private void insertMenuBar(JFrame destFrame) {
 	setMemTo65536.addActionListener(new SetMemSizeActionListener(16));
 	selectLanguageFromFile.addActionListener(selectLanguageFromFileActionListener);
 	about.addActionListener(aboutActionListener);
+	manual.addActionListener(manualActionListener);
 	quit.addActionListener(quitActionListener);
 	
   
@@ -1618,6 +1662,7 @@ private JToolBar makeToolBar() {
   }
   openFileButton.setToolTipText("Open a file");
   openFileButton.setMargin(new Insets(0,0,0,0));
+  openFileButton.setEnabled(false);
   toolbar.add(openFileButton);
   
   toolbar.addSeparator();
@@ -1693,6 +1738,7 @@ private JToolBar makeToolBar() {
   }
   catch (Exception e) {
   }
+  lineByLineToggleButton.setToolTipText("Enable/disable line by line execution");
   lineByLineToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(lineByLineToggleButton);
   
@@ -1704,6 +1750,7 @@ private JToolBar makeToolBar() {
   }
   catch (Exception e) {
   }
+  showCommentsToggleButton.setToolTipText("Enable/disable extra comments while execution");
   showCommentsToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showCommentsToggleButton);
    
@@ -1715,6 +1762,7 @@ private JToolBar makeToolBar() {
   }
   catch (Exception e) {
   }
+  showAnimationToggleButton.setToolTipText("Enable/disable animated execution");
   showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showAnimationToggleButton);
   
@@ -1878,6 +1926,12 @@ private ActionListener selectLanguageFromFileActionListener = new ActionListener
 private ActionListener aboutActionListener = new ActionListener() {
   public void actionPerformed(ActionEvent e) {
     aboutDialog.setVisible(true);
+	} 
+};
+
+private ActionListener manualActionListener = new ActionListener() {
+  public void actionPerformed(ActionEvent e) {
+    manualDialog.setVisible(true);
 	} 
 };
 

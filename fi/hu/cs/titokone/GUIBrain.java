@@ -1,14 +1,3 @@
-/* Huomautukset:
-    Lisäsin COMMENTED, LINE_BY_LINE ja ANIMATED kentät.
-    Poistin parametrin speed menuSetRunningOptions() ja menuSetCompilingOptions() -metodeista
-    Lisäsin metodin public void waitForContinueTask()
-    Lisäsin metodin public void continueTaskWithoutPauses()
-    Lisäsin kentän noPauses
-    
-    Lisäsin kentän File openedFile
-
-*/
-
 package fi.hu.cs.titokone;
 
 import java.util.Locale;
@@ -60,6 +49,10 @@ private Control control;
     those settings (if there's any) in this field. 
 */
 private Settings currentSettings;
+
+
+private Animator animator;
+
 
 private GUI gui;  
 
@@ -124,7 +117,7 @@ public static String DEFAULT_STDOUT_FILENAME = "stdout";
 /** This constructor sets up the GUIBrain instance. It calls private
     initialization functions, including findAvailableLanguages(). 
 */
-public GUIBrain(GUI gui) { 
+public GUIBrain(GUI gui, Animator animator) { 
   
   this.gui = gui;
 
@@ -139,7 +132,9 @@ public GUIBrain(GUI gui) {
     System.out.println(e.getMessage());
   }
   control = new Control(defStdinFile, defStdoutFile);
-
+  
+  this.animator = animator;
+  
   try { 
     getCurrentSettings();
   }
@@ -148,8 +143,6 @@ public GUIBrain(GUI gui) {
     System.exit(0);
   }
   
-    
-    
   
   String filemode = currentSettings.getStrValue(Settings.STDIN_PATH);
   String path = currentSettings.getStrValue(Settings.DEFAULT_STDIN); 
@@ -288,7 +281,7 @@ public void menuOpenFile(File openedFile) {
 }
 
 
-public static final int MIN_KBD_VALUE = -32766;
+public static final int MIN_KBD_VALUE = -32767;
 public static final int MAX_KBD_VALUE = 32767;
 
 public boolean enterInput(String input) {
@@ -334,7 +327,8 @@ public synchronized void menuRun() {
     File stdoutFile = getCurrentDefaultStdoutFile();
     if (currentSettings.getStrValue(Settings.STDOUT_USE).equals("overwrite")) {
       try {
-        stdoutFile.delete();
+        if (stdoutFile.exists()) 
+          stdoutFile.delete();
         stdoutFile.createNewFile();
       }
       catch (IOException e) {
@@ -348,6 +342,14 @@ public synchronized void menuRun() {
     RunInfo runinfo;
     int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
     
+    int base = 0; //Register base is always 0
+    int limit = currentSettings.getIntValue(Settings.MEMORY_SIZE); //Register limit is equal to memsize
+    
+    animator.init(control.getCpu(), base, limit);
+    
+    if ( (runmode & ANIMATED) != 0 ) 
+      gui.showAnimator();
+      
     do { 
       currentState = B91_RUNNING;
       setGUICommandsForCurrentState();
@@ -394,6 +396,9 @@ public synchronized void menuRun() {
           gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
       }
       
+      animator.stopAnimation();
+      animator.animate(runinfo);
+            
       gui.updateStatusBar(runinfo.getComments());
       
       if (runinfo.whatDevice() != null && runinfo.whatDevice().equals("Display")) {
@@ -480,12 +485,6 @@ public synchronized void menuCompile() {
     interruptSent = false;
     noPauses = false;
     
-    /*String[] joo = gui.getCodeTableContents();
-    for (int i=0 ; i<joo.length ; i++) {
-      System.out.println(joo[i]);
-    }*/
-    
-    
     currentState = K91_COMPILING;
     setGUICommandsForCurrentState();
     
@@ -565,16 +564,10 @@ public synchronized void menuCompile() {
         phase = compileinfo.getPhase();
         
         if (phase == CompileInfo.FIRST_ROUND) {  
-    	    System.out.println("\n-----------------------------------");
-    	    System.out.println("Found? " + compileinfo.getSymbolFound());
-    	    System.out.println("Defined? " + compileinfo.getSymbolDefined());
     	    if (compileinfo.getSymbolFound()) {
-    	      System.out.println("Name? " + compileinfo.getSymbolName());
-    	    
-          	String symbolName = compileinfo.getSymbolName();
+    	      String symbolName = compileinfo.getSymbolName();
           	Integer symbolValue = null;
           	if (compileinfo.getSymbolDefined()) {
-    	        System.out.println("Value? " + compileinfo.getSymbolValue());
     	        symbolValue = new Integer(compileinfo.getSymbolValue());
     	      }
           	gui.updateRowInSymbolTable(symbolName, symbolValue);
@@ -845,8 +838,8 @@ public void menuSetRunningOption(int option,boolean b) {
     runmode += option;
   }
   
-  saveSettings();
   currentSettings.setValue(Settings.RUN_MODE, runmode);
+  saveSettings();
   
   switch (option) {
     case LINE_BY_LINE: // Synonym for case PAUSED:
@@ -857,6 +850,12 @@ public void menuSetRunningOption(int option,boolean b) {
       break;    
     case ANIMATED:
       gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, b);
+      if ( b == true && (currentState ==  B91_RUNNING 
+                         || currentState == B91_PAUSED 
+                         || currentState == B91_WAIT_FOR_KBD) )
+        gui.showAnimator();
+      else
+        gui.hideAnimator();
       break;
   }    
 }
@@ -888,8 +887,8 @@ public void menuSetCompilingOption(int option,boolean b) {
     compilemode += option;
   }
   
-  saveSettings();
   currentSettings.setValue(Settings.COMPILE_MODE, compilemode);
+  saveSettings();
    
   switch (option) {
     case PAUSED:
@@ -1017,7 +1016,6 @@ public String[] getAvailableLanguages() {
     key, if they cannot be obtained from settingsFile.
 */
 private void getCurrentSettings() throws IOException {
-  System.out.println(System.getProperty("user.dir"));
   String defaultStdinFile = System.getProperty("user.dir") + "/stdin";
   String defaultStdinPath = "absolute";
   String defaultStdoutFile = System.getProperty("user.dir") + "/stdout";
@@ -1076,7 +1074,6 @@ private void getCurrentSettings() throws IOException {
   }
     
   try {
-    //System.out.println( control.loadSettingsFileContents(settingsFile) );
     currentSettings = new Settings(settingsFileContents);
   }
   catch (Exception e) {
@@ -1315,7 +1312,6 @@ private void findAvailableLanguages() {
 
     String[] languageFileRow = languageFileContents.split("\n|\r|\r\n");
     
-    System.out.println(languageFileContents);
     /* Split each row of language.cfg into separate strings and 
        tokenize these strings by a colon. If there are two or three
        tokens on each row, then everything goes well. Otherwise
