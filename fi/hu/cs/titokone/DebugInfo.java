@@ -19,7 +19,7 @@ public class DebugInfo{
     /** This method sets statusMessage field to given string.
 	@param statusMessage String containing the message.
     */
-    public void setStatusMessge(String statusMessage){ 
+    public void setStatusMessage(String statusMessage){ 
 	this.statusMessage = statusMessage;
     }
 
