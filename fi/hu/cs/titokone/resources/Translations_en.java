@@ -104,6 +104,7 @@ public class Translations_en extends ListResourceBundle {
         "stack", null },
       { "Read value from stack to R{0}, then decrease stack pointer R{1} " +
         "by one.", null },
+      {"Read value from stack to R{0} then decrease stack pointer R{1} by one.", null},
       { "Supervisor call to operating system's services.", null },
 
       // Class: Application.

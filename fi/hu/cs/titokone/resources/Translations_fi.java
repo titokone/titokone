@@ -83,6 +83,7 @@ public class Translations_fi extends ListResourceBundle {
         "stack", "Kasvata pino-osoittimen R{0} arvoa yhdellä ja kirjoita jälkimmäisen operandin arvo pinoon."},
       { "Read value from stack to R{0}, then decrease stack pointer R{1} " +
         "by one.", "Lue arvo pinosta rekisteriin R{0} ja vähennä pino-osoittimen R{1} arvoa yhdellä."},
+      {"Read value from stack to R{0} then decrease stack pointer R{1} by one.", "Lue arvo pinosta rekisteriin R{0} ja vähennä pino-osoittimen R{1} arvoa yhdellä."},
       { "Supervisor call to operating system's services.", 
 "Palvelupyyntö käyttöjärjestelmälle." },      
       
