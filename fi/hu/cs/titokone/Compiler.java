@@ -659,7 +659,9 @@ public class Compiler {
 		Object tempObject = symbolTable.get((((Integer)symbols.get(lineTemp[4]))).intValue());
 		symbolTableEntry = (String[])tempObject;
 		if (symbolTableEntry[1].equals("")) {
-		    comment = new Message("").toString();
+		    String missing = lineTemp[4];
+		    //OLLI: Kommentti lisätty 26.4.
+		    comment = new Message("Missing referred label {0}", missing).toString();
 		    throw new TTK91CompileException(comment);
 		}
 		addressAsInt = Integer.parseInt((String)symbolTableEntry[1]);
