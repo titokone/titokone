@@ -384,10 +384,10 @@ public class Control implements TTK91Core {
 		// OutData becomes an array where slot 0 is the device 
 		// number and slot 1 the value written there.
 		outData = info.whatOUT();
-		if(outData != null && info.whatDevice() != null) {
-		    if(info.whatDevice().equals("Display"))
+		if(outData != null) {
+		    if(outData[0] == RunDebugger.CRT)
 			application.writeToCrt(outData[1]); 
-		    if(info.whatDevice().equals("Standard output")) {
+		    if(outData[0] == RunDebugger.STDOUT) {
 			application.writeToStdOut(outData[1]);
 			writeToStdoutFile("" + outData[1]);
 		    }
