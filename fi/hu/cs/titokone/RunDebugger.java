@@ -131,7 +131,8 @@ public class RunDebugger{
 
     /** This method tells debugger that one or more memorylines were changed.
     First cell contains number of the line and second the new value..
-    @param lines Array containing new values.
+    @param row The index of the changed line in memory.
+    @param changedMemoryLine The changed memory line.
     */
     public void addChangedMemoryLine(int row, MemoryLine changedMemoryLine){
         Object[] entry = new Object[2];
@@ -147,8 +148,7 @@ public class RunDebugger{
     }
 
     /** This method tells what was the result of compare operation.
-    @param whichBit Number of SR bit changed.
-    @param status New status of the bit.
+    @param whichBit Number of SR bit set.
     */
     public void setCompareResult(int whichBit){
         compareBit = whichBit;

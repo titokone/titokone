@@ -81,7 +81,8 @@ public class RunInfo extends DebugInfo{
     }
 	
     /** This method sets the colon-presentation of the command.
-	@param binary Binary value of the command. */
+	@param colonString The colon-presentation of the command,
+	eg. 0:1:0:2:3 (for NOP R1, =3(R2)). */
     public void setColonString(String colonString){
 		this.colonString = colonString;
     }
@@ -110,8 +111,8 @@ public class RunInfo extends DebugInfo{
     	this.numberOfMemoryfetches = fetches;
     }
 
-    /** This method sets the value of ADDR.
-	@param ADDR Int containing the ADDR. */
+    /** This method sets the value of the ADDRess field.
+	@param addr Int containing the ADDR. */
     public void setADDR(int addr){
     	this.addr = addr;
     }
