@@ -16,7 +16,8 @@ public class RunInfo extends DebugInfo{
     public static final short JUMP_OPERATION = 3;
     public static final short STACK_OPERATION = 4;
     public static final short SUB_OPERATION = 5;
-    public static final short SVC_OPERATION = 6;
+    public static final short EXTERNAL_OPERATION = 6;
+    public static final short SVC_OPERATION = 7;
  
     public static final short IMMEDIATE = 0;
     public static final short DIRECT = 1;
@@ -66,7 +67,9 @@ public class RunInfo extends DebugInfo{
     private int SRbit;
     private boolean compareResult;
     
-    private int 
+    private boolean externalOperation;
+    private int device;
+    private int value;
 
        
     private int[][] changedRegisters;
@@ -93,6 +96,10 @@ public class RunInfo extends DebugInfo{
     public void setALUResult(int result){}
     
     public void setCompareOperation(int whichSRBit, boolean newValue){}
+    
+    public void setIN(int device, int value){}
+    
+    public void setOUT(int device, int value){}
     
 
     /** This method tells GUIBrain what kind of operation happened.

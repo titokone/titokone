@@ -9,11 +9,15 @@ public class Debugger{
     private String language = 'English';
 
     public static final short NOOPERATION = 0;
-    public static final short BASIC_OPERATION = 1;
+    public static final short DATA_TRANSFER_OPERATION = 1;
     public static final short ALU_OPERATION = 2;
     public static final short JUMP_OPERATION = 3;
-    public static final short OTHER_OPERATION = 4;
-
+    public static final short STACK_OPERATION = 4;
+    public static final short SUB_OPERATION = 5;
+    public static final short EXTERNAL_OPERATION = 6;
+    public static final short SVC_OPERATION = 7;
+  
+ 
     public static final short IMMEDIATE = 0;
     public static final short DIRECT = 1;
     public static final short DIRECT_REGISTER = 2;
@@ -62,6 +66,9 @@ public class Debugger{
 
     public void setCompareResult(int whichBit, boolean status){}
 
+    public void setIN(int device, int value){}
+
+    public void setOUT(int device, int value){}
 
 
 
@@ -82,8 +89,7 @@ public class Debugger{
 
 
 
-
-
+    //vanhaa tauhkaa, älä välitä
 
 
 	/** This method tells debugger that a value was loaded to a given 
@@ -157,22 +163,6 @@ public class Debugger{
     public void conditionalJump(int SRIndex, int where, boolean conditionTrue)
     {}
  
-    /* Other */
-
-    public void call(int newSP, int newFP){}
-
-    public void exit(int newSP, int newFP){}
-
-    public void push(int newSP, int value){}
-   
-    public void pop(int newSP, int value){}
-
-    public void pushr(int newSP, int[] values){}
-
-    public void popr(int newSP, int[] values){}
-
-    public void svc(int serviceid){}
-  
 
     /** This method tells debugger that a command cycle was completed and
         it should return a debuginfo package.
