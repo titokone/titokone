@@ -864,12 +864,14 @@ public void menuSetRunningOption(int option,boolean b) {
   }
   else if ((runmode & option) != 0) {
     runmode -= option; // Something was turned off.
-    if(option == LINE_BY_LINE) // Was it LINE_BY_LINE? 
+    // Was it LINE_BY_LINE and is animation on?
+    if(option == LINE_BY_LINE && (runmode & ANIMATED) != 0) 
       adjustAnimationOff = true;
   }
   else if ((runmode & option) == 0) {
     runmode += option; // Something was turned on.
-    if(option == ANIMATED) // Was it ANIMATED?
+    // Was it ANIMATED and is line-by-line off?
+    if(option == ANIMATED && (runmode & LINE_BY_LINE) == 0) 
       adjustLineByLineOn = true;
   }
 
