@@ -31,7 +31,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	CompileInfo.java					AT 21.3.
 2	Compiler.java						AT 21.3.
 0	Control.java
-0	DebugInfo.java
+3	DebugInfo.java				OA              OA 25.3.
 0	Debugger.java
 0	FileHandler.java
 0	GUI.java
@@ -49,7 +49,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 3	Registers.java                          SY              SY 19.3
 0	ResourceLoadFailedException.java
 0	RunDebugger.java
-0	RunInfo.java
+2	RunInfo.java				OA
 2	Settings.java                           SR              SR 19.3.
 0	Source.java						SH 20.3
 3	SymbolTable.java                        ?               SY 20.3
