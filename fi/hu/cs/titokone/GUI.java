@@ -484,7 +484,7 @@ public void resetAll() {
  
   unselectAll();
   insertSymbolTable(null);
-  ((DefaultListModel)commentList.getModel()).clear();
+  //((DefaultListModel)commentList.getModel()).clear();
   outputTextArea.setText("");
 }
 
@@ -560,7 +560,8 @@ public void insertToCodeTable(String[] src) {
 }
 
 
-
+private static final int lineColumnSize = 50;
+private static final int numericValueColumnSize = 100;
 private static final int cellMargin = 6;
 
 
@@ -589,10 +590,13 @@ public boolean insertToInstructionsTable(String[] binaryCommand, String[] symbol
   
   DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
   instructionsTableModel.setDataVector(tableContents, instructionsTableIdentifiers);
-  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(0) + cellMargin);
-  instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(1) + cellMargin);
-  instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
-  instructionsTable.validate();
+  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(lineColumnSize);
+  instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(numericValueColumnSize);
+  if (rows > 0)
+    instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
+  else
+    instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(0);
+  //instructionsTable.validate();
   return true;
 }
 
@@ -620,9 +624,12 @@ public boolean insertToInstructionsTable(int[] binaryCommand, String[] symbolicC
   
   DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
   instructionsTableModel.setDataVector(tableContents, instructionsTableIdentifiers);
-  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(0) + cellMargin);
-  instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(1) + cellMargin);
-  instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
+  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(lineColumnSize);
+  instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(numericValueColumnSize);
+  if (rows > 0)
+    instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
+  else
+    instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(0);
   return true;
 }
 
@@ -748,16 +755,26 @@ public void insertToDataTable(String[] dataContents) {
   DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
   dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
   
-  for (int i=0 ; i<dataTable.getColumnCount() ; i++) {
-    if(instructionsTable.getMaxTextLengthInColumn(i) > dataTable.getMaxTextLengthInColumn(i) ) {
-      instructionsTable.getColumnModel().getColumn(i).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(i) + cellMargin);
-      dataTable.getColumnModel().getColumn(i).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(i) + cellMargin);
-    }
-    else {
-      instructionsTable.getColumnModel().getColumn(i).setPreferredWidth(dataTable.getMaxTextLengthInColumn(i) + cellMargin);
-      dataTable.getColumnModel().getColumn(i).setPreferredWidth(dataTable.getMaxTextLengthInColumn(i) + cellMargin);
-    }
+  dataTable.getColumnModel().getColumn(0).setPreferredWidth(lineColumnSize);
+  dataTable.getColumnModel().getColumn(1).setPreferredWidth(numericValueColumnSize);
+      
+  int instructionsTableMaxTextLength = instructionsTable.getMaxTextLengthInColumn(2);
+  
+  int dataTableMaxTextLength;
+  if (rows > 0)
+    dataTableMaxTextLength = dataTable.getMaxTextLengthInColumn(2);
+  else
+    dataTableMaxTextLength = 0;
+  
+  if(instructionsTableMaxTextLength > dataTableMaxTextLength ) {
+    instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTableMaxTextLength + cellMargin);
+    dataTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTableMaxTextLength + cellMargin);
   }
+  else {
+    instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(dataTableMaxTextLength + cellMargin);
+    dataTable.getColumnModel().getColumn(2).setPreferredWidth(dataTableMaxTextLength + cellMargin);
+  }
+  
 }
 
 
@@ -767,7 +784,7 @@ public void insertToDataTable(String[] dataContents) {
     converting a String-table to int-table would require an extra for-loop.
     @param data Contents of the second column.
 */
-public void insertToDataTable(int[] data) {
+public void insertToDataTable(int[] data, String[] symbolic) {
   
   int rows = data.length;
   int instructionsTableRowCount = instructionsTable.getRowCount();
@@ -776,21 +793,30 @@ public void insertToDataTable(int[] data) {
   for (int i=0 ; i<rows ; i++) {
     tableContents[i][0] = ""+ (i + instructionsTableRowCount);
     tableContents[i][1] = ""+data[i];
-    tableContents[i][2] = "";
+    tableContents[i][2] = ""+symbolic[i];
   }
   
   DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
   dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
   
-  for (int i=0 ; i<dataTable.getColumnCount() ; i++) {
-    if(instructionsTable.getMaxTextLengthInColumn(i) > dataTable.getMaxTextLengthInColumn(i) ) {
-      instructionsTable.getColumnModel().getColumn(i).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(i) + cellMargin);
-      dataTable.getColumnModel().getColumn(i).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(i) + cellMargin);
-    }
-    else {
-      instructionsTable.getColumnModel().getColumn(i).setPreferredWidth(dataTable.getMaxTextLengthInColumn(i) + cellMargin);
-      dataTable.getColumnModel().getColumn(i).setPreferredWidth(dataTable.getMaxTextLengthInColumn(i) + cellMargin);
-    }
+  dataTable.getColumnModel().getColumn(0).setPreferredWidth(lineColumnSize);
+  dataTable.getColumnModel().getColumn(1).setPreferredWidth(numericValueColumnSize);
+  
+  int instructionsTableMaxTextLength = instructionsTable.getMaxTextLengthInColumn(2);
+  
+  int dataTableMaxTextLength;
+  if (rows > 0)
+    dataTableMaxTextLength = dataTable.getMaxTextLengthInColumn(2);
+  else
+    dataTableMaxTextLength = 0;
+  
+  if(instructionsTableMaxTextLength > dataTableMaxTextLength ) {
+    instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTableMaxTextLength + cellMargin);
+    dataTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTableMaxTextLength + cellMargin);
+  }
+  else {
+    instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(dataTableMaxTextLength + cellMargin);
+    dataTable.getColumnModel().getColumn(2).setPreferredWidth(dataTableMaxTextLength + cellMargin);
   }
 }
 
@@ -1662,6 +1688,7 @@ private JToolBar makeToolBar() {
   }
   openFileButton.setToolTipText("Open a file");
   openFileButton.setMargin(new Insets(0,0,0,0));
+  openFileButton.setMnemonic(KeyEvent.VK_O);
   openFileButton.setEnabled(false);
   toolbar.add(openFileButton);
   

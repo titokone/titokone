@@ -458,6 +458,11 @@ public synchronized void menuRun() {
     setGUICommandsForCurrentState();
     
     gui.unselectAll();
+    
+    gui.addComment(" ");
+    gui.addComment(new Message("Execution finished").toString());
+    gui.addComment(" ");
+      
     continueTask();
     
     threadRunning = false;
@@ -644,6 +649,9 @@ public synchronized void menuCompile() {
         System.out.println(e);
       }
       gui.resetAll();
+      gui.addComment(" ");
+      gui.addComment(new Message("Compilation finished").toString());
+      gui.addComment(" ");
       loadAndUpdateGUI();
     }
     else {
@@ -661,6 +669,9 @@ public synchronized void menuCompile() {
       setGUICommandsForCurrentState();
       gui.setGUIView(2);
       gui.resetAll();
+      gui.addComment(" ");
+      gui.addComment(new Message("Compilation aborted.").toString());
+      gui.addComment(" ");
       continueTask();
     }
     threadRunning = false;
@@ -692,6 +703,8 @@ public synchronized void menuEraseMemory() {
   gui.updateReg(GUI.R7, 0);
   gui.updateReg(GUI.PC, 0);
   gui.resetAll();
+  
+  gui.updateStatusBar(new Message("Memory contents erased").toString());
   
   gui.setGUIView(1);
   currentState = NONE;
@@ -1177,7 +1190,7 @@ private LoadInfo load() {
     }
     
     //gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
-    gui.addComment(e.getMessage()); // The message is already translated.
+    //gui.addComment(e.getMessage()); // The message is already translated.
     return control.getPendingLoadInfo(); // This is != null; load succeeded.
     // Above 3 lines changed by Sini 26.4.
   }
@@ -1201,12 +1214,14 @@ private void loadAndUpdateGUI() {
     String[][] symbolsAndValues = loadinfo.getSymbolTable();
     gui.insertSymbolTable(symbolsAndValues);
       
-    int binaryCommands[] = loadinfo.getBinaryCommands();
-    String symbolicCommands[] = loadinfo.getSymbolicCommands();
-    int data[] = loadinfo.getData();
+    int instructionsBinary[] = loadinfo.getBinaryCommands();
+    String instructionsSymbolic[] = loadinfo.getSymbolicCommands();
     
-    gui.insertToInstructionsTable(binaryCommands, symbolicCommands);
-    gui.insertToDataTable(data);
+    int dataBinary[] = loadinfo.getData();
+    String dataSymbolic[] = loadinfo.getDataSymbolic();
+    
+    gui.insertToInstructionsTable(instructionsBinary, instructionsSymbolic);
+    gui.insertToDataTable(dataBinary, dataSymbolic);
     
     gui.addComment(loadinfo.getComments());
     

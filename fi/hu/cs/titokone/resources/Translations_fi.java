@@ -244,6 +244,7 @@ public class Translations_fi extends ListResourceBundle {
       {"B91 binary", "B91-binääri"},   
       {"K91 source", "K91-lähdekooditiedosto"},  
       {"Class file", "Luokkatiedosto"},
+      {"Memory contents erased", "Muistin sisältö nollattu"},
 
       // Class: GUICompileSettingsDialog
       // (Set compiling options already defined in GUI.)

@@ -81,6 +81,18 @@ public class LoadInfo extends DebugInfo {
   }
   
   
+  /**@return String array that contains the data segment of a program in memory
+             as symbolic commands.
+    */
+  public String[] getDataSymbolic() {
+    String[] retStr = new String[dataArea.length];
+    for (int i=0 ; i<dataArea.length ; i++) {
+      retStr[i] = dataArea[i].getSymbolic();
+    }
+    return retStr;
+  }
+  
+  
   public String[][] getSymbolTable() {
     String[] symbols = symbolTable.getAllSymbols();
     String[][] symbolsValues = new String[symbols.length][2];

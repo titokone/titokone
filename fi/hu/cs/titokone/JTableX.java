@@ -74,15 +74,26 @@ public int getTextLength(int row, int column) {
 public int getMaxTextLengthInColumn(int column) {
   
   int maxLength = 0;
+  int rowForMaxLength = 0;
   
   for (int i=0; i<this.getRowCount(); i++) {
-    int lngth = getTextLength(i, column);
+    String str = (String)((DefaultTableModel)getModel()).getValueAt(i,column);
+    if (str.length() > maxLength) {
+      maxLength = str.length();
+      rowForMaxLength = i;
+    }
+    
+    /*int lngth = 0;
+    
+    if (str.length > 2)
+      lngth = getTextLength(i, column);
+    
     
     if (lngth > maxLength) {
       maxLength = lngth;
-    }
+    }*/
   }
-  return maxLength;
+  return getTextLength(rowForMaxLength, column);
 }
 
 
