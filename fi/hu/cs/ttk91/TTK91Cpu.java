@@ -14,9 +14,9 @@ package fi.hu.cs.ttk91;
  */
 public interface TTK91Cpu {
 	public static final int CU_TR         = 201;
-	public static final int CU_IR         = 201;
-	public static final int CU_PC         = 201;
-	public static final int CU_PC_CURRENT = 201;
+	public static final int CU_IR         = 202;
+	public static final int CU_PC         = 203;
+	public static final int CU_PC_CURRENT = 204;
 	public static final int CU_SR         = 205;
 	public static final int REG_R0        = 401;
 	public static final int REG_R1        = 402;
