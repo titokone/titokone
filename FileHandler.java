@@ -20,11 +20,6 @@ public class FileHandler {
     /** This class sets up a new FileHandler and sets up its Logger. */
     public FileHandler() {}
 
-    /** This function is for when it is not clear whether the file would
-	contain a source or binary file. It returns an object which is 
-	either a Binary, or failing that, the more general Source. */
-    public Object loadSourceOrBinary(File filename) throws IOException {}
-    
     /** This function loads up a Source file from a given file.
 	@param filename The identifier of the file to read from.
 	@return A source instance which is no longer dependent on I/O. 
