@@ -940,8 +940,10 @@ Address can be either a variable or a number and that must be noticed also.
 	if (!address.equals("")) {
 		boolean isANumber = true;
 		for (int i=0; i< address.length(); ++i) {
-			if (!Character.isDigit(address.charAt(i)))
-				isANumber = false;
+			if (!(i == 0 && address.charAt(i) == '-')) {
+				if (!Character.isDigit(address.charAt(i)))
+					isANumber = false;
+			}
 		}
 		if (isANumber) {
 			if (address.length() > ("" + ADDRESSMIN).length() ||
