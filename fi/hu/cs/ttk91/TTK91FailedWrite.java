@@ -13,5 +13,7 @@ package fi.hu.cs.ttk91;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class TTK91FailedWrite extends TTK91RuntimeException {
-
+  public TTK91FailedWrite(String message) {
+    super(message);
+  }
 }

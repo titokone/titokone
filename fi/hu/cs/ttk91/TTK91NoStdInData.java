@@ -13,12 +13,7 @@ package fi.hu.cs.ttk91;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class TTK91NoStdInData extends TTK91RuntimeException {
-
-    String error;
     public TTK91NoStdInData(String s){
-	error=s;
-    }
-    public String toString(){
-	return error;
+      super(s);
     }
 }

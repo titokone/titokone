@@ -13,5 +13,7 @@ package fi.hu.cs.ttk91;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class TTK91SyntaxError extends TTK91CompileException {
-
+  public TTK91SyntaxError(String message) {
+    super(message);
+  }
 }

@@ -13,5 +13,7 @@ package fi.hu.cs.ttk91;
  * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public class TTK91InvalidDevice extends TTK91RuntimeException {
-
+  public TTK91InvalidDevice(String message) {
+    super(message);
+  }
 }
