@@ -1,11 +1,12 @@
-import fi.hu.cs.ttk91.TTK91OutOfMemory;
-
 package fi.hu.cs.titokone;
 
-/** This class can load a TTK91Application. It changes the processor state
-    accordingly. Everything is loaded when loadApplication is called. Function returns the state of 
-    memory after loading. If it runs out of memory it throws a TTK91OutOfMemory exception.
-  */
+import fi.hu.cs.ttk91.TTK91OutOfMemory;
+
+/** This class can load a TTK91Application. It changes the processor
+    state accordingly. Everything is loaded when loadApplication is
+    called. Function returns the state of memory after loading. If it
+    runs out of memory it throws a TTK91AddressOutOfBounds exception.
+*/
 public class Loader { 
 
   /**This variable holds the current application to be loaded.
@@ -29,7 +30,7 @@ public void setApplicationToLoad(Application application){
 /**Loads an application to memory. LoadInfo contains all the needed information about the process.
 	@return Info from the load procedure.
 */
-public LoadInfo loadApplication() throws throw TTK91OutOfMemoryException {
+public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
   
   if (application == null) {
     return null;
@@ -40,14 +41,18 @@ public LoadInfo loadApplication() throws throw TTK91OutOfMemoryException {
   
   int i;
   for (i=0 ; i<code.length ; i++) {
-    if( processor.MemoryInput(code[i]) == false) {
-      throw TTK91OutOfMemoryException;
+    if( processor.memoryInput(code[i]) == false) {
+      throw TTK91AddressOutOfBounds(new Message("Loading to memory failed " +
+						"on line {0}.", 
+						"" + i).toString());
     }
   }
   
   for (int j=0 ; j<data.length ; j++) {
     if( processor.memoryInput(i+j, data[i]) == false) {
-      throw TTK91OutOfMemoryException;
+      throw TTK91AddressOutOfBounds(new Message("Loading to memory failed " +
+						"on line {0}.", 
+						"" + (i + j)).toString());
     }
   }
   
