@@ -10,7 +10,8 @@ public class CompileInfo extends DebugInfo {
       -1 during the finalizing phase. */
   private int lineNumber;
   private String lineContents;
-
+  private String statusMessage;
+  private String comments;
   // Variables for first round.
 
   /** This field is by default false, but if the compiled line was 
@@ -82,18 +83,21 @@ public class CompileInfo extends DebugInfo {
     
     /** This method sets lineEmpty value to true. */
     public void setLineEmpty(boolean empty){}
+    public void setComments(String comment){}
     public void setSymbolName(String name){}
     public void setSymbolName(String name, boolean defined, int value){}
     public void setLabelName(String name){}
     public void setLineBinary(int binary){}
     public void setLabedDefined(String name, boolean defined){}
     public void setLabelValue(String name, int value){}
+    public void setDefiningDS(int 
     public void setFinal(){}
     public void setInitPointers(int SP, int FP){}
     
-    
+    public String returnStatusMessage(){}
+    ¨public String returnComments(){}
     public boolean returnLineEmpty(){}
-    public int returnPhase(){}
+    public short returnPhase(){}
     public String returnLineContents(){}
     public String returnSymbolName(){}
     public boolean returnSymbolDefined(){}

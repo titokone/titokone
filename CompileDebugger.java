@@ -2,8 +2,6 @@
 
 public class CompileDebugger extends Debugger {
 
-    public CompileDebugger(){}
-
     
     /*------- Compiler instructions -----------*/
     /** This method tells that an EQU was found and it is added to the symboltable.*/
@@ -22,26 +20,41 @@ public class CompileDebugger extends Debugger {
     public void reserveDC(String name, int ADDR){}
 
     
-    /** This method tells debugger that an EQU compiler instruction was found
-	and it is added to the symboltable . */
-    public void foundEQU(String name, int value){ }
+  
 
+    /** This method tells that a label was found and it is added to the
+     symboltable. */
+    public void labelName(String name){}
+    /** This method tells that for given label points to given line. */ 
+    public void labelADDR(String name, int lineNumber){}
 
-    /** This method tells that an index was found and it is added to the symboltable. */
-    public void indexFound(String name){}
-    /** This method tells that for given index points to given line. */ 
-    public void indexADDR(String name, int memoryline){}
+    
+    
+    public CompileDebugger(){}
 
-
-    /** This method informs debugger what was compiled.
+    public void newLine(String statusMessage, short phase, int lineNumber,
+                        boolean lineEmpty){}
+   
+    
+    /** This method informs debugger what was compiled. It creates a new 
+     *CompileInfo object.
 	 @param symbolic symbolic command line.
 	 @param numeric Numeric representation of command.
 	 @param machinecommand line as an integer.
 	 @param comment */
 
-    public void compiledLine(String symbolic, String numeric, int machinecommand, String comment){ }
+    public void newLine(String statusMessage, short phase, int lineNumber,
+                        String lineContents){
+    }
     
-    public void compiledLine(int line, String symbolic, String numeric, int machinecommand, String comment){ }
-
+    public void finalPhase(String statusMessage, short phase, int lineNumber){}
+    
+    public void binary(int binary){}
+    public void setStatusMessage(String message){}
+    public void setComments(String comment){}
+    
+    
+    /** This method returns the created CompileInfo-object. */
+    public CompileInfo lineCompiled(){}
 }
 
