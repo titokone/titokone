@@ -93,6 +93,5 @@ public class Interpreter {
         {"FP", new Integer(7)},
         {"R6", new Integer(6)},
         {"R7", new Integer(7)},
-
    };
 }

@@ -2,11 +2,11 @@
 Ensimm‰isell‰ kierroksella jos tulee dc tai ds niin tehd‰‰n symbol found ja finalizing first 
 roundissa sitten tulee definingdc ja definingds.y
 
-finalizing_fiorst_roundin lopussa pit‰‰ palauttaa sek‰ data-alue ett‰ koodi erikseen. kahtena 
+finalizing_first_roundin lopussa pit‰‰ palauttaa sek‰ data-alue ett‰ koodi erikseen. kahtena 
 taulukkona siis.
 */
 
-package fi.hu.cs.titokone;
+//package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.TTK91CompileException;
 import java.util.StringTokenizer;
@@ -18,13 +18,25 @@ import java.util.Hashtable;
     commands and empty lines at the start
     of round 2.*/
 public class Compiler {
-    /** This field contains the source code as a StringTokenizer, delimited by 
-	\n\r\f. */
-    private StringTokenizer source;
+
+    /** This field contains the source code as a String array.
+    private String[] source;
+
     /** This field contains the symbol table in its incomplete form. Some of 
 	the values corresponding to the keys may be null, if they have not
 	been defined yet. */
-    private Hashtable symbols;
+    private String[] symbols;
+
+    /** This field holds the initial value of a symboltable, if it gets filled up
+	a new table is created doubling it's size.
+      */
+    private int SYMBOLTABLEINITIALSIZE = 30;
+
+    /** This field tells how many symbols have been found so far. */
+    private int symbolsFoundSoFar;
+
+    /** This field tells the next line to be checked. */
+    private int nextLine;
 
     /** This field holds all the valid symbols on a label. */
     private final String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyzÂ‰ˆ_";
@@ -43,30 +55,50 @@ public class Compiler {
 	first round. */
     private int dataAreaSize;
     
-    /** This array contains the code. It will not be touched until the second 
-	round of compilation. */
-    private MemoryLine[] code;
+    /** This array contains the code.  During the first round this field holds the 
+	clean version of the code (stripped of compiler commands like def, ds, dc etc.)
+      */
+    private String[] code;
 
-    /** This array contains the data. It will not be touched until the second 
-	round of compilation. */
-    private MemoryLine[] data;
+    /**	This field is the initial size of the code array. */
+    private final int CODEARRAYINITIALSIZE = 100;
 
+    /** This array contains the compiled source code.
+      */
+    private int[] compiledCode;
+
+    /** This array contains the data. During first round this array holds the values of 
+	variables defined.
+      */
+    private String[] data;
 
     /** This field contains the CompileDebugger instance to inform of any compilation
 	happenings. */
     private CompileDebugger compileDebugger;
 
+/*---------- Constructor ----------*/
+
     /** This constructor sets up the class. It also initializes an instance of 
 	CompileDebugger. */
-    public Compiler() { }
+    public Compiler() {
+	compileDebugger = newCompileDebugger();
+    }
 
     /** This function initializes transforms a symbolic source code into an 
 	application class. After this, call compileLine() to actually compile
 	the application one line at a time, and finally getApplication() to get
 	the finished application. 
 	@param source The symbolic source code to be compiled. */
-    public void compile(String source) { }
-//java.STring.split();
+    public void compile(String source) { 
+	firstRound = true;
+	this.source = source.split();
+	symbolsFoundSoFar = 0;
+	symbols = new String[SYMBOLTABLEINITIALSIZE];
+	nextLine = 0;
+	commandLineCount = 0;
+	code = new String[CODEARRAYINTIALSIZE;
+	dataAreaSize = 0;
+    }
 
     /** This function goes through one line of the code. On the first round, it
 	gathers the symbols and their definitions to a symbol table and conducts 
@@ -83,6 +115,23 @@ public class Compiler {
 	round of checking (error code 101) or b) a symbol is still undefined after 
 	the first round of compilation is finished. */
     public CompileInfo compileLine() throws TTK91CompileException { 
+
+	if (firstRound) {
+		if (nextLine == source.length()) {
+			initializeSecondRound();
+		} else {
+			firstRoundProcess(source[nextLine]);
+			++nextLine;
+		}
+	} else {
+		if (nextLine == code.length()) {
+			// TODO create application;
+		} else {
+			secondRoundProcess(code[nextLine]);
+			++nextLine;
+		}
+	}
+
     }
 
 
@@ -116,17 +165,51 @@ public class Compiler {
 	@return A CompileInfo object describing what was done, or null if 
 	the first round has been completed. This will be the sign for
 	the compiler to prepare for the second round and start it. */
-    private CompileInfo firstRoundProcess(String line) { }
+    private CompileInfo firstRoundProcess(String line) throws TTK91CompileException {
+	String[] lineTemp = parseLine(line);
+	if (lineTemp == null) {
+		throw new TTK91CompileException();	// TODO check exception
+	} else {
+		if (!lineTemp[0].equals("")) {		// label found
+			if (lineTemp[1].equals("DC")) {
+
+			} else {			
+				if (lineTemp[1].equals("DS")) {
+
+				} else {			
+					if (lineTemp[1].equals("EQU")) {
+
+					} else {
+					
+					}			
+						if (lineTemp[1].equals("DEF")) {
+
+						} else {	// valid code with a label 
+						
+						}			
+		} else {
+			try {
+				Integer.parseInt(lineTemp[4]);	
+			} catch(NumberFormatException e) {	// address part must have a variable 
+				
+			}
+		}
+	}
+    }
 
     /** This method initializes the code and data area arrays for the
 	second round processing according to the dataAreaSize and 
 	commandLineCount variables. It also resets the StringTokenizer by
-	calling tokenize(). 
-
-	Before entering the second round we must clear all the empty lines
+	calling tokenize(). Before entering the second round we must clear all the empty lines
 	like compiler-codes (pseudo-codes) and lines with nothing but comments.
      */
-    private void initializeSecondRound() { }
+    private void initializeSecondRound() {
+
+	compiledCode = new int[commandLineCount];
+	nextLine = 0;
+	firstRound = false;
+
+    }
 
     /** This function transforms any commands to binary and stores both
 	forms in the code array, or sets any initial data values in the
@@ -162,32 +245,47 @@ Basic functionality: (Trim between each phase.)
 */
 
 
+    }
+
+    /** This function generates a StringTokenizer from the source string. 
+	The delimiters used are \r\n\f.
+	@param source The source string to tokenize.
+	@return A StringTokenizer containing the source. */
+    private StringTokenizer tokenize(String source) { }
+
+    /**	This method parses a String and tries to find a label, opCode and all the 
+	other parts of a Command line.
+	@param symbolicOpCode Symbolic form of an operation code. */  
+    public String[] parseLine(String symbolicOpCode) {
+
 	String label = "";
-	int opCode = 0;		
-	int firstRegister = 0;	// values if nothing else is found (like if String is "NOP")
-	int addressingMode = 0;
-	int secondRegister = 0;
-	int address = 0;
+	String opcode = "";		
+	String firstRegister = "";
+	String addressingMode = "";
+	String secondRegister = "";
+	String address = "";
+	String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyzÂ‰ˆ_";
 	
+	SymbolicInterpreter symbolicInterpreter = new SymbolicInterpreter();
+	String[] parsedLine;	
 	String wordTemp = "";
 	int nextToCheck = 0;	// for looping out the spacing
 	int fieldEnd = 0;	// searches the end of a field (' ', ',')
 
-	symbolicOpCode = line;
-	
-	symbolicOpCode = symbolicOpCode.toLowerCase();
-	symbolicOpCode = symbolicOpCode.trim();
-	if (symbolicOpCode.length() == 0) { return EMPTY; }
+	symbolicOpcode = symbolicOpcode.replace('\t',' ');
+	symbolicOpcode = symbolicOpcode.toLowerCase();
+	symbolicOpcode = symbolicOpcode.trim();
+	fieldEnd = symbolicOpcode.indexOf(";");
+	if (fieldEnd != -1) { symbolicOpcode = symbolicOpcode.substring(0, fieldEnd); }
 
 /*label or opCode*/
-	fieldEnd = symbolicOpCode.indexOf(" ");
-	if (fieldEnd == -1) {
-		fieldEnd = symbolicOpCode.length();
-	} 
 
-	wordTemp = symbolicOpCode.substring(nextToCheck, fieldEnd);
-	opCode = SymbolicInterpreter.getOpCode(wordTemp);	
-	if (opCode == -1) { 	// try to find a label (not a valid opCode)
+	fieldEnd = symbolicOpcode.indexOf(" ");
+	if (fieldEnd == -1) { fieldEnd = symbolicOpcode.length(); } 
+
+	wordTemp = symbolicOpcode.substring(nextToCheck, fieldEnd);
+	if (symbolicInterpreter.getOpcode(wordTemp) == -1) { 	// try to find a label (not a valid 
+								//opCode)
 				// label must have one non-number (valid chars A-÷, 0-9 and _)
 		boolean allCharsValid = true;
 		boolean atLeastOneNonNumber = false;
@@ -201,78 +299,73 @@ Basic functionality: (Trim between each phase.)
 				allCharsValid = false;
 			}
 		}
-		if (atLeastOneNonNumber == false || allCharsValid == false) { return NOTVALID; }
-		label = wordTemp;		
+		if (atLeastOneNonNumber == false || allCharsValid == false) { 
+			return null;
+		}
+		label = wordTemp;
+		nextToCheck = fieldEnd + 1;	
+		while (symbolicOpcode.charAt(nextToCheck) == ' ') { ++nextToCheck; }
 
-				// opCode must follow the label
-		fieldEnd = symbolicOpCode.indexOf(" ", nextToCheck);
+		fieldEnd = symbolicOpcode.indexOf(" ", nextToCheck);
         	if (fieldEnd == -1) {
-                	fieldEnd = symbolicOpCode.length();
+                	fieldEnd = symbolicOpcode.length();
         	}
-        	opCode = SymbolicInterpreter.getOpCode(
-					symbolicOpCode.substring(nextToCheck, fieldEnd));
-		if (opCode < 0) { return NOTVALID; }
-	}			// now opCode has integer value of an opcode.
+		wordTemp = symbolicOpcode.substring(nextToCheck, fieldEnd);
+	}	
 
+	opcode = wordTemp;
+	if (symbolicInterpreter.getOpcode(opcode) < 0) { return null; }
 	nextToCheck = fieldEnd + 1;
 
-	/* TODO if jump or other not normal then do something.*/
-
-
 /*first register*/
-	if (nextToCheck < symbolicOpCode.length()) {
-		if (symbolicOpCode.charAt(nextToCheck) != ' ') { return NOTVALID; }
-		while (nextToCheck == ' ') { ++nextToCheck; }	// needs a space, then R0-R7, SP or FP
-		fieldEnd = symbolicOpCode.indexOf(",", nextToCheck);
+	if (nextToCheck < symbolicOpcode.length()) {
+		while (symbolicOpcode.charAt(nextToCheck) == ' ') { ++nextToCheck; }	
+		fieldEnd = symbolicOpcode.indexOf(",", nextToCheck);
                 if (fieldEnd == -1) {
-                        fieldEnd = symbolicOpCode.length();
+                        fieldEnd = symbolicOpcode.length();
                 }
-
-		firstRegister = SymbolicInterpreter.getRegisterId(
-				symbolicOpCode.substring(nextToCheck, fieldEnd));
-		if (firstRegister == NOTVALID) { return NOTVALID; }
-
+		firstRegister = symbolicOpcode.substring(nextToCheck, fieldEnd);
 		nextToCheck = fieldEnd + 1;
 	}
 
 /*addressingMode*/
-	if (nextToCheck < symbolicOpCode.length()) {
-		while (nextToCheck == ' ') { ++nextToCheck; }
-		if (symbolicOpCode.charAt(nextToCheck) == '=' || 
-				symbolicOpCode.charAt(nextToCheck) == '@') {
-			addressingMode = SymbolicInterpreter.getAddressingMode(
-						symbolicOpCode.charAt(nextToCheck));
+	if (nextToCheck < symbolicOpcode.length()) {
+		while (symbolicOpcode.charAt(nextToCheck) == ' ') { ++nextToCheck; }
+		if (symbolicOpcode.charAt(nextToCheck) == '=' || 
+				symbolicOpcode.charAt(nextToCheck) == '@') {
+			addressingMode = "" + symbolicOpcode.charAt(nextToCheck);
 			++nextToCheck;
-		} else { addressingMode = SymbolicInterpreter.getAddressingMode(""); }
+		} else { addressingMode = ""; }
 	}
 
-/*address and other register*/
+/*address and second register*/
 	while (nextToCheck == ' ') { ++nextToCheck; }
-	if (symbolicOpCode.charAt(nextToCheck).isDigit) {
-		if (symbolicOpCode.indexOf("(", nextToCheck) != -1) {
-			if (symbolicOpCode.indexOf(")", nextToCheck) < 
-						symbolicOpCode.indexOf("(", nextToCheck)) {
-				return NOTVALID; 
+	if ("0123456789".indexOf(symbolicOpcode.charAt(nextToCheck)) != -1) {
+		if (symbolicOpcode.indexOf("(", nextToCheck) != -1) {
+			if (symbolicOpcode.indexOf(")", nextToCheck) < 
+						symbolicOpcode.indexOf("(", nextToCheck)) {
+				return null; 
 			} else {
-				address = symbolicOpCode.substring(nextToCheck, 
-						symbolicOpCode.indexOf("(", nextToCheck));
+				address = symbolicOpcode.substring(nextToCheck, 
+						symbolicOpcode.indexOf("(", nextToCheck));
 			
-				otherRegister = SymbolicInterpreter.getRegisterId(
-				   symbolicOpCode.substring(symbolicOpCode.indexOf("(", nextToCheck)
-						, symbolicOpCode.indexOf(")", nextToCheck)));
+				secondRegister = symbolicOpcode.substring(
+	symbolicOpcode.indexOf("(", nextToCheck) + 1, symbolicOpcode.indexOf(")", nextToCheck));
 			}
 		} else {
-			address = symbolicOpCode.substring(nextToCheck);
+			address = symbolicOpcode.substring(nextToCheck);
 		}
 	} else {
-		otherRegister = SymbolicInterpreter.getRegisterId(
-					symbolicOpCode.substring(nextToCheck).trim());
+		secondRegister = symbolicOpcode.substring(nextToCheck).trim();
 	}
-    }
 
-    /** This function generates a StringTokenizer from the source string. 
-	The delimiters used are \r\n\f.
-	@param source The source string to tokenize.
-	@return A StringTokenizer containing the source. */
-    private StringTokenizer tokenize(String source) { }
+	parsedLine = new String[6];
+	parsedLine[0] = label;
+	parsedLine[1] = opcode;
+	parsedLine[2] = firstRegister;
+	parsedLine[3] = addressingMode;
+	parsedLine[4] = address;
+	parsedLine[5] = secondRegister;
+	return parsedLine;
+    }
 }

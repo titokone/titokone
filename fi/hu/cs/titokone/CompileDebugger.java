@@ -1,4 +1,4 @@
-package fi.hu.cs.titokone;
+// package fi.hu.cs.titokone;
 
 /** This class is used by compiler when it compiles code. For each line 
     compiled compiler asks CompileDebugger to create a CompileInfo object and 
@@ -36,7 +36,7 @@ public class CompileDebugger {
 	@param value Int containing the value.
     */
     public void foundEQU(String name, int value) {
-	
+		
     }
 
     /** This method tells debugger that a DS compiler instruction was found
@@ -221,7 +221,7 @@ public class CompileDebugger {
     /** This method returns the created CompileInfo-object. It sets
     comments in the CompileInfo and then returns it.*/
     public CompileInfo lineCompiled() {
-
+	return info;
     }
 }
 

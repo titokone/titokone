@@ -1,4 +1,4 @@
-package fi.hu.cs.titokone;
+// package fi.hu.cs.titokone;
 
 /** This class is parent class for LoadInfo, CompileInfo and RunInfo. It
     contains two fields for storing messages.

@@ -1,4 +1,4 @@
-package fi.hu.cs.titokone;
+// package fi.hu.cs.titokone;
 
  /** This class is used to tell GUIBrain what compiler has done at the moment.
     CompileDebugger creates objects from this class and passes them to the 
@@ -86,10 +86,10 @@ public class CompileInfo extends DebugInfo {
   private boolean definingDC;
 
   /** This field holds the name of the DS defined. */
-  private int dsName; 
+  private String dsName; 
 
   /** This field holds the name of the DC defined. */
-  private int dcName; 
+  private String dcName; 
 
   /** This field holds the address of a DS. */
   private int dsAddress;
