@@ -1,6 +1,6 @@
-import fi.hu.cs.ttk91.TTK91OutOfMemory;
-
 package fi.hu.cs.titokone;
+
+import fi.hu.cs.ttk91.TTK91OutOfMemory;
 
 /** This class can load a TTK91Application. It changes the processor state
     accordingly. Everything is loaded when loadApplication is called. Function returns the state of 
