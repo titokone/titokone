@@ -6,7 +6,7 @@ creates objects from this class and passes them to onwards.*/
 
 public class RunInfo extends DebugInfo{
 
-    /** 	this field is set to true if something is stored to code area of memory */
+    /** this field is set to true if something is stored to code area of memory */
     private boolean selfChangingCode;
 
     /** this field contains number representation of changed codeline */
@@ -91,7 +91,7 @@ public class RunInfo extends DebugInfo{
     private String svcOperation;
 
     /** This value is set to true if state of the memory is changed */
-    //TO DO: asetetaanko ainoastaan data-alueelle viitatessa? käytössä on myös selfChangingCode
+    //TODO: asetetaanko ainoastaan data-alueelle viitatessa? käytössä on myös selfChangingCode
     private boolean memoryChanged;
     
     private int[][] changedMemory;
@@ -139,8 +139,9 @@ public class RunInfo extends DebugInfo{
 		this.operationType = type;
     }
 	
-    /** This method sets the description of operation. Can be used in a comment line */
-    @param String-representation of the description
+    /** This method sets the description of operation. Can be used in a 
+	comment line.
+	@param String-representation of the description.*/
     public void setOperation(String description) {
 		this.operationDescription = description;
     }
@@ -337,16 +338,18 @@ public class RunInfo extends DebugInfo{
 		@return true, if state of the memory is changed, otherwise false
 	*/
 	public boolean memoryChanged() {
-		r
+	    // TODO: tarkista menikö oikein.
+	    return memoryChanged;
     }
 	
     /** This method tells GUIBrain which lines in dataarea changed and what are
 	new values.
 	@return int[] Integer array containing line numbers and new values.
     */
-     public object[] whatMemoryLineChanged(){
-	    
-	}
+     public Object[] whatMemoryLineChanged(){
+	 // TODO: ei palauta mitään järkevää; korjattava.
+	 return null;
+     }
 
     
         
@@ -434,7 +437,7 @@ public class RunInfo extends DebugInfo{
 		return this.svcOperation;    
 	}
     
-	//TO DO, Guille.
+	//TODO, Guille.
 	public String getSymbolUsed() {
     }
     
