@@ -1,14 +1,17 @@
 package fi.hu.cs.titokone;
 
-/** Control class offers the extenal interface to titokone. Using the methods of this class
-    one can compile and emulate an exection process of a ttk91-program from a text file
-    or straight from a string object, which contain symbolic ttk91 machine code, A complete
-    debugging and trackability of compilation, loading and execution cycles are provided with 
-    CompileInfo, LoadInfo and RunInfo objects, which can be used to get information of what
-    had just happened.
+/** Control class offers the extenal interface to titokone. Using the
+    methods of this class one can compile and emulate the execution
+    process of a ttk91-program from a text file or straight from a
+    string object, which contain symbolic ttk91 machine code, A
+    complete debugging and trackability of compilation, loading and
+    execution cycles are provided with CompileInfo, LoadInfo and
+    RunInfo objects, which can be used to get information of what had
+    just happened.
     
-    This doesn't take a position on how to show the output, that's left for the GUI, maybe even for
-    a piece of code between Control and the GUI, which prepares the output provided here to be shown
+    This doesn't take a position on how to show the output. That's
+    left for the GUI, actually a piece of code between Control
+    and the GUI, which prepares the output provided here to be shown
     in GUI. In this software that piece of code is the GUIBrain class.
 */
 
@@ -18,41 +21,54 @@ import java.io.IOException;
 import fi.hu.cs.ttk91.*;
 
 public class Control implements TTK91Core {
-    
+    public static final int DEFAULT_MEMORY_SIZE = 512;
  
     /** This has control to all the files this program has opened.
     */
     private FileHandler fileHandler; 
     
-    
-    
     private Processor processor;
     
-    
-    
-    private Compiler cmplr;
-    
-    
-    
+    private Compiler compiler;
+
+    private TTK91Application application;
+
     /** This constructor sets up the Control instance.
     */
-    public Control() { }
-    
-    
+    public Control() { 
+      fileHandler = new FileHandler();
+      compiler = new Compiler();
+      processor = new Processor(DEFAULT_MEMORY_SIZE);
+      // TODO: Tarvitseeko tänne jotain muuta?
+    }
     
     /** Compiles a symbolic TTK91-assembly language to binary executable
         application. Defined by TTK91Core.
         @param source The source code to be compiled.
         @return The binary executable code.
     */
-    public TTK91Application compile(Source source) throws TTK91Exception, TTK91CompileException { }
+    public TTK91Application compile(TTK91Source source) 
+      throws TTK91Exception, TTK91CompileException { 
+      compiler.compile(source.getSource());
+      // Compile lines, basically ignoring the output, until no more
+      // CompileInfos are returned.
+      while(compileLine() != null)
+	; // All is done in compileLine().
+      // TODO: Check that returned application is not null?
+      application = compiler.getApplication(); 
+      return application;
+    }
  
     /** This method loads an application that has been either compiled 
         or read from binary earlier. It calls Loader's 
         setApplicationToLoad and then loadApplication methods.
         @throws TTK91OutOfMemory If the memory cannot fit the 
         application. */
-    public void load() throws TTK91OutOfMemory {}    
+    public void load() throws TTK91OutOfMemory {
+      Loader loader = new Loader();
+      loader.setApplicationToLoad(application);
+      loader.loadApplication();
+    }    
 
     /** Runs a given app for <steps> steps at a time and updates its state.
         Problem: the CPU and Memory states might need to somehow be attached
@@ -61,7 +77,20 @@ public class Control implements TTK91Core {
         @param app Application to be run.
         @param steps Number of steps the application will be run.
     */
-    public void run(TTK91Application app, int steps) throws TTK91Exception, TTK91RuntimeException { }
+    public void run(TTK91Application app, int steps) 
+      throws TTK91Exception, TTK91RuntimeException { 
+      Application myApp;
+      String errorMessage;
+      try {
+	myApp = (Application) TTK91Application;
+      }
+      catch(ClassCastException unsupportedTypeOfApplication) {
+	errorMessage = new Message(
+				   throw new IllegalArgumentException(...)); 
+	// TODO: jatka.
+						       
+      }
+    }
  
  
  
@@ -82,16 +111,18 @@ public class Control implements TTK91Core {
     
     /** Returns a string that contains the binary presentation of the 
         application. Defined by TTK91Core.
-        @param app The application that is to be transformed into binary.
-        @return Returns the application in the form a string, which contains the binary code.
+        @param app The application that is to be transformed into
+        binary.
+        @return Returns the application in the form a string, which
+        contains the binary code.
     */
     public String getBinary(TTK91Application app) { }
     
     
     
-    /** Returns a TTK91Application object of the given string, which should contain
-        proper binary code. If it doesn't, however, a ParseException is thrown.
-        Defined by TTK91Core.
+    /** Returns a TTK91Application object of the given string, which
+        should contain proper binary code. If it doesn't, however, a
+        ParseException is thrown.  Defined by TTK91Core.
         @param binary The binary to be compiled. 
         @return Returns a TTK91Application object of the binary string.
     */
@@ -99,14 +130,15 @@ public class Control implements TTK91Core {
     
     
     /** Changes the size of memory measured in words.
-        @param powerOfTwo Implies the total size of memory which is 2^powerOfTwo.
-                          Legitimate values are 9,...,16.
-        @throws IllegalArgumentException if powerOfTwo is not between 9 
-        and 16.
+        @param powerOfTwo Implies the total size of memory which is
+                          2^powerOfTwo.  Legitimate values are
+                          9,...,16.
+        @throws IllegalArgumentException if powerOfTwo is not between
+        9 and 16.
     */
     public void changeMemorySize(int powerOfTwo) { }
     
-    
+
     
     /** Erases the memory ie. fills it with zeros.
     */
