@@ -124,6 +124,13 @@ public class Application implements TTK91Application {
 	HALT, unless they have been overwritten. */
     public SymbolTable getSymbolTable() {}
 
+    /** This method checks whether input would be a valid string
+        to give to setKbd or setStdIn.
+        @param input The string to check.
+        @returns True if the string would be valid input, false 
+        otherwise. */
+    public static boolean checkInput(String input) {}
+
     /* The implementation of TTK91Application *************************/
 
     /** This method returns what was written to a file during the
