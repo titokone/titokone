@@ -38,10 +38,11 @@ III. Installing Titokone
 1) Quick installation (Windows, Linux, etc)
 
 For those who know how to manage JAR packages directly, fetching
-titokone.jar is sufficient. (JAR is a package
-format; if you have an up-to-date version of WinZip, you should be
-able to open them) No installation is required; you can run the jar
-file directly. For example, in Windows you must execute the command 
+titokone.jar is sufficient. (JAR is a package format; if you have an
+up-to-date version of WinZip, you should be able to open them; in Linux,
+use the command 'jar' - see below.) No installation is required; you can
+run the jar file directly. For example, in Windows you must execute the
+command
 
   java.exe -jar titokone.jar 
 
@@ -76,14 +77,16 @@ file.
 
 Download titokone.zip and unpack it (eg. gunzip titokone.zip) to the
 target directory of your choosing. (The package creates a subdirectory
-called 'titokone'.)  To run titokone, open a terminal, change to the
-directory you unpacked the zip file in and run 
+called 'titokone'.)  To run Titokone, open a terminal, change to the
+directory the zip file opened, and then the 'titokone' subdirectory, 
+and run 
   java -jar titokone.jar
 
 If typing is tiresome, the zip contains a titokone.sh startup script
-for your convenience. It is called titokone.sh, which you can rename
-to something shorter, like tk. Then you just need to run ./tk
-(or ./titokone.sh if you have not renamed it). 
+for your convenience. You can rename the file to something shorter, 
+like tk. Then you just need to run ./tk (or ./titokone.sh if you have 
+not renamed it). The script does not change directories, so you must 
+either keep it in the same directory as titokone.jar or edit it.
 
 
 4) Opening the jar (mostly interesting for developers only)
@@ -93,10 +96,10 @@ If you wish, you can open the jar by running the following command:
               something similar.
   in Linux: jar -xvf titokone.jar
 
-The jar package contains the source code and class files. If you
-modify the files, eg. to add a new language file (see the included
-manual on how to do this), you should note that the class files are
-a part of a package (three packages, to be exact).
+The jar package contains the source code and class files, among other
+things. If you modify the files, eg. to add a new language file (see the
+included manual on how to do this), you should note that the class files
+are a part of a Java package (three packages, to be exact).
 
 To start the modified program, change to the package root directory (where
 the 'fi' subdirectory is located) and run the command:
