@@ -2,7 +2,7 @@
       "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html lang="en">
 <head>
-  <title>Titokoneen käyttöohje</title>
+  <title>Titokone user's manual</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <style type="text/css">
    .virhekuvaus { font-weight: bold; }
@@ -10,7 +10,7 @@
   </style>
 </head>
 <body>
-<h1>Titokoneen käyttöohje</h1>
+<h1>The Titokone user's manual</h1>
 
 <!-- OLLI: Laitoin yläotsikoille (h2) valmiiksi a name -ankkurit,
      jotta #-linkit toimivat. Lisäile ankkureita ja tunnuksia
@@ -19,18 +19,18 @@
      esimerkiksi esimerkkivirhetilanteessa, jonka kirjailin
      loppupäähän). Tämän kommentin voi poistaa lukemisen jälkeen. -->
 
-<h2>Sisällysluettelo</h2>
+<h2>Contents</h2>
 
 <ol>
-  <li><a href="#yleiskuva">Yleiskuva</a></li>
-  <li><a href="#toiminnot">Järjestelmän toiminnot</a></li>
-  <li><a href="#konekieli">TTK-91-konekieli</a></li>
-  <li><a href="#laajentaminen">Järjestelmän hienosäätö ja laajentaminen</a></li>
-  <li><a href="#pulmanpoisto">Virhetilanteita</a></li>
-  <!-- <li><a href="hakemisto">Asiahakemisto</a></li> --> <!-- jos jaksaa kerätä-->
+  <li><a href="#general">Overview</a></li>
+  <li><a href="#doables">What you can do with the Titokone</a></li>
+  <li><a href="#machinelanguage">The TTK-91 machine language</a></li>
+  <li><a href="#extension">Extending and adjusting the system</a></li>
+  <li><a href="#troubleshooting">Troubleshooting</a></li>
+  <!-- <li><a href="hakemisto">Glossary</a></li> --> <!-- jos jaksaa kerätä-->
 </ol>
 
-<h2><a name="yleiskuva">1. Yleiskuva</a></h2> <!-- niinku täh? mikätääon? -->
+<h2><a name="general">1. Overview</a></h2> 
 
 <p>
 Titokone on konekielisimulaattori, jonka tarkoituksena on näyttää, kuinka symbolisen
@@ -49,8 +49,8 @@ lienee hyvästä.
 <tr>
 
 <td>
-<a href="manual_fi1.html#gui" name="gui">
-<img src="screen0.jpg" title="Järjestelmän perusnäkymä" 
+<a href="manual.html#gui" name="gui">
+<img src="screenEnglish3.jpg" title="Basic view of the system" 
   alt="Järjestelmän perusnäkymä, jossa eri osiot numeroitu">
 </a>
 </td>
@@ -58,20 +58,20 @@ lienee hyvästä.
 <td>
 <ol>
      <li> Valikot </li>
-     <br>
-     <li> Koodi-ikkuna</li>
-     <br>
-     <li> Tilatiedot </li>
-     <br>
-     <li> Näyttö </li>
-     <br>
-     <li> Näppäimistösyötteet </li>
-     <br>
-     <li> Symbolitaulu </li>
-     <br>
-     <li> Rekisterit </li>
-     <br>
-     <li> Kommentti-ikkuna </li>
+     <br />
+     <li> Runnable code </li>
+     <br />
+     <li> Status </li>
+     <br />
+     <li> Display </li>
+     <br />
+     <li> Keyboard input </li>
+     <br />
+     <li> Symbol table </li>
+     <br />
+     <li> Registers </li>
+     <br />
+     <li> Comments </li>
 </ol>
 
 
@@ -85,184 +85,120 @@ lienee hyvästä.
 <!-- Kuvaillaan käyttöliittymän osat numeroittain: 1. valikot: höpöhöpö jne. -->
 <!-- Kunkin selityksestä viitteitä kohtiin, joissa sitä käytetään. -->
 
+<img src="dialogit.jpg" title="Asetusdialogeja" 
+  alt="Kuvia asetusdialogeista, joissa mielenkiintoiset osiot numeroitu.">
 
-<h2><a name="toiminnot">2. Toiminnot</a></h2> <!-- mitä tällä voi tehdä? -->
+<h2><a name="doables">2. What you can do with the Titokone</a></h2> 
 
-  <h3>2.1 Titokoneen käynnistäminen</h3>
+  <h3>2.1 Using Titokone </h3>
 <p> Titokone on toteutettu javalla ja se käynnistetään jar-paketista. </p>
 
 
-<br>
+<br />
 
 <table cellspacing=10>
 <tr>
   <td align=center>
-  <a name="avaa">
-  <img src="1.jpg" title="Avaa kuvakkeesta" 
-  alt="Kuva avaa-painikkeesta">
-  </a>
+  <img src="1.jpg" title="Open button" 
+  alt="Open button">
   </td>
 
 <td>
-  <h3>2.2 TTK-91-ohjelman avaaminen</h3> 
+  <h3>2.2 Opening a TTK-91-program</h3> 
 </td>
 
 </tr>
 </table>
   
-<br>
+<br />
 
 <table cellspacing=10>
 <tr>
   
 <td valign=top>
-
-<img src="Tiedostoavaa2.jpg" title="Avaa valikosta" 
-alt="Kuva avaa-painikkeesta">
-
+<img src="Fileopen.jpg" title="Open" 
+alt="Open">
 </td>
       
 <td valign=top>
 <p> 
-  Uuden tiedoston avaaminen tapahtuu painamalla <a href="1.jpg"> käännä-pikakuvaketta </a> tai
-  valitsemalla valikosta Tiedosto -->  Avaa. Valinnan seurauksena
-  avautuu <a href="#tiedosto"> tiedostonäkymä </a>.
-
+  Titokoneella pystytään ajamaan kahden tyyppisiä 
+  ohjelmatiedostoja: symbolisessa muodossa olevia 
+  lähdekooditiedostoja ja binääritiedostoja. 
+  Lähdekooditiedostot   on ensin käännettävä, 
+  jotta niitä voidaan ajaa. Käännetty ohjelma tallentuu
+  automaattisesti oletushakemistoon binäärimuodossa. 
+  Lähdekooditiedoston oletuspääte   on K91 ja 
+  binääritiedoston B91. Ohjelma avataan painamalla 
+  pikakuvaketta tai valitsemalla tiedostovalikosta 
+  kohta 'avaa'. 
 </p>
 </td>
 
 </tr>
 </table>
-
-<table cellspacing=10>
-<tr>
-  
-<td valign=top>
-<a name="tiedosto">
-<img src="Tiedosto.jpg" title="Tiedostonäkymä" 
-alt="Tiedostonäkymä">
-</a>
-</td>
-<td valign=top>
-<p>
-Tiedostonäkymä näyttää nykyhakemiston tiedostot valitun päätteen mukaan. 
-Näytettävät tiedostotyypit erotellaan päätteen mukaan: k91-pääte tarkoittaa lähdekooditiedostoa ja
-b91-pääte binääritiedostoa.
-</p>
-<p>
-Avattaessa k91-päätteinen tiedosto, avautuu <a href="manual_fi1.html#gui"> lähdekoodinäkymä </a> ruudulle.
-Lähdekooditiedosto on <a href="#kaanna"> käännettävä </a> ennen kuin se voidaan <a href="#aja"> suorittaa </a>.
-</p>
-<p>
-Avattaessa b91-päätteinen tiedosto, avautuu <a href="manual_fi3.html#gui"> suoritusnäkymä </a> ruudulle.
-Binääritiedostoa on valmiiksi konekielimuodossa, joten se voidaan <a href="#aja"> suorittaa </a> ilman kääntämistä.
-</p>
-
-</td>
-
-
-</tr>
-</table>
-
-
-
 
   <!-- Voi olla k91 tai b91, viittaa vastaaviin 2.x-lukuihin -->
 
-<br>
+<br />
     
   <table cellspacing=10>
   <tr>
   
   <td>
-  <img src="2.jpg" title="Käännä" 
-  alt="Kuva käännä-painikkeesta">
+  <img src="2.jpg" title="Compile" 
+  alt="Compile button">
   </td>
   
   <td>
-  <a name="kaanna">
-  <h3>2.3 TTK-91-ohjelman kääntäminen</h3> <!-- Ja mahd. tekstin muokkaus -->
-  </a>
+  <h3>2.3 Compiling TTK-91-program</h3> <!-- Ja mahd. tekstin muokkaus -->
   </td>
   
   </tr>
   </table>
   
-  <br>
+  <br />
   
   <table cellspacing=10>
   <tr>
-
+  
   <td valign=top>
-  <img src="Tiedostokaanna.jpg" title="Kääntäminen valikosta" 
-  alt="Kuva käännä-painikkeesta">
+  <img src="Filecompile.jpg" title="Compiling" 
+  alt="Compiling">
   </td>
   
   <td valign=top>
   <p>
-  Titokoneen käännös on kaksivaiheinen: ensin tehdään syntaksitarkistus ja luodaan symbolitaulu. Toisella kierroksella muodostetaan objektikoodi.
-  Kääntäminen aloitetaan painamalla <a href="2.jpg"> käännä-pikakuvaketta </a> tai valitsemalla valikosta Tiedosto --> Käännä.
-  Kääntäminen toteutetaan <a href="#kaannosasetukset">  käännösasetusten </a> mukaisesti.
-  joko pysähdellen tai kerralla loppuun asti kääntäen. 
-  </p>
+  Kääntäminen aloitetaan painamalla pikakuvaketta tai valitsemalla tiedostovalikosta  
+  kohta 'käännä'. Kääntäminen jatkuu käyttäjän asetusten(LINKKI / KTS kohta) mukaisesti;
+  joko pysähdellen tai kerralla loppuun asti kääntäen. Jos kääntäminen on pysähtynyt tietylle
+  riville, kääntämistä jatketaan painamalla (KELAA).
   </td>
   </tr>
   </table>
   
-  <br>
-  <a name="kaantajantoiminnot">
-  <b>
-  Toiminnot kääntämisen aikana
-  </b>
-  </a>
-  
-  <table cellspacing=10>
+  <br />
+  <table>
   <tr>
    
   <td>
-  <img src="4.jpg" title="Kelaa" 
-  alt="Kuva kelaa-painikkeesta">
+  <img src="4.jpg" title="Next" 
+  alt="Next button">
   </td>
-  <td><p> Kääntämistä voi suorittaa askel kerrallaan, edeten seuraavaan <a href=#kaannostapahtumat> tapahtumaan </a> asti. </p>
+  <td><p> Kääntämistä voi suorittaa askel kerrallaan, edeten seuraavaan tapahtumaan asti. </p>
   </td>
   </tr>
   
   <tr>
   <td><img src="5.jpg" title="FF" 
-  alt="Kuva FF-painikkeesta">
+  alt="FF-button">
   </td>
   
   <td><p> Halutessaan käyttäjä voi suorittaa käännöksen kerralla loppuun painamalla.</p>
   </td>
-  </tr>
   
-  <tr>
-  <td><img src="6.jpg" title="STOP" 
-  alt="Kuva stop-painikkeesta">
-  </td>
-  <td>
-  <p> Käännös voidaan pysäyttää painamalla stop-nappia.
-  </td>
   </tr>
   </table>
-  <a name="kaannostapahtumat">
-  <b> Käännöksen tapahtumatyypit </b>
-  </a>
-  <p> Tapahtumatyypeillä tarkoitetaan kääntäjän reagointia lähdekoodin sisältöön. Riviä kommentoidaan tai riville pysähdytään <a href=#kaannosasetukset>asetusten</a> mukaisesti.</p>
-  <p> Ensimmäinen kierros:</p>
-  <ul>
-  <li> Ei tapahtumaa: jos rivi alkaa kommenttimerkillä (;), on tyhjä tai sisältää käskyn NOP </li>
-  <li> Muuttujan määrittely: Jos riviltä löytyy uusi muuttuja, se lisätään symbolitauluun. </li>
-  <li> Muuttujan käyttäminen: Jos rivin komennossa käytetään muuttujaa, muuttuja lisätään symbolitauluun jos se ei siellä vielä ole. </li>
-  <li> Muistiviitteen löytyminen: Jos rivin alusta löytyy muistiviite,viite ja rivin numero lisätään symbolitauluun </li>
-  <li> Käännöksen virhetilanne: käännös keskeytetään, virheestä ilmoitetaan käyttäjälle ja jatka-painikkeella palaudutaan lähdekoodinäkymään. </li>
-  <li> Ensimmäisen käännösvaiheen valmistuminen: onnistuneen ensimmäisen kierroksen jälkeen <a href="manual_fi2.html#gui">objektikoodinäkymä</a> tuodaan esiin ja toinen kierros voi alkaa. </li> 
-  </ul>
-  <p> Toinen kierros: </p>
-  <ul> 
-  <li> Objektikoodin luonti: koodiriville tuodaan käskyn konekieliesitys ja käsky näytetään alapalkin tilatiedoissa. </li>
-  <li> Toisen käännösvaiheen valmistuminen: ohjelma <a href=#lataaminen>ladataan </a> muistiin.</li>
-  </ul>
   <br>
   
 
@@ -285,205 +221,60 @@ uudestaan kääntymään, mutta tapahtuuko sitä muulloinkin?
 
   </p>
 
-  <a name="kaannosasetukset">
-  <h3>2.4 Käännösasetukset muuttaminen</h3>
-  </a>
-  <table cellspacing=10>
-  <tr>
-  <td>
-  <img src="Tiedostomuokkaakaannos.jpg" title="Käännösasetukset valikosta" 
-  alt="Käännösasetukset valikosta">
-  </td>
-  <td valign=top>
-  <p>
-  Käännöksen aikaisia asetuksia voi muuttaa valitsemalla valikosta Asetukset --> Muokkaa käännösasetuksia.
-  </p>
-  </td>
-  
-  </tr>
-  <tr>
-  <td>
-  
-  <img src="Kaannosasetukset.jpg" title="Käännösasetukset" 
-  alt="Käännösasetukset">
-  
-  </td>
-  <td valign=top> 
-  <p>
-  Käännösasetuksilla voidaan vaikuttaa käännöksen etenemistapaan ja kommentointiin.
-  </p>
-  <p>
-  Jos 'Pysäytä kääntäminen kommentin ilmestyessä' on valittuna, käännös etenee askelittain. Käännös jää odottamaan käyttäjältä seuraavaa <a
-  href=#kaantajantoiminnot> toimintoa </a>.
-  </p>
-  
-  </td>
-  
-  </tr>
-  </table>
-  
-  <br>
-   
+  <br />
   
   <table cellspacing=10>
   <tr>
   
   <td>  
-  <a name="aja">
-  <img src="3.jpg" title="Suorita" 
-  alt="Kuva suorita-painikkeesta">
+  <img src="3.jpg" title="Run" 
+  alt="Run-button">
   </td>
-  </a>
   <td>
-  <h3>2.5 TTK-91-ohjelman suoritus</h3> <!-- Ja uudelleensuoritus -->
+  <h3>2.4 TTK-91-ohjelman suoritus</h3> <!-- Ja uudelleensuoritus -->
   </td>
   
   </tr>
   </table>
   
-
-  
-  <br>
+  <br />
   
   <table cellspacing=10>
   <tr>
   
   <td>  
-<img src="Tiedostoaja.jpg" title="Aja valikosta" 
-  alt="Ohjelman suoritus valikosta">
-
+  Tähän kuva
   </td>
   <td> Tätä nappia painamalla suoritetaan ohjelman ajaminen. </td>
   
   </tr>
   </table>
   
-  <table>
-  <tr>
-   
-  <td>
-  <img src="4.jpg" title="Kelaa" 
-  alt="Kuva kelaa-painikkeesta">
-  </td>
-  <td><p> Kääntämistä voi suorittaa askel kerrallaan, edeten seuraavaan tapahtumaan asti. </p>
-  </td>
-  </tr>
-  
-  <tr>
-  <td><img src="5.jpg" title="FF" 
-  alt="Kuva FF-painikkeesta">
-  </td>
-  
-  <td><p> Halutessaan käyttäjä voi suorittaa käännöksen kerralla loppuun painamalla.</p>
-  </td>
-  
-  </tr>
-  </table>
-  
-  
-  <br>
-  
-  
-  <h3><a name="lataaminen">2.5 TTK-91-ohjelman lataaminen</a></h3>
+  <h3><a name="lataaminen">2.5 Loading TTK-91-program</a></h3>
 
       <!-- Tapahtuu "automaattisesti", miten voi saada ladattua uudelleen 
            jos haluaa (esim. avaamalla automaattisesti tallennetun binäärin -->
 	   
-  <h3>2.6 TTK-91-ohjelman binäärin tallentaminen</h3>
+  <h3>2.6 Saving TTK-91 binary file</h3>
 
     <!-- Tapahtuu jälleen "automaattisesti". Tallentuu sinne missä 
          lähdekoodikin, päätteellä .b91. -->
 
-  
-  
-  <h3>2.x Suoritusasetusten muuttaminen</h3>
+  <h3>2.x Changing compiling options</h3>
 
-  <table>
-  <tr>
-  
-  <td>
-  <img src="Suoritusasetukset.jpg" title="Suoritusasetukset" 
-  alt="Suoritusasetukset">
-  </td>
-  </tr>
-  
-  <tr>
-  <td>
-  <img src="7.jpg" title="Riveittäin suoritus" 
-  alt="Riveittäin suoritus">
-  </td>
-  </tr>
-  <tr>
-  <td>
-  <img src="8.jpg" title="Suorituksen kommentointi" 
-  alt="Suorituksen kommentointi">
-  </td>
-  </tr>
-  <tr>
-  <td>
-  <img src="9.jpg" title="Animointi" 
-  alt="Animointi">
-  </td>
-  </tr>
-  <tr>
-  <td>
-  <img src="Animointi.jpg" title="Kuva animaattorista" 
-  alt="Kuva animaattorista">
-  </td>
-  </tr>
-  
-  </table>
-  
-  
-  
-  <h3>2.x Muistin tyhjentäminen</h3> 
+  <h3>2.x Erasing memory</h3> 
    
   <!-- Viimeistään täällä maininta muistin pysymisestä samana ellei sitä
        nollata. -->
-  <table>
-  <tr>
-  
-  <td>
-  <img src="Tyhjennamuisti.jpg" title="Muistin tyhjentäminen" 
-  alt="Muistin tyhjentäminen">
-  </td>
-  
-  
-  </tr>
-  </table>
-       
-       
-       
-  <h3>2.x Muistin koon vaihtaminen</h3>
 
-  <table>
-  <tr>
+  <h3>2.x Changing the size of the memory</h3>
+
+  <h3>2.x Language properties</h3>
   
-  <td>
-  <img src="Muisti.jpg" title="Muistin koon muuttaminen" 
-  alt="Muistin koon vaihtaminen valikosta">
-  </td>
-  
-  
-  </tr>
-  </table>
-  
-  <h3>2.x Käyttöliittymän kielen vaihtaminen</h3>
-  <table>
-  <tr>
-  
-  <td>
-  <img src="Asetakieli.jpg" title="Kieliasetusten vaihtaminen" 
-  alt="Kieliasetukset">
-  </td>
-  
-  
-  </tr>
-  </table>
 
  <!-- Jne, sopivassa järjestyksessä. -->
 
-<h2><a name="konekieli">3. TTK-91-konekieli</a></h2>
+<h2><a name="machinelanguage">3. The TTK-91 machine language</a></h2>
 <!-- Tässä voi miettiä, haluaako toistaa tekstitiedoston speksin vähän 
      siistimmässä formaatissa vaiko vain. Mietin, nyt päädyin tähän...
 -->
@@ -779,7 +570,7 @@ Oletustiedostot kahdelle ensimmäiselle ovat stdin ja stdout käyttäjän
 kotihakemistossa. 
 </pre>
 
-<h2><a name="laajentaminen">4. Järjestelmän hienosäätö ja laajentaminen</a></h2>
+<h2><a name="extension">4. Extending and adjusting the system</a></h2>
 
   <h3>4.1 Asetustiedostot</h3>
 
@@ -798,7 +589,7 @@ käännöksistä, tässä tapauksessa Translations_fi.javasta.
 
   <!-- Jne. -->
 
-0<h2><a name="pulmanpoisto">5. Virhetilanteita</a></h2>
+<h2><a name="troubleshooting">5. Troubleshooting</a></h2>
 
   <!-- Virheilmoituksia -->
 

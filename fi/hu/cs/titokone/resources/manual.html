@@ -2,7 +2,7 @@
       "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html lang="en">
 <head>
-  <title>The Titokone user's manual</title>
+  <title>Titokone user's manual</title>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <style type="text/css">
    .virhekuvaus { font-weight: bold; }
@@ -11,6 +11,13 @@
 </head>
 <body>
 <h1>The Titokone user's manual</h1>
+
+<!-- OLLI: Laitoin yläotsikoille (h2) valmiiksi a name -ankkurit,
+     jotta #-linkit toimivat. Lisäile ankkureita ja tunnuksia
+     loogiseksi katsomallasi nimeämisperusteella sitä mukaa kun tulee
+     tarpeen viitata aiempiin/tuleviin aliotsikoihin (kuten
+     esimerkiksi esimerkkivirhetilanteessa, jonka kirjailin
+     loppupäähän). Tämän kommentin voi poistaa lukemisen jälkeen. -->
 
 <h2>Contents</h2>
 
@@ -25,59 +32,701 @@
 
 <h2><a name="general">1. Overview</a></h2> 
 
-<!-- <img src="perusnakyma.jpg" title="Järjestelmän perusnäkymä" 
-  alt="Järjestelmän perusnäkymä, jossa eri osiot numeroitu"> -->
+<p>
+Titokone on konekielisimulaattori, jonka tarkoituksena on näyttää, kuinka symbolisen
+konekielen suoritus etenee yksinkertaisella prosessorilla. 
+
+* kun kuvaillaan koodinäkymää, siinä pitää muistaa korostaa että muisti
+on yhtenäinen alue vaikka siitä onkin eristetty osa koodialueeksi. Myös
+maininta siitä, että data-alueella symbolisella arvolla ei ole
+merkitystä (ja että suurin osa komennoista on jonkinlaisia noppeja)
+lienee hyvästä.
+
+* näppäinshortcutit, jahka varmistuvat, mukaan kuvauksiin.
+</p>
+
+<table>
+<tr>
+
+ <td valign=top>
+<a href="manual1.html#gui" name="gui">
+<img src="screenEnglish0.jpg" title="Basic view of the system" 
+  alt="Järjestelmän perusnäkymä, jossa eri osiot numeroitu">
+</a>
+</td>
+
+ <td>
+<ol>
+     <li> Valikot </li>
+     <br />
+     <li> Code window </li>
+     <br />
+     <li> Status </li>
+     <br />
+     <li> Display </li>
+     <br />
+     <li> Keyboard input </li>
+     <br />
+     <li> Symbol table </li>
+     <br />
+     <li> Registers </li>
+     <br />
+     <li> Comments </li>
+</ol>
 
 
-<!-- <img src="dialogit.jpg" title="Asetusdialogeja" 
-  alt="Kuvia asetusdialogeista, joissa mielenkiintoiset osiot numeroitu."> -->
+</td>
+
+</tr>
+</table>
+
+
+
+<!-- Kuvaillaan käyttöliittymän osat numeroittain: 1. valikot: höpöhöpö jne. -->
+<!-- Kunkin selityksestä viitteitä kohtiin, joissa sitä käytetään. -->
+
+<img src="dialogit.jpg" title="Asetusdialogeja" 
+  alt="Kuvia asetusdialogeista, joissa mielenkiintoiset osiot numeroitu.">
 
 <h2><a name="doables">2. What you can do with the Titokone</a></h2> 
 
-  <h3>2.1 </h3>
+  <h3>2.1 Using Titokone </h3>
+<p> Titokone on toteutettu javalla ja se käynnistetään jar-paketista. </p>
 
-  <h3>2.2 </h3> 
+
+<br />
+
+<table cellspacing=10>
+<tr>
+  <td align=center>
+  <img src="1.jpg" title="Open button" 
+  alt="Open button">
+  </td>
+
+<td>
+  <h3>2.2 Opening a TTK-91-program</h3> 
+</td>
+
+</tr>
+</table>
   
-  <h3>2.3 </h3> 
+<br />
 
-  <h3>2.4 </h3> 
+<table cellspacing=10>
+<tr>
+  
+<td valign=top>
+<img src="Fileopen.jpg" title="Open" 
+alt="Open">
+</td>
+      
+<td valign=top>
+<p> 
+  Titokoneella pystytään ajamaan kahden tyyppisiä 
+  ohjelmatiedostoja: symbolisessa muodossa olevia 
+  lähdekooditiedostoja ja binääritiedostoja. 
+  Lähdekooditiedostot   on ensin käännettävä, 
+  jotta niitä voidaan ajaa. Käännetty ohjelma tallentuu
+  automaattisesti oletushakemistoon binäärimuodossa. 
+  Lähdekooditiedoston oletuspääte   on K91 ja 
+  binääritiedoston B91. Ohjelma avataan painamalla 
+  pikakuvaketta tai valitsemalla tiedostovalikosta 
+  kohta 'avaa'. 
+</p>
+</td>
+
+</tr>
+</table>
+
+
+<table cellspacing=10>
+<tr>
+  
+<td valign=top>
+<img src="File.jpg" title="File view" 
+alt="File view">
+</td>
+
+</tr>
+</table>
+  <!-- Voi olla k91 tai b91, viittaa vastaaviin 2.x-lukuihin -->
+
+<br />
+    
+  <table cellspacing=10>
+  <tr>
+  
+  <td>
+  <img src="2.jpg" title="Compile" 
+  alt="Compile button">
+  </td>
+  
+  <td>
+  <h3>2.3 Compiling TTK-91-program</h3> <!-- Ja mahd. tekstin muokkaus -->
+  </td>
+  
+  </tr>
+  </table>
+  
+  <br />
+  
+  <table cellspacing=10>
+  <tr>
+  
+  <td valign=top>
+  <img src="Filecompile.jpg" title="Compiling" 
+  alt="Compiling">
+  </td>
+  
+  <td valign=top>
+  <p>
+  Kääntäminen aloitetaan painamalla pikakuvaketta tai valitsemalla tiedostovalikosta  
+  kohta 'käännä'. Kääntäminen jatkuu käyttäjän asetusten(LINKKI / KTS kohta) mukaisesti;
+  joko pysähdellen tai kerralla loppuun asti kääntäen. Jos kääntäminen on pysähtynyt tietylle
+  riville, kääntämistä jatketaan painamalla (KELAA).
+  </td>
+  </tr>
+  </table>
+  
+  <br />
+  <table>
+  <tr>
    
-  <h3>2.5 </h3>
+   <td valign=top>
+  <img src="4.jpg" title="Next" 
+  alt="Next button">
+  </td>
+   <td valign=top><p> Kääntämistä voi suorittaa askel kerrallaan, edeten seuraavaan tapahtumaan asti. </p>
+  </td>
+  </tr>
+  
+  <tr>
+   <td valign=top><img src="5.jpg" title="FF" 
+  alt="FF-button">
+  </td>
+  
+   <td valign=top><p> Halutessaan käyttäjä voi suorittaa käännöksen kerralla loppuun painamalla.</p>
+  </td>
+  
+  </tr>
+  </table>
+  <br>
+  
 
-  <h3>2.6 </h3>
+  
+  <p>
+  Käännös pysähtyy, jos lähdekoodissa tapahtui virhe. Virheestä ilmoitetaan 
+  alapalkissa (STATUSBAR). 
+  
+  ON SYYTÄ KIRJOITTAA MYÖS TÄNNE: Käyttöohjeessa pitää mainita, että kunkin rivin muokkaus tulee voimaan
+  vasta, kun siltä riviltä poistutaan; muuten kääntäjä ei saa muokatun
+  rivin tietoja mukaansa. (Ja sitten että se tallentaa silloin ja tolloin
+  blahblah.)
 
-  <h3>2.7 </h3>
+Tähän liittyen: Olli, laita käyttöohjeen "lisättäviä juttuja"
+-listallesi koodin muokkauksen toiminnan ohje. Eli se tallentaa koodin
+milloin tarkalleen, Arto? Ilmeisesti kun muutettu koodi laitetaan
+uudestaan kääntymään, mutta tapahtuuko sitä muulloinkin?
 
-  <h3>2.8 </h3> 
+  
+
+  </p>
+
+  <br />
+  
+  <table cellspacing=10>
+  <tr>
+  
+   <td valign=top>  
+  <img src="3.jpg" title="Run" 
+  alt="Run-button">
+  </td>
+   <td valign=top>
+  <h3>2.4 Executing TTK-91-program</h3> <!-- Ja uudelleensuoritus -->
+  </td>
+  
+  </tr>
+  </table>
    
-  <h3>2.9 </h3>
+  <br />
+  
+  <table cellspacing=10>
+  <tr>
+  
+   <td valign=top>  
+  <img src="Filerun.jpg" title="Run" 
+  alt="Run">
+  </td>
+   <td valign=top> Tätä nappia painamalla suoritetaan ohjelman ajaminen. </td>
+  
+  </tr>
+  </table>
+  
+  <h3><a name="lataaminen">2.5 Loading TTK-91-program</a></h3>
 
-  <h3>2.10 </h3>
- 
+      <!-- Tapahtuu "automaattisesti", miten voi saada ladattua uudelleen 
+           jos haluaa (esim. avaamalla automaattisesti tallennetun binäärin -->
+	   
+  <h3>2.6 Saving TTK-91 binary file</h3>
 
-<h2><a name="machinelagnuage">3. The TTK-91 machine language</a></h2>
+    <!-- Tapahtuu jälleen "automaattisesti". Tallentuu sinne missä 
+         lähdekoodikin, päätteellä .b91. -->
+
+  <h3>2.x Changing compiling options</h3>
+
+  <table>
+  <tr>
+  
+  <td>
+  <img src="Compilingoptions.jpg" title="Compiling options" 
+  alt="Compiling options">
+  </td>
+  
+  </tr>
+  </table>
+  
+  <h3>2.x Erasing memory</h3> 
+   
+  <table>
+  <tr>
+  
+   <td valign=top>
+  <img src="Erasememory.jpg" title="Erase memory" 
+  alt="Erase memory">
+  </td>
+  
+  
+  </tr>
+  </table>
+  <!-- Viimeistään täällä maininta muistin pysymisestä samana ellei sitä
+       nollata. -->
+
+  <h3>2.x Changing the size of the memory</h3>
+
+  <table>
+  <tr>
+  
+   <td valign=top>
+  <img src="Memory.jpg" title="Changing size of the memory" 
+  alt="Changing size of the memory">
+  </td>
+  
+  
+  </tr>
+  </table>
+  
+  <h3>2.x Language properties</h3>
+  
+  <table>
+  <tr>
+  
+  <td>
+  <img src="Setlanguage.jpg" title="Set language" 
+  alt="Set language">
+  </td>
+  
+  </tr>
+  </table>
+ <!-- Jne, sopivassa järjestyksessä. -->
+
+<h2><a name="machinelanguage">3. The TTK-91 machine language</a></h2>
+<!-- Tässä voi miettiä, haluaako toistaa tekstitiedoston speksin vähän 
+     siistimmässä formaatissa vaiko vain. Mietin, nyt päädyin tähän...
+-->
+
+<pre>
+======================================================================
+                   A SUMMARY OF TTK-91 COMMANDS
+======================================================================
+
++--------------------------------------------------------------------+
+¦  Operation code  ¦  Rj ¦ M ¦  Ri ¦      address part ADDR          ¦
+¦  8 bits          ¦  3  ¦ 2 ¦  3  ¦         16 bits                 ¦
++--------------------------------------------------------------------+
+31               24 23           16 15                               0
+
+In the symbolic machine language, the commands are of the form
+
+LABEL OPER Rj,M ADDR(Ri)
+
+where  OPER    the symbolic name of the command
+       Rj      the first operand (register R0..R7)
+       M       addressing mode:
+               =   immediate operand
+                   direct addressing (empty, ie. not marked)
+               @   indirect addressing
+       ADDR    address part (memory address or constant value)
+       Ri      possible index register (register R0..R7)        
+
+If some part of a command has no meaning, it can be left out. It is 
+possible to add a label (symbolic address) in front of a command. The 
+label should consist of the letters A-Ö, 0-9 and _, and contain at 
+least one non-numerical character. Only the first 8 characters are
+considered.
+
+Almost all commands have the following forms available:
+
+   OPER Rj,ADDR        direct memory addressing
+   OPER Rj,=ADDR       immediate operand
+   OPER Rj,@ADDR       indirect memory addressing
+   OPER Rj,ADDR(Ri)    indexed addressing
+   OPER Rj,=ADDR(Ri)   indexed immediate operand
+   OPER Rj,@ADDR(Ri)   indexed indirect memory addressing      
+   OPER Rj,Ri          direct register addressing
+
+There are exceptions:
+
+    STORE           The latter operand is always the target address;
+                    it cannot be a register or a constant value.
+    POP             The latter operand must always be a register.   
+    JUMP COMMANDS   The latter operand is always the target address;
+                    it cannot be a constant. In the jump commands which
+                    look at the state register, the first operand is  
+                    ignored.               
+    NOP             The operands are ignored.  
+
+======================================================================
+         The symbolic commands of the TTK-91 machine language
+======================================================================
+
+Data transfer commands:
+
+LOAD   Stores the value of the latter operand to the register Rj.
+STORE  Stores the integer in Rj as the value of the latter operand.    
+IN     Reads an integer from the device given as the latter operand 
+       into the register Rj (eg. IN R1,=KBD to read from the keyboard).
+OUT    Outputs the integer in the register Rj to the device given as 
+       the latter operand (eg. OUT R1,=CRT to print to screen).
+
+Arithmetic and logical commands:
+
+The result of the calculation is stored in register Rj.
+
+ADD    Adds the value of the latter operand to the integer in the
+       register Rj.
+SUB    Substracts the value of the latter operand from the integer in 
+       the register Rj.
+MUL    Multiplies the integer in the register Rj with the value of the
+       latter operand.
+DIV    Divides the integer in the register Rj with the value of the 
+       latter operand, and stores the whole part in Rj.
+MOD    Modulo divides the integer in the register Rj with the value of
+       the latter operand, and stores the remainder in Rj.
+AND    Boolean logic 'and' between Rj and the value of the latter operand.
+OR     Boolean logic 'or' between Rj and the value of the latter operand.
+XOR    Boolean logic 'exclusive or' between Rj and the value of the
+       latter operand.
+SHL    Shifts the bits of the register Rj left, with the number of
+       shifts given by the value of the latter operand. Fills the
+       right end with 0 bits.
+SHR    Shifts the bits on the register Rj right, otherwise like SHL.
+SHRA   Performs an arithmetic right shift; as in SHR, but fills the
+       left end with copies of the leftmost bit, thus keeping negative
+       numbers negative.
+
+COMP   Compares the first operand with the second operand and stores
+       the result in the status register SR's bits L=less, E=equal,
+       G=greater. See eg. JLES.
+
+Forking commands:
+
+JUMP   An unconditional jump to the target address expressed by the
+       second operand.
+
+JNEG   Jump if negative. If Rj < 0, jumps to the address given as the
+       second operand, otherwise continues with the next command.
+JZER   Jump if zero,      ie. if Rj = 0
+JPOS   Jump if positive,      if Rj > 0
+JNNEG  Jump if not negative,  if Rj >= 0
+JNZER  Jump if not zero,      if Rj <> 0
+JNPOS  Jump if not positive,  if Rj <= 0
+
+JLES   Jump if less - if the status register SR has its L bit set,
+       jumps to the address given as the second operand, otherwise
+       continues from the next command. Used together with the COMP 
+       command.
+JEQU   Jump if equal,      ie. if E bit is set in SR
+JGRE   Jump if greater,        if G bit is set in SR
+JNLES  Jump if not less,       if E or G bit is set in SR
+JNEQU  Jump if not equal       if L or G bit is set in SR 
+JNGRE  Jump if not greater     if L or E bit is set in SR
+
+Stack commands:
+
+The first operand of the command, the register Rj, points to the top
+of the stack, ie. the topmost item in it. Usually, the register SP
+(which is also R6) is used as the stack pointer.
+
+PUSH   Increases the stack pointer Rj's value by one and stores the latter
+       operand as the topmost item in the stack.
+
+POP    Removes the topmost item in the stack and stores it as the  
+       register Ri (the latter operand is always a register). Substracts
+       one from the stack pointer Rj.           
+
+PUSHR  Pushes the registers R0, R1, R2, R3, R4, R5 and R6 (SP) to the 
+       stack, in this order. Before pushing each register, increases the
+       stack pointer Rj's value by one.
+
+POPR   Pops values to the registers R6 (SP), R5, R4, R3, R2, R1 and
+       R0, in this order, from the stack. For each pop, first fetches
+       the value from the top of the stack indicated by the register  
+       Rj, and then substracts one from Rj.
+
+Subroutine commands:
+
+CALL   Call procedure. Moves the control (by manipulating the program 
+       counter) to the address given by the latter operand. Stores the
+       return address to the stack, with its top indicated by Rj.
+EXIT   Returns from a procedure to the command following its call. The
+       return address is found from the stack, the top of which Rj
+       points to. The latter operand indicates the number of parameters
+       passed to the subroutine in the call.
+
+System calls:  
+
+SVC    Supervisor call. Calls a service routine in the operating system.
+       The first operand is Rj, indicating the top of the stack, the 
+       latter operand gives the number identifying the service.
+       Supervisor calls are special subroutine calls to predefined 
+       procedures. Their code is invisible to the user, and is considered
+       to be stored "outside" the memory space.
+
+       Service identifiers:
+
+       HALT : Stops the execution of the program.
+       TIME : Gives the time of day. The stack should contain the 
+              addresses to store the hour, minute and second values.
+              Note their order!
+       DATE : Gives the date. The stack should contain the addresses 
+              to store the year, month and day values. Note their order!
+       READ : Reads an integer from the keyboard. The stack should 
+              contain the address to store the integer to.
+       WRITE: Prints an integer to the screen. The stack should
+              contain the value to print.
+
+Other:
+
+NOP    No operation. This command does nothing.
+
+======================================================================
+              The operation codes of the TTK-91 commands
+======================================================================
+
+   Command   Binary     Decimal  Hexadecimal   
+
+   NOP       0000 0000     0        00            
+
+   STORE     0000 0001     1        01
+   LOAD      0000 0010     2        02
+   IN        0000 0011     3        03
+   OUT       0000 0100     4        04
+
+   ADD       0001 0001    17        11
+   SUB       0001 0010    18        12
+   MUL       0001 0011    19        13
+   DIV       0001 0100    20        14
+   MOD       0001 0101    21        15
+
+   AND       0001 0110    22        16
+   OR        0001 0111    23        17
+   XOR       0001 1000    24        18
+   SHL       0001 1001    25        19
+   SHR       0001 1010    26        1A
+   SHRA      0001 1011    27        1B
+
+   COMP      0001 1111    31        1F
+
+   JUMP      0010 0000    32        20
+   JNEG      0010 0001    33        21
+   JZER      0010 0010    34        22
+   JPOS      0010 0011    35        23
+   JNNEG     0010 0100    36        24
+   JNZER     0010 0101    37        25
+   JNPOS     0010 0110    38        26
+
+   JLES      0010 0111    39        27
+   JEQU      0010 1000    40        28
+   JGRE      0010 1001    41        29
+   JNLES     0010 1010    42        2A
+   JNEQU     0010 1011    43        2B
+   JNGRE     0010 1100    44        2C
+
+   CALL      0011 0001    49        31
+   EXIT      0011 0010    50        32
+   PUSH      0011 0011    51        33
+   POP       0011 0100    52        34
+   PUSHR     0011 0101    53        35
+   POPR      0011 0110    54        36
+
+   SVC       0111 0000   112        70
+
+======================================================================
+                Predefined symbols of the TTK-91 machine   
+======================================================================
+
+These symbols can be used without explicitly defining them in a 
+TTK-91 program.
+
+Symbol          Value
+---------------------
+CRT             0
+KBD             1
+STDIN           6
+STDOUT          7
+HALT            11
+READ            12
+WRITE           13
+TIME            14
+DATE            15
+
+
+
+======================================================================
+             Instructions to the compiler (fake commands)
+======================================================================
+
+The compiler instructions direct the program translating the symbolic
+machine language to binary. They are NOT actual symbolic commands.
+
+name EQU value
+
+The alias command EQU defines a symbolic name for an integer
+value. The symbol name can be used in the ADDR field of a command, in
+which case it will be handled as 'value' written in its stead
+would be.
+
+name DC value
+
+The memory allocation command DC (data constant) allocates one word of
+memory for a constant, aliases 'name' with the constant's memory
+address and stores 'value' in the allocated address in the
+memory. 'Name' can then be used in a command's ADDR field as a
+memory address.
+
+name DS size
+
+The memory allocation command DS (data segment) allocates an area of
+memory, sized 'size' words. It aliases 'name' with the start address
+of the memory area. 'Name' can then be used in a command's ADDR field
+as a memory address. This instruction is used for allocating space for
+global variables.
+
+option DEF string
+
+This special instruction changes options for simulating the file
+system of a TTK-91 machine. 'String' should be an absolute directory 
+path. Examples:
+  STDIN DEF /home/myuser/ttk91/stdin
+  STDOUT DEF C:\mydir\stdout
+
+Available options are:
+  STDIN   To set which file stdin data is read from.
+  STODUT  To set which file stdout data is written to.
+  HOME    To set the user's home directory for this application;
+          unused in Titokone as the home directory is requested from
+          the underlying operating system via the Java virtual machine.
+
+The default files for the two first options are stdin and stdout in
+the user's home directory.
+
+</pre>
 
 <h2><a name="extension">4. Extending and adjusting the system</a></h2>
 
-  <h3>4.1 </h3>
+  <h3>4.1 Asetustiedostot</h3>
 
-  <h3>4.2 </h3>
+  <h3>4.2 Uuden kielen tukeminen</h3>
+<pre>
+* oman käännöstiedoston valitsijan pitää varmistaa, ettei
+käännöstiedostossa ole pakettimäärettä - muuten sen avaaminen
+epäonnistuu (fi.hu.cs.titokone.resources.Translationsia ei voi avata
+tiedostosta, mutta pelkän Translationsin voi - mutta sen nimi riippuu
+siitä onko itse java-tiedostossa 'package'-määre). Tekijä voi ottaa
+käännösten pohjaksi Translations.javan, jossa on ohjeita tähän; mallia
+tiedoston saattamisesta käytettäväksi kannattaa kuitenkin ottaa muista
+käännöksistä, tässä tapauksessa Translations_fi.javasta.
+</pre>
+
 
   <!-- Jne. -->
 
 <h2><a name="troubleshooting">5. Troubleshooting</a></h2>
 
-  <div class="virhekuvaus">
-  </div>
+  <!-- Virheilmoituksia -->
 
-  <div class="virhetoipuminen">
-  </div>
+  <!-- Oudot taustasäievirheet: yleisohje, jos leviää, kokeile uudelleen. 
+       Yleensä johtuvat kuun väärästä asennosta ja poistuvat toisella
+       yrityksellä. Pahoittelumme. -->
+
+
+  <!-- Nämä voi vaihtaa divistä esim. p:ksi jos välejä ei tule riittävästi. -->
+
+  <div class="virhekuvaus">Kun ohjelma latautuu käännöksen tai ajon
+  päättymisen jälkeen, saan kommenttikenttään virheilmoituksen muotoa
+  "STDIN-datatiedostoa ei voi lukea: /minun/hakemistoni/stdin (Joku
+  syy)".</div>
+
+  <div class="virhetoipuminen">Ohjelma ilmoittaa vain, että mikäli
+  tulevaisuudessa näillä asetuksilla joku TTK-91-sovellus yrittää
+  lukea STDIN-laitteelta, luku epäonnistuu ellei jotain tehdä
+  asialle. "Joku syy" -osuus kertoo, mikä järjestelmän antama
+  virheilmoitus oli kun tiedostoa luettiin. Jos sovelluksesi tarvitsee
+  STDIN-laitetta, korjaa tiedoston tilanne ja lataa sovellus
+  uudelleen. Ks. myös <a href="#lataaminen">2.5, TTK-91-ohjelman
+  lataaminen</a>.</div>
     
-  <div class="virhekuvaus">
-  </div>
+  <div class="virhekuvaus">On tylsää.</div>
 
-  <div class="virhetoipuminen">
-  </div>
+<pre>
+* virheilmoitukset pitää käydä läpi ja selvittää, mitä kukin tarkoittaa.
+Tätä pitänee tehdä osittain ryhmässä tai ainakin kysellen.
+
+---------------------
+eka:
+Puhuin viime kokouksessa, että olen ottanut GUIhin Look And Feel -jutut mukaan, mikä saisi GUI:n näyttämään etenkin Windowsissa uskomattoman hyvältä. Harmittavasti olen kuitenkin törmännyt Javan 1.4.2 versiota riivaavaan bugiin, joka aiheuttaa yhden tietyn operaation aikana mahdollisesti Exceptionin ilman, että siihen voi itse vaikuttaa. Aluksi tuskailin kyseisen Exceptionin kanssa, kun en millään ymmärtänyt että mistä sellainen voi tulla. Sitten älysin katsastaa Googlesta parilla hyvin valitulla hakusanalla ja kappas vain, osoittautuikin että kyseessä on ihan raportoitu bugi. Bugin numero on 4711700 ja suora linkki raporttiin on http://developer.java.sun.com/developer/bugParade/bugs/4711700.html
+
+Mahdollisesti bugin voi kiertää parilla lisärivillä koodia, mutta se maksaa silloin tällöin pidemmällä latausajalla enkä voi taata että ohjelma välttämättä edes käynnistyy joka kerta. Tosin, todennäköisyys sille on koneesta rippuen 1/100. Tulevissa Javan versioissa kyseistä ongelmaa ei tietenkään ole, sillä eiköhän löydetyt bugit yleensä korjata.
+
+Toinen mahdollisuus on, mikäli Exception tulee, ilmoittaa pahoitellen, että ohjelma ei käynnisty johtuen Javassa olevasta bugista ja pyydetään käynnistämään uudelleen. Harvoin tuo kahta kertaa peräkkäin tulee. Mun mielestä kuitenkaan ei kannata tinkiä siitä hienosta ulkonäöstä jonkun typerän bugin vuoksi, joka tuskin vaivaa enää ainakaan syksyllä, jolloin ohjelmaa oikeasti käytetään.
+
+
+ennen:
+On Wed, 2004-08-18 at 11:10, Arto Åkerlund wrote:
+> Mahdollisesti bugin voi kiertää parilla lisärivillä koodia, mutta se
+> maksaa silloin tällöin pidemmällä latausajalla enkä voi taata että
+> ohjelma välttämättä edes käynnistyy joka kerta. Tosin, todennäköisyys
+> sille on koneesta rippuen 1/100. Tulevissa Javan versioissa kyseistä
+> ongelmaa ei tietenkään ole, sillä eiköhän löydetyt bugit yleensä
+> korjata.
+
+Hmm, laitetaan Titokoneeseen varmuuden vuoksi optio ton yli
+hyppäämiseksi (jos parametrien joukossa on vaikka --disablelookandfeel,
+ei tehdä lookandfeel-juttua), ja käytetään workaroundia. Olli, laitatko
+itsellesi ylös että kirjaat maininnan käyttöohjeeseen?
+------------------
+
+
+
+
+
+
+On Sun, 2004-04-18 at 14:41, Olli Alm wrote:
+> Ok, pistän korvan taakse tuon asian. Kuulostaa kyllä
+> hieman enemmän toteutusdokkarin kuin käyttöohjeen asialta
+> mielestäni. Mutta joo.
+
+Siis käyttöohjeeseen se menee muodossa "voit törmätä tällaiseen
+virheeseen, joka johtuu Javan 1.4.2-version bugista eikä yleensä toistu,
+mutta tarvittaessa voit käyttää --disablelooknfeel -parametriä, jolloin
+myös virhe poistuu". Toteutusdokkarissa voisi tietty mainita eri
+parametrit joilla ohjelman voi käynnistää, mutta niille ei taida olla
+juuri nyt järkevää paikkaa.
+
+
+-------------------
+</pre>
+  <div class="virhetoipuminen">Syö leipää ni ei o tylsää. --Jukka Tilsa</div>
 
 
 
