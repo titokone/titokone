@@ -159,33 +159,7 @@ public class Processor implements TTK91Cpu {
         ram.setDataAreaLength (initSP -initFP);
     }
 
-/** Process next instruction, 
-
-   Processing Cycle of an instruction:   
-    1. MAR = PC
-    2. MBR = RAM(PC)
-    3. IR = MBR
-    4. analyze binaryCommand, if ok, call method of the current operation type:
-        112 SVC
-        51-54 Stack operations: PUSH, POP, PUSHR, POPR
-        50 EXIT
-        49 CALL
-        32-44 Branching operations (use GEL-bits)
-        31 COMP (set GEL-bits)
-        17-30 ALU operations
-        1-4 Data transfer (LOAD, STORE, IN, OUT)
-        0 NOP, do nothing
-    5. check  addressing mode 
-        -->mar = address
-        -->mbr = get value
-    6. tr = mbr
-        if(112) --> SVC  
-        if(51-54) --> Stack
-        if(49-50) --> Subroutine
-        if(32-44) --> Branch
-        if(17-31) --> ALU
-        if(1-4) --> Transfer
-
+/** Process next instruction.
     @return RunInfo created by RunDebugger. */
     public RunInfo runLine() throws TTK91RuntimeException{
         if (status == TTK91Cpu.STATUS_SVC_SD) return null;
@@ -204,14 +178,14 @@ public class Processor implements TTK91Cpu {
         
             regs.setRegister (TTK91Cpu.CU_IR, IR.getBinary());
             regs.setRegister (TTK91Cpu.CU_PC, PC+1);
-        
+            
             // cut up the command in IR
             int opcode = IR.getBinary() >>> 24;                             // operation code
             int Rj = ((IR.getBinary()&0xE00000) >>> 21) + TTK91Cpu.REG_R0;  // first operand (register 0..7)
             int M  = (IR.getBinary()&0x180000) >>> 19;                      // memory addressing mode
             int Ri = ((IR.getBinary()&0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
-            int ADDR = IR.getBinary()&0xFFFF;                               // address
-        
+            int ADDR = (short) (IR.getBinary()&0xFFFF);                     // address
+            
             runDebugger.runCommand (IR.getBinary());
 
             // fetch parameter from memory

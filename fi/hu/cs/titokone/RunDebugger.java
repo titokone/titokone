@@ -83,7 +83,7 @@ public class RunDebugger{
         int Rj = (command&0xE00000) >>> 21;  
         int M  = (command&0x180000) >>> 19;                      
         int Ri = (command&0x070000) >>> 16;   
-        int ADDR = command&0xFFFF;
+        int ADDR = (short) (command&0xFFFF);
         
         info.setBinary (command);
         info.setFirstOperand (Rj);
