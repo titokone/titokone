@@ -47,8 +47,10 @@ public class RunDebugger{
     private RunInfo info;
     /** List of changed memory lines */
     private LinkedList changedMemoryLines = new LinkedList();
+    /** Compare bit tells compare status of status register.
+        0 - greater, 1 - equal, 2 - less. */
+    private int compareBit=-1;
     
-        
     /** This constructor initializes the RunDebugger. */
     public RunDebugger(){
     }
@@ -162,7 +164,7 @@ public class RunDebugger{
     @param status New status of the bit.
     */
     public void setCompareResult(int whichBit){
-        info.setCompareOperation(whichBit);
+        compareBit = whichBit;
     }
     
     /** This method sets value of second memory fetch. Indirect memory
@@ -245,10 +247,10 @@ public class RunDebugger{
 
     /** This method return the current runinfo
         after the line is executed
-        @return RunInfo of the current line
-    */
+        @return RunInfo of the current line. */
     public RunInfo cycleEnd() {
         info.setChangedMemoryLines (changedMemoryLines);
+        info.setCompareOperation (compareBit);
         changedMemoryLines = new LinkedList();
         return info;
     }

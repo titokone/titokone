@@ -38,11 +38,10 @@ public class RunInfo extends DebugInfo{
     private int secondFetchValue;
     /** This field contains the value of ALU-operation */
     private int aluResult;
-    /** This field contains the representation which bit has the value true after comparing 
-          0 - greater, 1 - equal, 2 - less 
+    /** This field contains the compare status of status register.
+        0 - greater, 1 - equal, 2 - less.
     */
-    //TO DO: Bittien tila säilyy vertailun jälkeen, päivitetäänkö ainoastaan muutokset GUIBRAINILLE? Jos ylipäänsä tarvitaan...
-    private int srBit;
+    private int compareStatus=-1;
 	/** This boolean value tells is the operation in or out -operation */
     private boolean externalOperation;
     /** This boolean value is set true if operation is in operation, otherwise false */
@@ -73,7 +72,7 @@ public class RunInfo extends DebugInfo{
 	
 	
 	public void setRegisters(int[] registers) {
-		for (int i=0; i < this.registers.length; i++) 
+		for (int i=0; i < Math.min (registers.length, this.registers.length); i++) 
 		    this.registers[i] = registers[i];	
 	}
 	
@@ -98,7 +97,7 @@ public class RunInfo extends DebugInfo{
     
     /** This method gets the colon-presentation of the command.
 	@return The colon-presentation of the command. */
-    public String getColonString(String colonString){
+    public String getColonString(){
 		return colonString;
     }
 
@@ -150,7 +149,7 @@ public class RunInfo extends DebugInfo{
 	bit was changed to what value.
 	@param whichBit Number of the bit. */
     public void setCompareOperation(int whichBit){
-          this.srBit = whichBit;
+          this.compareStatus = whichBit;
     }
 
     /** This method tells is external operation executed
@@ -211,6 +210,11 @@ public class RunInfo extends DebugInfo{
         return newPC;
     }
 
+    /** Gets compare status of status register.
+	@return Compare status of status register. 0 = grater, 1 = equal, 2 = less. */
+    public int getCompareStatus(){
+          return compareStatus;
+    }
     /** This method tells GUIBrain what kind of operation happened.
         @return int value which represents operation type.*/
     public int getOperationtype(){
