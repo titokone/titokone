@@ -1,4 +1,10 @@
-/** */
+/** This class is used to tell GUIBrain what compiler has done at the moment.
+    CompileDebugger creates objects from this class and passes them to the 
+    GUIBrain.
+*/
+
+//Tdlld hetkelld melkein valmis, tiettyd toiminnallisuutta pitdd vield miettid
+//ja javadoc puutteellinen
 public class CompileInfo extends DebugInfo {
   // Variables common to both rounds.
   
@@ -82,20 +88,21 @@ public class CompileInfo extends DebugInfo {
     
     
     /** This method sets lineEmpty value to true. */
-    public void setLineEmpty(boolean empty){}
+    public void setLineEmpty(){}
     public void setComments(String comment){}
     public void setSymbolName(String name){}
-    public void setSymbolName(String name, boolean defined, int value){}
+    public void setSymbolName(String name, int value){}
     public void setLabelName(String name){}
     public void setLineBinary(int binary){}
-    public void setLabedDefined(String name, boolean defined){}
+    public void setLabelDefined(String name, boolean defined){}
     public void setLabelValue(String name, int value){}
-    public void setDefiningDS(int 
+    public void setDefiningDS(int ADDR, int size){}
     public void setFinal(){}
     public void setInitPointers(int SP, int FP){}
-    
+    public void setMemoryline(int lineNumber, int value){}
+
     public String returnStatusMessage(){}
-    ¨public String returnComments(){}
+    public String returnComments(){}
     public boolean returnLineEmpty(){}
     public short returnPhase(){}
     public String returnLineContents(){}
@@ -110,5 +117,7 @@ public class CompileInfo extends DebugInfo {
     public int returnValue(){}
     public boolean returnFinalPhase(){}
     public int[] returnInitPointers(){}
+    public int returnMemoryline(int lineNumber, int value){}
+    public int returnDSArea(int lineNumber, int size){}
 }
 
