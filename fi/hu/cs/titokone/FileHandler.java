@@ -281,24 +281,49 @@ public class FileHandler {
     /* This function tests if a given file can be accessed for
        reading, writing or appending operations. It throws a home-made
        IOException accordingly. 
-       @throws FileNotFoundException If a file checked for read access 
-       does not exist.
+       @throws FileNotFoundException If a file checked for read 
+       access does not exist. 
        @throws IOException (Excluding the above.) If a file does not 
        allow the sort of access which is asked for. */
     public void testAccess(File accessedFile, int accessType) 
 	throws IOException {
-	if(accessedFile.exists() == false && accessType == READ_ACCESS) {
-	    throw new FileNotFoundException(accessedFile.getName());
+	String msg;
+	boolean couldWrite = true;
+	if(accessedFile.exists() == false) {
+	    if(accessType == READ_ACCESS) {
+		throw new FileNotFoundException(accessedFile.getName());
+	    }
+	    else {
+		try {
+		    // Check if the file can be created. This may throw
+		    // a FileNotFoundException.
+		    accessedFile.createNewFile();
+		    couldWrite = accessedFile.canWrite();
+		    accessedFile.delete();
+		}
+		catch(IOException errorOccurred) {
+		    msg = new Message("No write access to {0}; " +
+				      "file cannot be created.",
+				      accessedFile.getName()).toString();
+		    throw new IOException(msg);
+		}
+		if(!couldWrite) {
+		    msg = new Message("No write access to {0}.",
+				      accessedFile.getName()).toString();
+		    throw new IOException(msg);
+		}
+		return; // Write access and file can be created, assume ok.
+	    }
 	}
 	if(accessType == READ_ACCESS && accessedFile.canRead() == false) {
-	    String msg = new Message("No read access to {0}.", 
-				     accessedFile.getName()).toString();
+	    msg = new Message("No read access to {0}.", 
+			      accessedFile.getName()).toString();
 	    throw new IOException(msg);
 	}
 	else if((accessType == WRITE_ACCESS || accessType == APPEND_ACCESS) && 
 		accessedFile.canWrite() == false) {
-	    String msg = new Message("No write access to {0}.",
-				     accessedFile.getName()).toString();
+	    msg = new Message("No write access to {0}.",
+			      accessedFile.getName()).toString();
 	    throw new IOException(msg);
 	}
     }
