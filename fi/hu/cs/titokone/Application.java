@@ -146,8 +146,8 @@ public class Application implements TTK91Application {
 
 	if(kbdpointer >= kbdcontent.length) {
 	    logger = Logger.getLogger(this.getClass().getPackage());
-	    logger.fine(new Message("Application has no more keyboard data, read: " + 
-				    "{0}, buffer length {1}.", 
+	    logger.fine(new Message("Application has no more keyboard data, " +
+				    "read: {0}, buffer length {1}.", 
 	                            messageParams));
 	    throw new TTK91NoKbdData(new Message("No more keyboard data " +
 						 "stored on application."));
