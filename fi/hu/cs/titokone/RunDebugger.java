@@ -101,7 +101,7 @@ public class RunDebugger{
     		
 			this.info.setOperationType(opcode);
 			
-		switchc(opcode) {
+		switch(opcode) {
 			case NO_OPERATION:
 				this.info.setOperation("No operation");
 			break;
