@@ -57,6 +57,11 @@ public class Settings {
 	    parseSettingsFile(settingsFileContent);
     }
 
+    /** This constructor sets up a settings class with no values. */
+    public Settings() {
+	settings = new HashMap();
+    }
+
     /** This method sets a key to a certain string value. 
 	@param key The key to point to the value.
 	@param value The value to be stored. 
