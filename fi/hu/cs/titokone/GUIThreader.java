@@ -45,7 +45,7 @@ public class GUIThreader implements Runnable {
 	      break;
 	      
 	    case TASK_STOP:
-	      brains.menuInterrupt();
+	      brains.menuInterrupt(false);
 	      break;
 	      
 	    case TASK_ENTER_NUMBER:
