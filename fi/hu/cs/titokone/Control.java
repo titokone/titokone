@@ -385,9 +385,9 @@ public class Control implements TTK91Core {
 		// number and slot 1 the value written there.
 		outData = info.whatOUT();
 		if(outData != null) {
-		    if(outData[0] == RunDebugger.CRT)
+		    if(outData[0] == Processor.CRT)
 			application.writeToCrt(outData[1]); 
-		    if(outData[0] == RunDebugger.STDOUT) {
+		    if(outData[0] == Processor.STDOUT) {
 			application.writeToStdOut(outData[1]);
 			writeToStdoutFile("" + outData[1]);
 		    }
