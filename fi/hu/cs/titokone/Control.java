@@ -635,26 +635,6 @@ public class Control implements TTK91Core {
 	processor.keyboardInput(inputValue);
     }
 
-    /** Added by Harri Tuomikoski 12.10.2004, Koskelo-project.
-     *
-     * 
-     *
-     */
-
-    public Statistics getStatistics() {
-
-	Statistics stats = new Statistics();
-	stats.setCommAmount(processor.giveCommAmount());
-	stats.setStack(processor.giveStackSize());
-	TTK91Memory memory = processor.getMemory();
-	stats.setMemRefs(memory.memrefs());
-	stats.setCodeSegSize(memory.getCodeAreaSize());
-	stats.setDataSegSize(memory.getDataAreaSize());
-
-	return stats;
-
-    }//getStatistics
-
     /** RunLine() calls this, when the processor wants to write a
         value to CRT.
         @param inputValue The input to CRT.  
