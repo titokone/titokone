@@ -282,12 +282,13 @@ public class Compiler {
 			// FIXME tämä if. 
 
 			lineTemp = parseCompilerCommandLine(line); 
-
+System.err.println("Foo1");
 			// compiler command
 			boolean allCharsValid = true;
 			boolean atLeastOneNonNumber = false;
 
 			if (invalidLabels.containsKey(lineTemp[0])) {
+System.err.println("Foo2");
 				// not a valid label
 				if (!(lineTemp[1].equalsIgnoreCase("def") && 
 							(lineTemp[0].equalsIgnoreCase("stdin") ||
@@ -297,9 +298,11 @@ public class Compiler {
 					throw new TTK91CompileException(comment);
 				}
 			}
-
+		System.err.println("Foo4");	
+			// accept empty label for dc [EN]
 			if(!validLabelName(lineTemp[0])) {
 				// not a valid label;
+				System.err.println("Foo5");
 				comment = new Message("Invalid label.").toString();
 				throw new TTK91CompileException(comment); 
 			} else {
@@ -407,8 +410,8 @@ public class Compiler {
 							lineTemp[2];
 						symbolTable.set(((Integer)symbols.get(lineTemp[0])).intValue(), 
 								symbolTableEntry.clone());
-					
-					} else {
+				// Don't do anything if it is empty label, since there isn't any symbol	
+					} else if(!(lineTemp[0].equals(""))){
 					
 						symbols.put(lineTemp[0], new Integer(symbolTable.size()));
 						symbolTableEntry[0] = lineTemp[0];
@@ -624,6 +627,28 @@ public class Compiler {
 						} else { 
 							data[nextPosition] = "" + 0; 
 						}			
+						// implementing the emptyDCs
+						
+						int tmpCounter = 1;
+						boolean wasDC = false;
+						String[] emptyDCLine;
+						
+						do {
+						emptyDCLine = (String[])symbolTable.get(i+1);
+						wasDC = false;
+						if(emptyDCLine[0].equals("") && emptyDCLine[1].equalsIgnoreCase("dc")){
+							wasDC = true;
+							i++;
+						
+							if (emptyDCLine[1].trim().length() > 2) {
+								data[nextPosition+1] = lineTemp[1].substring(3);
+							} else { 
+								data[nextPosition+1] = "" + 0; 
+							}
+							nextPosition++;
+						}
+						} while (wasDC);
+						
 						newSymbolTableLine[0] = lineTemp[0];
 						newSymbolTableLine[1] = "" + nextMemorySlot;
 						symbolTable.set(i, newSymbolTableLine.clone());
@@ -1042,51 +1067,97 @@ public class Compiler {
 	  @return String array with label in position 0, command in the
 	  position 1 and position 2 contains the parameter.
 	  */	
+
+	// Added some clarifying comments for myself. Eeva Nevalainen
 	public String[] parseCompilerCommandLine(String line) throws TTK91CompileException {
 
 		int fieldEnd = 0;
 		int nextToCheck = 0;	
+		boolean emptyDC = false;
+
 		String label = "";
 		String opcode = "";
 		String value = "";
 		int intValue;
 		String[] parsedLine;
 
+		
 		String comment;		// for exception
 
 		/* preprosessing */
 		line = line.toLowerCase();
 		line = line.replace('\t',' ');
+		// stuff after first ; is discarded
 		fieldEnd = line.indexOf(";");
 		if (fieldEnd != -1) { line = line.substring(0, fieldEnd); }
 
+		
+		System.err.println("1");
 		line = line.trim();
 
 		/* LABEL opcode value */
 		//Eeva: FIXME, no label with nameless dc.
 		fieldEnd = line.indexOf(" ");
+		
+		System.err.println("2");
 		if (fieldEnd == -1) {
+			// nextToCheck effectively 0 at this point
 			label = line.substring(nextToCheck);
 			fieldEnd = line.length();
+		System.err.println("3");
 		} else {
+			// from 0 to first space.
 			label = line.substring(nextToCheck, fieldEnd);		
+		System.err.println("4");
 		}
+		
 
+		// fieldend is the first character after the first space
+		// FIXME: don't change if it was dc with empty label
+		
+		if(label.equalsIgnoreCase("dc")) {
+		// There is a chance this is an labeless DC
+		// We still want the dc as opcode
+			emptyDC = true;
+		System.err.println("6");
+			label = "";
+			nextToCheck = 0;
+		} else { 
+		// so we change this only if it wasn't
+		// labeless DCi
+		// this means the first character after the first space which occurs after
+		// first non-whitespace in the commandline
 		nextToCheck = fieldEnd + 1;	
-
+		System.err.println("7");
+		}
+		
 		/* label OPCODE value */	
 		if (nextToCheck < line.length()) {
+			
+		System.err.println("8");
 			while (line.charAt(nextToCheck) == ' ') { ++nextToCheck; }
+			// first space after some letter
 			fieldEnd = line.indexOf(' ', nextToCheck);
+			
+		System.err.println("9");
 			if (fieldEnd == -1) {
 				opcode = line.substring(nextToCheck);
+		System.err.println(opcode);
 				fieldEnd = line.length();
 			} else {
 				opcode = line.substring(nextToCheck, fieldEnd);
+		System.err.println("10");
 			}
-			if (!opcode.matches("((dc)|(ds)|(equ)|(def))")) {
+	
+			// UGLY "&& emptyDC == false addition [EN] for accepting
+			// empty DCs
+			if (!opcode.matches("((dc)|(ds)|(equ)|(def))") && emptyDC == false) {
+				// this is rather ugly, but the exception is used in the
+				// first round parser to decide whether to parse compiler
+				// command or other
+		System.err.println("11");
 				comment = new Message("Compilation failed: {0}",
-						new Message("invalid opcode {0}.",
+						new Message("invalid opcode FOO {0}.",  
 							opcode).toString()).toString();
 				throw new TTK91CompileException(comment);
 			}
@@ -1097,7 +1168,7 @@ public class Compiler {
 		if (nextToCheck < line.length()) {
 			while (line.charAt(nextToCheck) == ' ') { ++nextToCheck; }
 			value = line.substring(nextToCheck);
-
+		System.err.println("12");
 			if (opcode.equals("def")) {
 				if (value.length() < 1) {
 					comment = new Message("Compilation failed: {0}",
@@ -1136,7 +1207,8 @@ public class Compiler {
 					new Message("value expected.").toString()).toString();
 			throw new TTK91CompileException(comment);
 		}
-
+	
+	System.err.println("13");
 		parsedLine = new String[3];
 		parsedLine[0] = label;
 		parsedLine[1] = opcode;
