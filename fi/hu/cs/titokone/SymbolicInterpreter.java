@@ -96,10 +96,10 @@ public class SymbolicInterpreter extends Interpreter {
 		allOk = false;
 	}
 
-	if (opcodeAsInt < 0) {allOk = false;}
-	if (firstRegisterAsInt < 0) { allOk = false;}
-	if (addressingModeAsInt < 0) { allOk = false;}
-	if (secondRegisterIdAsInt < 0) { allOk = false;}
+	if (opcodeAsInt < 0) { allOk = false; }
+	if (firstRegisterAsInt < 0) { firstRegisterAsInt = 0; }
+	if (addressingModeAsInt < 0) { addressingModeAsInt = 1; }
+	if (secondRegisterIdAsInt < 0) { secondRegisterIdAsInt = 0; }
 
 	if (allOk) {
 
