@@ -7,7 +7,7 @@ public class ControlBridge implements TTK91Bridge {
         @param source The source code to be compiled.
         @return The binary executable code.
     */
-    public TTK91Application compile(CompileSource source) { }
+    public TTK91Application compile(CompileSource source);
  
  
     
@@ -52,26 +52,86 @@ public class ControlBridge implements TTK91Bridge {
     
     
     
-    /** Sets the running mode.
-        @param mode This is the running mode to be set. It can be
-                    0 = pauseless execution
-                    1 = line by line without comments
-                    2 = line by line with comments
+    /** This is called when user has selected a file to be opened
+        in FileDialog after selecting Open File from the menu.
+        @param fileName The path of the file.
     */
-    public void setRunningMode(int mode);
+    public void openFile(String filePath);
     
     
     
-    /** This function transmits a message from debugger (etc) to GUI which
-        shows it to the user. Note that ControlBrigde is only a transmitter
-        here.
-        @param msg The message to be transmitted.
-        @param id This is used identify the type of message. For example
-                  1 = Explanation of latest operation.
-                  2 = Debug information
-                  3 = Error message
-                  This information can be used by GUI to decide on how
-                  to show the message.
+    /** This is called when user has selected Compile from the GUI menu.
+        This compiles the t91 program that has been opened recently and
+        hasn't yet been compiled to binary code.
+        @return Returns true if the operation was successful. Otherwise
+                it returns false (for example if there was no program
+                loaded into memory).
     */
-    public void sendMessageToGUI(String msg, int id);
+    public boolean compile() throws CompileTimeException;
+    
+    
+    
+    /** This is called when user has selected Run from the GUI menu.
+        This runs the program that is currently loaded into the TTK91's
+        memory. 
+        @Return Returns true if the operation was successful. Otherwise
+                it returns false (for example if there was no program
+                loaded into memory)
+    */
+    public void run() throws RunningTimeException;
+    
+    
+    
+    /** This is called when user the has changed language to another one by
+        choosing it from a dialog after selecting Set language from the
+        GUI menu.
+        @param language The language in which the messages will be shown.
+    */
+    public void setLanguage(String language);
+    
+    
+    
+    /** This is called when the user has changed the file from which stdin
+        operations will be read in emulator.
+        @param filePath The path of the file.
+    */
+    public void selectSTDIN(String filePath);
+    
+    
+    
+    /** This is called when the user has changed the file from which stdout
+        operations will be written in emulator.
+        @param filePath The path of the file.
+    */
+    public void selectSTDOUT(String filePath);
+    
+    
+    
+    /** This is called when the processor wants to write to an
+        external device (CRT or STDOUT).
+        @param id The identifier of the device.
+                  CRT = CRT
+                  STDOUT  = hard drive
+        
+    */
+    public void writeToDevice(int id);
+    
+    /** This is called when the processor wants to read from
+        an external device.(keyboard or stdin)
+        @param id The identifier of the device
+                  KBD = keyboard
+                  STDIN  = hard drive
+    */
+    public void readFromDevice(int id);
+    
+    
+    
+    
+    /** 
+        @param 
+    */
+    public void ();
+     
+   
+    
 }
