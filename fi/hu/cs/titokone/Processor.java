@@ -265,7 +265,7 @@ public class Processor implements TTK91Cpu {
     }//giveStackSize
 
     //Added by LL, 12.12.2004, Koskelo-project
-    public int giveStacMaxSize() {
+    public int giveStackMaxSize() {
 	return this.stack_max_size;
     }
 
