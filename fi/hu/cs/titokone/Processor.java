@@ -6,8 +6,7 @@ import java.util.*;
 /** This class represents the processor. It can be told to run for one
     command cycle at a time. */
 public class Processor implements TTK91Cpu {
-
-
+    
     /** This field represents the memory of computer. */
     private RandomAccessMemory ram;
 
@@ -43,11 +42,6 @@ public class Processor implements TTK91Cpu {
     set to be null. */
     private Integer stdinData=null, kbdData=null;
 
-/** This boolean stores whether the previous command should be run again
-    instead of fetching a new command (eg. because it was an IN 
-    operation and required more data, which has now been supplied). */
-    private boolean rerun = false;
-
 /** Creates new processor, memory and registers.
     Processor state, program counter get initial values
     @param memsize creates new computer with given size of memory. 
@@ -70,6 +64,8 @@ public class Processor implements TTK91Cpu {
         regs.setRegister (TTK91Cpu.REG_SP, initSP);
         regs.setRegister (TTK91Cpu.REG_FP, initFP);
         
+        ram.setCodeAreaLength (initFP+1);
+        ram.setDataAreaLength (ram.getSize() -(initFP+1));
         return null;
     }
 
@@ -103,65 +99,60 @@ public class Processor implements TTK91Cpu {
     @return RunInfo created by RunDebugger. */
     public RunInfo runLine() throws TTK91RuntimeException{
     
-        if (status != TTK91Cpu.STATUS_STILL_RUNNING) return null;   // *** palauta sopiva RunInfo
+        if (status != TTK91Cpu.STATUS_STILL_RUNNING) return null;
         
-        // if PC is out of bounds throw an exception
-        int PC = regs.getRegister (TTK91Cpu.CU_PC);
-        if (PC >= ram.getSize() || PC < 0) {
-            status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-            throw new TTK91AddressOutOfBounds();
-        }
-        
-        // fetch the next command to IR from memory and increase PC
-        MemoryLine IR = ram.getMemoryLine(PC);
-        
-        runDebugger.cycleStart (IR.getSymbolic(), PC, regs.getRegister (TTK91Cpu.REG_SP), regs.getRegister (TTK91Cpu.REG_FP));
-        
-        regs.setRegister (TTK91Cpu.CU_IR, IR.getBinary());
-        regs.setRegister (TTK91Cpu.CU_PC, PC+1);
-        
-        // cut up the command in IR
-        int opcode = IR.getBinary() >>> 24;                             // operation code
-        int Rj = ((IR.getBinary()&0xE00000) >>> 21) + TTK91Cpu.REG_R0;  // first operand (register 0..7)
-        int M  = (IR.getBinary()&0x180000) >>> 19;                      // memory addressing mode
-        int Ri = ((IR.getBinary()&0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
-        int ADDR = IR.getBinary()&0xFFFF;                               // address
-        
-
-        runDebugger.runCommand (opcode, Rj, regs.getRegister (Rj), 
-        			Ri, regs.getRegister(Ri), ADDR, M,
-        			opcode + ":" + (Rj-TTK91Cpu.REG_R0) + ":" + M + ":" + (Ri-TTK91Cpu.REG_R0) + ":" + ADDR);
-        			
-
-        // fetch parameter from memory
-        if (Ri != TTK91Cpu.REG_R0) ADDR += regs.getRegister (Ri);   // add indexing register Ri
-        int param = ADDR;
         try {
+            // get PC
+            int PC = regs.getRegister (TTK91Cpu.CU_PC);
+        
+            // fetch the next command to IR from memory and increase PC
+            MemoryLine IR = ram.getMemoryLine(PC);
+        
+            runDebugger.cycleStart (IR.getSymbolic(), PC, regs.getRegister (TTK91Cpu.REG_SP), regs.getRegister (TTK91Cpu.REG_FP));
+        
+            regs.setRegister (TTK91Cpu.CU_IR, IR.getBinary());
+            regs.setRegister (TTK91Cpu.CU_PC, PC+1);
+        
+            // cut up the command in IR
+            int opcode = IR.getBinary() >>> 24;                             // operation code
+            int Rj = ((IR.getBinary()&0xE00000) >>> 21) + TTK91Cpu.REG_R0;  // first operand (register 0..7)
+            int M  = (IR.getBinary()&0x180000) >>> 19;                      // memory addressing mode
+            int Ri = ((IR.getBinary()&0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
+            int ADDR = IR.getBinary()&0xFFFF;                               // address
+        
+
+            runDebugger.runCommand (opcode, Rj, regs.getRegister (Rj), 
+                Ri, regs.getRegister(Ri), ADDR, M,
+                opcode + ":" + (Rj-TTK91Cpu.REG_R0) + ":" + M + ":" + (Ri-TTK91Cpu.REG_R0) + ":" + ADDR);
+                    
+
+            // fetch parameter from memory
+            if (Ri != TTK91Cpu.REG_R0) ADDR += regs.getRegister (Ri);   // add indexing register Ri
+            int param = ADDR;
             if (M == 1) param = ram.getValue(ADDR);                 // one memory fetch
             if (M == 2) param = ram.getValue (ram.getValue(ADDR));  // two memory fetches
+        
+            // run the command
+            if (M == 3) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91BadAccessMode(new Message ("Invalid memory addressing mode").toString());
+            }
+
+            if (opcode == 0) nop();
+            else if (opcode >= 1 && opcode <= 4) transfer (opcode, Rj, M, ADDR, param);
+            else if (opcode >= 17 && opcode <= 27) alu (opcode, Rj, param);
+            else if (opcode == 31) comp (Rj, param);
+            else if (opcode >= 32 && opcode <= 44) branch (opcode, Rj, M, ADDR, param);
+            else if (opcode >= 49 && opcode <= 50) subr (opcode, Rj, ADDR, param);
+            else if (opcode >= 51 && opcode <= 54) stack (opcode, Rj, Ri, param);
+            else if (opcode == 112) svc (Rj, param);
+            else {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91InvalidOpCode(new Message ("Invalid operation code").toString());
+            }
         } catch (ArrayIndexOutOfBoundsException e) {
             status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-            throw new TTK91AddressOutOfBounds();
-        }
-        
-        
-        // run the command
-        if (M == 3) {
-            status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-            throw new TTK91BadAccessMode();
-        }
-
-        if (opcode == 0) nop();
-        else if (opcode >= 1 && opcode <= 4) transfer (opcode, Rj, M, ADDR, param);
-        else if (opcode >= 17 && opcode <= 27) alu (opcode, Rj, param);
-        else if (opcode == 31) comp (Rj, param);
-        else if (opcode >= 32 && opcode <= 44) branch (opcode, Rj, ADDR, param);
-        else if (opcode >= 49 && opcode <= 50) subr (opcode, Rj, ADDR, param);
-        else if (opcode >= 51 && opcode <= 54) stack (opcode, Rj, Ri, param);
-        else if (opcode == 112) svc (Rj, param);
-        else {
-            status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-            throw new TTK91InvalidOpCode();
+            throw new TTK91AddressOutOfBounds(new Message("Memory address out of bounds").toString());
         }
         
         // update PC_CURRENT
@@ -171,23 +162,30 @@ public class Processor implements TTK91Cpu {
         // give registers to runDebugger
         Integer[] registers = new Integer[8];
         for (int i=0; i < registers.length; i++) 
-        	registers[i] = new Integer (regs.getRegister (i + TTK91Cpu.REG_R0));
+            registers[i] = new Integer (regs.getRegister (i + TTK91Cpu.REG_R0));
         runDebugger.setRegisters (registers);
-        	
+            
         return null;
     }
 
 
 /** Returns the value of given registerID. The index numbers
-	are available from the TTK91CPU interface.
+    are available from the TTK91CPU interface.
     @param registerID Identifying number of the register.
     @return Value of given register. Inproper value returns -1. */
     public int getValueOf(int registerID) {
         return regs.getRegister (registerID);
     }
-
+    
+/** Returns queried memory line.
+    @param row Number of the row in processor's memory.
+    @return Queried memory line. */
+    public MemoryLine getMemoryLine (int row) {
+        return ram.getMemoryLine (row);
+    }
+    
 /** Method returns the current value of Processor. Status values
-	are available from the TTK91CPU interface.
+    are available from the TTK91CPU interface.
     @return Current status of the Processor. */
     public int getStatus() {
         return status;
@@ -226,23 +224,21 @@ public class Processor implements TTK91Cpu {
 
 /** Transfer-operations. */
     private void transfer(int opcode, int Rj, int M, int ADDR, int param) 
-    throws TTK91BadAccessMode, TTK91OutOfBounds, TTK91NoKbdData, TTK91NoStdInData, TTK91InvalidDevice {
-    	runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
+    throws TTK91BadAccessMode, TTK91AddressOutOfBounds, TTK91NoKbdData, TTK91NoStdInData, TTK91InvalidDevice {
+        runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         switch (opcode) {
             case 1 : // STORE
-            if (M == 0) throw new TTK91BadAccessMode(); // in STORE parameter must be a pointer
+            if (M == 0) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91BadAccessMode(new Message ("STORE cannot use constant parameter").toString()); // in STORE parameter must be a pointer
+            }
             
             // find out if binary in Rj can be converted to symbolic command
             int binary = regs.getRegister(Rj);
             MemoryLine ml = new MemoryLine (binary, new BinaryInterpreter().binaryToString(binary));
             // write new memory line to memory
-            try {
-                if (M == 1) ram.setMemoryLine (ADDR, ml);
-                if (M == 2) ram.setMemoryLine (ram.getValue (ADDR), ml);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
-            }
+            if (M == 1) ram.setMemoryLine (ADDR, ml);
+            if (M == 2) ram.setMemoryLine (ram.getValue (ADDR), ml);
             break;
             
             case 2 : // LOAD
@@ -252,25 +248,36 @@ public class Processor implements TTK91Cpu {
             case 3 : // IN
             switch (param) {
                 case 1 : // Keyboard
-                if (kbdData == null) throw new TTK91NoKbdData();
+                if (kbdData == null) {
+                    regs.setRegister (TTK91Cpu.CU_PC, regs.getRegister (TTK91Cpu.CU_PC) -1); // reverse this command
+                    throw new TTK91NoKbdData(new Message ("No keyboard data available").toString());
+                }
                 regs.setRegister (Rj, kbdData.intValue());
-	        runDebugger.setIN (param, kbdData.intValue());
+                runDebugger.setIN (param, kbdData.intValue());
                 kbdData = null;
                 break;
                 
                 case 6 : // Standard input file
-                if (stdinData == null) throw new TTK91NoStdInData();
+                if (stdinData == null) {
+                    regs.setRegister (TTK91Cpu.CU_PC, regs.getRegister (TTK91Cpu.CU_PC) -1); // reverse this command
+                    throw new TTK91NoStdInData(new Message ("No standard input data available").toString());
+                }
                 regs.setRegister (Rj, stdinData.intValue());
-	        runDebugger.setIN (param, stdinData.intValue());
+                runDebugger.setIN (param, stdinData.intValue());
                 stdinData = null;
                 break;
                 
-                default : throw new TTK91InvalidDevice();
+                default : 
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91InvalidDevice(new Message ("Invalid device number").toString());
             }
             break;
             
             case 4 : // OUT
-            if (param != 0 && param != 7) throw new TTK91InvalidDevice();	// device not CRT or STDOUT
+            if (param != 0 && param != 7) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91InvalidDevice(new Message ("Invalid device number").toString()); // device not CRT or STDOUT
+            }
             runDebugger.setOUT (param, regs.getRegister(Rj));
             break;
         }
@@ -281,34 +288,49 @@ public class Processor implements TTK91Cpu {
     @return Result of the ALU-operation. */
     private void alu(int opcode, int Rj, int param) 
     throws TTK91IntegerOverflow, TTK91DivisionByZero {
-	runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
+    runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
         long n;
         switch (opcode) {
             case 17 : // ADD
             n = (long)regs.getRegister (Rj) - (long)param;
-            if (isOverflow (n)) throw new TTK91IntegerOverflow();
+            if (isOverflow (n)) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91IntegerOverflow(new Message ("Integer overflow").toString());
+            }
             regs.setRegister (Rj, (int)n);
             break;
             
             case 18 : // SUB
             n = (long)regs.getRegister (Rj) - (long)param;
-            if (isOverflow (n)) throw new TTK91IntegerOverflow();
+            if (isOverflow (n)) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91IntegerOverflow(new Message ("Integer overflow").toString());
+            }
             regs.setRegister (Rj, (int)n);
             break;
             
             case 19 : // MUL
             n = (long)regs.getRegister (Rj) * (long)param;
-            if (isOverflow (n)) throw new TTK91IntegerOverflow();
+            if (isOverflow (n)) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91IntegerOverflow(new Message ("Integer overflow").toString());
+            }
             regs.setRegister (Rj, (int)n);
             break;
             
             case 20 : // DIV
-            if (param == 0) throw new TTK91DivisionByZero();
+            if (param == 0) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91DivisionByZero(new Message ("Division by zero").toString());
+            }
             regs.setRegister (Rj, regs.getRegister (Rj) / param);
             break;
             
             case 21 : // MOD
-            if (param == 0) throw new TTK91DivisionByZero();
+            if (param == 0) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91DivisionByZero(new Message ("Division by zero").toString());
+            }
             regs.setRegister (Rj, regs.getRegister (Rj) % param);
             break;
             
@@ -367,8 +389,14 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Branching. */
-    private void branch(int opcode, int Rj, int ADDR, int param) {
-    	runDebugger.setOperationType (RunDebugger.BRANCH_OPERATION);
+    private void branch(int opcode, int Rj, int M, int ADDR, int param)
+    throws TTK91BadAccessMode {
+        runDebugger.setOperationType (RunDebugger.BRANCH_OPERATION);
+        if (M == 0) {
+            status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+            throw new TTK91BadAccessMode(new Message ("Branching operations cannot use constant parameter").toString()); // in STORE parameter must be a pointer
+        }
+        
         switch (opcode) {
             case 32 : // JUMP
             regs.setRegister (TTK91Cpu.CU_PC, ADDR);
@@ -426,27 +454,16 @@ public class Processor implements TTK91Cpu {
 
 /** Stack. */
     private void stack(int opcode, int Rj, int Ri, int param) 
-    throws TTK91OutOfBounds {
-    	runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
+    throws TTK91AddressOutOfBounds {
+        runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
         switch (opcode) {
             case 51 : // PUSH
             regs.setRegister (Rj, regs.getRegister(Rj) +1);
-            try {
-                ram.setMemoryLine (regs.getRegister (Rj), new MemoryLine (param, null));
-            }
-            catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
-            }
+            ram.setMemoryLine (regs.getRegister (Rj), new MemoryLine (param, null));
             break;
             
             case 52 : // POP
-            try {
-                regs.setRegister (Ri, ram.getValue (regs.getRegister(Rj)));
-            } catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
-            }
+            regs.setRegister (Ri, ram.getValue (regs.getRegister(Rj)));
             regs.setRegister (Rj, regs.getRegister(Rj) -1);
             break;
             
@@ -474,22 +491,16 @@ public class Processor implements TTK91Cpu {
 
 /** Subroutine. */
     private void subr(int opcode, int Rj, int ADDR, int param)
-    throws TTK91OutOfBounds {
-    	runDebugger.setOperationType (RunDebugger.SUB_OPERATION);
-    	runDebugger.setSubOperation (opcode -49);
+    throws TTK91AddressOutOfBounds {
+        runDebugger.setOperationType (RunDebugger.SUB_OPERATION);
+        runDebugger.setSubOperation (opcode -49);
         int sp;
         switch (opcode) {
             case 49 : // CALL
             // push PC and FP to stack (Rj is stack pointer)
             sp = regs.getRegister (Rj);
-            try {
-                ram.setMemoryLine (++sp, new MemoryLine (regs.getRegister (TTK91Cpu.CU_PC), null));
-                ram.setMemoryLine (++sp, new MemoryLine (regs.getRegister (TTK91Cpu.REG_FP), null));
-            }
-            catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
-            }
+            ram.setMemoryLine (++sp, new MemoryLine (regs.getRegister (TTK91Cpu.CU_PC), null));
+            ram.setMemoryLine (++sp, new MemoryLine (regs.getRegister (TTK91Cpu.REG_FP), null));
             
             // update stack and frame pointers
             regs.setRegister (Rj, sp);
@@ -502,14 +513,8 @@ public class Processor implements TTK91Cpu {
             case 50 : // EXIT
             // pop FP and PC from stack (Rj is stack pointer)
             sp = regs.getRegister (Rj);
-            try {
-                regs.setRegister (TTK91Cpu.REG_FP, ram.getValue (sp--));
-                regs.setRegister (TTK91Cpu.CU_PC, ram.getValue (sp--));
-            }
-            catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
-            }
+            regs.setRegister (TTK91Cpu.REG_FP, ram.getValue (sp--));
+            regs.setRegister (TTK91Cpu.CU_PC, ram.getValue (sp--));
             
             // decrease number of parameters from stack
             regs.setRegister (Rj, sp -param);
@@ -519,8 +524,8 @@ public class Processor implements TTK91Cpu {
 
 /** Supervisor call. */
     private void svc(int Rj, int param)
-    throws TTK91OutOfBounds, TTK91NoKbdData {
-    	runDebugger.setSVCOperation (param);
+    throws TTK91AddressOutOfBounds, TTK91NoKbdData {
+        runDebugger.setSVCOperation (param);
         Calendar calendar;
         
         // make CALL operation to supervisor
@@ -528,30 +533,24 @@ public class Processor implements TTK91Cpu {
         
         switch (param) {
             case 11 : // HALT
-        	runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
+            runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
             status = TTK91Cpu.STATUS_SVC_SD;
             break;
             
             case 12 : // READ
-            if (kbdData == null) throw new TTK91NoKbdData();
-            try {
-                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (kbdData.intValue(), null));
-            } catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
+            if (kbdData == null) {
+                subr (50, Rj, 0, 1);    // EXIT from SVC(READ)
+                runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
+                regs.setRegister (TTK91Cpu.CU_PC, regs.getRegister (TTK91Cpu.CU_PC) -1); // reverse this command
+                throw new TTK91NoKbdData(new Message ("No keyboard data available").toString());
             }
-                
+            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (kbdData.intValue(), null));
             kbdData = null;
             subr (50, Rj, 0, 1);    // EXIT from SVC(READ)
             break;
             
             case 13 : // WRITE
-            try {
-                runDebugger.setOUT (0, ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2));
-            } catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
-            }
+            runDebugger.setOUT (0, ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2));
             subr (50, Rj, 0, 1);    // EXIT from SVC(WRITE)
             break;
 
@@ -562,15 +561,9 @@ public class Processor implements TTK91Cpu {
             int minute = calendar.get(Calendar.MINUTE);
             int second = calendar.get(Calendar.SECOND);
             
-            try {
-                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (second, null));
-                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -3), new MemoryLine (minute, null));
-                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -4), new MemoryLine (hour, null));
-            } catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
-            }
-                
+            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (second, null));
+            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -3), new MemoryLine (minute, null));
+            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -4), new MemoryLine (hour, null));
             subr (50, Rj, 0, 3);    // EXIT from SVC(TIME)
             break;
             
@@ -581,23 +574,18 @@ public class Processor implements TTK91Cpu {
             int month = calendar.get(Calendar.MONTH);
             int date = calendar.get(Calendar.DATE);
 
-            try {
-                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (date, null));
-                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -3), new MemoryLine (month, null));
-                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -4), new MemoryLine (year, null));
-            } catch (ArrayIndexOutOfBoundsException e) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91OutOfBounds();
-            }
+            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (date, null));
+            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -3), new MemoryLine (month, null));
+            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -4), new MemoryLine (year, null));
             subr (50, Rj, 0, 3);    // EXIT from SVC(DATE)
             break;
         }
-    	runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
+        runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
     }
     
     private void nop() {
-    	runDebugger.setOperationType (RunDebugger.NO_OPERATION);
-    	runDebugger.setNoOperation();
+        runDebugger.setOperationType (RunDebugger.NO_OPERATION);
+        runDebugger.setNoOperation();
     }
     
 /** Tests if given long value is acceptable int value. */
