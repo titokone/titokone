@@ -711,6 +711,7 @@ public class Compiler {
 	fieldEnd = symbolicOpcode.indexOf(";");
 	if (fieldEnd != -1) { symbolicOpcode = symbolicOpcode.substring(0, fieldEnd); }
 	symbolicOpcode = symbolicOpcode.replace('\t',' ');
+	symbolicOpcode = symbolicOpcode.replace(' ', ' ');	// Not stupid! 
 	symbolicOpcode = symbolicOpcode.toLowerCase();
 	symbolicOpcode = symbolicOpcode.trim();
 
@@ -724,10 +725,8 @@ public class Compiler {
 	String[] lineAsArray = symbolicOpcode.split("[ \t,]+");
 	int lineAsArrayIndex = 0;
 
-
 /* label */
 	wordTemp = lineAsArray[lineAsArrayIndex];
-
 	if (symbolicInterpreter.getOpcode(wordTemp) == -1) { 	
 	    if(!validLabelName(wordTemp))
 		return null;
