@@ -55,4 +55,4 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	SymbolTable.java
 0	SymbolicInterpreter.java
 0	Titokone.java
-0	Translator.java
+2	Translator.java                         SR              SR 19.3.
