@@ -649,7 +649,6 @@ public class Compiler {
 	Store both formats to a data array (symbolic and binary).
 	*/
 
-
 // check if variable is set!
 
 	int addressAsInt = 0;

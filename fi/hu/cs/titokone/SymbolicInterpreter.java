@@ -179,7 +179,7 @@ public class SymbolicInterpreter extends Interpreter {
 	}
 
 	if (isNegative) {
-		value = value - (int)Math.pow(2, binaryValue.length());
+		value = value * -1;
 	}
 	return value;
     }
