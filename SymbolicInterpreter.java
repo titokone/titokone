@@ -1,5 +1,7 @@
 package fi.hu.cs.titokone;
 
+import java.util.HashMap;
+
 /** This class contains the bulk data needed to translate commands to 
     opcodes etc. */
 public class SymbolicInterpreter extends Interpreter {

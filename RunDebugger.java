@@ -1,12 +1,14 @@
+package fi.hu.cs.titokone;
+
 /** This class produces objects describing what has changed due to the last
     command having been run. */
-public class Debugger{ 
+public class RunDebugger{ 
     // define methods like 'ALU happened, parameters x, y, z' and
     // a 'command cycle complete', which returns the delta object for 
     // the gui. Contains eg. the commentary. Processor can then return it 
     // back to ControlBridge.
    
-    private String language = 'English';
+    private String language = "English";
 
     public static final short NOOPERATION = 0;
     public static final short DATA_TRANSFER_OPERATION = 1;
@@ -32,7 +34,7 @@ public class Debugger{
     private String comments;
     private String statusMessage;
     
-    public Debugger(String language){}
+    public RunDebugger(String language){}
 
     /** This method tells debugger that a new cycle has been started. It
      initiates parameter values and stores old PC and IR. */
@@ -103,7 +105,7 @@ public class Debugger{
     public void directRegister(int toregister, int fromregister, int where,
                                 int value){ }
 
-    public void indirectRegister(int toregister, int fromregister,){ }
+    public void indirectRegister(int toregister, int fromregister){ }
     
     /** This method tells debugger that an indexed direct memoryfetch was 
 	used. */
