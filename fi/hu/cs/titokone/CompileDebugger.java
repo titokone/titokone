@@ -48,8 +48,6 @@ public class CompileDebugger {
     /** This method tells debugger that a DC compiler instruction was found
 	and it is added to the symboltable. 
 	@param name String containing name of the symbol.
-        @param isNew Boolean containing information if the DC is new or is it 
-	already in symboltable..
     */
     public void foundDC(String name) {
    	info.setSymbolFound();
@@ -187,13 +185,9 @@ public class CompileDebugger {
 
     /** This method tells debugger that the second round of
     compilation is in progress. It creates CompileInfo object and sets
-    its phase to 3, lineContents and binary fields. It also creates a
-    local comment and the IR is cathenated after it.
+    its phase to 3.
     @param lineNumber number of the compiled line.
     @param lineContents Contents of the line.
-    @param binary Line as a binary (presented as an integer).
-    @param IR String containing binary command splitted into parts
-    which are presented as integers.
     */
     public void secondPhase(int lineNumber, String lineContents) {
 	info = new CompileInfo(CompileInfo.SECOND_ROUND, lineNumber, lineContents);

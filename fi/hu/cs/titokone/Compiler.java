@@ -724,7 +724,7 @@ public class Compiler {
 
     /**	This method parses a String and tries to find a label, opCode
 	and all the other parts of a Command line.
-	@param symbolicOpCode Symbolic form of an operation code. */  
+	@param symbolicOpcode Symbolic form of an operation code. */  
     public String[] parseLine(String symbolicOpcode) throws TTK91CompileException {
 	String label = "";
 	String opcode = "";		
@@ -768,6 +768,7 @@ public class Compiler {
 					wordTemp).toString()).toString();
 		throw new TTK91CompileException(comment);		
 	    }
+
 	    label = wordTemp;
 	    ++lineAsArrayIndex;
 	} 

@@ -119,7 +119,6 @@ public class CompileInfo extends DebugInfo {
     /** This method sets the name of a found symbol and its value.
 	@param name Name of the symbol.
 	@param value Value of the symbol.
-	@param address Memoryaddress of the symbol.
     */
     public void setSymbolName(String name, int value) {
 	symbolName = name;

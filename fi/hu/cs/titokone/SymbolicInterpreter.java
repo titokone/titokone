@@ -73,7 +73,7 @@ public class SymbolicInterpreter extends Interpreter {
 
     /** This method coverts a complete command in a symbolic form to a binary form.
         caller must split up the original command and give the parts as parameters
-	@param opCode String form of an operation code. (STORE)
+	@param opcode String form of an operation code. (STORE)
 	@param firstRegister String form of a first register. (R0-R7, SP or FP)
 	@param addressingMode = or @ or an empty string that representes the memory addressing 
 	mode.
