@@ -1,21 +1,32 @@
 package fi.hu.cs.titokone;
 
-
 import fi.hu.cs.ttk91.TTK91Cpu;
 
-/** This class represents the processor state. It can be told to run for one
+/** This class represents the processor. It can be told to run for one
     command cycle at a time. */
 public class Processor implements TTK91Cpu {
-    // has a pointer to memory and registers.
 
-    // Implementations of CPU:
 
-/** program counter
+/**
+This field represents the memory of computer
 */
-   private int pc;
-/** instruction register
+private RandomAccessMemory ram;
+
+/** 
+This field represents the registers of computer
 */
-   private int ir;
+private Registers regs;
+
+
+/** 
+This field is the program counter
+*/
+private int pc;
+
+/** 
+This field has the current instruction being processed
+*/
+   private MemoryLine ir;
 /**
   state register array.
   index: 
@@ -35,11 +46,10 @@ public class Processor implements TTK91Cpu {
 
 
 /**
-  Memory address field of MMU
+  Memory address fields of MMU; Memory address register
 */
 
   private int mar;
-
 
 /**
   this field is temporary register of memory management unit,
@@ -48,37 +58,43 @@ public class Processor implements TTK91Cpu {
  */ 
    private MemoryLine mbr;
 
-/** Creates new processor, memory(with defaultsize) and registers.
-    Processor state, program counter get initial values
+/** 
+  Creates new processor, memory(with defaultsize) and registers.
+  Processor state, program counter get initial values
+  @param memsize creates new computer with given size of memory. Proper values are power of two (from 512 to 64k)
  */
     public Processor(int memsize){}
 
 
 /** Initializes processor with new program
     set fp and sp, pc = 0  and return RunInfo
+    @return RunInfo created by RunDebugger
 */
-
     public RunInfo runInit() {}
 
-/** Process next instruction, returns RunInfo
-   
+/** Process next instruction, 
+
+   Processing Cycle of an instruction:   
     1. mar = pc
     2. mbr = RAM(pc)
     3. ir = mbr
-    4. check  addressing mode 
-    5. mar = address
-    5. mbr = get value
-    6. tr = mbr
-    7. analyze binaryCommand
+    4. analyze binaryCommand, if ok, call method of the current operation type:
+  
+   112 SVC
+   51-54 Stack operations: push, pop, pushr, popr
+   50 EXIT
+   49 CALL
+   32-44 Branching operations (set GEL-bits)
+   17-31 ALU operations
+   1-4 Data transfer (LOAD, STORE, IN, OUT)
+   0 NOP, do nothing
 
-      112 SVC
-      51-54 Stack operations: push, pop, pushr, popr
-      50 EXIT
-      49 CALL
-      32-44 Branching operations (set GEL-bits)
-      17-31 ALU operations
-      1-4 Data transfer (LOAD, STORE, IN, OUT)
-      0 NOP, do nothing
+    5. check  addressing mode 
+         -->mar = address
+         -->mbr = get value
+    6. tr = mbr
+
+   
   if(112) --> SVC  
   if(51-54) --> Stack
   if(49-50) --> Subroutine
@@ -87,16 +103,24 @@ public class Processor implements TTK91Cpu {
   if(1-4) --> Transfer
 
 
+  @return RunInfo created by RunDebugger
+
+
  */
     public RunInfo runLine() {}
 
 
-/** Returns the current of given registerID
+/** Returns the value of given registerID
+    @param registerIDindex of register (0-7). 
+    @return Value of given register. Inproper value returns -1
+
 	*/
     public int getValueOf(int registerID) { }
 
 /** Method returns the current value of Processor
-	*/
+    @return 1 running, 0 halted
+
+*/
     public int getStatus() {} // running status: still running, halted
 
 /** Method erases memorylines from memory. Memory will be filled
@@ -105,12 +129,12 @@ public class Processor implements TTK91Cpu {
     public boolean eraseMemory() {}
 
 /**
-    Method for loading MemoryLines to Processor
+    Method for loading MemoryLines to Processor, Loader classes uses
+    this for loading application to processor.
+    @return true if loading was ok, false otherwise (=memory full)
+
 */
-    public void MemoryInput(MemoryLine inputLine) {}
-
-
-
+    public boolean MemoryInput(MemoryLine inputLine) {}
 
 
 
@@ -122,7 +146,7 @@ public class Processor implements TTK91Cpu {
 
 /**
    ALU-operations
-   @returns result
+   @return result of the ALU-operation
 */
 
     private int alu(int command, int param1, int param2) {}
