@@ -22,6 +22,8 @@ public class FileHandler {
     public StringBuffer loadSettings(String filename) throws IOException { }
 
     /** This method saves settings data from a StringBuffer to a file.
+	The line separator will be 
+	System.getProperty("line.separator", "\n").
 	@param settingsData The settings data in a StringBuffer in the 
 	form it is to be saved in. The linebreaks in the file will be \ns.
 	@param filename The full or relative path to the file to save to. 
@@ -33,7 +35,8 @@ public class FileHandler {
     /** This function loads an Application from a binary .b91 file and
 	returns the result. The Application's source will consist of
 	integers only, even though integers + symbolic code is supported
-	by the class as well.
+	by the class as well. It calls a private method parseApplication() 
+	to do the actual interpretation work.
 	@param filename The full or relative path to the file to read the 
 	application from. 
 	@return An Application instance containing the data gotten from the
@@ -46,9 +49,12 @@ public class FileHandler {
 	throws IOException, InvalidBinaryException { }
    
     /** This method saves an Application to file in a .b91 binary format 
-	which can be read by loadApplication. The standard binary format is 
-	described in more detail in the project's design documentation. An
-	example program in .b91 format might look like this (comments 
+	which can be read by loadApplication. It calls a private method
+	transformApplication() to take care of translating the application
+	to a StringBuffer. The standard binary format is 
+	described in more detail in the project's design documentation. The
+	line delimiter will be System.getProperty("line.separator", "\n").
+	An example program in .b91 format might look like this (comments 
 	in parentheses are not a part of the file format):<br>
 	<pre>
         ___b91___
@@ -80,4 +86,20 @@ public class FileHandler {
 	binary to. */
     public void saveApplication(Application binary, String filename)
 	throws IOException {}
+
+    /** This method parses a binary in text form given to it and creates
+	an instance of Application from it. 
+	@param binaryCode A StringBuffer containing the text contained in
+	the binary. 
+	@return An Application constructed from the parsed code. */
+    private Application parseApplication(StringBuffer binaryCode) { }
+
+    /** This method transforms an instance of an Application class to 
+	a StringBuffer containing the code from it, in the standard .b91
+	format described in saveApplication(). 
+	@param binary The application to transform to text form.
+	@return A StringBuffer containing the binary in the aforementioned
+	format. The line delimiter will be 
+	System.getProperty("line.separator", "\n"). */
+    private StringBuffer transformApplication(Application binary) { }
 }
