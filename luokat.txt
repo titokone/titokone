@@ -52,7 +52,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	RunInfo.java
 2	Settings.java                           SR              SR 19.3.
 0	Source.java
-0	SymbolTable.java
+3	SymbolTable.java                        ?               SY 20.3
 0	SymbolicInterpreter.java
 0	Titokone.java
 2	Translator.java                         SR              SR 19.3.
