@@ -102,6 +102,8 @@ public class Translations extends ListResourceBundle {
       {"{0} --> {1} ({2}) ", null}, // symb --> bin (:-sep. bin); 650
 
       // Class: Control
+      {"No default STDIN file set.", null},
+      {"No default STDOUT file set.", null},
       {"No application to load.", null},
       {"STDIN data file unreadable: {0}", null}, 
       {"STDIN data file contains invalid data: {0}", null},
@@ -112,6 +114,7 @@ public class Translations extends ListResourceBundle {
       {"Cannot form a binary out of an unsupported type of an application. " +
        "(The application must be created using the same program.)", null},
       {"There is no application available to run from!", null},
+      {"No STDOUT file set, not writing to it.", null},
       {"Memory size must be between 2^9 and 2^16, a change to 2^{0} failed.", 
       null},
       {"StdIn file contents are invalid; the file should contain only " +
@@ -130,42 +133,103 @@ public class Translations extends ListResourceBundle {
       {"No read access to {0}.", null},
       {"No write access to {0}.", null},
       
-      // Class: GUIBrain (not fully processed) - TODO
-      {"Enter a number in the keyboard field above.", null},
-
-      // Class: GUICompileSettingsDialog - not processed yet - TODO
-
-      // Class: GUI (not fully processed) - TODO
+      // Class: GUI 
+      {"File", null},
       {"Open", null},
       {"Compile", null},
       {"Run", null},
-	  {"Continue", null},
-	  {"Continue without pauses", null},
-	  {"Stop", null},
-	  {"Options", null},
+      {"Continue", null},
+      {"Continue without pauses", null},
+      {"Stop", null},
+      {"Erase memory", null},
+      {"Exit", null},
+      {"Options", null},
       {"Set memory size", null},
       {"Help", null},
       {"Manual", null},
-	  {"About", null},
-	  {"Set compiling options", null},
+      {"About", null},
+      {"Set compiling options", null},
       {"Set running options", null},
       {"Configure file system", null},
       {"Select default stdin file", null},
       {"Select default stdout file", null},
       {"Set language", null},
+      {"Select from a file...", null},
+
+      {"Line", null},   
+      {"Numeric", null},    
+      {"Symbolic", null},
+
+      {"Open a new file", null},
       {"Compile the opened file", null},
-      {"Run the loaded program", null},
+      {"Run the loaded program", null}, 
       {"Continue current operation", null},
       {"Continue current operation without pauses", null},
       {"Stop current operation", null},
-      {"Symbol table", null},
-      {"Registers", null},
+      {"Open the selected file", null},
+      {"Enter", null}, // button used to enter a number to the KBD device.
+      {"Symbol table", null}, 
+      {"Registers", null}, 
       
+      // Class: GUIBrain 
+      {"Main path not found! (Trying to locate etc/settings.cfg.) " +
+       "...exiting.", null}, //exception opening etc/settings.cfg
+      {"I/O error while reading settings file: {0}", null}, 
+      {"Parse error in settings file.", null},
+      {"Settings class messed up, parseException on passing null to the " +
+       "constructor.", null},
+      {"Titokone out of memory: {0}", null},
+      {"File extension must be k91 or b91", null}, 
+      {"Illegal input", null},   
+      {"Illegal input. You must insert a number between {0}...{1}", null},
+      {"Error", null},  
+      {"Enter a number in the text field above.", null},
+      {"Not a language file", null},    
+      {"Cannot overwrite {0}", null},   
+      {"Default stdin file set to {0}", null},    
+      {"Default stdout file set to {0}", null},    
+      {"Error while emptying {0}", null},    
+      {"Overwrite?", null},    
+      {"Do you want to overwrite the file? Select {1} to append or {0} " +
+       "to overwrite.", null},
+      {"B91 binary", null},   
+      {"K91 source", null},  
+      {"Class file", null},
+
+      // Class: GUICompileSettingsDialog - not processed yet - TODO
+
       // Class: GUIRunSettingsDialog - not processed yet - TODO
       // Class: GUIThreader, no messages.
       // Class: Interpreter, no messages.
       // Class: InvalidDefinitionException, no messages.
       // Class: InvalidSymbolException, no messages.
+
+      // Class: JFileChooser    
+      {"Open", null},    
+      {"Cancel", null},    
+      {"Look in:", null},    
+      {"File name:", null},    
+      {"Files of type:", null},    
+      {"Up one level", null},    
+      {"Up", null},    
+      {"Desktop", null},    
+      {"Create new folder", null},    
+      {"New folder", null},    
+      {"List", null},    
+      {"Details", null},    
+      {"All files", null},    
+      
+      // Class: JOptionPane    
+      {"Yes", null},    
+      {"No", null},
+      {"Pause whenever a comment occurs" , null},
+      {"Show extra comments while compiling", null},
+      {"Execute code line by line", null},
+      {"Show extra comments while executing", null},
+      {"Show animation while executing", null},
+      {"Apply" , null},  
+      {"Close" , null}, 
+      
       // Class: JTableX, no messages.
 
       // Class: Loader
