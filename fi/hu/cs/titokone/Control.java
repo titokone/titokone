@@ -82,12 +82,12 @@ public class Control implements TTK91Core {
 	TTK91NoStdInData exception when a program tries to read from STDIN.
         @throws TTK91OutOfMemory If the memory cannot fit the 
         application. 
-	@throws ParseException If the current STDIN file contains invalid 
-	STDIN input. 
+	@throws TTK91NoStdInData If the current STDIN file contains invalid
+	STDIN input or the file cannot be opened.
 	@throws IllegalStateException If application is null. */
-    public void load() throws TTK91AddressOutOfBounds, ParseException,
-			      IOException {
+    public void load() throws TTK91AddressOutOfBounds, TTK91NoStdInData {
 	String errorMessage;
+	boolean pendingException = false;
 	File[] appDefinitions;
 	if(application == null) {
 	    errorMessage = new Message("No application to load.").toString();
@@ -97,10 +97,32 @@ public class Control implements TTK91Core {
 	appDefinitions = getApplicationDefinitions();
 	if(appDefinitions[DEF_STDOUT_POS] != null)
 	    currentStdOutFile = appDefinitions[DEF_STDOUT_POS];
-	insertStdinToApplication(appDefinitions[DEF_STDIN_POS]);
+	try {
+	    insertStdinToApplication(appDefinitions[DEF_STDIN_POS]);
+	}
+	catch(IOException fileProblem) {
+	    errorMessage = new Message("STDIN data file " +
+				       "unreadable: {0}", 
+				       fileProblem.getMessage()).toString();
+	    // The exception will be thrown when everything else is 
+	    // finished; it can be ignored since it will be thrown later
+	    // again *if* someone tries to read the stdin data.
+	    pendingException = true;
+	}
+	catch(ParseException dataInvalid) {
+	    errorMessage = new Message("STDIN data file contains " +
+				       "invalid data: {0}", 
+				       dataInvalid.getMessage()).toString();
+	    // The exception will be thrown when everything else is 
+	    // finished; it can be ignored since it will be thrown later
+	    // again *if* someone tries to read the stdin data.
+	    pendingException = true;
+	}
 	Loader loader = new Loader(processor);
 	loader.setApplicationToLoad(application);
 	loader.loadApplication();
+	if(pendingException)
+	    throw new TTK91NoStdInData(errorMessage);
     }    
 
     /** This method does the actual inserting STDIN datat to an application.
@@ -168,6 +190,8 @@ public class Control implements TTK91Core {
         method added. Defined by TTK91Core.
         @param app Application to be run.
         @param steps Number of steps the application will be run.
+	@throws TTK91NoStdInData If the STDIN data file is unreadable or 
+	syntactically incorrect even if the file is not really needed.
     */
     public void run(TTK91Application app, int steps) 
 	throws TTK91Exception, TTK91RuntimeException { 
@@ -307,7 +331,7 @@ public class Control implements TTK91Core {
 	    processor.keyboardInput(data);
 	    return runLine(); // Try again with the CPU buffer filled.
 	}
-	catch(TTK91NoStdinData needMoreData) {
+	catch(TTK91NoStdInData needMoreData) {
 	    // Application may throw a new TTK91NoStdinData exception,
 	    // in which case it will just be thrown upwards.
 	    data = application.readNextFromStdIn();
@@ -321,7 +345,7 @@ public class Control implements TTK91Core {
 	@throws TTK91FailedWrite If there was an I/O error. */
     private void writeToStdoutFile(String data) throws TTK91FailedWrite {
 	try {
-	    fileHandler.appendToStdout(data, currentStdOutFile);
+	    fileHandler.appendDataToStdOut(data, currentStdOutFile);
 	}
 	catch(IOException writeFailed) {
 	    throw new TTK91FailedWrite(writeFailed.getMessage());
@@ -351,8 +375,8 @@ public class Control implements TTK91Core {
 	until it leads into TTK91NoStdInData when an application tries 
 	to read from STDIN.
     */
-    public boolean setDefaultStdIn(File stdinFile) throws IOException,
-							  ParseException {
+    public void setDefaultStdIn(File stdinFile) throws IOException,
+						       ParseException {
 	String contents; 
 	defaultStdInFile = stdinFile;
 	contents = fileHandler.loadStdIn(stdinFile).toString();
@@ -371,14 +395,8 @@ public class Control implements TTK91Core {
 	String errorMessage;
 	defaultStdOutFile = stdoutFile;
 	// Check whether we can really write to the file without writing
-	// to it. (We just append, really.)
-	if(!fileHandler.testAccess(stdoutFile, FileHandler.APPEND_ACCESS)) {
-	    errorMessage = new Message("Writing STDOUT to {0} will not " +
-				       "work; access check failed.", 
-				       stdoutFile.toString()).toString();
-
-	    throw new IOException(errorMessage);
-	}	
+	// to it. (We just append, really.) TestAccess throws exceptions.
+	fileHandler.testAccess(stdoutFile, FileHandler.APPEND_ACCESS);
     }
     
     /** This is called when a source file is opened from GUI.
@@ -458,7 +476,7 @@ public class Control implements TTK91Core {
         error. */
     public void saveSettings(String currentSettings, File settingsFile) 
 	throws IOException {
-	fileHandler.saveSettings(new StringBuffer(currentSettings), 
+	fileHandler.saveSettings(currentSettings, 
 				 settingsFile);
     }  
   
