@@ -1,7 +1,17 @@
 /* Copyright 2004 University of Helsinki, Department of Computer
    Science. See license.txt for details. */
     
-package fi.hu.cs.titokone.resources;
+// NOTE TO TRANSLATORS: Do not have any package definitions in your
+// translation class if you intend to load it as a separate
+// translation file. Keep this one if you intend to add the
+// translation in the language settings file as well, making it one of
+// the "official" options. Also, replace getContents with one just
+// returning contents, rename emptyContents as contents and rename
+// this class (Translations) as something more directly implied by the
+// file name (eg. Trandlations_de for a German translation, in file
+// Translations_de.java) before you start translating the nulls to
+// your language. See Translations_fi.java for an example.
+package fi.hu.cs.titokone.resources; 
 
 import java.util.ListResourceBundle;
 
@@ -33,7 +43,7 @@ public class Translations extends ListResourceBundle {
      
    protected static Object[][] contents;
 
-   private static final Object[][] emptyContents = {
+   protected static final Object[][] emptyContents = {
       // Localize below, pairs of key-value (what key is in your language)...
       // Remove lines which you do not wish to translate completely. Leaving
       // in a value of "" will translate the message to "" as well.
@@ -176,8 +186,6 @@ public class Translations extends ListResourceBundle {
        "...exiting.", null}, //exception opening etc/settings.cfg
       {"I/O error while reading settings file: {0}", null}, 
       {"Parse error in settings file.", null},
-      {"Settings class messed up, parseException on passing null to the " +
-       "constructor.", null},
       {"Titokone out of memory: {0}", null},
       {"File extension must be k91 or b91", null}, 
       {"Illegal input", null},   
