@@ -35,30 +35,62 @@ public class LoadInfo extends DebugInfo {
      @param statusMessage Message to GUI to be displayed at the status bar.
     */ 
   public LoadInfo(MemoryLine[] codeArea, MemoryLine[] dataArea, 
-                  SymbolTable symbols, int initSP, int initFP, String statusMessage) { }
+                  SymbolTable symbols, int initSP, int initFP, String statusMessage) { 
+  
+    this.codeArea = codeArea;
+    this.dataArea = dataArea;
+    this.symbols = symbols;
+    this.initSP = initSP;
+    this.initFP = initFP;
+    this.statusMessage = statusMessage;
+    }
   
   /**@return String array that contains the symbolic operation codes.
    */
-  public String[] getSymbolicCommands() { }
+  public String[] getSymbolicCommands() { 
+    String[] retString = new String[codeArea.size];
+    for (int i=0 ; i<codeArea.size ; i++) {
+      retString[i] = codeArea[i].getSymbolic();
+    }
+    return retString;
+  }
 
   /**@return Int array that contains operation codes in their numeric form.
     */
-  public int[] getBinaryCommands() { }
-
+  public int[] getBinaryCommands() { 
+    int[] retInt = new int[codeArea.size];
+    for (int i=0 ; i<codeArea.size ; i++) {
+      retInt[i] = codeArea[i].getBinary();
+    }
+    return retInt;
+  }
+  
   /**@return Int array that contains the data segment of a program in memory.
     */
-  public int[] getData() { }
+  public int[] getData() { 
+    int[] retInt = new int[dataArea.size];
+    for (int i=0 ; i<dataArea.size ; i++) {
+      retInt[i] = dataArea[i].getBinary();
+    }
+    return retInt;
+  }
 
   /**@return The value of the Stack pointer (SP) after the program is loaded into memory.
     */
-  public int getSP() { }
+  public int getSP() {
+    return initSP;
+  }
 
   /**@return The value of the Frame pointer (FP) after the program is loaded into memory.
     */
-  public int getFP() { }
+  public int getFP() { 
+    return initFP;
+  } 
   
-  /**@return The message for GUI to be displayed at the status bar.
+   /**@return The message for GUI to be displayed at the status bar.
     */
-  public String getStatusMessage() { }
+  public String getStatusMessage() { 
+    return statusMessage;
+  }
 
 }

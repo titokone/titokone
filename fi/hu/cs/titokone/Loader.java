@@ -1,3 +1,5 @@
+import fi.hu.cs.ttk91.TTK91OutOfMemory;
+
 package fi.hu.cs.titokone;
 
 /** This class can load a TTK91Application. It changes the processor state
@@ -13,11 +15,37 @@ public class Loader {
 /**You can set the file to load. Each time an application is set to load, the counter is set to 
 one.
 */
-public void setApplicationToLoad(Application application){}
+public void setApplicationToLoad(Application application){
+  this.application = application;
+}
 
 /**Loads an application to memory. LoadInfo contains all the needed information about the process.
 	@return Info from the load procedure.
 */
-public LoadInfo loadApplication(){} 
+public LoadInfo loadApplication() {
+  MemoryLine[] code = application.getCode();
+  MemoryLine[] data = application.getInitialData();
+  
+  for (int i=0 ; i<code.size ; i++) {
+    if( processor.MemoryInput(code[i]) == false) {
+      throw TTK91OutOfMemoryException;
+    }
+  }
+  
+  for (int i=0 ; i<data.size ; i++) {
+    if( processor.MemoryInput(data[i]) == false) {
+      throw TTK91OutOfMemoryException;
+    }
+  }
+  
+  LoadInfo retValue = new LoadInfo( code, 
+                                    data,
+                                    application.getSymbolTable(),
+                                    processor.getValueOf(6),        // Tarkista onko R6 SP
+                                    processor.getValueOf(7),        // samoin onko R7 FP
+                                    new Message("Loads program") ); // TODO: Messagen kirjoitus!!!
+
+  return retValue;
+} 
 
 }
