@@ -1,4 +1,7 @@
 Application 18.3. / SR: readNextFromKbd():n palautusarvo muutettu Stringist‰ j‰rkev‰mm‰ksi 
-int-arvoksi. import java.util.logging.Logger; ja import 
-java.util.StringTokenizer lis‰tty.
+  int-arvoksi. import java.util.logging.Logger; ja import 
+  java.util.StringTokenizer lis‰tty. \f hyv‰ksyt‰‰n muiden delimiterien 
+  joukossa setKbd:ss‰ ja setStdIniss‰ koska t‰m‰ on ilmeisesti yleinen 
+  tapa Javassa (form-feed). Lis‰tty public static final String 
+  DELIMITERS, joka luettelee hyv‰ksytyt rajoittimet.
 
