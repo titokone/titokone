@@ -46,9 +46,8 @@ Esimerkiksi Windowsissa sinun tarvitsee vain suorittaa komento
   
   java.exe -jar titokone.jar
 
-hakemistossa, johon tallensit titokone.jar-paketin. Vastaavastaa
-ohjelman. Tähän mennessä sinulla tulisi olla Java asennettuna ja
-suorituspolullasi.
+hakemistossa, johon tallensit titokone.jar-paketin.  Tähän mennessä
+sinulla tulisi olla Java asennettuna ja suorituspolullasi.
 
 
 2) Melko nopea asennus Windowsissa
