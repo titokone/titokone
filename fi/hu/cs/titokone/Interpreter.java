@@ -1,4 +1,4 @@
-//package fi.hu.cs.titokone;
+package fi.hu.cs.titokone;
 
 /** This class contains information common to various interpreters. */
 public class Interpreter {

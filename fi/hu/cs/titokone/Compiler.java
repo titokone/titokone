@@ -6,7 +6,7 @@ finalizing_first_roundin lopussa pit‰‰ palauttaa sek‰ data-alue ett‰ koodi eriks
 taulukkona siis.
 */
 
-//package fi.hu.cs.titokone;
+package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.TTK91CompileException;
 import java.util.StringTokenizer;

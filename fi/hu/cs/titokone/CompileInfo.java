@@ -1,4 +1,4 @@
-// package fi.hu.cs.titokone;
+package fi.hu.cs.titokone;
 
  /** This class is used to tell GUIBrain what compiler has done at the moment.
     CompileDebugger creates objects from this class and passes them to the 

@@ -1,4 +1,4 @@
-// package fi.hu.cs.titokone;
+package fi.hu.cs.titokone;
 
 /** This class is used by compiler when it compiles code. For each line 
     compiled compiler asks CompileDebugger to create a CompileInfo object and 

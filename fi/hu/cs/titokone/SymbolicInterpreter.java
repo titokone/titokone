@@ -1,6 +1,6 @@
 //TODO hashtables, methods that check opcodes, registers etc.
 
-//package fi.hu.cs.titokone;
+package fi.hu.cs.titokone;
 
 import java.util.HashMap;
 
@@ -117,17 +117,18 @@ public class SymbolicInterpreter extends Interpreter {
 	@param bits How many bits can be used .
 	@return String representation of a said Int.
       */
-    public String intToBinary(int value, int bits) {
+    public String intToBinary(long value, int bits) {
 /* TODO if bits too few, i.e. 10,2 then result is "11" */
 	char[] returnValue = new char[bits];
-
-
-	for (int i = 0; i < bits; ++i) returnValue[i] = '0';
+	boolean wasNegative = false;
 
 	if (value < 0) { 
-		returnValue[0] = '1'; 
-		value = value * -1;
-	} 
+		wasNegative = true; 
+		value = (value * -1) -1;
+	}
+
+	
+	for (int i = 0; i < bits; ++i) returnValue[i] = '0';
 
 	for (int i = returnValue.length - 1; i > -1; --i) {
 		if (value >= (int)Math.pow(2.0, i * 1.0)) {
@@ -136,6 +137,14 @@ public class SymbolicInterpreter extends Interpreter {
 		}
 	}
 
+	if (wasNegative) {
+		for (int i = 0; i < returnValue.length; ++i) { 
+			if (returnValue[i] =='0') {
+				returnValue[i] = '1';
+			} else { returnValue[i] = '0'; }
+
+		} 
+	}
 	return new String(returnValue);
     }
 
@@ -167,8 +176,9 @@ public class SymbolicInterpreter extends Interpreter {
 		}		
 	}
 
-	if (isNegative) { value = value * -1; }
+	if (isNegative) {
+		value = value - (int)Math.pow(2, binaryValue.length());
+	}
 	return value;
     }
-
 }
