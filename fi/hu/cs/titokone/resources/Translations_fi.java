@@ -332,7 +332,7 @@ public class Translations_fi extends ListResourceBundle {
       {"Close", "Sulje"},
       {"Compile line by line", "Käännä rivittäin"},
       {"Show comments", "Näytä kommentit"},
-      {"Set compiling options", "Muokkaa käännösasetuksia"},
+      {"Set compiling options", "Muuta käännösasetuksia"},
       // Pause whenever a comment occurs & show extra comments while compiling
       // represented in JOptionPane.
 
