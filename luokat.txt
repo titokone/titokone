@@ -46,16 +46,16 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	LoadInfo.java						AÅ
 2	Loader.java						AÅ
 5	MemoryLine.java                         SY              SY 18.3.        SY 4.4.
-3	Message.java                            ?               SY 20.3
+3	Message.java                                            SY 20.3
 1	Processor.java                                          SY 21.3
-3	RandomAccessMemory.java                 ?               SY 19.3
+3	RandomAccessMemory.java                                 SY 19.3
 3	Registers.java                          SY              SY 19.3
 5	ResourceLoadFailedException.java        SR              SR 17.3.        SR 27.3.
 2	RunDebugger.java			OA
 2	RunInfo.java				OA
 5	Settings.java                           SR              SR 19.3.        SR 27.3.
 4	Source.java						SH 20.3
-3	SymbolTable.java                        ?               SY 20.3
+5	SymbolTable.java                                        SY 20.3         SY 5.4.
 2	SymbolicInterpreter.java				AT 21.3.
 2	Titokone.java						AÅ
 5	Translator.java                         SR              SR 26.3.        SR 27.3.
