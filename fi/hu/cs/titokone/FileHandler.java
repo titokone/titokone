@@ -203,7 +203,7 @@ public class FileHandler {
 	while(line != null) {
 	    result.append(line);
 	    line = loadFileContents.readLine();
-	    if(line != null) line += "\n";
+	    if(line != null) line += "\n"; // (Result-str is internally used.)
 	}
 	loadFileContents.close();
 	return result;
@@ -281,3 +281,8 @@ public class FileHandler {
 	}
     }
 }
+
+
+
+
+
