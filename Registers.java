@@ -8,18 +8,18 @@ public class Registers {
 	5..12 are general-purpose registers. */
     private int[] registerValues;
 	
-    /** This function returns the value of a register. The index numbers
+    /** Returns the value of a register. The index numbers
 	are available from the TTK91CPU interface.
 	@param registerId Identifying number of the register.
 	@return Value stored in the register.  */
-    public int getRegisterValue(int registerId) {}
+    public int getRegister(int registerId) {}
 
     /** Returns the value of a register. 
 	@param registerName The name of the register.
 	@return Value stored in the register.  */
-    public int getRegisterValue(String registerName) {}
+    public int getRegister(String registerName) {}
 
-    /** This method sets a new value to a register.
+    /** Sets a new value to a register.
 	@param registerId The identifying number of the register.
 	@param value New value to set.  */
     public void setRegister(int registerId, int value) {}
