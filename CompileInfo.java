@@ -111,13 +111,13 @@ public class CompileInfo extends DebugInfo {
     public int returnSymbolValue(){}
     public int returnLineBinary(){}
     public String returnLabelName(){}
-    public int returnLabelValue(){}
-    public boolean returnDefiningDS(){}
-    public boolean returnDefiningDC(){}
+    public int returnLabelValue(){} // tarkasta
+    public boolean returnDefiningDS(){} // samoin
+    public boolean returnDefiningDC(){} //samoin
     public int returnValue(){}
     public boolean returnFinalPhase(){}
     public int[] returnInitPointers(){}
-    public int returnMemoryline(int lineNumber, int value){}
-    public int returnDSArea(int lineNumber, int size){}
+
+
 }
 
