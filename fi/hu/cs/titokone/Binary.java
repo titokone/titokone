@@ -21,14 +21,20 @@ public class Binary {
 	@param contents A linebreak-delimited string containing the 
 	contents of a binary file. 
 	@throws ParseException If the string does not represent a 
-	syntactically correct binary. */ //TODO virheilmoitukset
+	syntactically correct binary. */ 
     public Binary(String contents) throws ParseException {
 	BinaryInterpreter bini = new BinaryInterpreter();
 	this.contents=contents;
 
 	//split contents into a b91 array where deliminiter is line separator
-	String[] b91=contents.split(System.getProperty("line.separator",
-						       "\n"));
+	
+	//String[] b91=contents.split(System.getProperty("line.separator",
+	//					       "\n"));
+	
+	//This split trusts that FileHandler returns strings splitted with
+	//\n.
+	String[] b91=contents.split("\n");
+	
 	//Trim all spaces and whitespaces from aray
 	for (int i=0;i<b91.length;i++)
 	    b91[i]=b91[i].trim();
@@ -193,7 +199,8 @@ public class Binary {
 	//Assembling parsed b91 array to string
 	for (int l=0;l<=EOF;l++){
 	    this.contents= this.contents +b91[l];
-	    this.contents+=System.getProperty("line.separator","\n");
+	    //this.contents+=System.getProperty("line.separator","\n");
+	    this.contents+="\n";
 	}
 
 
@@ -227,7 +234,9 @@ public class Binary {
 
 	Vector code = new Vector();
 	Vector data = new Vector();
-	String[] b91=contents.split(System.getProperty("line.separator","\n"));
+	//String[] b91=contents.split(System.getProperty("line.separator",
+	//"\n"));
+	String[] b91=contents.split("\n");
 	for (int i = 0 ; i<b91.length; i++)
 	    b91[i].trim();
 	int i=0;
@@ -320,11 +329,10 @@ public class Binary {
 	</pre>
        
 	@return The String representation of this binary. */
-    public String toString() {  //TODO Symboltablen muutokset uupuvat
-	//System.out.println(contents);
+    public String toString() {
+
 	if (contents!=null)
 	    return contents;
-	
 	
 	MemoryLine[] code=application.getCode();
 	MemoryLine[] data=application.getInitialData();
@@ -369,13 +377,6 @@ public class Binary {
        
 	if(symNames!=null){
 	    for(int i=0;i<symNames.length;i++){
-		/*if(symNames[0].equalsIgnoreCase("STDOUT")
-		  ||symNames[0].equalsIgnoreCase("STDIN")){ 
-		  //TODO tarkasta
-		  s+=""+symNames[i]+" "+symbol.getDefinition(symNames[i]);
-		  }
-		  else{*/
-		
 		s+=""+symNames[i]+" "+symbol.getSymbol(symNames[i]);
 		s+=System.getProperty("line.separator", "\n");
 	    }   
