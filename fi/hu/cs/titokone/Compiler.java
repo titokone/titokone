@@ -1,6 +1,9 @@
 /*
 Ensimm‰isell‰ kierroksella jos tulee dc tai ds niin tehd‰‰n symbol found ja finalizing first 
 roundissa sitten tulee definingdc ja definingds.y
+
+finalizing_fiorst_roundin lopussa pit‰‰ palauttaa sek‰ data-alue ett‰ koodi erikseen. kahtena 
+taulukkona siis.
 */
 
 package fi.hu.cs.titokone;

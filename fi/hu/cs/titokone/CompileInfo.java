@@ -21,8 +21,10 @@ public class CompileInfo extends DebugInfo {
   /** This field hold the contents of a compiled line. */
   private String lineContents;
  
-  /** This array contains codelines after first round. */
-  String[] memory;
+  /** These arrays contain codelines and data after first round. */
+  String[] instructions;
+  String[] data;
+
 
   /** This field is by default false, but if the compiled line was 
       empty (or consisted of whitespace only), the true value here says 
@@ -221,10 +223,18 @@ public class CompileInfo extends DebugInfo {
 
     /** This method sets memory array to contain all codelines after first
 	round of compilation. It contains only symbolic lines.
-	@param memory array containing lines.
+	@param instructions array containing code-lines.
     */
-    public void setMemory(String[] memory) {
-	this.memory = memory;	
+    public void setInstructions(String[] instructions) {
+	this.instructions = instructions;	
+    }
+
+    /** This method sets data area of a memory to contain all codelines after first
+	round of compilation. It contains variable values.
+	@param data array containing data-area.
+    */
+    public void setData(String[] data) {
+	this.data = data;	
     }
 
 
@@ -355,13 +365,22 @@ public class CompileInfo extends DebugInfo {
 	return initPointers;
     }
 
-    /** This method returns memorylines after compiler has finished first 
-	round of compilation. This array contains all codelines but all white
-	spaces and empty lines has been removed.
+    /** This method returns codelines of the memory after compiler has finished first 
+	round of compilation. This array contains all codelines other than  white
+	spaces, empty lines and variable definitions has been removed.
 	@return String array containing symbolic lines.
     */
-    public String[] getMemory() {
-	return memory;
+    public String[] getInstructions() {
+	return instructions;
+    }
+
+    /** This method returns the variable values after compiler has finished first 
+	round of compilation. This array contains all codelines but all white
+	spaces and empty lines has been removed.
+	@return String array containing variable values.
+    */
+    public String[] getData() {
+	return data;
     }
 
 }

@@ -33,4 +33,5 @@ CompileInfo  AT 23.3.	SetMemoryLine-metodin parametri value on String, ei int.
 
 CompileInfo  AT 24.3.	entiset return-metodit on nyt get-alkuisia. Myös DC:n ja DS:n
 			metodit ovat muuttuneet. Nyt getDCaddress() ja getDCname()
-			sama DS:lle.
+			sama DS:lle. getMemory on korvattu getDatalla ja getInstructionsilla.
+
