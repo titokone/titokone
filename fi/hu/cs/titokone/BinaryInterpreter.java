@@ -187,11 +187,12 @@ public class BinaryInterpreter extends Interpreter {
       */
     public String getOpCodeFromBinary(int binaryCommand) {
 	int command = binaryCommand; 
-	if (command == 0)  //if command is zero, then return nop
+	/*if (command == 0)  //if command is zero, then return nop
 	    return "0";
 	//then check if command has no operation code
 	if (command > 0 && command < 16777216)
-	    return null;
+	return null;*/
+	
 	//get opcode and get its name and return it
 	Integer opcode = new Integer(command >> 24);
 	if(commands.get(opcode)!=null){
@@ -274,8 +275,6 @@ public class BinaryInterpreter extends Interpreter {
 	@param binaryCommand The command's binary-form representation.
 	@return Address part of the binary command in a String format.
     */ 
-    //TODO negat luvut ja suuret osoitteet.
-    //Kun syötetään luku -32767, tulee ylivuoto
 
     public String getAddressFromBinary(int binaryCommand) {
 	int command = binaryCommand;
@@ -284,11 +283,7 @@ public class BinaryInterpreter extends Interpreter {
 	Integer opcode = new Integer(getOpCodeFromBinary(command));
 	String mem = getMemoryModeFromBinary(binaryCommand);
 	
-	/*If memorymode is =, then map addresses over 32767 to negative 
-	  values.*/
-	
-	if (i>=32768&&mem.equals("=")){
-	 
+	if (i>=32768){
 	    i=i-32768;
 	    i=i*(-1);
 		
