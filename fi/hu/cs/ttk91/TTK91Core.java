@@ -19,7 +19,7 @@ public interface TTK91Core {
 	 * //FileSource is not part of the specification,
 	 * //mentioned here for an example.
 	 * 
-	 * TTK91CompileSource source = new FileSource("myfile.t91");
+	 * TTK91CompileSource source = new Source("myfile.t91");
 	 * TTK91Core core = new MalanCore(); 
 	 * try{
 	 *   TTK91Application app = core.compile(source);
