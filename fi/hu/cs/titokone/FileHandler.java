@@ -202,7 +202,8 @@ public class FileHandler {
 	// reached.
 	while(line != null) {
 	    result.append(line);
-	    line = loadFileContents.readLine() + "\n";
+	    line = loadFileContents.readLine();
+	    if(line != null) line += "\n";
 	}
 	loadFileContents.close();
 	return result;
