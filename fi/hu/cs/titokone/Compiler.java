@@ -537,7 +537,7 @@ public class Compiler {
 	if (!defStdin.equals("")) ++dataAreaSize;
 	if (!defStdout.equals("")) ++dataAreaSize;
 
-	String[] data = new String[dataAreaSize];
+	data = new String[dataAreaSize];
 	String[] newSymbolTableLine = new String[2];
 	newSymbolTableLine[0] = "";
 	newSymbolTableLine[1] = "";
