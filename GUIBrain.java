@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 import java.util.Locale;
 
 /** This class contains the intellect the GUI class needs to provide 

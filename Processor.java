@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 /** This class represents the processor state. It can be told to run for one
     command cycle at a time. */
 public class Processor implements CPU {
