@@ -9,7 +9,6 @@ creates objects from this class and passes them to onwards.*/
 public class RunInfo extends DebugInfo{
 
    
-       
     public static final short NOOPERATION = 0;
     public static final short DATA_TRANSFER_OPERATION = 1;
     public static final short ALU_OPERATION = 2;
@@ -56,12 +55,12 @@ public class RunInfo extends DebugInfo{
     private int newFP;
     private int opcode;
     /** This field contains first operand of the command. */
-    private int Rj; 
+    private int rj; 
     private int valueOfRj;
     /** This field contains index register. */
-    private int Ri;
+    private int ri;
     private int valueOfRi;
-    private int ADDR;
+    private int addr;
     private int valueAtADDR;
     private int valueOfFirstFetch;
     private int valueOfSecondFetch;
@@ -69,12 +68,12 @@ public class RunInfo extends DebugInfo{
 
     private boolean compareOp;
     private int aluResult;
-    private int SRbit;
+    private int srBit;
     private boolean compareResult;
    
     private boolean conditionalJump;
     private int whichSRBit;
-    private boolean SRStatus;
+    private boolean srStatus;
 
 
     private boolean externalOperation;
@@ -82,7 +81,7 @@ public class RunInfo extends DebugInfo{
     private int deviceNumber;
     private int value;
 
-    private int SVCOperation;
+    private int svcOperation;
 
        
     private int[][] changedRegisters;
@@ -101,79 +100,126 @@ public class RunInfo extends DebugInfo{
 */
 
     public RunInfo(int lineNumber, String lineContents, int oldPC, int newPC,
-		   int oldSP, int newSP, int oldFP, int newFP){}
+		   int oldSP, int newSP, int oldFP, int newFP){
+
+    	this.lineNumber = lineNumber;
+		this.lineContents = lineContents; 
+		this.oldPC = oldPC;
+		this.newPC = newPC;
+		this.oldSP = oldSP;
+		this.newSP = newSP;
+		this.oldFP = oldFP;
+		this.newFP = newFP;
+    
+		this.externalOperation = false;
+		this.registerChanged = false;	
+		this.memoryChanged = false;
+		this.selfChangingCode = false;
+	}
     
     /** This method sets the type of operation performed.
 	@param type Type of operation.
 	*/
-    public void setOperationType(int type){}
+    public void setOperationType(int type){
+		this.operationType = type;
+    }
 
     /** This method sets the binary value of the command.
 	@param binary Binary value of the command.
     */
-    public void setBinary(int binary){}
+    public void setBinary(int binary){
+		this.binary = binary;
+    }
 
     /** this method sets the index register.
 	@param register Number of the register.
 	@param value Value of the register.
     */
-    public void setIndexRegister(int register, int value){}
+    public void setIndexRegister(int register, int value){
+	this.ri = register;
+	this.valueOfRi = value;
+    }
    
     /** This method sets the first operand.
 	@param register Number of the register.
 	@param value Value of the register.	
     */
-    public void setFirstOperand(int register, int value){}
+    public void setFirstOperand(int register, int value){
+    	this.rj = register;
+	this.valueOfRj = value;
+    }
 
     /** This method sets the type of the fetch.
 	@param type Type of the fetch.
     */
-    public void setFetchType(int type){}
+    public void setFetchType(int type){
+    	this.operationType = type;
+    }
 
     /** This method sets the number of fetches.
 	@param fetches Number of fetches.
     */
-    public void setNumberOfFetches(int fetches){}
+    public void setNumberOfFetches(int fetches){
+    	this.numberOfMemoryFetches = fetches;
+    }
 
     /** This method sets the value of the first fetch.
 	@param value Value of the first fetch.
      */
-    public void setFirstFetch(int value){}
+    public void setFirstFetch(int value){
+    	this.valueOfFirstFetch = value;
+    }
 
     /** This method sets the value of the second fetch.
 	@param value Value of the second fetch.
 */
-    public void setSecondFetch(int value){}
+   public void setSecondFetch(int value){
+   	this.valueOfSecondFetch = value;
+   }
 
 
     /** This method sets the value of ADDR.
 	@param ADDR Int containing the ADDR.
     */
-    public void setADDR(int ADDR){}
+    public void setADDR(int addr){
+    	this.addr = addr;
+    }
 
     /** This method sets the value found at ADDR.
 	@param value Value found at the ADDR.
     */
-    public void setValueAtADDR(int value){}
+    public void setValueAtADDR(int value){
+    	this.valueAtADDR = value;
+    }
     /** This method tells info that something was written to the codearea and
 	what it was and its possible symbolic presentation.
 	@param line Number of the line.
 	@param binary New value written.
 	@param symbolic Possible symbolic command.
     */
-    public void setChangedCodeAreaData(int line, int binary, String symbolic){}
+    public void setChangedCodeAreaData(int line, int binary, String symbolic){
+    	this.selfChangingCode = true;
+	if(symbolic != null)
+    		this.changedCodeAreaData = symbolic;
+    }
     
     /** This sets the result of performed ALU operation
 	@param result Result of the operation.
     */
-    public void setALUResult(int result){}
+    public void setALUResult(int result){
+    	this.aluResult = result;
+    }
     
     /** This method tells info that a compare operation was made and what SR 
 	bit was changed to what value.
 	@param whichBit Number of the bit.
 	@param newValue New value of the bit.
     */
-    public void setCompareOperation(int whichBit, boolean newValue){}
+    public void setCompareOperation(int whichBit, boolean newValue){
+    	this.srBit = whichBit;
+	this.srStatus = true; //onko tarpeellinen?
+			      // voiko useita bittejä asettaa kerralla?
+    }
     
     /** This method tells info what was read from given device and what was 
 	the value.
@@ -181,7 +227,12 @@ public class RunInfo extends DebugInfo{
 	@param device Number of the device.
 	@param value Value read.
     */
-    public void setIN(String deviceName, int device, int value){}
+    public void setIN(String deviceName, int device, int value){
+    	this.externalOperation = true;
+	this.deviceName = deviceName;
+    	this.deviceNumber = device;
+    	this.value = value;
+    }
     
 
     /** This method tells info what was written to the  given device and what 
@@ -190,19 +241,28 @@ public class RunInfo extends DebugInfo{
 	@param device Number of the device.
 	@param value Value written.
     */
-    public void setOUT(String deviceName, int device, int value){}
+    public void setOUT(String deviceName, int device, int value){
+    	this.externalOperation = false;
+	this.deviceName = deviceName;
+	this.device = device;
+	this.value = value;
+    }
     
     /** This method tells info that a conditional jump was made and what was 
 	checked SR bit and its value.
 	@param whichBit Int containig number of the bit.
 	@param status  Value of the bit.
     */
-    public void setConditionalJump(int whichBit, boolean status){}
+    public void setConditionalJump(int whichBit, boolean status){
+    
+    }
 
 
     /** This method sets what kind of SVC operation was made.
      */
-    public void setSVCOperation(int operation){}
+    public void setSVCOperation(int operation){
+    	this.svcOperation = operation;
+    }
 
 
     /** This returns information if conditional jump was made.
