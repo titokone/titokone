@@ -10,25 +10,6 @@ public class RunInfo extends DebugInfo{
 
    
 
-// these constants are not needed!
-/*  public static final short NOOPERATION = 0;
-    public static final short DATA_TRANSFER_OPERATION = 1;
-    public static final short ALU_OPERATION = 2;
-    public static final short JUMP_OPERATION = 3;
-    public static final short STACK_OPERATION = 4;
-    public static final short SUB_OPERATION = 5;
-    public static final short EXTERNAL_OPERATION = 6;
-    public static final short SVC_OPERATION = 7;
- 
-    public static final short IMMEDIATE = 0;
-    public static final short DIRECT = 1;
-    public static final short DIRECT_REGISTER = 2;
-    public static final short INDIRECT_REGISTER = 3;
-    public static final short INDEXED_DIRECT = 4;
-    public static final short INDEXED_INDIRECT= 5;
-    public static final short INDEXED_DIRECT_REGISTER = 6; 
-    public static final short INDEXED_INDERECT_REGISTER = 7; */
-   
     /**
     	this field is set to true if register value has changed
     */
@@ -44,7 +25,7 @@ public class RunInfo extends DebugInfo{
 
 
    /** This field contains the operation type. */
-    private int operationType;
+    private String operationType;
     /**This field contains line number.*/
     private int lineNumber;
     /** This field contains contents of the line, */
@@ -52,6 +33,10 @@ public class RunInfo extends DebugInfo{
     /** This field contains the command in binary format. */
     private int binary;
    
+    private int [] registers;
+    
+    private String binaryString;
+    
     /** This String represents the binary / data value of changed code */
     private String changedCodeAreaData;
     
@@ -93,7 +78,7 @@ public class RunInfo extends DebugInfo{
     private int deviceNumber;
     private int value;
 
-    private int svcOperation;
+    private String svcOperation;
 
        
     private int[][] changedRegisters;
@@ -132,18 +117,24 @@ public class RunInfo extends DebugInfo{
 		this.conditionalJump = false;
 	}
     
+	
+	
+	public void setRegisters(int [] registers) {
+		this.registers = registers;	
+	}
+	
     /** This method sets the type of operation performed.
 	@param type Type of operation.
 	*/
-    public void setOperationType(int type){
+    public void setOperationType(String type){
 		this.operationType = type;
     }
 
     /** This method sets the binary value of the command.
 	@param binary Binary value of the command.
     */
-    public void setBinary(int binary){
-		this.binary = binary;
+    public void setBinary(String binary){
+		this.binaryString = binary;
     }
 
     /** this method sets the index register.
@@ -231,10 +222,9 @@ public class RunInfo extends DebugInfo{
     */
     
     // vaihtuvatko muut arvot, vai ovatko oletuksena nollia alussa?
-    public void setCompareOperation(int whichBit, boolean newValue){
+    public void setCompareOperation(int whichBit){
     	this.compareOp = true;
 	    this.srBit = whichBit;
-		this.compareResult= newValue;
     }
     
     /** This method tells info what was read from given device and what was 
@@ -278,7 +268,7 @@ public class RunInfo extends DebugInfo{
 
     /** This method sets what kind of SVC operation was made.
      */
-    public void setSVCOperation(int operation){
+    public void setSVCOperation(String operation){
     	this.svcOperation = operation;
     }
 
@@ -298,14 +288,15 @@ public class RunInfo extends DebugInfo{
 	}
     /** This method returns value of the SR bit.
 	@return boolean Value of the bit.
-    */
+    ????
+	*/
     public boolean getBit(){
 	    return this.srStatus;
 	}
 
     /** This method tells GUIBrain what kind of operation happened.
         @return int value which represents operation type.*/
-    public int whatOperationHappened(){
+    public String whatOperationHappened(){
 		return this.operationType;    
 	}
     
@@ -367,7 +358,7 @@ public class RunInfo extends DebugInfo{
     /** This method returns the binary command.
 	@return int Integer containing the binary command.
     */
-    public int getBinary(){
+    public String getBinary(){
 		return this.binary;    
 	}
     
@@ -377,8 +368,8 @@ public class RunInfo extends DebugInfo{
 	*/
     
 	//näitä ei koskaan aseteta!
-	public int[] whatRegisterChanged(){
-
+	public int[] getRegisters(){
+		return this.registers;	
 	}
     
     /** This method tells GUIBrain which lines in dataarea changed and what are
@@ -494,7 +485,7 @@ public class RunInfo extends DebugInfo{
     /** This method returns type of the SVC operation.
 	@return int Integer containing the operation type.
     */
-    public int getSVC(){
+    public String getSVC(){
 		return this.svcOperation;    
 	}
        

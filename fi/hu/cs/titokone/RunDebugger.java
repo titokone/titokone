@@ -14,6 +14,18 @@ public class RunDebugger{
     public static final short SVC_OPERATION = 7;
   
     
+    public static final short SVC_HALT  = 11;
+    public static final short SVC_READ  = 12;
+    public static final short SVC_WRITE = 13;
+    public static final short SVC_TIME  = 14; 
+    public static final short SVC_DATE  = 15;
+    
+    
+    public static final short CRT = 0;
+    public static final short KBD = 1;
+    public static final short STDIN = 6;
+    public static final short STDOUT = 7;
+    
  //nämä pois
     public static final short IMMEDIATE = 0; // 23(R1)
     public static final short DIRECT = 1; // =23
@@ -25,6 +37,7 @@ public class RunDebugger{
     public static final short INDEXED_INDIRECT = 7; //@vakio(r2)
 
 
+       
     private int oldPC;
     private int oldSP;
     private int oldFP;
@@ -43,8 +56,8 @@ public class RunDebugger{
     */
     public RunDebugger(){
     	oldPC = 0;
-	oldFP = 0;
-	oldSP = 0;
+		oldFP = 0;
+		oldSP = 0;
     }
 
     /** This method tells debugger that a new cycle has been started. It
@@ -60,8 +73,8 @@ public class RunDebugger{
     public void cycleStart(String lineContents,
 			   int newPC, int newSP, int newFP){ 
 	
-					   
-		info = new RunInfo(lineContents, oldPC, newPC, oldSP, newSP,
+					   			   
+		this.info = new RunInfo(lineContents, oldPC, newPC, oldSP, newSP,
 		                   oldFP, newFP);
 		 
 		this.oldPC = newPC;
@@ -69,15 +82,8 @@ public class RunDebugger{
 		this.oldSP = newSP;	   
     }
 
-//tämä pois!
-    /** This method tells what kind of memoryfetch was made. Types 0-7
-     @param i Type of fetchs.*/
-    public void memoryFetchType(int i) {
-	this.info.setFetchType(i);
-    }
 
-   
-    /** This method sets the value of first memory fetch.
+   /** This method sets the value of first memory fetch.
      @param value Value found in memory.*/
     public void setFirstFetch(int value){
     	this.info.setFirstFetch(value);
@@ -91,8 +97,42 @@ public class RunDebugger{
 
     /** This method tells what kind of operation was made. 
 	@param i Type of operation. */ 
-    public void setOperationType(int i){
-    	this.info.setOperationType(i);
+    public void setOperationType(int opcode){
+    	switch(opcode) {
+		
+			case NO_OPERATION:
+				this.info.setOperationType("No operation");
+			break;
+			
+			case DATA_TRANSFER_OPERATION:
+				this.info.setOperationType("Data transfer");
+			break;
+			
+			case ALU_OPERATION:
+				this.info.setOperationType("ALU-operation");
+			break;
+			
+			case COMP_OPERATION:
+				this.info.setOperationType("Comparing");
+			break;
+			
+			case BRANCH_OPERATION:
+				this.info.setOperationType("Branching");
+			break;
+			
+			case SUB_OPERATION:
+				this.info.setOperationType("Subroutine");
+			break;
+			
+			case STACK_OPERATION:
+				this.info.setOperationType("Stack-operation");
+			break;
+		
+			case SVC_OPERATION:
+				this.infosetOperationType("Supervisor call");
+		    break;
+		}
+	    
     }
  
     /** This method tells what was operation run and its parts.
@@ -108,10 +148,15 @@ public class RunDebugger{
 	and presented as integers parted with doubledots. 
     */
     public void runCommand(int opcode, int firstOperand, 
-			   int valueOfFirstOperand, int indexRegister, int valueOfIndex, int ADDR, 
+			   int valueOfFirstOperand, int indexRegister, int valueOfIndex, int addr, 
 			   int numberOfFetches, String binaryString){
 	
-	this.info.setNumberOfFetches(i);
+		  
+		  this.info.setFirstOperand(firstOperand, valueOfFirstOperand);
+		  this.info.setIndexRegister(indexRegister, valueOfIndex);
+		  this.info.setADDR(addr);	 
+		  this.info.setNumberOfFetches(numberOfFetches);
+		  this.info.setBinary(binaryString);
 			    
     }
 
@@ -121,8 +166,9 @@ public class RunDebugger{
 	@param newContents String containing possible new symbolic command.
     */
     public void selfChangingCode(int lineNumber, int binary, 
-				 String newContents){
-				 
+				 String newContents) {
+		//???
+		
     
     }
 
@@ -130,7 +176,7 @@ public class RunDebugger{
     /** This method tells debugger that a NOP was executed.
      */
     public void setNoOperation(){
-    
+    	//???
     }
 
     /** This method tells debugger what value was found from the ADDR part of 
@@ -138,7 +184,8 @@ public class RunDebugger{
 	@param value int containing the value.
     */
     public void setValueAtADDR(int value){
-    
+    	//???
+	    
     }
 
     /** This method tells debugger that one or more registers were changed.
@@ -146,10 +193,7 @@ public class RunDebugger{
 	@param registers Array containing new values.
     */
     public void setRegisters(Integer [] registers){
-    	
-	/**for(int i=0; i < ;i++)
-	if(this.registers[i] == registers[i])
-    		this.registers[i] = null; */
+    	this.info.setRegisters(registers);	
     }
 
     /** This method tells debugger that one or more memorylines were changed.
@@ -163,7 +207,7 @@ public class RunDebugger{
     /** This method sets the result of ALU operation. 
 	@param result Value of result. */
     public void setALUResult(int result){
-    
+    	this.info.setALUResult(result);
     }
 
     /** This method tells what was the result of compare operation.
@@ -171,7 +215,7 @@ public class RunDebugger{
 	@param status New status of the bit.
     */
     public void setCompareResult(int whichBit){
-    
+    		this.info.setCompareOperation(whichbit);
     }
 
     /** This method tells debugger that something was read from the given
@@ -180,7 +224,19 @@ public class RunDebugger{
 	@param value Value written.
     */
     public void setIN(int deviceNumber, int value){
-    
+    	switch(deviceNumber) {
+	    	
+	    	case KBD:
+	    		this.info.setIN("Keyboard", KBD, value);
+	    	break;
+	    	
+	    	case STDIN:
+	    		this.infosetIN("Standard input", STDIN, value);
+	    	break;
+	    		
+    	}
+    	
+    	
     }
 
     /** This method tells debugger that something was written to the given
@@ -189,14 +245,46 @@ public class RunDebugger{
 	@param value Value written.
     */
     public void setOUT(int deviceNumber, int value){
-    
+    	switch(deviceNumber) {
+	    	
+	    	case CRT:
+	    		this.info.setOUT("Display", CRT, value);
+	    	break;
+	    	
+	    	case STDOUT:
+	    		this.info.setOUT("Standard output", STDOUT, value);
+	    	break;
+    	}
+    	
+	    
     }
 
      /** This method tells debugger which SVC operation was done.
 	@param operation Int containing operation type.
     */
     public void setSVCOperation(int operation){
-    
+    	switch(operation) {
+    		case SVC_HALT:
+    			this.info.setSVCOperation("Halt");
+    	    break;
+    	    
+    	    case SVC_READ:
+    	    	this.info.setSVCOperation("Read");
+    	    break;
+    	    
+    	    case SVC_WRITE:
+    	    	this.info.setSVCOperation("Write");
+    	    break;
+    	    
+    	    case SVC_TIME:
+    	    	this.info.setSVCOperation("Time");
+    	    break;
+    	    
+    	    case SVC_DATE:
+    	    	this.info.setSVCOperation("Date");
+    	    break;
+	    	
+	    }
     }
 
     /** This method tells debugger if command was CALL or EXIT operation and
