@@ -12,7 +12,7 @@ public class GUIBrain {
     private Settings currentSettings;
     /** This field is set when menuInterrupt is called, and all continuous
 	loops which do many things and wait for input in between should 
-	check if this is sent before continuing to their next step. An 
+v	check if this is sent before continuing to their next step. An 
 	interrupt sent means they should stop doing whatever they were doing
 	as soon as is reasonable. (Usually when it would be the time to 
 	wait for input from the user. */
@@ -44,8 +44,7 @@ public class GUIBrain {
 	were doing once it becomes possible. */
     public void menuInterrupt() { }
 
-    public void menuSetLanguage(String language) {}
-
+    public void menuSetLanguage(String language) 
     public void menuSetStdIn(String filepath) {}
 
     public void menuSetStdOut(String filepath) {}

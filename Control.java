@@ -1,5 +1,5 @@
 /** This control class Controls Everything(TM). */
-public class ControlBridge implements TTK91Bridge {
+public class Control implements TTK91Bridge {
     
  
     /** Compiles a symbolic TTK91-assembly language to binary executable
@@ -40,9 +40,8 @@ public class ControlBridge implements TTK91Bridge {
     /** Changes the size of memory measured in words.
         @param powerOfTwo Implies the total size of memory which is 2^powerOfTwo.
                           Legitimate values are 9,...,16.
-        @return Returns true if the operation was successful. Otherwise false.
     */
-    public boolean changeMemorySize(int powerOfTwo);
+    public void changeMemorySize(int powerOfTwo);
     
     
     
@@ -60,25 +59,19 @@ public class ControlBridge implements TTK91Bridge {
     
     
     
-    /** This is called when user has selected Compile from the GUI menu.
-        This compiles the t91 program that has been opened recently and
+    /** This compiles one next line of the t91 program that has been opened recently and
         hasn't yet been compiled to binary code.
-        @return Returns true if the operation was successful. Otherwise
-                it returns false (for example if there was no program
-                loaded into memory).
+        @return Returns CompileInfo object of the last line compiled.
     */
-    public boolean compile() throws CompileTimeException;
+    public CompileInfo compileLine() throws CompileTimeException;
     
     
     
-    /** This is called when user has selected Run from the GUI menu.
-        This runs the program that is currently loaded into the TTK91's
+    /** This runs one next line of the program that is currently loaded into the TTK91's
         memory. 
-        @Return Returns true if the operation was successful. Otherwise
-                it returns false (for example if there was no program
-                loaded into memory)
+        @Return Returns RunInfo object of the last line executed.
     */
-    public void run() throws RunningTimeException;
+    public RunInfo runLine() throws RunningTimeException;
     
     
     
@@ -93,17 +86,17 @@ public class ControlBridge implements TTK91Bridge {
     
     /** This is called when the user has changed the file from which stdin
         operations will be read in emulator.
-        @param filePath The path of the file.
+        @param stdinFile The stdin file.
     */
-    public void selectSTDIN(String filePath);
+    public void selectSTDIN(File stdinFile);
     
     
     
     /** This is called when the user has changed the file from which stdout
         operations will be written in emulator.
-        @param filePath The path of the file.
+        @param stdoutFile The stdout file..
     */
-    public void selectSTDOUT(String filePath);
+    public void selectSTDOUT(File stdoutFile);
     
     
     
@@ -112,26 +105,74 @@ public class ControlBridge implements TTK91Bridge {
         @param id The identifier of the device.
                   CRT = CRT
                   STDOUT  = hard drive
+        @param input The input to given device.
         
     */
-    public void writeToDevice(int id);
+    public void writeToDevice(int id, String input);
+    
+    
     
     /** This is called when the processor wants to read from
         an external device.(keyboard or stdin)
         @param id The identifier of the device
                   KBD = keyboard
                   STDIN  = hard drive
+        @return The string representation of the output from the wanted device.
+                Lines are separated by '\n'...
     */
-    public void readFromDevice(int id);
+    public String readFromDevice(int id);
     
     
     
     
+    /** This is called when a b91-file is opened from GUI.
+        This method just passes the file to FileHandler.
+        @param b91File The binary b91-file.
+    */
+    public void openBinaryFile(File b91File);
+    
+    
+    
+    /** This is called when a k91-file is opened from GUI.
+        This method just passes the file to FileHandler.
+        @param kt91File The symbolic sourcecode file (k91).
+    */
+    public void openSourceFile(File k91File);
+     
+   
+
+    /** 
+        @return 
+    */
+    public LoadInfo Load();
+
+
+
+    /** 
+        @return
+    */
+    public Settings LoadSettings();
+
+
+
     /** 
         @param 
     */
     public void ();
-     
+
+
+
+    /** 
+        @param 
+    */
+    public void ();
+
+
+
+    /** 
+        @param 
+    */
+    public void ();     
    
     
 }
