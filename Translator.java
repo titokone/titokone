@@ -71,7 +71,8 @@ public class Translator {
 	locale. If the translations are located in the standard place, 
 	setLocale(Locale) can be used. */
     public static void setLocale(Locale newLocale, 
-				 ResourceBundle translations) {}
+				 ResourceBundle translations) 
+       throws ResourceLoadFailedException {}
 
     /** This method returns the resource bundle in use.
 	@return The resource bundle set to correspond to the current 
