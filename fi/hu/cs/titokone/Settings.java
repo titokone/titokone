@@ -15,6 +15,7 @@ import java.util.logging.Logger;
     ignored. */
 public class Settings { 
     private HashMap settings;
+    private boolean settingsChanged = false;
     
     /** This string separates keys from values in the settings file. 
 	It cannot be included in the key strings. */
@@ -55,6 +56,7 @@ public class Settings {
 	settings = new HashMap();
 	if(settingsFileContent != null) 
 	    parseSettingsFile(settingsFileContent);
+	settingsChanged = false;
     }
 
     /** This constructor sets up a settings class with no values. */
@@ -132,6 +134,7 @@ public class Settings {
 	    throw new IllegalArgumentException(expMessage);
 	}
 	settings.put(key, value);
+	settingsChanged = true;
     }
 
     /** This method returns the value of a certain key. It will try to 
@@ -244,6 +247,13 @@ public class Settings {
 				"{0}, unique keys found: {1}.", 
 				parameters).toString());
 		    
+    }
+
+    /** This method returns true if one of the setValue methods has 
+	been called since the creation of this Settings instance, false
+	otherwise. */
+    public boolean settingsChanged() {
+	return settingsChanged;
     }
 
 }
