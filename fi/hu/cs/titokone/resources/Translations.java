@@ -39,37 +39,37 @@ class Translations extends ListResourceBundle {
       // General messages: (none)
       // Exception messages:
       { "No more keyboard data stored on application." , 
-        "" },
+        null },
       { "No more stdin data stored on application.", 
-	"" },
+	null },
       {	"Keyboard input string \"{0}\" invalid, should be eg. \n-separated " +
 	"list of integers." , 
-	"" },
+	null },
       { "Stdin input string \"{0}\" invalid, should be eg. \n-separated " +
 	"list of integers.", 
-	"" },
+	null },
       // Log messages:
       { "Application has no more keyboard data, read: {0}, buffer length " +
 	"{1}.", 
-	"" },
+	null },
       { "Application has no more stdin data, read: {0}, buffer length {1}.", 
-	"" },
+	null },
       { "Accepted \"{0}\" as keyboard input, tokens found: {1}.", 
-	"" },
+	null },
       { "Accepted \"{0}\" as stdin input, tokens found: {1}.", 
-	"" }, 
+	null }, 
 
       // Class: Settings.
       // General messages: (none)
       // Exception messages: 
-      { "value", "" },
-      { "a linebreak", "" },
-      { "Illegal {0} \"{1}\", contains {2}.", "" },
-      { "Illegal {0}: null. Try an empty string instead.", "" },
-      { "Syntax error on line {0}, which was: \"{1}\".", "" },
+      { "value", null },
+      { "a linebreak", null },
+      { "Illegal {0} \"{1}\", contains {2}.", null },
+      { "Illegal {0}: null. Try an empty string instead.", null },
+      { "Syntax error on line {0}, which was: \"{1}\".", null },
       // Log messages: 
       { "Settings successfully parsed, lines: {0}, unique keys found: {1}.", 
-	"" },
+	null },
 
       // Class: 
       // General messages: 
