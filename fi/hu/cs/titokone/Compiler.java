@@ -718,6 +718,7 @@ public class Compiler {
 		if (fieldEnd != -1) { symbolicOpcode = symbolicOpcode.substring(0, fieldEnd); }
 		symbolicOpcode = symbolicOpcode.replace('\t',' ');
 		symbolicOpcode = symbolicOpcode.replace(' ', ' ');	// Not stupid! 
+		                                                        // replaces 0xa0 -> 0x20 - Lauri 2004-09-23
 		symbolicOpcode = symbolicOpcode.toLowerCase();
 		symbolicOpcode = symbolicOpcode.trim();
 
@@ -884,11 +885,13 @@ public class Compiler {
 		}
 
 		if (opcode.length() > 0) {
-			if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
+				//			if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
+			if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J' || opcode.toLowerCase().equals("not") ) {
 				// Opcode matches jneg/jzer/jpos or the negations 
-				// jnneg/jnzer/jnpos.
+				// jnneg/jnzer/jnpos. // or opcode is 'not' 
 				if(opcode.toLowerCase().matches("j" + "n?" + 
-							"((neg)|(zer)|(pos))")) {
+							"((neg)|(zer)|(pos))") ||
+					 opcode.toLowerCase().equals("not") ) {
 					if (firstRegister.equals("")) {
 						comment = new Message("Compilation failed: {0}",
 								new Message("first register expected."
@@ -896,7 +899,7 @@ public class Compiler {
 						throw new TTK91CompileException(comment);
 					}
 				} 
-				if (addressingMode.equals("=") || address.equals("")) {
+				if ( ( (!opcode.toLowerCase().equals("not")) && ( addressingMode.equals("=") || address.equals("") ) ) ) {
 					comment = new Message("Compilation failed: {0}",
 							new Message("address expected."
 								).toString()).toString();
@@ -926,8 +929,10 @@ public class Compiler {
 						} else {
 							if (firstRegister.equals("") || 
 									(address.equals("") && secondRegister.equals(""))) {
+							    // TÄHÄN PYSÄHTYY NOT-käännös [LL]
+									// Ei enää, koska rinnastin NOT:n J-perheen käskyjen kanssa
 								comment = new Message("Compilation failed: {0}",
-										new Message("address or register expected."
+										new Message("address or 1 register expected."
 											).toString()).toString();
 								throw new TTK91CompileException(comment);
 							}

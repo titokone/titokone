@@ -211,7 +211,8 @@ public class Processor implements TTK91Cpu {
             
             if (opcode == 0) nop();
             else if (opcode >= 1 && opcode <= 4) transfer (opcode, Rj, M, ADDR, param);
-            else if (opcode >= 17 && opcode <= 27) alu (opcode, Rj, param);
+	    //            else if (opcode >= 17 && opcode <= 27) alu (opcode, Rj, param); // Modified to support 'NOT' - Lauri 2004-09-23
+            else if (opcode >= 17 && opcode <= 28) alu (opcode, Rj, param);
             else if (opcode == 31) comp (Rj, param);
             else if (opcode >= 32 && opcode <= 44) branch (opcode, Rj, M, ADDR, param);
             else if (opcode >= 49 && opcode <= 50) subr (opcode, Rj, ADDR, param);
@@ -368,9 +369,23 @@ public class Processor implements TTK91Cpu {
             regs.setRegister (Rj, regs.getRegister(Rj) >>> param);
             break;
             
-            case 27 : // SHRA
-            regs.setRegister (Rj, regs.getRegister(Rj) >> param);
-            break;
+	    /*
+	     * Comman 'SHRA' had to move to give room for 'NOT' - Lauri 2004-09-23
+	     *
+	     *
+	     * case 27 : // SHRA
+	     * regs.setRegister (Rj, regs.getRegister(Rj) >> param);
+	     * break;
+	     *
+	     */
+
+	case 27 : // NOT
+	    regs.setRegister (Rj, ~(regs.getRegister(Rj)) ); // Command 'NOT' added 2004-09-23
+	    break;
+
+	case 28 : // SHRA
+	    regs.setRegister (Rj, regs.getRegister(Rj) >> param);
+	    break;
         }
         
         runDebugger.setALUResult (regs.getRegister (Rj));
