@@ -277,6 +277,10 @@ public class Compiler {
 		   succesfull then Check whether name is valid and value correct.
 		   */
 		try { 
+			// EEVA: tätä täytynee korjailla, ja tarkistaa onko _edellisellä
+			// rivillä nimetty DC, jolloin on aivan oikein että label on tyhjä
+			// FIXME tämä if. 
+
 			lineTemp = parseCompilerCommandLine(line); 
 
 			// compiler command
@@ -294,9 +298,6 @@ public class Compiler {
 				}
 			}
 
-			// EEVA: tätä täytynee korjailla, ja tarkistaa onko _edellisellä
-			// rivillä nimetty DC, jolloin on aivan oikein että label on tyhjä
-			// FIXME tämä if.
 			if(!validLabelName(lineTemp[0])) {
 				// not a valid label;
 				comment = new Message("Invalid label.").toString();
@@ -393,6 +394,8 @@ public class Compiler {
 							lineTemp[0]).toString();
 					compileDebugger.setComment(comment);
 				}
+				
+				// Eeva: FIXME
 				if (lineTemp[1].equals("dc")) {
 					
 					compileDebugger.foundDC(lineTemp[0]);
