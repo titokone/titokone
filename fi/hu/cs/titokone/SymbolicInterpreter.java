@@ -132,6 +132,7 @@ public class SymbolicInterpreter extends Interpreter {
 
 	if (value < 0) { 
 		wasNegative = true; 
+		++value;
 		value = (value * -1);
 	}
 
@@ -145,7 +146,11 @@ public class SymbolicInterpreter extends Interpreter {
 		}
 	}
 
-	if (wasNegative) { returnValue[0] = '1'; } 
+	if (wasNegative) { 
+		for (int i = 0; i < returnValue.length; ++i)
+			if (returnValue[i] == '0') returnValue[i] = '1'; 
+			else returnValue[i] = '0';
+	}
 
 	return new String(returnValue);
     }
@@ -164,7 +169,9 @@ public class SymbolicInterpreter extends Interpreter {
 	if (signIncluded) { 
 		if (binaryValue.charAt(0) == '1') { 
 			isNegative = true; 
-			binaryValue = binaryValue.substring(1);
+			binaryValue = binaryValue.replace('1', '2');
+			binaryValue = binaryValue.replace('0', '1');
+			binaryValue = binaryValue.replace('2', '0');
 		}
 	}
 		
@@ -179,7 +186,7 @@ public class SymbolicInterpreter extends Interpreter {
 	}
 
 	if (isNegative) {
-		value = value * -1;
+		value = (value + 1) * -1;
 	}
 	return value;
     }
