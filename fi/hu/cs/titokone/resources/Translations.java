@@ -1,4 +1,4 @@
-﻿package fi.hu.cs.titokone.resources;
+package fi.hu.cs.titokone.resources;
 
 import java.util.ListResourceBundle;
 
@@ -110,7 +110,7 @@ public class Translations extends ListResourceBundle {
       {"Compilation is not finished yet.", null},	// 203
       {"Not a valid command.", null},			// 255
       {"Invalid label.", null},				// 271, 328, 345 and 349
-      {"Found label {0} and variable {1}."", null},	// 323
+      {"Found label {0} and variable {1}.", null},	// 323
       {"Variable {0} used.", null},			// 328
       {"Label {0} found.", null},			// 333
       {"Invalid size for a DS.", null},			// 358 and 362
@@ -170,6 +170,7 @@ public class Translations extends ListResourceBundle {
       {"Invalid device number", null},
       {"Integer overflow", null},
       {"Division by zero", null},
+      {"Rownumber {0} is beyond memory limits.", null}, // in memoryInput
       
       // Class: SymbolTable
       {"Definition key was null.", null},
