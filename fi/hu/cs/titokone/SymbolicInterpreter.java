@@ -104,7 +104,11 @@ public class SymbolicInterpreter extends Interpreter {
 	if (allOk) {
 
 		// if store or jump then addressinmode as int -= 1;
-		if (opcodeAsInt == 1 || (opcodeAsInt >= 32 && opcodeAsInt <= 44  )) {
+		if (opcodeAsInt == 1 || 
+		    (opcodeAsInt >= 32 && opcodeAsInt <= 44) ||
+		    (address.equals("") && !otherRegister.equals(""))  ||
+		    opcodeAsInt == 49
+ 		) {
 			addressingModeAsInt = addressingModeAsInt - 1;
 			if (addressingModeAsInt == -1) { ++addressingModeAsInt; }
 		}
