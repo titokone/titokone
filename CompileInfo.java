@@ -43,8 +43,7 @@ public class CompileInfo extends DebugInfo {
 
   // First or second round variable:
   /** This field contains the name of a label found from the beginning of
-      this line. It will be set to "" if no label was found on this line. 
-      The value can only be defined on the second round of compilation. */
+      this line. It will be set to "" if no label was found on this line.*/
   private String labelName = "";
   
   // Variables for the second round.

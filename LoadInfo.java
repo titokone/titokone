@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 /**This class provides info about the loading of a program. It has the code area and the data 
 area as a string array. The code is in its numeric form as well as a list of symbolic operation 
 codes with comments and symbols in place. LoadInfo also stores the values of FP and SP.*/

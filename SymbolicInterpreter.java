@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 /** This class contains the bulk data needed to translate commands to 
     opcodes etc. */
 public class SymbolicInterpreter extends Interpreter {

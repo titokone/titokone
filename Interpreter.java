@@ -1,3 +1,5 @@
+package fi.hu.cs.titokone;
+
 /** This class contains information common to various interpreters. */
 public class Interpreter {
     /** This field specifies the opcode field length in number of bits. */

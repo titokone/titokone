@@ -1,8 +1,10 @@
+package fi.hu.cs.titokone;
+
 /** This class knows everything about the relation between symbolic
     code and binary code. It can transform a full source to binary or
-    one symbolic command to binary or vice versa. 
-    TODO: Koksi empties out all compiler commands and empty lines at the start
-    of round 2, maybe we ought to do that too. */
+    one symbolic command to binary or vice versa. Empty out all compiler 
+    commands and empty lines at the start
+    of round 2.*/
 public class Compiler {
     /** This field contains the source code as a StringTokenizer, delimited by 
 	\n\r\f. */
@@ -61,7 +63,7 @@ public class Compiler {
 	@throws TTK91CompileException If a) there is a syntax error during the first
 	round of checking (error code 101) or b) a symbol is still undefined after 
 	the first round of compilation is finished. */
-    public CompileInfo compileLine() throws TTK91CompileException {Â  }
+    public CompileInfo compileLine() throws TTK91CompileException { }
 
     /** This method returns the readily-compiled application if the compilation
 	is complete, or null otherwise. */
@@ -73,7 +75,7 @@ public class Compiler {
 	@param binary The command to be translated as binary.
 	@return A MemoryLine instance containing both the information 
 	about the symbolic command and the binary version of it. */
-    public MemoryLine getSymbolicAndBinary(int binary) {Â  }
+    public MemoryLine getSymbolicAndBinary(int binary) { }
 
     /** This function transforms a MemoryLine containing only the binary 
 	command to a MemoryLine containing both the binary and the 
@@ -83,7 +85,7 @@ public class Compiler {
 	both, the pre-set symbolic value is ignored.
 	@return A MemoryLine instance containing both the information 
 	about the symbolic command and the binary version of it. */
-    public MemoryLine getSymbolicAndBinary(MemoryLine binaryOnly) {Â  }
+    public MemoryLine getSymbolicAndBinary(MemoryLine binaryOnly) { }
 
     /** This function gathers new symbol information from the given line 
 	and checks its syntax. If a data reservation is detected, the 
@@ -98,7 +100,11 @@ public class Compiler {
     /** This method initializes the code and data area arrays for the
 	second round processing according to the dataAreaSize and 
 	commandLineCount variables. It also resets the StringTokenizer by
-	calling tokenize(). */
+	calling tokenize(). 
+
+	Before entering the second round we must clear all the empty lines
+	like compiler-codes (pseudo-codes) and lines with nothing but comments.
+     */
     private void initializeSecondRound() { }
 
     /** This function transforms any commands to binary and stores both
@@ -108,7 +114,7 @@ public class Compiler {
 	@return A CompileInfo object describing what was done, or 
 	null if the second round and thus the compilation has been 
 	completed. */
-    private CompileInfo secondRoundProcess(String line) {Â  }
+    private CompileInfo secondRoundProcess(String line) { }
 
 /* Antti: 04.03.04
 Do a pure binary translation first, then when all sections are complete, convert the binary to an 
@@ -121,26 +127,6 @@ Antti 08.03.04
 Teemu said that we should support the machine spec instead of Koksi with this one. No need to 
 support opcodes like Muumuu LOAD R1, 100 kissa etc. Only tabs and extra spacing. So 
 we need to support opcodes like LOAD R1,           100 but not codes like LOAD R1, =R2.
-
-
-Teemu -->
-	Mielestäni kaikki ylimääräiset välilyönnit (ja tabit) sorsakoodissa ovat OK.
-    	Esimerkkinä vaikkapa STORE  R1,     100
-
-	Mielestäni voi vaatia, että ylimääräisiä tekstejä ei ole.
-	Puolipiste kommentti jatkuu rivin loppuun.
-	Esimerkiksi
-    		STORE R1, =100 mODASOMD
-	on virheellinen, koska m-kirjaimen kohdalla olisi voinut olla vaikkapa (R1).
-	Myös esim.
-    		store  R1, 200(R5)  kommentti
-	on virheellinen, vaikka sanan kommentti kohdalla ei voisikaan olla mitään laillista.
-	Tyhjät rivit sitä vastoin ovat OK.
-
-	Pysytään spekseissä.
-    		LOAD R1, =R2
-	on virheellinen, vaikka Koksi ei sitä napannutkaan.
-<-- Teemu
 
 Basic functionality: (Trim between each phase.) 
 	Check if there is a label (8 first are the meaningful ones also must have one non-number))
