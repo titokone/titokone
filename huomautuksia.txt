@@ -12,5 +12,6 @@ Control      SR 23.3.   compile-metodin parametrin‰ TTK91Source, ei Source.
                         Muutettu void setLanguage ResourceBundle 
                         loadLanguageFile(File)-metodiksi. T‰t‰ tarvitaan
                         vain kun k‰ytt‰j‰ valitsee oman kielitiedoston.
+                        loadSettingsFileContents heitt‰‰ IOExceptionin.
 
 CompileInfo  AT 23.3.	SetMemoryLine-metodin parametri value on String, ei int.
