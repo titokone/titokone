@@ -5,28 +5,86 @@ public class Debugger{
     // a 'command cycle complete', which returns the delta object for 
     // the gui. Contains eg. the commentary. Processor can then return it 
     // back to ControlBridge.
-    /** Constructor for Debugger. 
-     */
+   
+    private String language = 'English';
+
     public static final short NOOPERATION = 0;
     public static final short BASIC_OPERATION = 1;
     public static final short ALU_OPERATION = 2;
     public static final short JUMP_OPERATION = 3;
     public static final short OTHER_OPERATION = 4;
 
+    public static final short IMMEDIATE = 0;
+    public static final short DIRECT = 1;
+    public static final short DIRECT_REGISTER = 2;
+    public static final short INDIRECT_REGISTER = 3;
+    public static final short INDEXED_DIRECT = 4;
+    public static final short INDEXED_INDIRECT= 5;
+    public static final short INDEXED_DIRECT_REGISTER = 6; 
+    public static final short INDEXED_INDERECT_REGISTER = 7;
+
+
     private RunInfo info;
     private String comments;
     private String statusMessage;
     
-    public Debugger(){}
+    public Debugger(String language){}
 
     /** This method tells debugger that a new cycle has been started. It
      initiates parameter values and stores old PC and IR. */
     public void cycleStart(int lineNumber, String lineContents, int oldPC, 
-			   int newPC, int oldSP, int newSP, int FP){ }
+			   int newPC, int oldSP, int newSP, int oldFP,
+			   int newFP){ }
 
 /*-------- Memoryfetch types ---------*/
-// joitain viel‰ puutuu vai puuttuuko sittenk‰‰n
+
     public void memoryFetchType(int i){ }
+    public void numberOfFetches(int i){ }
+
+    public void setOperationType(int i){}
+ 
+    
+    public void runCommand(int opcode, int firstOperand, int memoryFetches,
+			   int indexRegister, int ADDR){ }
+
+    public void selfChangingCode(int lineNumber, int binary, 
+				 String newContents){}
+
+    public void noOperation(){}
+
+    public void setValueAtADDR(int value){}
+
+    public void setChangedRegisters(int[][] registers){}
+
+    public void setChangedMemoryLines(int[][] lines){}
+
+    public void setALUResult(int result){}
+
+    public void setCompareResult(int whichBit, boolean status){}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/** This method tells debugger that a value was loaded to a given 
 	    register.

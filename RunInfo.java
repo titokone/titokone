@@ -1,3 +1,6 @@
+package fi.hu.cs.titokone;
+
+
 /** This class tells GUIBrain what the processor has done. RunDebugger 
 creates objects from this class and passes them to onwards.*/
 
@@ -5,6 +8,7 @@ creates objects from this class and passes them to onwards.*/
 
 public class RunInfo extends DebugInfo{
 
+   
        
     public static final short NOOPERATION = 0;
     public static final short DATA_TRANSFER_OPERATION = 1;
@@ -12,7 +16,7 @@ public class RunInfo extends DebugInfo{
     public static final short JUMP_OPERATION = 3;
     public static final short STACK_OPERATION = 4;
     public static final short SUB_OPERATION = 5;
-    public static final short SERVICE_OPERATION = 6;
+    public static final short SVC_OPERATION = 6;
  
     public static final short IMMEDIATE = 0;
     public static final short DIRECT = 1;
@@ -42,48 +46,65 @@ public class RunInfo extends DebugInfo{
     
     private int memoryFetchType;
     private int numberOfMemoryfetches;
+
+    private int oldPC;
+    private int newPC;
     private int oldSP;
     private int oldFP;
-    private int SP;
-    private int FP;
+    private int newSP;
+    private int newFP;
     private int opcode;
     /** This field contains first operand of the command. */
     private int Rj; 
     /** This field contains index register. */
     private int Ri;
     private int ADDR;
+    private int valueAtADDR;
 
-    private String index;
-    
-    
+    private boolean compareOp;
     private int aluResult;
+    private int SRbit;
+    private boolean compareResult;
     
-    
-    
-    private int[] registerArray;
-   
+    private int 
+
+       
+    private int[][] changedRegisters;
+    private int[][] changedMemory;
     
     
     
     public RunInfo(int lineNumber, String lineContents, int oldPC, int newPC
-		   int oldSP, int newSP, int FP){}
+		   int oldSP, int newSP, int oldFP, int newFP){}
     
     public void setBinary(int binary){}
 
     public void setIndexRegister(int register){}
    
-    public void setChangedCodeAreaData(String symbolic){}
+    public void setFirstOperand(int register, int value){}
+
+    public void setNumberOfFetches(int fetches){}
+
+    public void setADDR(int fetchType, int ADDR){}
+    public void setValueAtADDR(int value){}
+
+    public void setChangedCodeAreaData(int line, int binary, String symbolic){}
+    
+    public void setALUResult(int result){}
+    
+    public void setCompareOperation(int whichSRBit, boolean newValue){}
     
 
     /** This method tells GUIBrain what kind of operation happened.
         @returns int value which represents operation type.*/
     public int whatOperationHappened(){}
     
-    /** This method returns both old and new SP and FP. */
+    /** This method returns both old and new PC, SP and FP. */
     public int[] returnPointers(){}
     
     /** This methot tells GUIBrain how many memoryfetches were made. */
     public int returnMemoryfetches(){}
+
     /** This method tells what kind of memoryfetch was made.*/
     public int returnFetchType(){}
     
@@ -98,7 +119,7 @@ public class RunInfo extends DebugInfo{
     
     /** This method tells GUIBrain which registers changed and what is new
 	value.*/
-    public int[] whatRegisterChanged(){} //??
+    public int[] whatRegisterChanged(){}
     
     /** This method tells GUIBrain which line in data area changed and what is
 	new value.*/
@@ -112,10 +133,17 @@ public class RunInfo extends DebugInfo{
      *value.*/
     public int[] whatIN(){}
 
-    /** This method returns all registers stored into an array. 
-     @return int[] Array containing registers.*/
-    public int[] returnAllRegisters(){}
+    public int returnFirstOperand(){}
+    public int returnIndexRegister(){}
+    public int returnADDR(){}
+    public int returnValueAtADDR(){}
 
+    public int returnALUResult(){}
+
+    public boolean returnCompareOP(){}
+    public int[] returnCompareResult(){}
+
+   
        
     
     

@@ -9,8 +9,12 @@ package fi.hu.cs.titokone;
 public class CompileDebugger {
     
     private CompileInfo info;
+    private String language = 'English';;
+
     private String statusMessage;
     private String comments;
+
+
 
     /*------- Compiler instructions -----------*/
     /** This method tells that an EQU was found and it is added to the 
@@ -44,7 +48,7 @@ public class CompileDebugger {
 
     
     
-    public CompileDebugger(){}
+    public CompileDebugger(String Language){}
 
     public void firstPhase(int lineNumber, boolean lineEmpty){}
     public void firstPhase(int lineNumber, String lineContents){}
