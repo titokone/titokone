@@ -62,3 +62,5 @@ SymbolTable  SR 26.3.   Control (ja Compiler) tarvitsevat definitioneihin tuen, 
 
 Application  SR 27.3.   getSymbolTable() palauttaa pointterin 
                         symbolitauluun, sillä sitä ei voi kloonata.
+
+Settings     SR 27.3.   Lisätty metodi String[] getKeys().
