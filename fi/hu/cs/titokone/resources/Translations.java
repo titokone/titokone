@@ -190,6 +190,7 @@ public class Translations extends ListResourceBundle {
       {"I/O error while reading settings file: {0}", null}, 
       {"Parse error in settings file.", null},
       {"Titokone out of memory: {0}", null},
+      {"Opened a new k91 source file.", null},
       {"File extension must be k91 or b91", null}, 
       {"Illegal input", null},   
       {"Illegal input. You must insert a number between {0}...{1}", null},
