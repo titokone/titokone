@@ -167,11 +167,12 @@ public class FileHandler {
 	Logger logger = Logger.getLogger(getClass().getPackage().getName());
 	URL[] url = new URL[1];
 
-	// Poistetaan .class tiedostosta. 
+	// Remove .class from the file. Note that package names will not be added. 
+	// We can't determine them sensibly from the file name.
 	className = changeExtension(rbFile, "").getName();
  
 	try {
-	    url[0] = rbFile.toURL(); // MalformedURLException, anyone?
+	    url[0] = rbFile.getParentFile().toURL(); // MalformedURLException, anyone?
 	    URLClassLoader loader = new URLClassLoader(url); // SecurityExcp..
 	    theClass = loader.loadClass(className); // ClassNotFoundExcp..?
 	    // InstantiationException or IllegalAccessException, anyone?
