@@ -17,8 +17,8 @@ public class Debugger extends Translatable{
 
     /** This method tells debugger that a new cycle has been started. It
      initiates parameter values and stores old PC and IR. */
-    public void cycleStart(int lineNumber, int oldPC, int newPC, int IR, int SP,
-                            int FP, String lineContents){ }
+    public void cycleStart(int lineNumber, int oldPC, int newPC, int IR, 
+			   int SP, int FP, String lineContents){ }
 
 /*-------- Memoryfetch types ---------*/
 // joitain vielä puutuu
@@ -37,13 +37,16 @@ public class Debugger extends Translatable{
 
     public void indirectRegister(int toregister, int fromregister, int  ...){ }
     
-    /** This method tells debugger that an indexed direct memoryfetch was used. */
-    public void indexedDirect(int toregister, int index, int where, int value){ }
+    /** This method tells debugger that an indexed direct memoryfetch was 
+	used. */
+    public void indexedDirect(int toregister, int index, int where, 
+			      int value){ }
 
     /** This method tells debugger that an indexed direct from register 
         memoryfetch was used. */
     public void indexedDirectRegister(int toregister, int index, 
-                                        int fromregister, int where, int value){ }
+                                        int fromregister, int where, 
+				      int value){ }
  	
     /** This method tells debugger that an indirect memoryfetch was used. */
     public void indirect(int toregister, int first, int second, int value){ }
@@ -59,46 +62,46 @@ public class Debugger extends Translatable{
     public void noOperation(){ }
 
     /** Store/Load */
-    public void store(String command, int Ri, int Rj){}
+    public void store(int Ri, int Rj){}
     
-    public void load(String command, int Ri, int Rj){}
+    public void load(int Ri, int Rj){}
 
-    public void in(String command, int device, int value){ }
+    public void in(int device, int value){ }
 
-    public void out(String command, int device, int value){ }
+    public void out(int device, int value){ }
 
     /* ALU */
 
-    public void alu(String command, String symbol, int result){}
+    public void alu(String symbol, int result){}
 
 
 		      
-    public void compare(String command, int SR, int Ri, int Rj){ }
+    public void compare(int SR, int Ri, int Rj){ }
  
-    public void jump(String command, int where){ }
+    public void jump(int where){ }
 
-    public void conditionalJump(int SRIndex,  String command, int where, 
-                                boolean conditionTrue) {}
+    public void conditionalJump(int SRIndex, int where, boolean conditionTrue)
+    {}
  
     /* Other */
 
-    public void call(String command, int newSP, int newFP){}
+    public void call(int newSP, int newFP){}
 
-    public void exit(String command, int newSP, int newFP){}
+    public void exit(int newSP, int newFP){}
 
-    public void push(String command, int newSP, int value){}
+    public void push(int newSP, int value){}
    
-    public void pop(String command, int newSP, int value){}
+    public void pop(int newSP, int value){}
 
-    public void pushr(String command, int newSP, int[] values){}
+    public void pushr(int newSP, int[] values){}
 
-    public void popr(String command, int newSP, int[] values){}
+    public void popr(int newSP, int[] values){}
 
-    public void svc(String command, int serviceid){}
+    public void svc(int serviceid){}
   
 
-	/** This method tells debugger that a command cycle was completed and it 
-   should return a debuginfo package.
+	/** This method tells debugger that a command cycle was completed and
+	    it should return a debuginfo package.
 	@returns DebugInfo
 	*/
 
