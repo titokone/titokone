@@ -90,11 +90,11 @@ public class RunInfo extends DebugInfo{
     public String returnLineContents(){}
     
     /** */
-    public int returnBinaryCommand(){}
+    public int returnBinary(){}
     
     /** This method tells GUIBrain which registers changed and what is new
 	value.*/
-    public int[] whatRegisterChanged(){}
+    public int[] whatRegisterChanged(){} //??
     
     /** This method tells GUIBrain which line in data area changed and what is
 	new value.*/
@@ -107,6 +107,7 @@ public class RunInfo extends DebugInfo{
     /** This method tells GUIBrain what was result of an IN command (device and
      *value.*/
     public int[] whatIN(){}
+
     /** This method returns all registers stored into an array. 
      @return int[] Array containing registers.*/
     public int[] returnAllRegisters(){}
