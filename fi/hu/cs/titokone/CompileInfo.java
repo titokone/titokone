@@ -4,8 +4,6 @@ package fi.hu.cs.titokone;
     CompileDebugger creates objects from this class and passes them to the 
     GUIBrain.
 */
-
-
 public class CompileInfo extends DebugInfo {
   // Variables common to both rounds.
   
@@ -15,9 +13,11 @@ public class CompileInfo extends DebugInfo {
     public static final short FINALIZING = 3; 
  
     private short phase;
+
   /** This field contains the number of the line being processed or 
       -1 during the finalizing phase. */
   private int lineNumber;
+
   private String lineContents;
  
 
@@ -28,27 +28,30 @@ public class CompileInfo extends DebugInfo {
       empty (or consisted of whitespace only), the true value here says 
       that other checks can be skipped. */
   private boolean lineEmpty = false;
+
   /** This field contains the name of a symbol found on this line 
       from the parameter field. It will be set to "" if no symbol 
       was found on this line. See also symbolValue, symbolDefined and
       label variables. */
   private String symbolName = "";
+
   /** This field is true if the symbol's value was also defined on this
       line. In this case, the value is set in symbolValue. */
   private boolean symbolDefined = false;
+
   /** This field contains the value of the symbol found. If symbolDefined
       is false, the value in this field should be ignored. */
   private int symbolValue;
 
-    /** This field contains the address of the symbol.*/
-    private int symbolAddress;
+  /** This field contains the address of the symbol.*/
+  private int symbolAddress;
 
-    /** This field contains information if a symbol was foud.*/
-    private boolean symbolFound;
-    /** This field contains information if a label was found.*/
-    private boolean labelFound;
+  /** This field contains information if a symbol was foud.*/
+  private boolean symbolFound;
+  
+  /** This field contains information if a label was found.*/
+  private boolean labelFound;
 
- 
   /** This field contains the name of a label found from the beginning of
       this line. It will be set to "" if no label was found on this line.*/
   private String labelName = "";
@@ -163,89 +166,89 @@ public class CompileInfo extends DebugInfo {
     /** This message tells that an empty line or line containing only 
 	whitespaces was compiled.
     */
-    public boolean lineEmpty(){}
+    public boolean returnLineEmpty(){}
     
     /** This method returns current phase as a short. 0 for first round, 1 for
 	finalizing first round, 2 for second and 3 for final.
 	@return Short containing phase.
     */
-    public short getPhase(){}
+    public short returnPhase(){}
 
     /** This method return symbolic contents of the line.
 	@return String containing comments.
     */
-    public String getLineContents(){}
+    public String returnLineContents(){}
 
     /** This method returns found symbolname.
 	@return String containing the name.
     */
-    public String getSymbolName(){}
+    public String returnSymbolName(){}
 
     /** This method returns true if a symbol was defined.
 	@return boolean containing information if symbol was defined.
     */
-    public boolean symbolDefined(){}
+    public boolean returnSymbolDefined(){}
 
     /** This method returns true if a label was found.
 	@return boolean containing information if label was found.
     */
-    public boolean labelFound(){}
+    public boolean returnLabelFound(){}
 
     /** This method returns true if a symbol was found.
 	@return boolean containing information if symbol was found.
     */
-    public boolean symbolFound(){}
+    public boolean returnSymbolFound(){}
 
     /** This method returns value of current symbol.
 	@return An integer containing symbol's value.
     */
-    public int getSymbolValue(){}
+    public int returnSymbolValue(){}
 
     /** This method returns compiled binary machinecommand represented as an
 	integer value.
 	@return An integer representing machine command.
     */
-    public int getLineBinary(){}
+    public int returnLineBinary(){}
 
     /** This method returns the name of the current label.
 	@return Name of the current label.
     */
-    public String getLabelName(){}
+    public String returnLabelName(){}
 
     /** This method returns value of the current label.
 	@return An integer containing value of the label. */
-    public int getLabelValue(){} 
+    public int returnLabelValue(){} 
 
     /** This method tells GUIBrain that compiler is setting DS area.
      */
-    public boolean definingDS(){} // samoin
+    public boolean returnDefiningDS(){} // samoin
 
     /** This methot tells GUIBrain that compiler is setting DC.
      */
-    public boolean definingDC(){} //samoin
+    public boolean returnDefiningDC(){} //samoin
 
     /** This method returns the value of DC or DS.
 	@return An integer containing value of DC or DS.
     */
-    public int getDValue(){}
+    public int returnValue(){}
 
     /** This method returns true if field finalFinal is set.
 	@return Boolean.
     */
-    public boolean finalPhase(){}
+    public boolean returnFinalPhase(){}
 
     /** This method returns initial SP and FP pointers in an interger array
 	where first value is SP and second is FP.
 	@return An integer array.
     */
-    public int[] getInitPointers(){}
+    public int[] returnInitPointers(){}
 
     /** This method returns memorylines after compiler has finished first 
 	round of compilation. This array contains all codelines but all white
 	spaces and empty lines has been removed.
 	@return String array containing symbolic lines.
     */
-    public String[] getMemory(){}
+    public String[] returnMemory(){}
 
 }
 

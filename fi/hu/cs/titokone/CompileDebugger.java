@@ -3,9 +3,6 @@ package fi.hu.cs.titokone;
 /** This class is used by compiler when it compiles code. For each line 
     compiled compiler asks CompileDebugger to create a CompileInfo object and 
     passes it to the GUIBrain. */
-
-
-
 public class CompileDebugger {
     
     /** This field contains current CompileInfo object. */
@@ -13,9 +10,11 @@ public class CompileDebugger {
 
     /** This field contains current phase of compilation. */
     private int phase;
+
     /** This field contains current statusmessage. */
     private String statusMessage;
-    /** This field contains current comments.This string is created by
+
+    /** This field contains current comments. This string is created by
      * debugger when its different methods are called.*/
     private String comments;
 
@@ -129,15 +128,14 @@ public class CompileDebugger {
     
     /** This method is used when all DC and DS are defined and
     compiler is ready to move to the second phase. Compiler tells
-    debugger what are actual code lines and then what is dataArea in 
-    memory and what it contains. GUIBrain then redraws GUI and writes
+    debugger what are code lines and then what is dataArea in memory
+    and what it contains. GUIBrain then redraws GUI and writes
     codelines leaving binary cells empty. Then it draws data area
     where number of first data line is i+codeArea.length
     @param codeArea String array containing codelines.
-    @param dataArea Integer array containing data, or nulls where 
-    the data has no values.
+    @param dataArea Integer array containing data.
     */
-    public void finalFirstPhase(String[] codeArea, Integer[] dataArea){}
+    public void finalFirstPhase(String[] codeArea, int[] dataArea){}
 
 
 
@@ -168,7 +166,7 @@ public class CompileDebugger {
     
     /** This method sets given memorylines to the given values. It is
 	used in the finalizing first phase of compilation. Compiler
-	uses it to tell GUIBrain what given lines contain.
+	uses it to tell GUIBrain  
 	@param lines An int array where first cell is linenumber and second
 	is the new value.
     */
