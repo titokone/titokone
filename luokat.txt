@@ -24,8 +24,8 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	Animator.java
 2	Application.java                        SR              SR 19.3.
 0	AssariUI.java
-0	Binary.java
-0	BinaryInterpreter.java			
+2	Binary.java						SH 20.3
+2	BinaryInterpreter.java					SH 20.3
 0	CompileConstants.java
 0	CompileDebugger.java					AT 21.3.
 0	CompileInfo.java					AT 21.3.
@@ -38,7 +38,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	GUIBrain.java
 0	GUICompileSettingsDialog.java
 0	GUIRunSettingsDialog.java
-0	Interpreter.java
+2	Interpreter.java					SH 20.3
 0	JTableX.java
 0	LoadInfo.java
 0	Loader.java
@@ -51,7 +51,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	RunDebugger.java
 0	RunInfo.java
 2	Settings.java                           SR              SR 19.3.
-0	Source.java
+0	Source.java						SH 20.3
 3	SymbolTable.java                        ?               SY 20.3
 0	SymbolicInterpreter.java				AT 21.3.
 0	Titokone.java
