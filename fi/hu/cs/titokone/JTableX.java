@@ -3,6 +3,7 @@ package fi.hu.cs.titokone;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.table.*;
+import java.util.logging.Logger;
 
 /** This class is basically just normal JTable with added functionality.
 */
@@ -12,7 +13,7 @@ public class JTableX extends JTable {
 //protected int selectedRow;
 protected int[] selectedRows = { 0 };
 protected boolean areRowsSelected = false;
-
+protected int tryCounter = 0;
 
 
 public JTableX(TableModel dm) {
@@ -101,6 +102,44 @@ public boolean isCellSelected(int row, int column) throws IllegalArgumentExcepti
   }
   return false;
 }
+
+    /** This method is redefined to catch an odd exception we cannot 
+	otherwise seem to affect. It calls the corresponding method 
+	in JTable, catches an ArrayOutOfBoundsException and logs it. 
+	It then tries again a moment later to avoid race conditions. 
+	If after ten attempts the error still occurs, it gives up 
+	and returns null, probably causing an exception upstream. */
+    public Component prepareRenderer(TableCellRenderer renderer, int row, 
+				     int column) {
+	Logger logger;
+	Component result;
+	try {
+	    result = super.prepareRenderer(renderer, row, column);
+	    tryCounter = 0;
+	    return result;
+	}
+	catch(ArrayIndexOutOfBoundsException ghostError) {
+	    logger = Logger.getLogger(getClass().getPackage().getName());
+	    logger.warning(new Message("Our JTable override is causing " +
+				       "odd errors. Retrying in 100 " +
+				       "milliseconds.").toString());
+	    logger.fine(new Message("Full JTable error was: {0}",
+				    ghostError.toString()).toString());
+	    // Sleep for 100 milliseconds to avoid race conditions.
+	    try {
+		Thread.sleep(100); 
+	    }
+	    catch(InterruptedException noMoreSleeping) {}
+	    tryCounter++;
+	    // Try again.
+	    if(tryCounter < 10)
+		return prepareRenderer(renderer, row, column);
+	    else {
+		tryCounter = 0;
+		return null;
+	    }
+	}
+    }
 }
 
 
