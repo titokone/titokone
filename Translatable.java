@@ -13,7 +13,7 @@
     parameters to replace them with, the remaining markers are replaced with 
     empty strings. %%s will become "%s" in the result string, %%%s will
     become "%" + a parameter given. */
-public class Translateable {
+public class Translatable {
     /** This function takes a translatable string and returns the string
 	translated. %% is replaced with %, %s is replaced with 
 	empty strings. 

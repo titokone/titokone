@@ -3,7 +3,7 @@
     to ask for replacements to strings. While Translatable does not know what
     language the system should at this very moment speak, Translator has
     setLanguage() and getLanguage() methods for controlling this. It 
-    reads the translateables from a file and does not replace anything within
+    reads the translatables from a file and does not replace anything within
     them as it returns the translated strings. */
 public class Translator {
     private statuc String languageCode;
