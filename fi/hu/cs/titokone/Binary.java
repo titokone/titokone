@@ -44,7 +44,7 @@ public class Binary {
 	i++;
 	/* Check if reserved line ___code___ is found.*/
 	if(!b91[i].equalsIgnoreCase("___code___"))
-	    throw new ParseException(new Message("___code__ is"+
+	    throw new ParseException(new Message("___code___ is "+
 						 "missing.").toString(),i+1);
 	i++;
 	
@@ -90,7 +90,7 @@ public class Binary {
 		//System.out.println(s);
 		if(s.equals(""))
 		    throw new ParseException(new Message("Invalid command on"+
-							 "line: {0}", 
+							 " line: {0}", 
 							 ""+(i+1)).toString(),
 					     i+1); 
 		
@@ -99,7 +99,7 @@ public class Binary {
 	
 	    if(i-3!=areaLength)
 		throw new ParseException(new Message("Invalid number of " + 
-						 "datalines").toString(), i+1);
+						 "code lines.").toString(), i+1);
 	}
 
 	if(!b91[i].equalsIgnoreCase("___data___"))
@@ -132,7 +132,7 @@ public class Binary {
 
 	i++;
 	areaLength +=i;
-	System.out.println(i+" " +areaLength);
+	//System.out.println(i+" " +areaLength);
 	for (int j = i;j<areaLength;j++){
 	    //System.out.println(b91[j]+" "+j);
 	    try{
@@ -178,9 +178,20 @@ public class Binary {
 						 "missing.").toString(),
 				     i+1);
 
-	this.contents="";
+	int EOF=i; //line containing ___end___, following lines should
+	i++;       //contain only whitespaces 
+	
+	while(i<b91.length){
+	    
+	    if(!b91[i].equals(""))
+		throw new ParseException(new Message("Lines after "+
+						  "___end___").toString(),i+1);
+	    i++;
+	}
 
-	for (int l=0;l<b91.length;l++){
+	this.contents="";
+	//Assembling parsed b91 array to string
+	for (int l=0;l<=EOF;l++){
 	    //this.contents= this.contents +b91[l]+"\n";
 	    this.contents= this.contents +b91[l];
 	    this.contents+=System.getProperty("line.separator","\n");
@@ -217,7 +228,7 @@ public class Binary {
 
 	Vector code = new Vector();
 	Vector data = new Vector();
-	String[] b91=contents.split("\n");
+	String[] b91=contents.split(System.getProperty("line.separator","\n"));
 	for (int i = 0 ; i<b91.length; i++)
 	    b91[i].trim();
 	int i=0;
@@ -254,7 +265,7 @@ public class Binary {
 		i++;	    
 	}
 	}catch(Exception e){
-	    throw new ParseException(new Message("Invalid symbol value on "+
+	    throw new ParseException(new Message("Invalid data value on "+
 						 "line: {0}",
 						 ""+(i+1)).toString(),i+1);
 	}
@@ -345,17 +356,26 @@ public class Binary {
 
 	s+="___code___";
 	s+=System.getProperty("line.separator", "\n");
+	
+	if(length>0)
+	    s+=+0+" "+(length-1);
+	else 
+	    s+="0 0";
 
-	s+=+0+" "+(length-1); //HUOM Jos code = 0
 	s+=System.getProperty("line.separator", "\n");
 
 	for(int i =0; i<length;i++)
 	    s+=code[i].getBinary()+System.getProperty("line.separator", "\n");
 	
 	length=code.length+data.length;
-	s+="___data___"; //HUOM jos data = 0
+	s+="___data___";
 	s+=System.getProperty("line.separator", "\n");
-	s+=""+code.length+" "+(length-1)+"\n";
+
+	if(data.length>0)
+	    s+=""+code.length+" "+(length-1);
+	else
+	    s+=""+code.length+" "+code.length;
+	s+=System.getProperty("line.separator", "\n");
 
 	for(int i = 0; i<data.length;i++){
 	    s+=""+data[i].getBinary();
