@@ -261,7 +261,7 @@ public class Translations_en extends ListResourceBundle {
       {"B91 binary", null},   
       {"K91 source", null},  
       {"Class file", null},
-      {"Memory contents erased", null}
+      {"Memory contents erased", null},
       // Class: GUICompileSettingsDialog
       // (Set compiling options already defined in GUI.)
       {"Apply", null},
