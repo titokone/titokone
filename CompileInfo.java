@@ -21,6 +21,9 @@ public class CompileInfo extends DebugInfo {
   private String lineContents;
   // Variables for first round.
 
+    /** This array contains codelines after first round. */
+    String[] memory;
+
   /** This field is by default false, but if the compiled line was 
       empty (or consisted of whitespace only), the true value here says 
       that other checks can be skipped. */
@@ -138,13 +141,21 @@ public class CompileInfo extends DebugInfo {
     */
     public void setMemoryline(int lineNumber, int value){}
 
+    /** This method sets memory array to contain all codelines after first
+	round of compilation. It contains only symbolic lines.
+	@param memory array containing lines.
+    */
+    public void setMemory(String[] memory){}
+
+    
+
     /** This message tells that an empty line or line containing only 
 	whitespaces was compiled.
     */
     public boolean returnLineEmpty(){}
     
     /** This method returns current phase as a short. 0 for first round, 1 for
-	second and 2 for final.
+	finalizing first round, 2 for second and 3 for final.
 	@return Short containing phase.
     */
     public short returnPhase(){}
