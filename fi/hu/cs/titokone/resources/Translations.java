@@ -35,7 +35,10 @@ public class Translations extends ListResourceBundle {
        for(int i = 0; i < emptyContents.length; i++) {
          contents[i] = new String[2];
          contents[i][0] = emptyContents[i][0];
-         contents[i][1] = emptyContents[i][0];
+         if(emptyContents[i][1] == null)
+           contents[i][1] = emptyContents[i][0];
+         else 
+           contents[i][1] = emptyContents[i][1];
        }
      }
      return contents;
@@ -48,7 +51,50 @@ public class Translations extends ListResourceBundle {
       // Remove lines which you do not wish to translate completely. Leaving
       // in a value of "" will translate the message to "" as well.
 
-      // Class: Animator, not processed yet - TODO.
+      // Class: Animator
+      // General messages:
+      { "Registers", null },
+      { "Control unit", null },
+      { "MMU", null },
+      { "ALU", null },
+      { "External device", null },
+      { "Memory", null },
+      { "Current command: ", null },
+      { "Fetch the next instruction from memory slot {0} to IR and " +
+        "increase PC by one.", null },
+      { "No-operation command completed.", null },
+      { "Fetch second operand from memory slot {0}.", null },
+      { "Indirect memory addressing mode.", null },
+      { "1: Fetch indexing value from memory slot {0}.", null }, 
+      { "2: Fetch second operand from memory slot {0}.", null },
+      { "Write value {0} from register R{1} to memory slot {2}.", null }, 
+      { "Load value {0} to register R{1}.", null },
+      { "Read value {0} from device {1} to register R{2}.", null },
+      { "Write value {0} from register R{1} to device {2}.", null },
+      { "Copy register R{0} to ALU IN1.", null },
+      { "Copy second operand to ALU IN2.", null },
+      { "ALU computes the result.", null },
+      { "Copy ALU result to register R{0}", null },
+      { "ALU computes the comparison result.", null }, 
+      { "0=greater, 1=equal, 2=less", null },
+      { "Set comparison result to SR", null },
+      { "Branching command - branching condition is false, so do nothing.", 
+        null },
+      { "Branching command - branching condition is true, so update PC.",
+        null },
+      { "Save new PC to TR", null },
+      { "Increase stack pointer R{0} by one and push PC to stack.", null },
+      { "Increase stack pointer R{0} by one and push FP to stack.", null },
+      { "Copy stack pointer to FP.", null },
+      { "Update PC.", null },
+      { "Pop PC from stack and decrease stack pointer R{0} by one.", null },
+      { "Pop FP from stack and decrease stack pointer R{0} by one.", null },
+      { "Decrease {0} parameters from stack pointer R{1}.", null },
+      { "Increase stack pointer R{0} by one, then write second operand to " +
+        "stack", null },
+      { "Read value from stack to R{0}, then decrease stack pointer R{1} " +
+        "by one.", null },
+      { "Supervisor call to operating system's services.", null },
 
       // Class: Application.
       // General messages: (none)
