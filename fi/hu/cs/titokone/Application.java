@@ -4,7 +4,6 @@ import fi.hu.cs.ttk91.TTK91Application;
 import fi.hu.cs.ttk91.TTK91NoKbdData;
 import fi.hu.cs.ttk91.TTK91NoStdInData;
 import java.util.logging.Logger;
-import java.util.StringTokenizer;
 
 /** This class represents a compiled TTK-91-application. It also contains 
     information about what has gotten printed during its running and 
@@ -13,7 +12,7 @@ public class Application implements TTK91Application {
     /** This field lists the delimiters accepted as any-combination 
 	delimitation markup in a string intended for either keyboard
 	or stdin input. */
-    public static final String DELIMITERS = " \n\r\t\f,.:;";
+    public static final String DELIMITERS = "[ \n\r\t\f,.:;]+";
 
     /** This array contains the code to the application; one command
 	per line. The initial FP value can be calculated from 
@@ -33,7 +32,7 @@ public class Application implements TTK91Application {
     private SymbolTable symbols;
 
     /** Stdout and crt store the outputs of this application. */
-    private String stdout, crt;
+    private String stdout = "", crt = "";
     /** Stdincontent and kbdcontent store the possible preset input 
 	of this application, and stdinpointer and kbdpointer point to
 	the position that should be read next. */
@@ -75,9 +74,9 @@ public class Application implements TTK91Application {
 	else
 	    this.code = new MemoryLine[0];
 	if(data != null)
-	    this.data = data;
+	    this.initialData = data;
 	else
-	    this.data = new MemoryLine[0];
+	    this.initialData = new MemoryLine[0];
 	if(symbols != null)
 	    this.symbols = symbols;
 	else
@@ -92,7 +91,7 @@ public class Application implements TTK91Application {
 	array will be of length 0 if for some reason this application has
 	no code area. */
     public MemoryLine[] getCode() {
-	return code.clone();
+	return (MemoryLine[]) code.clone();
     }
 
     /** This method returns the initial data area of the application with 
@@ -104,7 +103,7 @@ public class Application implements TTK91Application {
 	MemoryLines. The array will be of length 0 if this application has 
 	no initial data area. */
     public MemoryLine[] getInitialData() {
-	return data.clone();
+	return (MemoryLine[]) initialData.clone();
     }
 
     /** This method returns the symbol table containing the application's 
@@ -112,7 +111,7 @@ public class Application implements TTK91Application {
 	@return The application's symbol table, minus global symbols like 
 	HALT, unless they have been overwritten. */
     public SymbolTable getSymbolTable() {
-	return symbols.clone();
+	return symbols; // Note: An actual pointer is returned here.
     }
 
     /** This method stores one more line to the CRT ("screen") memory 
@@ -142,15 +141,16 @@ public class Application implements TTK91Application {
 	their keyboard data via other routes, eg. the user. */
     public int readNextFromKbd() throws TTK91NoKbdData {
 	Logger logger;
-	String[] messageParams = { kbdpointer, kbdcontent.length };;
+	String[] messageParams = { "" + kbdpointer, "" + kbdcontent.length };
 
 	if(kbdpointer >= kbdcontent.length) {
-	    logger = Logger.getLogger(this.getClass().getPackage());
+	    logger = Logger.getLogger(this.getClass().getPackage().getName());
 	    logger.fine(new Message("Application has no more keyboard data, " +
 				    "read: {0}, buffer length {1}.", 
-	                            messageParams));
+	                            messageParams).toString());
 	    throw new TTK91NoKbdData(new Message("No more keyboard data " +
-						 "stored on application."));
+						 "stored on " +
+						 "application.").toString());
 	}
 	else {
 	    return kbdcontent[kbdpointer++]; // increment post-indexing.
@@ -169,15 +169,16 @@ public class Application implements TTK91Application {
 	data via other routes, eg. by reading from some actual file. */
     public int readNextFromStdIn() throws TTK91NoStdInData {
 	Logger logger;
-	String[] messageParams = { stdinpointer, stdincontent.length };
-	
+	String[] messageParams = { "" + stdinpointer, 
+				   "" + stdincontent.length };
 	if(stdinpointer >= stdincontent.length) {
-	    logger = Logger.getLogger(this.getClass().getPackage());
+	    logger = Logger.getLogger(this.getClass().getPackage().getName());
 	    logger.fine(new Message("Application has no more stdin data, read: " +
 				    "{0}, buffer length {1}.", 
-				    messageParams));
-	    throw new TTK91NoStdInData(new Message("No more stdin data stored " +
-						   "on application."));
+				    messageParams).toString());
+	    throw new TTK91NoStdInData(new Message("No more stdin data " +
+						   "stored on " +
+						   "application.").toString());
 	}
 	else {
 	    return stdincontent[stdinpointer++]; // increment post-indexing.
@@ -190,13 +191,13 @@ public class Application implements TTK91Application {
         @return True if the string would be valid input, false 
         otherwise. */
     public static boolean checkInput(String input) {
-	StringTokenizer stringChopper;
+	String[] pieces;
 	if(input == null)
 	    return false;
-	stringChopper = new StringTokenizer(input);
-	while(stringChopper.hasMoreTokens()) {
+	pieces = input.split(DELIMITERS);
+	for(int i = 0; i < pieces.length; i++) {
 	    try {
-		Integer.parseInt(stringChopper.nextToken());
+		Integer.parseInt(pieces[i]);
 	    }
 	    catch(NumberFormatException notParseableToInteger) {
 		return false;
@@ -236,29 +237,27 @@ public class Application implements TTK91Application {
 	@throws IllegalArgumentException If the input string is not valid. */ 
     public void setKbd(String input) {
 	String errorMessage;
-	String logMessageParams = { input, "" };
-	StringTokenizer stringChopper;
+	String[] logMessageParams = { input, "" };
+	String[] pieces;
 	Logger logger;
-	int i;
 
 	if(!checkInput(input)) {
 	    errorMessage = new Message("Keyboard input string \"{0}\" invalid, " + 
 				       "should be eg. \n-separated list of " +
-				       "integers.").toString();
-	    throw new IllegalArgumentException(new Message(errorMessage, input));
+				       "integers.", input).toString();
+	    throw new IllegalArgumentException(errorMessage);
 	}
 	else {
-	    stringChopper = new StringTokenizer(input, DELIMITERS);
-	    kbdcounter = 0;
-	    kbdcontent = new int[stringChopper.countTokens()];
-	    i = 0;
-	    while(stringChopper.hasMoreTokens()) {
-		kbdcontent[i++] = Integer.parseInt(stringChopper.nextToken());
-	    }
-	    logger = Logger.getLogger(this.getClass().getPackage());
+	    pieces = input.split(DELIMITERS);
+	    kbdpointer = 0;
+	    kbdcontent = new int[pieces.length];
+	    for(int i = 0; i < pieces.length; i++) 
+		kbdcontent[i] = Integer.parseInt(pieces[i]);
+	    logger = Logger.getLogger(this.getClass().getPackage().getName());
 	    logMessageParams[1] = "" + kbdcontent.length;
-	    logger.fine(new Message("Accepted \"{0}\" as keyboard input, tokens " +
-				    "found: {1}.", logMessageParams));
+	    logger.fine(new Message("Accepted \"{0}\" as keyboard input, " +
+				    "tokens found: {1}.", 
+				    logMessageParams).toString());
 	}
 							   
     }
@@ -271,29 +270,27 @@ public class Application implements TTK91Application {
 	@throws IllegalArgumentException If the input string is not valid. */ 
     public void setStdIn(String input) {
 	String errorMessage;
-	String logMessageParams = { input, "" };
-	StringTokenizer stringChopper;
-	int i;
+	String[] logMessageParams = { input, "" };
+	String[] pieces;
+	Logger logger;
 
 	if(!checkInput(input)) {
 	    errorMessage = new Message("Stdin input string \"{0}\" invalid, " + 
 				       "should be eg. \n-separated list of " +
-				       "integers.").toString();
-	    throw new IllegalArgumentException(new Message(errorMessage, input));
+				       "integers.", input).toString();
+	    throw new IllegalArgumentException(errorMessage);
 	}
 	else {
-	    stringChopper = new StringTokenizer(input, DELIMITERS);
-	    stdincounter = 0;
-	    stdincontent = new int[stringChopper.countTokens()];
-	    i = 0;
-	    while(stringChopper.hasMoreTokens()) {
-		stdincontent[i++] = Integer.parseInt(stringChopper.nextToken());
-	    }
-	    logger.getLogger(this.getClass().getPackage());
+	    pieces = input.split(DELIMITERS);
+	    stdinpointer = 0;
+	    stdincontent = new int[pieces.length];
+	    for(int i = 0; i < pieces.length; i++) 
+		stdincontent[i] = Integer.parseInt(pieces[i]);
+	    logger = Logger.getLogger(this.getClass().getPackage().getName());
 	    logMessageParams[1] = "" + stdincontent.length;
-	    logger.fine(new Message("Accepted \"{0}\" as stdin input, tokens " +
-				    "found: {1}.", 
-	                            logMessageParams));
+	    logger.fine(new Message("Accepted \"{0}\" as stdin input, " +
+				    "tokens found: {1}.", 
+	                            logMessageParams).toString());
 	}
     }
 }
