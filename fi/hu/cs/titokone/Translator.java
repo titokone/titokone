@@ -7,8 +7,6 @@ import java.util.Locale;
 import java.util.logging.Logger;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
-import java.net.URL;
-import java.net.URLClassLoader;
 
 /** This class deals with translating strings. It also remembers which
     language is currently set, but does not know specifically what 
