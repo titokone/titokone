@@ -1,4 +1,4 @@
-//package fi.hu.cs.titokone;
+package fi.hu.cs.titokone;
 
 import java.util.HashMap;
 
