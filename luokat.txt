@@ -1,0 +1,58 @@
+Tämä tiedosto seuraa luokkien etenemistä eri vaiheissa. Jos otat luokan käsittelyyn, merkitse 
+itsesi esim. tekijä kohtaan, jotta muut tietävät, että olet tekemässä luokkaa. Tämä ei tarkoita, 
+etteikö useampi kuin yksi voisi toteuttaa samaa luokkaa, mutta helpottaa huomattavasti jos 
+täältä näkee kuka vastaa kyseisestä luokasta jos tulee ongelmia tai kysyttävää.
+
+Kirjoittakaa tiedostoon TODO-tagi jos jätätte jotain totettamatta. On helppo etsiä jokaisesta 
+luokasta noita samanlaisia tageja, ja voidaan välttyä "unohtamiselta". 		--Antti 17.03.2004
+
+Vaiheet 0 Suunnittelu kesken
+	1 Suunniteltu
+	2 Koodaus aloitettu
+	3 Koodattu
+	4 Testaus aloitettu
+	5 Testattu
+
+	
+Esim:
+Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
+2	Luokat.txt				AT 17.03.	AT 17.03.
+
+
+Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
+
+0	Animator.java
+0	Application.java
+0	AssariUI.java
+0	Binary.java
+0	BinaryInterpreter.java
+0	CompileConstants.java
+0	CompileDebugger.java
+0	CompileInfo.java
+0	Compiler.java		
+0	Control.java
+0	DebugInfo.java
+0	Debugger.java
+0	FileHandler.java
+0	GUI.java
+0	GUIBrain.java
+0	GUICompileSettingsDialog.java
+0	GUIRunSettingsDialog.java
+0	Interpreter.java
+0	JTableX.java
+0	LoadInfo.java
+0	Loader.java
+0	MemoryLine.java
+0	Message.java
+0	Processor.java
+0	RandomAccessMemory.java
+0	Registers.java
+0	ResourceLoadFailedException.java
+0	RunDebugger.java
+0	RunInfo.java
+0	Settings.java
+0	Source.java
+0	SymbolTable.java
+0	SymbolicInterpreter.java
+0	Titokone.java
+0	Translator.java
