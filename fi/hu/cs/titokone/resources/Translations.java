@@ -59,10 +59,21 @@ class Translations extends ListResourceBundle {
       { "Accepted \"{0}\" as stdin input, tokens found: {1}.", 
 	"" }, 
 
+      // Class: Settings.
+      // General messages: (none)
+      // Exception messages: 
+      { "value", "" },
+      { "a linebreak", "" },
+      { "Illegal {0} \"{1}\", contains {2}.", "" },
+      { "Illegal {0}: null. Try an empty string instead.", "" },
+      { "Syntax error on line {0}, which was: \"{1}\".", "" },
+      // Log messages: 
+      { "Settings successfully parsed, lines: {0}, unique keys found: {1}.", 
+	"" },
+
       // Class: 
       // General messages: 
       // Exception messages: 
-      // Log messages: 
       // { , ""}, 
       // ... 
 
