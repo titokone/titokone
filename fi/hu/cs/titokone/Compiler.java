@@ -530,7 +530,7 @@ public class Compiler {
 
 	for (int i = 0; i < symbolTable.size(); ++i) {
 	    lineTemp = (String[])symbolTable.get(i);
-	    if (lineTemp[1].trim().length() > 3) {
+	    if (lineTemp[1].trim().length() >= 2) {
 		if (lineTemp[1].substring(0,2).equalsIgnoreCase("ds")) {
 		    dataAreaSize += Integer.parseInt(lineTemp[1].substring(3));
 		} else {
@@ -543,6 +543,8 @@ public class Compiler {
 	if (!defStdin.equals("")) ++dataAreaSize;
 	if (!defStdout.equals("")) ++dataAreaSize;
 
+//System.out.println("data: " + dataAreaSize);
+
 	data = new String[dataAreaSize];
 	String[] newSymbolTableLine = new String[2];
 	newSymbolTableLine[0] = "";
@@ -551,38 +553,39 @@ public class Compiler {
 	int nextMemorySlot = newCode.length;
 	int dsValue = 0;
 
-
 // update variable values to symbolTable
 
 	for (int i = 0; i < symbolTable.size(); ++i) {
 	    lineTemp = (String[])symbolTable.get(i);
-	    if (lineTemp[1].trim().length() > 2) {
+	    if (lineTemp[1].trim().length() >= 2) {
 		if (lineTemp[1].substring(0,2).equalsIgnoreCase("ds")) {
 		    dsValue = Integer.parseInt(lineTemp[1].substring(3));
 		    newSymbolTableLine[0] = lineTemp[0];
 		    newSymbolTableLine[1] = "" + nextMemorySlot;
-		    symbolTable.add(i, newSymbolTableLine);
+		    symbolTable.add(i, newSymbolTableLine.clone());
+		    symbolTable.remove(i + 1);
 		    ++nextMemorySlot;
-		    for (int j = nextPosition; 
-			 j < nextPosition + dsValue; ++nextPosition) {
-			data[j] = "" + 0;		
-		    }		
+		    
+		    for (int j = 0; 
+			 j < dsValue; ++j) {
+			data[j + nextPosition] = "" + 0;		
+		    }
+		    nextPosition += dsValue;
 		} else {
 		    if (lineTemp[1].substring(0,2).equalsIgnoreCase("dc")) {
-			if (lineTemp[1].length() > 3) {
+			if (lineTemp[1].trim().length() > 2) {
 			    data[nextPosition] = lineTemp[1].substring(3);
-			} else { data[nextPosition] = "" + 0; }
-			
+			} else { data[nextPosition] = "" + 0; }			
 			newSymbolTableLine[0] = lineTemp[0];
 			newSymbolTableLine[1] = "" + nextMemorySlot;
-			symbolTable.add(i, newSymbolTableLine);
+			symbolTable.add(i, newSymbolTableLine.clone());
+			symbolTable.remove(i + 1);
 			++nextMemorySlot;
 			++nextPosition;
 		    }
 		}
 	    }
         }
-
 
 	if (!defStdin.equals("")) {
 	    data[nextPosition] = "STDIN " + defStdin;
@@ -823,6 +826,8 @@ public class Compiler {
         }
 	
 	if (lineAsArrayIndex < lineAsArray.length) { return null; }
+
+//pushr TODO
 
 	if (opcode.length() > 0) {
 	    if (opcode.charAt(0) == 'j' || opcode.charAt(0) == 'J') {
