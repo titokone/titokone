@@ -562,8 +562,7 @@ public class Compiler {
 		    dsValue = Integer.parseInt(lineTemp[1].substring(3));
 		    newSymbolTableLine[0] = lineTemp[0];
 		    newSymbolTableLine[1] = "" + nextMemorySlot;
-		    symbolTable.add(i, newSymbolTableLine.clone());
-		    symbolTable.remove(i + 1);
+		    symbolTable.set(i, newSymbolTableLine.clone());
 		    ++nextMemorySlot;
 		    
 		    for (int j = 0; 
@@ -578,8 +577,7 @@ public class Compiler {
 			} else { data[nextPosition] = "" + 0; }			
 			newSymbolTableLine[0] = lineTemp[0];
 			newSymbolTableLine[1] = "" + nextMemorySlot;
-			symbolTable.add(i, newSymbolTableLine.clone());
-			symbolTable.remove(i + 1);
+			symbolTable.set(i, newSymbolTableLine.clone());
 			++nextMemorySlot;
 			++nextPosition;
 		    }
