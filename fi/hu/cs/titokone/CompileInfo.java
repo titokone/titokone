@@ -18,11 +18,12 @@ public class CompileInfo extends DebugInfo {
       -1 during the finalizing phase. */
   private int lineNumber;
 
+  /** This field hold the contents of a compiled line. */
   private String lineContents;
  
 
-    /** This array contains codelines after first round. */
-    String[] memory;
+  /** This array contains codelines after first round. */
+  String[] memory;
 
   /** This field is by default false, but if the compiled line was 
       empty (or consisted of whitespace only), the true value here says 
@@ -78,12 +79,18 @@ public class CompileInfo extends DebugInfo {
       according to SP_POS and FP_POS. */
   private int[] initPointers;
 
-    /** These fields tells GUIBrain if compiler is setting DC and DS values.
+    /** These fields tells GUIBrain if compiler is setting DC or DS values.
      */
   private boolean definingDS; 
   private boolean definingDC;
-  private int value; // DC/DS.	TODO! rename this. also can't see definingDC!
-
+  /** This field holds the value that represents the size of an area DS reserved. */
+  private int dsSize; 
+  /** This field holds the initial value of a DC constant. */
+  private int dcValue; 
+  /** This field holds the address of a DS. */
+  private int dsAddress;
+  /** This field holds the address of a DC. */
+  private int dcAddress;
   
     /** This is normal constructor for CompileInfo. It sets initial values for
 	phase, lineNumber and lineContents.
@@ -159,9 +166,18 @@ public class CompileInfo extends DebugInfo {
 	lineBinary = binary;
     }
 
-    public void setDefiningDS(int ADDR, int size) { // TODO! dont understand.
+    public void setDefiningDS(int ADDR, int size) { 
 	definingDS = true; 
+   	dsSize = size;
+	dsAddress = ADDR;
     }
+
+    public void setDefiningDC(int ADDR, int value) { 
+	definingDS = true; 
+	dcValue = value;
+	dcAddress = ADDR;
+    }
+
 
     /** This method sets the boolean field finalFinal to true.
      */
@@ -183,8 +199,6 @@ public class CompileInfo extends DebugInfo {
 	@param value New value for the line.
     */
     public void setMemoryline(int lineNumber, String value) {
-/* Value used to be int, but I changed it to a String - Antti */
-
 	this.lineNumber = lineNumber;
 	lineContents = value;
     }
@@ -200,7 +214,7 @@ public class CompileInfo extends DebugInfo {
     /** This message tells that an empty line or line containing only 
 	whitespaces was compiled.
     */
-    public boolean returnLineEmpty() {
+    public boolean getLineEmpty() {
 	return lineEmpty;
     }
     
@@ -208,49 +222,49 @@ public class CompileInfo extends DebugInfo {
 	finalizing first round, 2 for second and 3 for final.
 	@return Short containing phase.
     */
-    public short returnPhase() {
+    public short getPhase() {
 	return phase;
     }
 
     /** This method return symbolic contents of the line.
-	@return String containing comments.
+	@return String containing symbolic representation of a compiled line. 
     */
-    public String returnLineContents() {
+    public String getLineContents() {
 	return lineContents;
     }
 
     /** This method returns found symbolname.
 	@return String containing the name.
     */
-    public String returnSymbolName() {
+    public String getSymbolName() {
 	return symbolName;
     }
 
     /** This method returns true if a symbol was defined.
 	@return boolean containing information if symbol was defined.
     */
-    public boolean returnSymbolDefined() {
+    public boolean getSymbolDefined() {
 	return symbolDefined;
     }
 
     /** This method returns true if a label was found.
 	@return boolean containing information if label was found.
     */
-    public boolean returnLabelFound() {
+    public boolean getLabelFound() {
 	return labelFound;
     }
 
     /** This method returns true if a symbol was found.
 	@return boolean containing information if symbol was found.
     */
-    public boolean returnSymbolFound() {
+    public boolean getSymbolFound() {
 	return symbolFound;
     }
 
     /** This method returns value of current symbol.
 	@return An integer containing symbol's value.
     */
-    public int returnSymbolValue() {
+    public int getSymbolValue() {
 	return symbolValue;
     }
 
@@ -258,46 +272,53 @@ public class CompileInfo extends DebugInfo {
 	integer value.
 	@return An integer representing machine command.
     */
-    public int returnLineBinary() {
+    public int getLineBinary() {
 	return lineBinary;
     }
 
     /** This method returns the name of the current label.
 	@return Name of the current label.
     */
-    public String returnLabelName() { 
+    public String getLabelName() { 
 	return labelName;
     } 
 
     /** This method returns value of the current label.
 	@return An integer containing value of the label. */
-    public int returnLabelValue() {
+    public int getLabelValue() {
 	return labelValue;
     } 
 
     /** This method tells GUIBrain that compiler is setting DS area.
      */
-    public boolean returnDefiningDS() {
+    public boolean getDefiningDS() {
 	return definingDS;
     } 
 
     /** This methot tells GUIBrain that compiler is setting DC.
      */
-    public boolean returnDefiningDC() {
+    public boolean getDefiningDC() {
 	return definingDC;
     } 
 
-    /** This method returns the value of DC or DS.
-	@return An integer containing value of DC or DS.
+    /** This method returns the value of DC.
+	@return An integer containing value of DC.
     */
-    public int returnValue() {
-	return value;
+    public int getDCvalue() {
+	return dcValue;
+    }
+
+    /** This method returns the value of DS.
+	@return An integer containing value of DS.
+    */
+    public int getDSsize() {
+	return dsSize;
     }
 
     /** This method returns true if field finalFinal is set.
 	@return Boolean.
     */
-    public boolean returnFinalPhase() {
+    public boolean getFinalPhase() {
 	return finalFinal;
     }
 
@@ -305,7 +326,7 @@ public class CompileInfo extends DebugInfo {
 	where first value is SP and second is FP.
 	@return An integer array.
     */
-    public int[] returnInitPointers() {
+    public int[] getInitPointers() {
 	return initPointers;
     }
 
@@ -314,7 +335,7 @@ public class CompileInfo extends DebugInfo {
 	spaces and empty lines has been removed.
 	@return String array containing symbolic lines.
     */
-    public String[] returnMemory() {
+    public String[] getMemory() {
 	return memory;
     }
 
