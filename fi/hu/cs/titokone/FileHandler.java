@@ -117,11 +117,17 @@ public class FileHandler {
 	file cannot be written to. 
 	@deprecated This method is not used in practice, as appending the
 	data one line at a time has been found to be more convenient. */
-    public void saveStdOut(String contents, File stdoutFile) 
-	throws IOException {
-	saveStringToFile(contents, stdoutFile);
-    }
+    //public void saveStdOut(String contents, File stdoutFile) 
+    //	throws IOException {
+    //	saveStringToFile(contents, stdoutFile);
+    //}
 
+    /** This method appends data to a stdout file. If the file does
+	not exist, it is created. 
+	@param dataItem The data to append to the file (a newline is
+	added automagically). 
+	@param stdoutFile The file to append to. 
+	@throws IOException If an I/O error occurs. */
     public void appendDataToStdOut(String dataItem, File stdoutFile) 
 	throws IOException {
 	boolean fileExisted = stdoutFile.exists();
