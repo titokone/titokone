@@ -280,5 +280,14 @@ public class RunDebugger{
 	    	
 	    }
     }
+
+    /** This method return the current runinfo
+        after the line is executed
+        @return RunInfo of the current line
+    */
+    public RunInfo cycleEnd() {
+	 return this.info;
+    }
+
   
 }

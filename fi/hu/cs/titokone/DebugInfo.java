@@ -20,14 +20,14 @@ public class DebugInfo{
 	@param statusMessage String containing the message.
     */
     public void setStatusMessge(String statusMessage){ 
-	this.statusMessage = new Message(statusMessage).toString;
+	this.statusMessage = statusMessage;
     }
 
     /** This method sets comments field to given string.
 	@param comments String containing comments.
     */
     public void setComments(String comments){
-	this.comments = new Message(comments).toString;
+	this.comments = comments;
     }
 
 
@@ -35,13 +35,13 @@ public class DebugInfo{
 	@return String containing the message.
     */
     public String getStatusMessage(){
-	return this.statusMessage.toString();
+	return this.statusMessage;
     }
 
     /** This method returns comments.
 	@return String containing comments..
     */
     public String getComments(){
-	return this.comments.toString();
+	return this.comments;
     }
 }
