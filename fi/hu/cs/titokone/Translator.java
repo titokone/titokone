@@ -36,17 +36,24 @@ public class Translator {
 	@return The translated string, if available, or something otherwise
 	usable. */
     public static String translate(String keyString) { 
+	String result = null;
 	try {
-	    return translations.getString(keyString);
+	    result = translations.getString(keyString);
 	}
 	catch(MissingResourceException untranslatedKey) {
+	    result = null;
+	}
+	if(result == null) { // If there was no luck, try the untranslated.
 	    try {
-		return defaultTranslations.getString(keyString);
+		result = defaultTranslations.getString(keyString);
 	    }
 	    catch(MissingResourceException totallyUnknownKey) {
-		return keyString;
+		result = null;
 	    }
-	}	
+	}
+	if(result == null) // If there was still no luck, go for the keystr.
+	    result = keyString;
+	return result;
     }
 
     /** This function translates a template string to the currently
