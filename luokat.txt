@@ -30,7 +30,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	CompileDebugger.java					AT 21.3.
 2	CompileInfo.java					AT 21.3.
 2	Compiler.java						AT 21.3.
-2	Control.java                            AÅ              SR 26.3.
+4	Control.java                            AÅ              SR 26.3.
 3	DebugInfo.java				OA              OA 25.3.
 0	Debugger.java
 3	FileHandler.java					AÅ, SR 5.4.
