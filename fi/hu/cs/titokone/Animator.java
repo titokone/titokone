@@ -517,7 +517,7 @@ public class Animator extends JPanel implements Runnable {
         value[SR] = -1;
         SR_String = "0   0   0...";
         value[BASE] = baseValue;
-        value[LIMIT] = limitValue;
+        value[LIMIT] = 1<<limitValue;
     }
     
     /** Sets animation delay.
