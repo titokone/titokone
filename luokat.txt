@@ -33,7 +33,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	Control.java                            AÅ              SR 26.3.
 3	DebugInfo.java				OA              OA 25.3.
 0	Debugger.java
-2	FileHandler.java					AÅ
+3	FileHandler.java					AÅ, SR 5.4.
 2	GUI.java				AÅ		AÅ
 2	GUIBrain.java				SR		AÅ
 2	GUICompileSettingsDialog.java		AÅ		AÅ
