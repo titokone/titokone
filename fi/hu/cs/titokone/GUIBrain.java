@@ -951,7 +951,9 @@ private void getCurrentSettings() throws IOException {
     settingsFile = new File(fileURI);
   }
   catch (Exception e) {
-    System.out.println("Main path not found!...exiting");
+    System.out.println(new Message("Main path not found! (Trying to locate " +
+				   "etc/settings.cfg.) " +
+				   "...exiting.").toString());
     System.exit(0);
   }
   
@@ -966,7 +968,8 @@ private void getCurrentSettings() throws IOException {
      settingsFileContents = control.loadSettingsFileContents(settingsFile);
   }
   catch (IOException e) {
-    System.out.println("Error while reading settings file.");
+    System.out.println(new Message("I/O error while reading settings "+
+				   "file: {0}", e.getMessage()).toString());
     throw e;
   }
     
@@ -974,14 +977,10 @@ private void getCurrentSettings() throws IOException {
     //System.out.println( control.loadSettingsFileContents(settingsFile) );
     currentSettings = new Settings( control.loadSettingsFileContents(settingsFile) );
   }
-  catch (Exception e) {
-    System.out.println("Parse error in settings file.");
-    try {
-      currentSettings = new Settings(null);
-    }
-    catch (ParseException parseError) {
-      System.out.println("This error shouldn't occur!");
-    }
+  catch (ParseException e) {
+    System.out.println(new Message("Parse error in settings file: {0}", 
+				   e.getMessage()).toString());
+    currentSettings = new Settings();
   }
   
   
@@ -1068,7 +1067,8 @@ private LoadInfo load() {
     loadinfo = control.load();
   }
   catch (TTK91AddressOutOfBounds e) { 
-    gui.showError(new Message("Titokone out of memory").toString());
+    gui.showError(new Message("Titokone out of memory: {0}", 
+			      e.getMessage()).toString());
     return null;
   }
   catch (TTK91NoStdInData e) {
@@ -1077,8 +1077,8 @@ private LoadInfo load() {
     if ( appDefs[Control.DEF_STDIN_POS] != null ) {
       stdinFilePath[0] = appDefs[Control.DEF_STDIN_POS].getPath();
     }
-    
-    gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
+    gui.showError(e.getMessage());
+
     return null;
   }
   
@@ -1125,8 +1125,9 @@ private void saveSettings() {
     control.saveSettings(currentSettings.toString(), settingsFile);
   }
   catch (IOException e) {
-    String[] name = { settingsFile.getName() };
-    gui.showError(new Message("{0} is inaccessible", name).toString());
+    String[] errorParameters = { settingsFile.getName(), e.getMessage() };
+    gui.showError(new Message("{0} is inaccessible: {1}", 
+			      errorParameters).toString());
   }
 }
   
@@ -1193,7 +1194,9 @@ private void findAvailableLanguages() {
     languageFile = new File(fileURI);
   }
   catch (Exception e) {
-    System.out.println("Main path not found!...exiting");
+    System.out.println(new Message("Main path not found! (Trying to locate " +
+				   "etc/settings.cfg.) " +
+				   "...exiting.").toString());
     System.exit(0);
   }
   
@@ -1205,7 +1208,8 @@ private void findAvailableLanguages() {
       languageFileContents = control.loadSettingsFileContents(languageFile);
     }
     catch (IOException e) {
-      System.out.println("IOException in settings file");
+      System.out.println(new Message("I/O error while reading settings " +
+				     "file: {0}", e.getMessage()).toString());
       return;
     }
     String[] languageFileRow = languageFileContents.split("\n|\r|\r\n");
@@ -1216,6 +1220,7 @@ private void findAvailableLanguages() {
        tokens on each row, then everything goes well. Otherwise
        the language.cfg is not a proper language file for this program.
     */
+    // TODO: This should just use a new Settings(String) and .getKeys().
     for (int i=0 ; i<languageFileRow.length ; i++) {
       String[] token = languageFileRow[i].split("=");
       if (token.length != 2) {
