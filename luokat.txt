@@ -48,7 +48,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 3	RandomAccessMemory.java                 ?               SY 19.3
 3	Registers.java                          SY              SY 19.3
 0	ResourceLoadFailedException.java
-0	RunDebugger.java
+2	RunDebugger.java			OA
 2	RunInfo.java				OA
 2	Settings.java                           SR              SR 19.3.
 0	Source.java						SH 20.3
