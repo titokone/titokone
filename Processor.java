@@ -95,7 +95,8 @@ This field has the current instruction being processed
    50 EXIT
    49 CALL
    32-44 Branching operations (set GEL-bits)
-   17-31 ALU operations
+   31 Comp 
+   17-30 ALU operations
    1-4 Data transfer (LOAD, STORE, IN, OUT)
    0 NOP, do nothing
 
@@ -117,7 +118,7 @@ This field has the current instruction being processed
 
 
  */
-    public RunInfo runLine() {}
+    public RunInfo runLine() throws TTK91RunTimeException{}
 
 
 /** Returns the value of given registerID
@@ -176,6 +177,18 @@ This field has the current instruction being processed
 */
 
     private int alu(int command, int param1, int param2) {}
+
+/**
+   Compare-method
+   @param param1 first value to compare (register)
+   @param param2 second value 
+   @return int representing GEL-bit 0=less 1=equal 2=greater
+
+*/
+
+    private int comp(int param1, int param2) {}
+
+
 
 /** 
    Branching
