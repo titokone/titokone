@@ -24,8 +24,11 @@ import java.util.logging.Logger;
 */
 public class Control implements TTK91Core {
     /** This is the memory size that will be used by default, unless 
-	a higher class (GUIBrain) chooses to change the size later. */
-    public static final int DEFAULT_MEMORY_SIZE = 512;
+	a higher class (GUIBrain) chooses to change the size later. 
+	The size is expressed as "the power of two which will give the 
+	wanted memory size"; here 9 means that the actual memory will be 
+	2^9 = 512 words long. */
+    public static final int DEFAULT_MEMORY_SIZE = 9;
 
     /** This field set directs handling of an array containing file
 	definitions set in the application. See getApplicationDefinitions(). */
@@ -51,7 +54,8 @@ public class Control implements TTK91Core {
     public Control(File defaultStdInFile, File defaultStdOutFile) { 
 	fileHandler = new FileHandler();
 	compiler = new Compiler();
-	processor = new Processor(DEFAULT_MEMORY_SIZE);
+	// Create a new processor with a memory size of 2^9.
+	changeMemorySize(DEFAULT_MEMORY_SIZE);
 	this.defaultStdInFile = defaultStdInFile;
 	this.defaultStdOutFile = defaultStdOutFile;
     }
@@ -86,7 +90,7 @@ public class Control implements TTK91Core {
 	STDIN input or the file cannot be opened.
 	@throws IllegalStateException If application is null. */
     public void load() throws TTK91AddressOutOfBounds, TTK91NoStdInData {
-	String errorMessage;
+	String errorMessage = "";
 	boolean pendingException = false;
 	File[] appDefinitions;
 	if(application == null) {
@@ -207,13 +211,20 @@ public class Control implements TTK91Core {
 				       "using the same program.)").toString();
 	    throw new IllegalArgumentException(errorMessage); 
 	}
-	load();
+	try {
+	    load();
+	}
+	catch(TTK91NoStdInData stdinDataWillNotBeAvailable) {
+	    // Ignore it; we'll just see how it goes to run it.
+	    // (On the other hand, TTK91AddressOutOfBounds thrown by 
+	    // load() will be thrown upwards.)
+	}
 	// Run the program a line at a time until the counter becomes
 	// equal to the step count. (The counter is incremented before
 	// comparing to the steps variable.) If the steps was 0, run
-	// infinitely.
+	// infinitely. 
 	while(runLine() != null && steps != 0 && ++counter <= steps)
-	    ; // All is done in the check.
+	    ; // All is done in the check. See runLine().
     }
 
     /** Returns a reference to the RandomAccessMemory object which is
@@ -295,7 +306,11 @@ public class Control implements TTK91Core {
         @return Returns CompileInfo object of the last line compiled.
     */
     public CompileInfo compileLine() throws TTK91CompileException { 
-	return compiler.compileLine();
+	CompileInfo info = compiler.compileLine();
+	// If the compilation is finished, let's store the application.
+	if(info == null) 
+	    application = compiler.getApplication();
+	return info;
     }
     
     /** This runs one next line of the program that is currently
