@@ -42,7 +42,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	JTableX.java
 0	LoadInfo.java
 0	Loader.java
-0	MemoryLine.java
+3	MemoryLine.java                         SY              SY 18.3.
 0	Message.java
 0	Processor.java
 0	RandomAccessMemory.java
