@@ -61,6 +61,9 @@ public class RunInfo extends DebugInfo{
     private int Ri;
     private int ADDR;
     private int valueAtADDR;
+    private int valueOfFirstFetch;
+    private int valueOfSecondFetch;
+
 
     private boolean compareOp;
     private int aluResult;
@@ -73,7 +76,8 @@ public class RunInfo extends DebugInfo{
 
 
     private boolean externalOperation;
-    private int device;
+    private String deviceName;
+    private int deviceNumber;
     private int value;
 
     private int SVCOperation;
@@ -95,6 +99,14 @@ public class RunInfo extends DebugInfo{
 
     public void setNumberOfFetches(int fetches){}
 
+    /** */
+    public void setFirstFetch(int value){}
+
+    /** */
+    public void setSecondFetch(int value){}
+
+
+
     public void setADDR(int fetchType, int ADDR){}
     public void setValueAtADDR(int value){}
 
@@ -104,9 +116,9 @@ public class RunInfo extends DebugInfo{
     
     public void setCompareOperation(int whichSRBit, boolean newValue){}
     
-    public void setIN(int device, int value){}
+    public void setIN(String deviceName, int device, int value){}
     
-    public void setOUT(int device, int value){}
+    public void setOUT(String deviceName, int device, int value){}
     
 
     public void setConditionalJump(int whichBit, boolean status){}
@@ -133,6 +145,12 @@ public class RunInfo extends DebugInfo{
     public int returnFetchType(){}
     
     /** */
+    public int returnValueOfFirstFetch(){}
+
+    /** */
+    public int returnValueOfSecondFetch(){}
+
+    /** */
     public int returnLineNumber(){}
     
     /** */
@@ -156,6 +174,10 @@ public class RunInfo extends DebugInfo{
     /** This method tells GUIBrain what was result of an IN command (device and
      *value.*/
     public int[] whatIN(){}
+    
+    /** This method returns name of the used device.
+	@return String devicename. */
+    public String whatDevice(){}
 
     public int returnFirstOperand(){}
     public int returnIndexRegister(){}

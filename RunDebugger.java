@@ -2,7 +2,7 @@ package fi.hu.cs.titokone;
 
 /** This class produces objects describing what has changed due to the last
     command having been run. */
-public class Debugger{ 
+public class RunDebugger{ 
     // define methods like 'ALU happened, parameters x, y, z' and
     // a 'command cycle complete', which returns the delta object for 
     // the gui. Contains eg. the commentary. Processor can then return it 
@@ -33,7 +33,7 @@ public class Debugger{
     private String comments;
     private String statusMessage;
     
-    public Debugger(){}
+    public RunDebugger(){}
 
     /** This method tells debugger that a new cycle has been started. It
      initiates parameter values and stores old PC and IR. */
@@ -49,6 +49,12 @@ public class Debugger{
     /** This method tells haw many fetches were made.
      @param i Number of fetches.*/
     public void numberOfFetches(int i){ }
+    
+    /** */
+    public void setFirstFetch(int value){}
+
+    /** */
+    public void setSecondFetch(int value){}
 
     /** This method tells what kind of operation was made. 
 	@param i Type of operation. */ 
@@ -77,9 +83,9 @@ public class Debugger{
 
     public void setCompareResult(int whichBit, boolean status){}
 
-    public void setIN(int device, int value){}
+    public void setIN(String deviceName, int devicenumber, int value){}
 
-    public void setOUT(int device, int value){}
+    public void setOUT(String DeviceName, int deviceNumber, int value){}
 
     public void setConditionalJump(int whichSR, boolean status){}
     
