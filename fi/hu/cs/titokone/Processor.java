@@ -136,7 +136,7 @@ public class Processor implements TTK91Cpu {
 /** Initializes processor with new program
     set FP and SP, PC = 0  and return RunInfo
     @return RunInfo created by RunDebugger. */
-    public RunInfo runInit(int initSP, int initFP) {
+    public void runInit(int initSP, int initFP) {
         // TODO RunInfo-olion generointi
         status = TTK91Cpu.STATUS_STILL_RUNNING;
         regs.setRegister (TTK91Cpu.CU_PC, 0);
@@ -147,7 +147,6 @@ public class Processor implements TTK91Cpu {
         
         ram.setCodeAreaLength (initFP+1);
         ram.setDataAreaLength (ram.getSize() -(initFP+1));
-        return null;
     }
 
 /** Process next instruction, 
