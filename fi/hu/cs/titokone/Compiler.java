@@ -1,9 +1,3 @@
-/*
- public Application(MemoryLine[] code, MemoryLine[] data, SymbolTable symbols) {
-*/
-
-
-
 package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.TTK91CompileException;
@@ -720,119 +714,88 @@ public class Compiler {
 	symbolicOpcode = symbolicOpcode.toLowerCase();
 	symbolicOpcode = symbolicOpcode.trim();
 	fieldEnd = symbolicOpcode.indexOf(";");
-	if (fieldEnd != -1) { 
-	    symbolicOpcode = symbolicOpcode.substring(0, fieldEnd); 
+	if (fieldEnd != -1) { symbolicOpcode = symbolicOpcode.substring(0, fieldEnd); }
+
+	String[] lineAsArray = symbolicOpcode.split("[ \t]+");
+	int lineAsArrayIndex = 0;
+
+
+	if (lineAsArrayIndex = lineAsArray.length) { 
+		return new String[] = {"", "", "", "", "", ""}; 
 	}
 
-/*label or opCode*/
+/* label */
+	wordTemp = lineAsArray[lineAsArrayIndex];
 
-	fieldEnd = symbolicOpcode.indexOf(" ");
-	if (fieldEnd == -1) { 
-	    wordTemp = symbolicOpcode.substring(nextToCheck);
-	    fieldEnd = symbolicOpcode.length() -1;  
-	} else {
-	    wordTemp = symbolicOpcode.substring(nextToCheck, fieldEnd);
-	}
 	if (symbolicInterpreter.getOpcode(wordTemp) == -1) { 	
-	    // Try to find a label of a valid form. 
 	    if(!validLabelName(wordTemp))
 		return null;
-	    // REMOVED CODE (This did what the above now does.)
-	    // try to find a label (not a valid opCode)
-	    // label must have one non-number (valid chars A-Ö, 0-9 and _)
-	    //boolean allCharsValid = true;
-	    //boolean atLeastOneNonNumber = false;
-	    //for (int i = 0; i < wordTemp.length(); ++i) {
-	    //if (atLeastOneNonNumber == false) {
-	    //    if (VALIDLABELCHARS.indexOf(wordTemp.charAt(i)) > 9) {
-	    //	atLeastOneNonNumber = true;
-	    //    }
-	    //} 
-	    //if (VALIDLABELCHARS.indexOf(wordTemp.charAt(i)) < 0) {
-	    //    allCharsValid = false;
-	    //	}
-	    //}
-	    //if (atLeastOneNonNumber == false || allCharsValid == false) { 
-	    //	return null;
-	    //}
 	    label = wordTemp;
-	    nextToCheck = fieldEnd;	
-	    while (symbolicOpcode.charAt(nextToCheck) == ' ') { 
-		++nextToCheck; 
-	    }
-	    
-	    fieldEnd = symbolicOpcode.indexOf(" ", nextToCheck);
-	    if (fieldEnd == -1) { 
-		wordTemp = symbolicOpcode.substring(nextToCheck); 
-		fieldEnd = symbolicOpcode.length();
-	    } else { 
-		wordTemp = symbolicOpcode.substring(nextToCheck, fieldEnd); 
-	    }
-	    
-	}	
-	
-	opcode = wordTemp;
-	if (symbolicInterpreter.getOpcode(opcode) < 0) { return null; }
-	nextToCheck = fieldEnd + 1;
+	    ++lineAsArrayIndex;
+	} 
+
+/* opcode */
+	if (lineAsArrayIndex < lineAsArray.length) {
+		opcode = lineAsArray[lineAsArrayIndex];
+		++lineAsArrayIndex;
+		if (symbolicInterpreter.getOpcode(opcode) < 0) { return null; }
+	} else { return null; }
 
 /*first register*/
+	if (lineAsArrayIndex < lineAsArray.length) {
+// first register might end with a ','. Not when push Sp etc.		
+		if (lineAsArray[lineAsArrayIndex].charAt(
+			lineAsArray[lineAsArrayIndex].length() -1) == ',') {
 
-	if (nextToCheck < symbolicOpcode.length()) {
-	    while (symbolicOpcode.charAt(nextToCheck) == ' ') { 
-		++nextToCheck; 
-	    }	
-	    fieldEnd = symbolicOpcode.indexOf(",", nextToCheck);
-	    if (fieldEnd == -1) { 
-		if (symbolicInterpreter.getRegisterId(symbolicOpcode.substring(nextToCheck)) != -1) {
-		    firstRegister = symbolicOpcode.substring(nextToCheck);
-		    fieldEnd = symbolicOpcode.length();
+		        if (symbolicInterpreter.getRegisterId(
+					lineAsArray[lineAsArrayIndex]) != -1) {
+                    		firstRegister = lineAsArray[lineAsArrayIndex].substring(0, 
+					lineAsArray[lineAsArrayIndex].length() -1);
+                    		++lineAsArrayIndex;
+                	}
 		} else {
-		    fieldEnd = nextToCheck - 1;
+			if (symbolicInterpreter.getRegisterId(
+					lineAsArray[lineAsArrayIndex]) != -1) {
+			    firstRegister = lineAsArray[lineAsArrayIndex];
+			    ++lineAsArrayIndex;
+			} 
 		}
-	    } else {
-		if (symbolicInterpreter.getRegisterId(symbolicOpcode.substring(nextToCheck, fieldEnd)) != -1) {
-		    firstRegister = symbolicOpcode.substring(nextToCheck, fieldEnd);
-		}
-	    }
-	    nextToCheck = fieldEnd + 1;
 	}
 
-/*addressingMode*/
+/* addressingMode */
+	if (lineAsArrayIndex < lineAsArray.length) {
+	    if (lineAsArray[lineAsArrayIndex].charAt(0) == '=' || 
+		lineAsArray[lineAsArrayIndex].charAt(0) == '@') {
 
-	if (nextToCheck < symbolicOpcode.length()) {
-	    while (symbolicOpcode.charAt(nextToCheck) == ' ') { 
-		++nextToCheck; 
-	    }
-	    if (symbolicOpcode.charAt(nextToCheck) == '=' || 
-		symbolicOpcode.charAt(nextToCheck) == '@') {
-		addressingMode = "" + symbolicOpcode.charAt(nextToCheck);
-		++nextToCheck;
+		addressingMode = "" + lineAsArray[lineAsArrayIndex].charAt(0);
+
 	    } else { addressingMode = ""; }
 	}
 
 /*address and second register*/
+	if (lineAsArrayIndex < lineAsArray.length) {
+		if (lineAsArray[lineAsArrayIndex].indexOf("(") != -1) {
 
-	if (nextToCheck < symbolicOpcode.length()) {
-	    while (nextToCheck == ' ') { ++nextToCheck; }
-	    if (symbolicOpcode.indexOf("(", nextToCheck) != -1) {
-		if (symbolicOpcode.indexOf(")", nextToCheck) < 
-		    symbolicOpcode.indexOf("(", nextToCheck)) {
-		    return null; 
+		   if (lineAsArray[lineAsArrayIndex].indexOf(")") < 
+	               lineAsArray[lineAsArrayIndex].indexOf("(")) {
+			 return null;
+		   } else {
+			address = lineAsArray[lineAsArrayIndex].substring(
+				addressingMode.length(), 
+				lineAsArray[lineAsArrayIndex].indexOf("(") 
+			);
+			secondRegister = lineAsArray[lineAsArrayIndex].substring(
+                                lineAsArray[lineAsArrayIndex].indexOf("(") + 1,
+				lineAsArray[lineAsArrayIndex].indexOf(")")
+			);
+
+			if (symbolicInterpreter.getRegisterId(secondRegister) == -1) {
+                        	return null;
+                    	}
+		   }
 		} else {
-		    address = symbolicOpcode.substring(nextToCheck, 
-						       symbolicOpcode.indexOf("(", 
-									      nextToCheck));
-			
-		    secondRegister = 
-			symbolicOpcode.substring(symbolicOpcode.indexOf("(", nextToCheck) + 1, 
-						 symbolicOpcode.indexOf(")", nextToCheck));
-		    if (symbolicInterpreter.getRegisterId(secondRegister) == -1) {
-			return null;
-		    }
+		   address = lineAsArray[lineAsArrayIndex].substring(addressingMode.length());
 		}
-	    } else {
-		address = symbolicOpcode.substring(nextToCheck);
-	    }
 	}
 
 	if (symbolicInterpreter.getRegisterId(address) != -1) {
