@@ -647,7 +647,8 @@ public class Compiler {
 	    try { 
 		addressAsInt = Integer.parseInt(lineTemp[4]); 
 	    } catch (NumberFormatException e) {
-		symbolTableEntry = (String[])symbolTable.get(Integer.parseInt((String)symbols.get(lineTemp[4])));
+		Object tempObject = symbolTable.get(Integer.parseInt((String)symbols.get(lineTemp[4])));
+		symbolTableEntry = (String[])tempObject;
 		if (symbolTableEntry[1].equals("")) {
 		    comment = new Message("").toString();
 		    throw new TTK91CompileException(comment);
