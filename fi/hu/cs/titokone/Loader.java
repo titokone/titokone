@@ -16,6 +16,8 @@ public class Loader {
   
   private Processor processor; 
 
+  private BinaryInterpreter binInterpreter;
+
 public Loader(Processor processor) {
   String errorMessage;
   if (processor == null) {
@@ -25,6 +27,7 @@ public Loader(Processor processor) {
       throw new IllegalArgumentException(errorMessage);
   }
   this.processor = processor;
+  binInterpreter = new BinaryInterpreter();
 }
 
 /**You can set the file to load. Each time an application is set to load, the counter is set to 
@@ -45,6 +48,7 @@ public void setApplicationToLoad(Application application){
 	@return Info from the load procedure, null if no application has been set for loading.
 */
 public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
+  int bin;
   String[] messageParameters = new String[2];  
   if (application == null) {
     return null;
@@ -52,7 +56,14 @@ public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
   
   MemoryLine[] code = application.getCode();
   MemoryLine[] data = application.getInitialData();
-  
+  // Add the symbolic values for the initial data area.
+  for(int i = 0; i < data.length; i++) {
+    if(data[i].getSymbolic().equals("")) {
+      bin = data[i].getBinary();
+      data[i] = new MemoryLine(bin, binInterpreter.binaryToString(bin));
+    }
+  }
+
   int FP = code.length - 1;
   int SP = code.length + data.length - 1;
   
@@ -80,8 +91,8 @@ public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
   LoadInfo retValue = new LoadInfo( code, 
                                     wholeDataArea,
                                     application.getSymbolTable(),
-                                    FP,
                                     SP,
+                                    FP,
                                     new Message("Program loaded into memory. FP set to {0}" +
                                                 " and SP to {1}.", 
 						messageParameters).toString() );

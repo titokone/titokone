@@ -113,6 +113,11 @@ private Logger logger;
 public static String DEFAULT_STDIN_FILENAME = "stdin";
 public static String DEFAULT_STDOUT_FILENAME = "stdout";
 
+/** This variable sets whether the initial data area length (up to sp)
+    should be marked by hiding the symbolic versions of lines down from
+    it. */
+protected static boolean ENABLE_DATA_AREA_MARKUP = true;
+
 
 /** This constructor sets up the GUIBrain instance. It calls private
     initialization functions, including findAvailableLanguages(). 
@@ -129,7 +134,7 @@ public GUIBrain(GUI gui, Animator animator) {
     defStdoutFile.createNewFile();
   }
   catch (IOException e) {
-    System.out.println(e.getMessage());
+      logger.info(e.getMessage());
   }
   control = new Control(defStdinFile, defStdoutFile);
   
@@ -159,7 +164,7 @@ public GUIBrain(GUI gui, Animator animator) {
     control.setDefaultStdIn(defStdinFile);
   }
   catch (Exception e) {
-    System.out.println(e.getMessage());
+      logger.info(e.getMessage());
   }
     
     
@@ -178,7 +183,7 @@ public GUIBrain(GUI gui, Animator animator) {
     control.setDefaultStdOut(defStdoutFile);
   }
   catch (Exception e) {
-    System.out.println(e.getMessage());
+    logger.info(e.getMessage());
   }
   
   int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
@@ -281,8 +286,8 @@ public void menuOpenFile(File openedFile) {
 }
 
 
-public static final int MIN_KBD_VALUE = -32767;
-public static final int MAX_KBD_VALUE = 32767;
+public static final int MIN_KBD_VALUE = Integer.MIN_VALUE; //,not -32767;
+public static final int MAX_KBD_VALUE = Integer.MAX_VALUE;//,not 32767;
 
 public boolean enterInput(String input) {
   int inputValue;
@@ -334,8 +339,8 @@ public synchronized void menuRun() {
       catch (IOException e) {
         String[] filename = { stdoutFile.getName() };
         gui.showError(new Message("Error while emptying {0}", filename).toString());
-        System.out.println(e.getMessage());
-        return;
+        logger.warning(e.getMessage());
+        //return; // Allow emptying to fail, since it may not mean anything.
       }
     }
     
@@ -693,6 +698,7 @@ public synchronized void menuEraseMemory() {
     waitForContinueTask();
   
   control.eraseMemory();
+  // The registers should be zeros now; 
   gui.updateReg(GUI.R0, 0);
   gui.updateReg(GUI.R1, 0);
   gui.updateReg(GUI.R2, 0);
@@ -772,8 +778,8 @@ public void menuSetStdin(File stdinFile) {
     gui.showError(e.getMessage());
     return;
   }
-  String[] filename = { stdinFile.getPath() };
-  currentSettings.setValue(Settings.DEFAULT_STDIN, filename[0]);
+  String filename = stdinFile.getPath();
+  currentSettings.setValue(Settings.DEFAULT_STDIN, filename);
   currentSettings.setValue(Settings.STDIN_PATH, "absolute");
   saveSettings();
   
@@ -787,6 +793,7 @@ public void menuSetStdin(File stdinFile) {
     settingsFile.
 */
 public void menuSetStdout(File stdoutFile, boolean append) {
+  String filename = stdoutFile.getPath();
   
   if (append == true) {
     currentSettings.setValue(Settings.STDOUT_USE, "append");
@@ -799,10 +806,9 @@ public void menuSetStdout(File stdoutFile, boolean append) {
   }
   catch (Exception e) {
     gui.showError(e.getMessage());
-    return;
+    //return; // Allow unwriteable stdout file; the exception'll hit later anyway.
   }
-  String[] filename = { stdoutFile.getPath() };
-  currentSettings.setValue(Settings.DEFAULT_STDOUT, filename[0]);
+  currentSettings.setValue(Settings.DEFAULT_STDOUT, filename);
   currentSettings.setValue(Settings.STDOUT_PATH, "absolute");
   saveSettings();
   
@@ -1169,7 +1175,7 @@ private void getCurrentSettings() throws IOException {
 /** This just loads the opened b91-program into Titokone's memory without updating
     GUI anyway. However, GUI is told to show an error message, if the loaded program
     is too large and thus Titokone is out of memory.
-    @returns LoadInfo object, which contains information about the loading process.
+    @return LoadInfo object, which contains information about the loading process.
 */
 private LoadInfo load() {
   
@@ -1217,9 +1223,17 @@ private void loadAndUpdateGUI() {
     int instructionsBinary[] = loadinfo.getBinaryCommands();
     String instructionsSymbolic[] = loadinfo.getSymbolicCommands();
     
-    int dataBinary[] = loadinfo.getData();
-    String dataSymbolic[] = loadinfo.getDataSymbolic();
-    
+    int dataBinary[] = loadinfo.getData(); // Full memory excepting code area.
+    // The symbolic data depends on two things: The Loader should add 
+    // symbolic versions of the initial data area, and the RandomAccessMemory
+    // should add NOPs on 0 lines. The latter does not currently happen,
+    // but can be changed if it is deemed better.
+    String dataSymbolic[];
+    // Only show symbolic forms of the initial data area, not below it?
+    if(GUIBrain.ENABLE_DATA_AREA_MARKUP) 
+      dataSymbolic = loadinfo.getDataAreaSymbolic();
+    else
+      dataSymbolic = loadinfo.getDataSymbolic(); 
     gui.insertToInstructionsTable(instructionsBinary, instructionsSymbolic);
     gui.insertToDataTable(dataBinary, dataSymbolic);
     

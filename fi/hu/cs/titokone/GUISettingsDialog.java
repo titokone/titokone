@@ -23,6 +23,7 @@ protected GUISettingsDialog(Frame ownerFrame, boolean modal) {
 protected ChangeListener stateChangeListener = new ChangeListener() {
   public void stateChanged(ChangeEvent e) {
     applyButton.setEnabled(true);
+    checkCorrespondance((javax.swing.JCheckBox) e.getSource());
   }
 };
 
@@ -50,6 +51,8 @@ protected ActionListener closeButtonActionListener =new ActionListener() {
 		setVisible(false);
 	} 
 };
+
+protected void checkCorrespondance(javax.swing.JCheckBox changee) {}
 
 }
  

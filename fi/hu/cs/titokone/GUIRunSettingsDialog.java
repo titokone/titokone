@@ -66,6 +66,15 @@ public GUIRunSettingsDialog(Frame ownerFrame, boolean modal) {
 	
 }
 
+protected void checkCorrespondance(JCheckBox changee) {
+    if(changee.isSelected()) {// Something was selected: animator -> line-by-line?
+	if(showAnimationCheckBox.isSelected() && !lineByLineCheckBox.isSelected())
+	    lineByLineCheckBox.setSelected(true);
+    }
+    else // Something was unselected: !line-by-line -> !animator?
+	if(showAnimationCheckBox.isSelected() && !lineByLineCheckBox.isSelected())
+	    showAnimationCheckBox.setSelected(false);
+}
 
 public void updateAllTexts() {
   setTitle(new Message("Set running options").toString());

@@ -20,7 +20,7 @@ public class RandomAccessMemory implements TTK91Memory {
         this.size = size;
         memory = new MemoryLine[size];
         for (int i=0; i < size; i++)
-            memory[i] = new MemoryLine (0, null);
+            memory[i] = new MemoryLine (0, "");
     }
 
     /** Returns the size of the memory. Defined in TTK91Memory.

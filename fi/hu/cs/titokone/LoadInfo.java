@@ -81,8 +81,8 @@ public class LoadInfo extends DebugInfo {
   }
   
   
-  /**@return String array that contains the data segment of a program in memory
-             as symbolic commands.
+  /**@return String array that contains the initial data segment of a 
+     program in memory as symbolic commands. 
     */
   public String[] getDataSymbolic() {
     String[] retStr = new String[dataArea.length];
@@ -92,6 +92,19 @@ public class LoadInfo extends DebugInfo {
     return retStr;
   }
   
+  /** @return A string arary containing only the initial data area
+      of the program. getDataSymbolic returns the entire memory minus
+      the code area. The length is max{initSP - initFP, 0}. */
+  public String[] getDataAreaSymbolic() {
+    String[] retStr;
+    int dataAreaLength = initSP - initFP;
+    if(dataAreaLength < 0)
+      dataAreaLength = 0;
+    retStr = new String[dataAreaLength];
+    for(int i=0; i<retStr.length; i++)
+      retStr[i] = dataArea[i].getSymbolic();
+    return retStr;
+  }
   
   public String[][] getSymbolTable() {
     String[] symbols = symbolTable.getAllSymbols();

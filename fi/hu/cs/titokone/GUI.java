@@ -294,8 +294,6 @@ public class GUI extends JFrame implements ActionListener {
 
         public static final String resourceHomeDir = "fi/hu/cs/titokone/";
 
-
-
 /** This is called when ActionEvent of some kind is fired.
 */
 public void actionPerformed(ActionEvent e) { 
@@ -400,8 +398,8 @@ public GUI() {
   }
   enable(GUI.OPEN_FILE_COMMAND);
   
-  manualDialog = new GUIHTMLDialog(this, false, "__MANUAL_FILENAME__");
-  aboutDialog = new GUIHTMLDialog(this, false, "__ABOUT_FILENAME__");
+  manualDialog = new GUIHTMLDialog(this, false, "manual.html");
+  aboutDialog = new GUIHTMLDialog(this, false, "about.html");
  
   print("Updating texts...");        
   updateAllTexts();
@@ -757,6 +755,9 @@ public void insertToDataTable(String[] dataContents) {
 /** Functionally this is exactly similar to insertToDataTable(String[]), but this
     just takes int[] as parameter. This is here just for convenience, because
     converting a String-table to int-table would require an extra for-loop.
+    The data array determines the length of the contents to be inserted.
+    If symbolic is shorter than data, the remaining spaces are filled with 
+    empty strings. 
     @param data Contents of the second column.
 */
 public void insertToDataTable(int[] data, String[] symbolic) {
@@ -768,7 +769,10 @@ public void insertToDataTable(int[] data, String[] symbolic) {
   for (int i=0 ; i<rows ; i++) {
     tableContents[i][0] = ""+ (i + instructionsTableRowCount);
     tableContents[i][1] = ""+data[i];
-    tableContents[i][2] = ""+symbolic[i];
+    if(symbolic.length > i)
+      tableContents[i][2] = ""+symbolic[i];
+    else
+      tableContents[i][2] = "";
   }
   
   DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
@@ -1037,6 +1041,8 @@ public void setSelected(short option, boolean b) {
     case OPTION_RUNNING_PAUSED:
       lineByLineToggleButton.setSelected(b);
       setRunningOptionsDialog.lineByLineCheckBox.setSelected(b);
+      if(!b)
+	  setSelected(OPTION_RUNNING_ANIMATED, false);
       break;
     case OPTION_RUNNING_COMMENTED:
       showCommentsToggleButton.setSelected(b);
@@ -1045,6 +1051,8 @@ public void setSelected(short option, boolean b) {
     case OPTION_RUNNING_ANIMATED:
       showAnimationToggleButton.setSelected(b);
       setRunningOptionsDialog.showAnimationCheckBox.setSelected(b);
+      if(b)
+	  setSelected(OPTION_RUNNING_PAUSED, true);
       break;  
   }
 }
@@ -1065,7 +1073,7 @@ public static final short INSTRUCTIONS_AND_DATA_TABLE = 3;
     @param line Number of the line, that is wanted to be visible.
     @param table The table. Valid values for this parameter are CODE_TABLE 
                  and INSTRUCTIONS_AND_DATA_TABLE
-    @returns True if the operation was successful.
+    @return True if the operation was successful.
              False if the line number was not valid - ie there's no such line
              in the table or there's no such table.
 */
@@ -1200,7 +1208,7 @@ public void hideAnimator() {
 
 /** Changes the text which is shown in KBD-frame above the text field. If
     the new text is an empty string, then the label will disappear.
-    @para newText The new text to be shown. If this is empty, then the label
+    @param newText The new text to be shown. If this is empty, then the label
                   will disappear.
 */
 public void changeTextInEnterNumberLabel(String newText) {
@@ -1310,7 +1318,7 @@ public void updateAllTexts() {
 
 
 /** Shows an error in a message dialog.
-    @ param errorMsg The message to be shown.
+    @param errorMsg The message to be shown.
 */
 public void showError(String errorMsg) {
   JOptionPane.showMessageDialog(null, errorMsg, new Message("Error").toString(), JOptionPane.ERROR_MESSAGE);
@@ -1674,8 +1682,8 @@ private void insertMenuBar(JFrame destFrame) {
 	openFile.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK) );
   compileMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_K, InputEvent.CTRL_MASK) );
   runMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_B, InputEvent.CTRL_MASK) );
-  continueMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0) );
-  continueToEndMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, InputEvent.CTRL_MASK) );
+  continueMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0) );
+  continueToEndMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, InputEvent.CTRL_MASK) );
   eraseMem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_E, InputEvent.CTRL_MASK) );
   stopMenuItem.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0) );
   quit.setAccelerator( KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_MASK) );
@@ -1729,6 +1737,7 @@ private JToolBar makeToolBar() {
   }
   openFileButton.setToolTipText("Open a file");
   openFileButton.setMargin(new Insets(0,0,0,0));
+  openFileButton.setMnemonic(KeyEvent.VK_O);
   openFileButton.setEnabled(false);
   toolbar.add(openFileButton);
   
