@@ -88,7 +88,7 @@ public class CompileDebugger {
 
     /** This method tells that for given label points to given line.
 	@param name String containing name of the symbol.
-	@param linenumber Int containing the linenumber of the label.
+	@param lineNumber Int containing the linenumber of the label.
         @param isNew Boolean containing the information if the label was new.
     */
     public void foundLabel(String name, int lineNumber, boolean isNew){}

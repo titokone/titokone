@@ -208,7 +208,7 @@ public class CompileInfo extends DebugInfo {
     public int returnLineBinary(){}
 
     /** This method returns the name of the current label.
-	@param String containing name of the label.
+	@return Name of the current label.
     */
     public String returnLabelName(){}
 

@@ -114,7 +114,7 @@ public class Control implements TTK91Core {
     
     /** This runs one next line of the program that is currently loaded into the TTK91's
         memory. 
-        @Return Returns RunInfo object of the last line executed.
+        @return Returns RunInfo object of the last line executed.
     */
     public RunInfo runLine() throws TTK91RuntimeException { }
     

@@ -132,7 +132,7 @@ public class RunInfo extends DebugInfo{
     public boolean returnBit(){}
 
     /** This method tells GUIBrain what kind of operation happened.
-        @returns int value which represents operation type.*/
+        @return int value which represents operation type.*/
     public int whatOperationHappened(){}
     
     /** This method returns both old and new PC, SP and FP. */

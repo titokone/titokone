@@ -104,7 +104,7 @@ public class Debugger extends Translatable{
 
 	/** This method tells debugger that a command cycle was completed and it 
    should return a debuginfo package.
-	@returns DebugInfo
+	@return DebugInfo
 	*/
 
 

@@ -122,7 +122,7 @@ This field has the current instruction being processed
 
 
 /** Returns the value of given registerID
-    @param registerIDindex of register (0-7). 
+    @param registerID index of register (0-7). 
     @return Value of given register. Inproper value returns -1
 
 	*/

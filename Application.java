@@ -55,7 +55,7 @@ public class Application implements TTK91Application {
 	the case of data, including the symbolic form is
 	optional. This value may be null or of length 0 if there is no
 	data area.
-	@param SymbolTable An instance of SymbolTable, containing the 
+	@param symbols An instance of SymbolTable, containing the 
 	symbol table for this application. This value can be null if 
 	there are no local symbols available. (Locally, an empty 
 	symboltable is created.) */
@@ -125,7 +125,7 @@ public class Application implements TTK91Application {
     /** This method checks whether input would be a valid string
         to give to setKbd or setStdIn.
         @param input The string to check.
-        @returns True if the string would be valid input, false 
+        @return True if the string would be valid input, false 
         otherwise. */
     public static boolean checkInput(String input) {}
 
