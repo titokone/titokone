@@ -22,7 +22,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 
 0	Animator.java
-2	Application.java                        SR              SR 19.3.
+3	Application.java                        SR              SR 26.3.
 0	AssariUI.java
 2	Binary.java						SH 20.3
 2	BinaryInterpreter.java					SH 20.3
@@ -30,7 +30,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	CompileDebugger.java					AT 21.3.
 2	CompileInfo.java					AT 21.3.
 2	Compiler.java						AT 21.3.
-0	Control.java
+2	Control.java                            AÅ              SR 
 3	DebugInfo.java				OA              OA 25.3.
 0	Debugger.java
 2	FileHandler.java					AÅ
@@ -38,7 +38,10 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	GUIBrain.java				SR		AÅ
 2	GUICompileSettingsDialog.java		AÅ		AÅ
 2	GUIRunSettingsDialog.java		AÅ		AÅ
+2       GUIThreader.java                        SR/AÅ           AÅ
 2	Interpreter.java					SH 20.3
+3       InvalidDefinitionException.java         SR              SR 26.3.
+3       InvalidSymbolException.java             SR              SR 26.3.
 2	JTableX.java				AÅ		AÅ
 2	LoadInfo.java						AÅ
 2	Loader.java						AÅ
@@ -50,9 +53,9 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	ResourceLoadFailedException.java
 2	RunDebugger.java			OA
 2	RunInfo.java				OA
-2	Settings.java                           SR              SR 19.3.
+3	Settings.java                           SR              SR 19.3.
 0	Source.java						SH 20.3
 3	SymbolTable.java                        ?               SY 20.3
 2	SymbolicInterpreter.java				AT 21.3.
 2	Titokone.java						AÅ
-2	Translator.java                         SR              SR 19.3.
+3	Translator.java                         SR              SR 19.3.

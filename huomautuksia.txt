@@ -51,3 +51,7 @@ Compiler     AT 25.3.	Lisätty metodi parseLine(String) joka palauttaa string tau
 			1 konekäsky, 2 1. rekisteri, 3 muistinosoitusmoodi, 4 osoite
 			ja 5 toinen rekisteri. null jos virheellinen konekäsky
 
+SymbolTable  SR 26.3.   Control (ja Compiler) tarvitsevat definitioneihin tuen, lisätty
+                        symbolitauluun String[] getAllDefinitions, String getDefinition(String) 
+                        ja void addDefinition(String, String) sekä privaattikenttä HashMap 
+                        definitions. Lisäksi InvalidDefinitionException uutena luokkana.
