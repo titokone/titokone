@@ -5,34 +5,34 @@ ASENNUSOHJEET
 I. Javan hakeminen ja asennus
 
 Titokone on Javalla toteutettu TTK-91-konekielisimulaattori. Tarvitset
-sit√§ k√§ytt√§√§ksesi Javan virtuaalikoneen (v√§hint√§√§n version 1.4.2)
+sit‰ k‰ytt‰‰ksesi Javan virtuaalikoneen (v‰hint‰‰n version 1.4.2)
 koneellesi. Javan virtuaalikoneen Sunin implementaation voi ladata
-osoitteesta http://java.sun.com. Seuraa siell√§ annettuja
+osoitteesta http://java.sun.com. Seuraa siell‰ annettuja
 asennusohjeita.
 
-Sunin Java-sivuilta on joskus hieman hankala l√∂yt√§√§ hakemaansa. Jos
-haluat asentaa pelk√§n virtuaalikoneen, haluat "JRE"-paketin, jos taas
-haluat my√∂s kehitysymp√§rist√∂n tehd√§ksesi omia Java-ohjelmiasi (tai
-esimerkiksi uusia k√§√§nn√∂ksi√§ Titokoneeseen), haluat todenn√§k√∂isesti
-"SDK"-pakkauksen. T√§t√§ kirjoitettaessa J2SE:n versiot 1.4.2, sek√§
-SDK:n√§ ett√§ JRE:n√§ (2 on alustan j√§rjestysnumero, versionumero on
+Sunin Java-sivuilta on joskus hieman hankala lˆyt‰‰ hakemaansa. Jos
+haluat asentaa pelk‰n virtuaalikoneen, haluat "JRE"-paketin, jos taas
+haluat myˆs kehitysymp‰ristˆn tehd‰ksesi omia Java-ohjelmiasi (tai
+esimerkiksi uusia k‰‰nnˆksi‰ Titokoneeseen), haluat todenn‰kˆisesti
+"SDK"-pakkauksen. T‰t‰ kirjoitettaessa J2SE:n versiot 1.4.2, sek‰
+SDK:n‰ ett‰ JRE:n‰ (2 on alustan j‰rjestysnumero, versionumero on
 erikseen), voi ladata sivulta
 http://java.sun.com/j2se/1.4.2/download.html. 
 
-Huomaa, ett√§ Helsingin yliopiston tietojenk√§sittelytieteen laitoksella
+Huomaa, ett‰ Helsingin yliopiston tietojenk‰sittelytieteen laitoksella
 on jo valmiiksi asennettuna Java SDK 1.4.2 (tai uudempi versio), joten
-Javan asennus on vain tarpeen jos haluat k√§ytt√§√§ Titokonetta
+Javan asennus on vain tarpeen jos haluat k‰ytt‰‰ Titokonetta
 esimerkiksi kotikoneellasi.
 
 
 II. Titokoneen hakeminen
 
 Titokoneen voi hakea Tietokoneen toiminta -kurssin kotisivun
-kautta. Sivut ovat t√§ll√§ hetkell√§ osoitteessa
+kautta. Sivut ovat t‰ll‰ hetkell‰ osoitteessa
 http://www.cs.helsinki.fi/teemu.kerola/tito/. Voit joko hakea
-suoraan JAR-paketin, joka sis√§lt√§√§ Titokoneen (titokone.jar), tai
-ZIP-tiedoston, joka sis√§lt√§√§ JAR-paketin, hieman ohjeita ja
-apuskriptej√§. 
+suoraan JAR-paketin, joka sis‰lt‰‰ Titokoneen (titokone.jar), tai
+ZIP-tiedoston, joka sis‰lt‰‰ JAR-paketin, hieman ohjeita ja
+apuskriptej‰. 
 
 
 III. Titokoneen asennus
@@ -40,43 +40,37 @@ III. Titokoneen asennus
 
 1) Pika-asennus (Windows, Linux, jne)
 
-Jos JAR-paketit ovat sinulle jo tuttuja, riitt√§√§ jos haet
+Jos JAR-paketit ovat sinulle jo tuttuja, riitt‰‰ jos haet
 titokone.jar-tiedoston. (JAR on pakettitiedostomuoto; jos
-Windowsissasi on p√§iv√§ntasainen versio WinZipist√§, se osannee my√∂s
-avata paketin jos n√§in haluat. Linuxissa komento jar avaa paketin,
+Windowsissasi on p‰iv‰ntasainen versio WinZipist‰, se osannee myˆs
+avata paketin jos n‰in haluat. Linuxissa komento jar avaa paketin,
 ks. alla.) Sen kummempaa asennusta ei tarvita, voit ajaa jar-tiedoston
 suoraan. Esimerkiksi Windowsissa sinun tarvitsee vain suorittaa
 komento
   
   java.exe -jar titokone.jar
 
-hakemistossa, johon tallensit titokone.jar-paketin. Vastaavasti
-Linuxissa komento
-  
-  java -jar titokone.jar
-
-ajaa ohjelman. T√§h√§n menness√§ sinulla tulisi olla Java asennettuna ja
-suorituspolullasi. 
+hakemistossa, johon tallensit titokone.jar-paketin. Vastaavastaa ohjelman.
+T‰h‰n menness‰ sinulla tulisi olla Java asennettuna ja suorituspolullasi.
 
 
 2) Melko nopea asennus Windowsissa
 
 Hae titokone.zip ja avaa paketti haluamaasi kohdehakemistoon. (Paketti
-luo avautuessaan alihakemiston 'titokone'.) Vaihda sitten t√§h√§n
-alihakemistoon ja tuplaklikkaa titokone-nimist√§ BAT-tiedostoa (MS-DOS
+luo avautuessaan alihakemiston 'titokone'.) Vaihda sitten t‰h‰n
+alihakemistoon ja tuplaklikkaa titokone-nimist‰ BAT-tiedostoa (MS-DOS
 Batch). Titokone.bat erottuu titokone.jar-tiedostosta ikoninsa
-perusteella; titokone.jar n√§ytt√§√§ yleens√§ keltaiselta joltakin
-ruuvipuristimessa, kun taas titokone.bat n√§ytt√§√§ enemm√§nkin
-hammasrattaalta ohjelmaikkunassa. Titokone.sh, k√§ynnistyskripti
-Linux-koneita varten, on todenn√§k√∂isesti Windowsin tuntematon
+perusteella; titokone.jar n‰ytt‰‰ yleens‰ keltaiselta joltakin
+ruuvipuristimessa, kun taas titokone.bat n‰ytt‰‰ enemm‰nkin
+hammasrattaalta ohjelmaikkunassa. Titokone.sh, k‰ynnistyskripti
+Linux-koneita varten, on todenn‰kˆisesti Windowsin tuntematon
 tiedostotyyppi. 
 
-Jos BAT-tiedostot eiv√§t en√§√§ toimi Windowsin versiossa MEGASUPERHYPER
-(testasimme niit√§ Windows XP:hen asti), lienee siell√§ kuitenkin viel√§
+Jos BAT-tiedostot eiv‰t en‰‰ toimi Windowsin versiossa MEGASUPERHYPER
+(testasimme niit‰ Windows XP:hen asti), lienee siell‰ kuitenkin viel‰
 tuki komennon 'java.exe -jar C:\polku\hakemistoon\titokone\titokone.jar' 
-ajamiseksi k√§ynnistysvalikon kautta. Korvaa
-C:\polku\hakemistoon\titokone oikealla polulla, jolta titokone.jar
-l√∂ytyy.
+ajamiseksi k‰ynnistysvalikon kautta. Korvaa C:\polku\hakemistoon\titokone 
+oikealla polulla, jolta titokone.jar lˆytyy.
 
 
 3) Melko nopea asennus Linuxissa
@@ -87,40 +81,39 @@ kohdehakemistossa. (Paketti luo avautuessaan alihakemiston
 avautuneesta paketista luotuun titokone-hakemistoon ja aja komento
   java -jar titokone.jar
 
-Jos kirjoittaminen on rasittavaa, ZIP-paketissa on my√∂s
-titokone.sh-aloitusskripti. Voit uudelleennimet√§ skriptin haluamaasi
-muotoon (esim. tk), jonka j√§lkeen riitt√§√§ pelkk√§ komento ./tk (tai,
-jos et nime√§ tiedostoa uudelleen, ./titokone.sh). Skripti ei vaihda
-ty√∂hakemistoa, joten joko sinun tulee s√§ilytt√§√§ se samassa
-hakemistossa titokone.jar-paketin kanssa tai muokata sit√§.
+Jos kirjoittaminen on rasittavaa, ZIP-paketissa on myˆs
+titokone.sh-aloitusskripti. Voit uudelleennimet‰ skriptin haluamaasi
+muotoon (esim. tk), jonka j‰lkeen riitt‰‰ pelkk‰ komento ./tk (tai,
+jos et nime‰ tiedostoa uudelleen, ./titokone.sh). Skripti ei vaihda
+tyˆhakemistoa, joten joko sinun tulee s‰ilytt‰‰ se samassa
+hakemistossa titokone.jar-paketin kanssa tai muokata sit‰.
 
 
-4) Jar-paketin avaaminen (l√§hinn√§ jatkokehitt√§ji√§ kiinnostavaa)
+4) Jar-paketin avaaminen (l‰hinn‰ jatkokehitt‰ji‰ kiinnostavaa)
 
 Halutessasi voit avata jar-paketin:
-  Windowsissa: Paketti on varmaankin helpointa avata k√§ytt√§m√§ll√§
-               WinZipi√§ tai vastaavaa paketink√§sittelyohjelmaa.
+  Windowsissa: Paketti on varmaankin helpointa avata k‰ytt‰m‰ll‰
+               WinZipi‰ tai vastaavaa paketink‰sittelyohjelmaa.
   Linuxissa: jar -xvf titokone.jar
 
-Jar-paketti sis√§lt√§√§ mm. l√§hdekoodin ja k√§√§nnetyt luokkatiedostot. Jos
-muokkaat tiedostoja, esimerkiksi koska haluat lis√§t√§ uuden
-kielitiedoston (ks. mukana tuleva k√§ytt√∂ohjeen k√§√§nn√∂sten
-lis√§ysohjeet), huomaa ett√§ luokkatiedostot ovat osa Java-pakettia
+Jar-paketti sis‰lt‰‰ mm. l‰hdekooddostoja, esimerkiksi koska haluat lis‰t‰
+uuden kielitiedoston (ks. mukana tuleva k‰yttˆohjeen k‰‰nnˆsten
+lis‰ysohjeet), huomaa ett‰ luokkatiedostot ovat osa Java-pakettia
 (tarkemmin ottaen kolmea pakettia).
 
-K√§ynnist√§√§ksesi muokatun ohjelman vaihda paketin juurihakemistoon
+K‰ynnist‰‰ksesi muokatun ohjelman vaihda paketin juurihakemistoon
 (jossa 'fi'-alihakemisto on) ja aja seuraava komento:
   Windowsissa: java.exe fi.hu.cs.titokone.Titokone
   Linuxissa: java fi.hu.cs.titokone.Titokone
 
-Luokkien javadocit ovat hakemistossa javadoc/. Jotta voit k√§√§nt√§√§
-java-tiedostoja (esimerkiksi lis√§tess√§si uuden kielen), tarvitset
-Javan SDK-pakkauksen, JRE ei t√§h√§n riit√§.
+Luokkien javadocit ovat hakemistossa javadoc/. Jotta voit k‰‰nt‰‰
+java-tiedostoja (esimerkiksi lis‰tess‰si uuden kielen), tarvitset
+Javan SDK-pakkauksen, JRE ei t‰h‰n riit‰.
 
 
-Ks. my√∂s README_fi.txt.
+Ks. myˆs README_fi.txt.
 
-Antoisia hetki√§ TTK-91:n parissa!
+Antoisia hetki‰ TTK-91:n parissa!
 
 Toukokuussa 2004
     Titokoneen toteuttajat
