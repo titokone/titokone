@@ -2119,9 +2119,9 @@ private FileFilter classFileFilter = new FileFilter() {
 	@return Whatever generalFileDialog.showOpenDialog(thisGUI) 
 	returns. */
     private int showOpenFileDialog() {
-	generalFileDialog.setFileFilter(B91FileFilter);
-	generalFileDialog.setFileFilter(K91FileFilter);
 	generalFileDialog.setAcceptAllFileFilterUsed(false);
+	generalFileDialog.addChoosableFileFilter(B91FileFilter);
+	generalFileDialog.addChoosableFileFilter(K91FileFilter);
 	generalFileDialog.setDialogTitle(new Message("Open a new " +
 						  "file").toString() );
 	return generalFileDialog.showOpenDialog(thisGUI);

@@ -18,7 +18,7 @@ public class Translator {
 
     /** This name identifies the resource files containing translations 
 	for this software. */
-    public static final String resourceFamilyName = "fi/hu/cs/titokone/resources/Translations";
+    public static final String resourceFamilyName = "fi.hu.cs.titokone.resources.Translations";
 	/*(TESTING ? "fi/hu/cs/titokone/__stub_translations" :
 	 "fi/hu/cs/titokone/resources/Translations");*/
 
