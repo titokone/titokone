@@ -130,8 +130,11 @@ public GUIBrain(GUI gui, Animator animator) {
   File defStdinFile = new File(System.getProperty("user.dir") + DEFAULT_STDIN_FILENAME);
   File defStdoutFile = new File(System.getProperty("user.dir") + DEFAULT_STDOUT_FILENAME);
   try {
-    defStdinFile.createNewFile();
-    defStdoutFile.createNewFile();
+    //defStdinFile.createNewFile(); // We don't need write access to stdin.
+    if(!defStdoutFile.exists()) {
+      defStdoutFile.createNewFile();
+      defStdoutFile.delete();
+    }
   }
   catch (IOException e) {
       logger.info(e.getMessage());
@@ -406,10 +409,15 @@ public synchronized void menuRun() {
             
       gui.updateStatusBar(runinfo.getComments());
       
-      if (runinfo.whatDevice() != null && runinfo.whatDevice().equals("Display")) {
-        if(runinfo.whatOUT() != null) {
-          gui.addOutputData( runinfo.whatOUT()[1] );
-        }
+      // If the command wrote something to screen, we'll deal with 
+      // the actual writing. STDOUT writes are dealt with in Control.
+      if(runinfo.isExternalOp() && runinfo.whatOUT() != null) {
+	// We use a Processor constant to check what device we are
+	// writing to. CRT happens to be 0 now, but it might not be
+	// "in the future".
+	if(runinfo.whatOUT()[0] == Processor.CRT) {
+	  gui.addOutputData(runinfo.whatOUT()[1]);
+	}
       }
       
       int[] newRegisterValues = runinfo.getRegisters();
