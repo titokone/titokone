@@ -8,18 +8,37 @@ import javax.swing.border.*;
 public class GUI extends JFrame {
   
   
-private JPanel  leftPanel, 
-                upperRightPanel,
+private JPanel  upperRightPanel,
                 lowerRightPanel;
-        JTableX upperTable;
-        JTable lowerTable;
-  
-        JScrollPane upperScrollPane;
-        JScrollPane lowerScrollPane;
-        JSplitPane splitPane;
+        JTableX instructionsTable;
+        JTable dataTable;
+        JTableX codeTable;
+        
+        JTable registersTable;
+        
+        JTextArea outputTextArea;
+        JLabel enterNumberLabel;
+        JTextField inputField;
+        JButton enterNumberButton;
+    
+        JSplitPane dataAndInstructionsTableSplitPane;   
+        
+        JButton compileButton;
+        JButton runButton;
+        JButton continueButton;
+        JButton continueToEndButton;
+        JButton stopButton;
+        
+        JMenuItem compileMenuItem;
+	      JMenuItem runMenuItem;
+	      JMenuItem stopMenuItem;
+	
         
         JFileChooser openFileDialog;
         GUIRunSettingsDialog setRunningOptionsDialog;
+        
+        Font tableFont = new Font("Courier", java.awt.Font.PLAIN, 12);
+  
 
 
 public GUI() {
@@ -55,140 +74,231 @@ public GUI() {
 
 public void initGUI() {
   
-  insertMenuBar();
+  insertMenuBar(this);
+  
+  setGUIView(1);
+  setGUIView(2);
+  setGUIView(3);
+  
+  //instructionsTable.selectRow(1,true);
+}
+
+
+private void setGUIView(int view) {
+  
+  JPanel leftPanel = new JPanel(new BorderLayout());
+  JPanel upperRightPanel = new JPanel(new BorderLayout());
+  JPanel lowerRightPanel = new JPanel(new BorderLayout());
+     
+  getContentPane().removeAll();
+  
+  if (view == 1) {
+    
+  }
+  
+  else if (view == 2) {
+    
+    JScrollPane codeTableScrollPane;
+    
+    codeTable = prepareCodeTable();
+    
+    codeTableScrollPane = insertTableToScrollPane(codeTable);
+    
+    leftPanel.add(codeTableScrollPane);
+  }
+    
+    
+  
+  else if (view == 3) {
+    
+    JScrollPane dataTableScrollPane;
+    JScrollPane instructionsTableScrollPane;
+    
+    instructionsTable = prepareInstructionsTable();
+    dataTable = prepareDataTable();
+    
+    instructionsTableScrollPane = insertTableToScrollPane(instructionsTable);
+    dataTableScrollPane = insertTableToScrollPane(dataTable);
+    
+    dataAndInstructionsTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, instructionsTableScrollPane, dataTableScrollPane);
+    dataAndInstructionsTableSplitPane.setOneTouchExpandable(true);
+    
+    leftPanel.add(dataAndInstructionsTableSplitPane);
+    
+    
+  }
   
   
-  leftPanel = new JPanel(new BorderLayout());
-  Font tableFont = new Font("Courier", java.awt.Font.PLAIN, 12);
-  
-  upperTable = new JTableX(new CodeTableModel());
-  lowerTable = new JTable(new CodeTableModel());
-  
-  upperTable.setFont(tableFont);
-  lowerTable.setFont(tableFont);
-  //upperTable.setRowSelectionAllowed(false);
-  lowerTable.setRowSelectionAllowed(false);
-  
-  
-  upperScrollPane = new JScrollPane(upperTable);
-  lowerScrollPane = new JScrollPane(lowerTable);
-  upperScrollPane.setPreferredSize(new Dimension(200, 200));
-  lowerScrollPane.setPreferredSize(new Dimension(200, 200));
-  upperScrollPane.setMinimumSize(new Dimension(200, 60));
-  lowerScrollPane.setMinimumSize(new Dimension(200, 60));
-  
-  System.out.println((upperTable.getColumnModel().getColumn(0)).getMaxWidth());
-  
-  upperTable.getColumnModel().getColumn(0).setMinWidth(20);
-  upperTable.getColumnModel().getColumn(0).setPreferredWidth(20);
-  //upperTable.getColumnModel().getColumn(1).setPreferredWidth(100);
+    
+    
+    
+    JPanel registersPanel = new JPanel();
+    registersTable = new JTable(new RegistersTableModel());
+    JScrollPane registersScrollPane = new JScrollPane(registersTable);
+    
+    registersScrollPane.setPreferredSize(new Dimension(150, 150));
    
-  splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperScrollPane, lowerScrollPane);
-  splitPane.setOneTouchExpandable(true);
-  
-  leftPanel.add(splitPane);
-  
-  
-  
-  
-  
-  upperRightPanel = new JPanel(new BorderLayout());
-  lowerRightPanel = new JPanel(new BorderLayout());
-  
-  
-  JPanel registersPanel = new JPanel();
-  JTable registersTable = new JTable(new RegistersTableModel());
-  JScrollPane registersScrollPane = new JScrollPane(registersTable);
-  
-  registersScrollPane.setPreferredSize(new Dimension(150, 150));
- 
-  Border blacklined = BorderFactory.createLineBorder(Color.black);
-  
-  registersScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
-  
-  registersTable.setFont(tableFont);
-  registersTable.setRowSelectionAllowed(false);
-  (registersTable.getColumnModel().getColumn(0)).setPreferredWidth(15);
-  
-  
-  upperRightPanel.add(registersScrollPane, BorderLayout.WEST);
-  
-  
-  
-  
-  JPanel symbolTablePanel = new JPanel();
-  JTable symbolTable = new JTable(new SymbolTableModel());
-  JScrollPane symbolTableScrollPane = new JScrollPane(symbolTable);
-  
-  symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
-  symbolTableScrollPane.setMinimumSize(new Dimension(200, 150));
-  
-  symbolTable.setFont(tableFont);
-  symbolTable.setRowSelectionAllowed(false);
-  
-  upperRightPanel.add(symbolTableScrollPane, BorderLayout.CENTER);
-  
-  
-  
-  JPanel ioPanel = new JPanel(new BorderLayout());
-  JPanel inputPanel = new JPanel(new BorderLayout());
-  JPanel outputPanel = new JPanel(new BorderLayout());
-  
-  JTextArea outputTextArea = new JTextArea(1,7);
-  JLabel enterNumberLabel = new JLabel("Enter a number");
-  JTextField inputField = new JTextField(11);
-  JButton enterNumberButton = new JButton("Enter");
-  
-  outputTextArea.setLineWrap(true);
-  outputTextArea.setWrapStyleWord(true);
-  outputTextArea.setEditable(false);
-  
-  
-  enterNumberLabel.setSize(new Dimension(100,100));
-  JScrollPane outputScrollPane = new JScrollPane(outputTextArea);
-  outputScrollPane.setPreferredSize(new Dimension(30,300));
-  outputPanel.add(outputScrollPane, BorderLayout.CENTER);
-  
-  inputPanel.add(enterNumberLabel, BorderLayout.NORTH);
-  inputPanel.add(inputField, BorderLayout.CENTER);
-  inputPanel.add(enterNumberButton, BorderLayout.SOUTH);
-  
-  ioPanel.add(outputPanel, BorderLayout.CENTER);
-  ioPanel.add(inputPanel, BorderLayout.SOUTH);
-  
-  upperRightPanel.add(ioPanel, BorderLayout.EAST);
+    Border blacklined = BorderFactory.createLineBorder(Color.black);
+    
+    registersScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
+    
+    registersTable.setFont(tableFont);
+    registersTable.setRowSelectionAllowed(false);
+    (registersTable.getColumnModel().getColumn(0)).setPreferredWidth(15);
+    
+    
+    upperRightPanel.add(registersScrollPane, BorderLayout.WEST);
     
     
     
     
+    JPanel symbolTablePanel = new JPanel();
+    JTable symbolTable = new JTable(new SymbolTableModel());
+    JScrollPane symbolTableScrollPane = new JScrollPane(symbolTable);
     
-  JPanel southeastPanel = new JPanel(new BorderLayout());
+    symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
+    symbolTableScrollPane.setMinimumSize(new Dimension(200, 150));
+    
+    symbolTable.setFont(tableFont);
+    symbolTable.setRowSelectionAllowed(false);
+    
+    upperRightPanel.add(symbolTableScrollPane, BorderLayout.CENTER);
+    
+    
+    
+    JPanel ioPanel = new JPanel(new BorderLayout());
+    JPanel inputPanel = new JPanel(new BorderLayout());
+    JPanel outputPanel = new JPanel(new BorderLayout());
+    
+    
+    outputTextArea = new JTextArea(1,7);
+    enterNumberLabel = new JLabel("Enter a number");
+    inputField = new JTextField(11);
+    enterNumberButton = new JButton("Enter");
+    
+    outputTextArea.setLineWrap(true);
+    outputTextArea.setWrapStyleWord(true);
+    outputTextArea.setEditable(false);
+    
+    
+    enterNumberLabel.setSize(new Dimension(100,100));
+    JScrollPane outputScrollPane = new JScrollPane(outputTextArea);
+    outputScrollPane.setPreferredSize(new Dimension(30,300));
+    outputPanel.add(outputScrollPane, BorderLayout.CENTER);
+    
+    inputPanel.add(enterNumberLabel, BorderLayout.NORTH);
+    inputPanel.add(inputField, BorderLayout.CENTER);
+    inputPanel.add(enterNumberButton, BorderLayout.SOUTH);
+    
+    ioPanel.add(outputPanel, BorderLayout.CENTER);
+    ioPanel.add(inputPanel, BorderLayout.SOUTH);
+    
+    upperRightPanel.add(ioPanel, BorderLayout.EAST);
+      
+      
+      
+      
+      
+    JPanel southeastPanel = new JPanel(new BorderLayout());
+    
+    String[] joo = {"KJ odottaa syötettä laitteelta KBD","...","...","...","...","...","...","...","...","...","...","jne"};
+    
+    JList commentList = new JList();
+    JScrollPane commentListScrollPane = new JScrollPane(commentList);
+    commentListScrollPane.setPreferredSize(new Dimension(1,50));
+    
+    
+    southeastPanel.add(commentListScrollPane, BorderLayout.CENTER);
+    
+    lowerRightPanel.add(southeastPanel, BorderLayout.CENTER);
+    
+    
+    
+    getContentPane().setLayout( new BorderLayout() );
+    
+    JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, lowerRightPanel);
+    rightSplitPane.setResizeWeight(0.5);
+    
+    JSplitPane mainSplitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightSplitPane);
+    mainSplitter.setResizeWeight(0.5);
+    
+    getContentPane().add(mainSplitter, BorderLayout.CENTER);
+    
+    
+    
+    
+    getContentPane().add( makeToolBar() , BorderLayout.NORTH);
+    
+    
+    JLabel statusBar = new JLabel("Status bar");
+    
+    statusBar.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
+    getContentPane().add(statusBar, BorderLayout.SOUTH);
+    
+    
+    setInputFieldEnabled(false);
+    
+    if (view == 1) {
+      compileMenuItem.setEnabled(false);
+      runMenuItem.setEnabled(false);
+      stopMenuItem.setEnabled(false);
+      compileButton.setEnabled(false);
+      runButton.setEnabled(false);
+    }
+    else if (view == 2) {
+      compileMenuItem.setEnabled(true);
+      runMenuItem.setEnabled(false);
+      stopMenuItem.setEnabled(false);
+      registersTable.setEnabled(false);
+      compileButton.setEnabled(true);
+      runButton.setEnabled(false);
+    }
+    else if (view == 3) {
+      compileMenuItem.setEnabled(false);
+      runMenuItem.setEnabled(true);
+      stopMenuItem.setEnabled(false);
+      compileButton.setEnabled(false);
+      runButton.setEnabled(true);
+    }
+    
+    continueButton.setEnabled(false);
+    continueToEndButton.setEnabled(false);
+    stopButton.setEnabled(false);
   
-  String[] joo = {"KJ odottaa syötettä laitteelta KBD","...","...","...","...","...","...","...","...","...","...","jne"};
-  JList commentList = new JList(joo);
-  JScrollPane commentListScrollPane = new JScrollPane(commentList);
-  commentListScrollPane.setPreferredSize(new Dimension(1,50));
+  
+    validate();
+  
+    pack();
+  
+    //dataAndInstructionsTableSplitPane.setDividerLocation(0.5);
+    mainSplitter.setDividerLocation(0.5);
   
   
-  southeastPanel.add(commentListScrollPane, BorderLayout.CENTER);
+}
+
+
+private void setInputFieldEnabled(boolean b) {
+  enterNumberLabel.setEnabled(b);
+  inputField.setEnabled(b);
+  enterNumberButton.setEnabled(b);
+}
+
+
+
+
+
+private JToolBar makeToolBar() {
   
-  lowerRightPanel.add(southeastPanel, BorderLayout.CENTER);
+  JToolBar toolbar;
+  JButton openFileButton;
+  JToggleButton lineByLineToggleButton;
+  JToggleButton showCommentsToggleButton;
+  JToggleButton showAnimationToggleButton;
   
   
+  toolbar = new JToolBar("Toolbar");
   
-  getContentPane().setLayout( new BorderLayout() );
-  
-  JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, lowerRightPanel);
-  rightSplitPane.setResizeWeight(0.5);
-  
-  JSplitPane mainSplitter = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightSplitPane);
-  mainSplitter.setResizeWeight(0.5);
-  getContentPane().add(mainSplitter, BorderLayout.CENTER);
-  
-  
-  JToolBar toolbar = new JToolBar("Toolbar");
-  
-  JButton openFileButton = new JButton();
+  openFileButton = new JButton();
   openFileButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/general/open24.gif", "Open file"));
   openFileButton.setToolTipText("Open a file");
   openFileButton.setMargin(new Insets(0,0,0,0));
@@ -196,25 +306,31 @@ public void initGUI() {
   
   toolbar.addSeparator();
   
-  JButton compileButton = new JButton();
+  compileButton = new JButton();
   compileButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/compile24.gif", "Compile"));
   compileButton.setToolTipText("Compile the program");
   compileButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(compileButton);
   
-  JButton runButton = new JButton();
-  runButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/StepForward24.gif", "Advance one line"));
-  runButton.setToolTipText("Run the next line of the program");
+  runButton = new JButton();
+  runButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/run24.gif", "Run"));
+  runButton.setToolTipText("Run the program");
   runButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(runButton);
   
-  JButton runToEndButton = new JButton();
-  runToEndButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/FastForward24.gif", "Advance to end"));
-  runToEndButton.setToolTipText("Run the rest of the program at once");
-  runToEndButton.setMargin(new Insets(0,0,0,0));
-  toolbar.add(runToEndButton);
+  continueButton = new JButton();
+  continueButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/StepForward24.gif", "Continue"));
+  continueButton.setToolTipText("Continue operation");
+  continueButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(continueButton);
   
-  JButton stopButton = new JButton();
+  continueToEndButton = new JButton();
+  continueToEndButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/FastForward24.gif", "Continue w/o pauses"));
+  continueToEndButton.setToolTipText("Continue operation without pauses");
+  continueToEndButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(continueToEndButton);
+  
+  stopButton = new JButton();
   stopButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/general/Stop24.gif", "Stop"));
   stopButton.setToolTipText("Stop the current operation");
   stopButton.setMargin(new Insets(0,0,0,0));
@@ -222,31 +338,83 @@ public void initGUI() {
   
   toolbar.addSeparator();
   
-  /*JToggleButton setRunSettingsToggleButton = new JToggleButton(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/general/properties24.gif", "Set running options"));
-  toolbar.add(setRunSettingsToggleButton);
-  */
+  lineByLineToggleButton = new JToggleButton(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/table/RowInsertAfter24.gif", "Run line by line"));
+  lineByLineToggleButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(lineByLineToggleButton);
   
-  getContentPane().add(toolbar, BorderLayout.NORTH);
-   
-  validate();
+  showCommentsToggleButton = new JToggleButton(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/general/History24.gif", "Show comments"));
+  showCommentsToggleButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(showCommentsToggleButton);
   
-  pack();
+  showAnimationToggleButton = new JToggleButton(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/Movie24.gif", "Show comments"));
+  showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(showAnimationToggleButton);
   
-  splitPane.setDividerLocation(0.5);
-  mainSplitter.setDividerLocation(0.5);
-  
-  upperTable.selectRow(1,true);
+  return toolbar;
 }
 
 
 
-private void insertMenuBar() {
+private JTableX prepareCodeTable() {
+ 
+  JTableX codeTable = new JTableX(new CodeTableModel());
+  
+  codeTable.setFont(tableFont);
+  
+  return codeTable;
+}
+
+
+
+private JTableX prepareInstructionsTable() {
+  
+  JTableX instructionsTable = new JTableX(new InstructionsTableModel());
+  
+  instructionsTable.setFont(tableFont);
+  
+  instructionsTable.getColumnModel().getColumn(0).setMinWidth(20);
+  instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+   
+  return instructionsTable; 
+}
+
+
+
+
+
+
+
+private JTable prepareDataTable() {
+ 
+  JTable dataTable = new JTable(new DataTableModel());
+  
+  dataTable.setFont(tableFont);
+  dataTable.setRowSelectionAllowed(false);
+  
+  return dataTable;
+}
+
+
+
+private JScrollPane insertTableToScrollPane(JTable tbl) {
+  
+  JScrollPane tableScrollPane = new JScrollPane(tbl);
+  tableScrollPane.setPreferredSize(new Dimension(200, 200));
+  tableScrollPane.setMinimumSize(new Dimension(200, 60));
+  
+  return tableScrollPane;
+}
+
+
+
+private void insertMenuBar(JFrame destFrame) {
+
   JMenuBar  mainMenuBar = new JMenuBar();
 	JMenu     fileMenu    = new JMenu("File");
 	JMenuItem openFile    = fileMenu.add("Open");
-	JMenuItem compile     = fileMenu.add("Compile");
-	JMenuItem run         = fileMenu.add("Run");
-	JMenuItem stop        = fileMenu.add("Stop");
+	compileMenuItem       = fileMenu.add("Compile");
+	runMenuItem           = fileMenu.add("Run");
+	stopMenuItem          = fileMenu.add("Stop");
 	JMenuItem eraseMem    = fileMenu.add("Erase memory");
 	JMenuItem quit        = fileMenu.add("Exit");
 
@@ -265,8 +433,8 @@ private void insertMenuBar() {
   optionsMenu.add(setMemSize);
   
   JMenu configureFileSystem       = new JMenu("Configure file system");
-  JMenuItem chooseSTDIN           = configureFileSystem.add("Choose stdin");
-  JMenuItem chooseSTDOUT          = configureFileSystem.add("Choose stout");
+  JMenuItem chooseSTDIN           = configureFileSystem.add("Set default stdin");
+  JMenuItem chooseSTDOUT          = configureFileSystem.add("Set default stdout");
   optionsMenu.add(configureFileSystem);
   
   JMenuItem setRunningOptions     = optionsMenu.add("Set running options");
@@ -281,7 +449,7 @@ private void insertMenuBar() {
 	mainMenuBar.add(fileMenu);
 	mainMenuBar.add(optionsMenu);
 	mainMenuBar.add(helpMenu);
-	setJMenuBar(mainMenuBar);
+	destFrame.setJMenuBar(mainMenuBar);
 	
 	
 	openFile.addActionListener( new ActionListener() {
@@ -338,9 +506,76 @@ class MyTableModel extends javax.swing.table.AbstractTableModel {
 
 
 class CodeTableModel extends MyTableModel {
+  protected String[] columnNames = {""};
+  protected Object[][] data = {{"     STORE R1,=100"},
+                            {"Alku: LOAD R2,=R1"},
+                            };
+ 
+  public int getColumnCount() {
+      return columnNames.length;
+  }
+
+  public int getRowCount() {
+      return data.length;
+  }
+
+  public String getColumnName(int col) {
+      return columnNames[col];
+  }
+
+  public Object getValueAt(int row, int col) {
+      return data[row][col];
+  }
+
+  public Class getColumnClass(int c) {
+      return getValueAt(0, c).getClass();
+  }
+
+  public void setValueAt(Object value, int row, int col) {
+      data[row][col] = value;
+      fireTableCellUpdated(row, col);
+  }                          
+}
+
+
+class InstructionsTableModel extends MyTableModel {
   protected String[] columnNames = {"Rivi", "Koodi", "Symbolinen käsky"};
   protected Object[][] data = {{"0", "12378912","     STORE R1,=100"},
                             {"1", "32131234","Alku: LOAD R2,=R1"},
+                            };
+ 
+  public int getColumnCount() {
+      return columnNames.length;
+  }
+
+  public int getRowCount() {
+      return data.length;
+  }
+
+  public String getColumnName(int col) {
+      return columnNames[col];
+  }
+
+  public Object getValueAt(int row, int col) {
+      return data[row][col];
+  }
+
+  public Class getColumnClass(int c) {
+      return getValueAt(0, c).getClass();
+  }
+
+  public void setValueAt(Object value, int row, int col) {
+      data[row][col] = value;
+      fireTableCellUpdated(row, col);
+  }                          
+}
+
+
+class DataTableModel extends MyTableModel {
+  protected String[] columnNames = {"Rivi", "Koodi", "Symbolinen käsky"};
+  protected Object[][] data = {{"10", "321",""},
+                            {"11", "52",""},
+                            {"12", "420",""},
                             };
   
   public int getColumnCount() {
@@ -370,13 +605,14 @@ class CodeTableModel extends MyTableModel {
 }
 
 
-
 class SymbolTableModel extends MyTableModel {
   protected String[] columnNames = {"Symboli", "Arvo"};
-  protected Object[][] data = {{"Sum", "12"},
+  protected Object[][] data = {{"Sum", "10"},
                             {"KBD", "1"},
                             {"Alku","1"}
                             };
+  //protected Object[][] data = {{"",""}};
+  
   public int getColumnCount() {
       return columnNames.length;
   }
@@ -408,14 +644,14 @@ class SymbolTableModel extends MyTableModel {
 
 class RegistersTableModel extends MyTableModel {
   protected String[] columnNames = {"Register", "Value"};
-  protected Object[][] data = {{"R0", "0"},
+  protected Object[][] data = {{"R0", "3"},
                             {"R2", "1"},
-                            {"R3", "1"},
+                            {"R3", "5"},
                             {"R4", "1"},
-                            {"SP", "1"},
+                            {"SP", "11"},
                             {"FP", "1"},
-                            {"PC", "1"},
-                            {"IR", "1"},
+                            {"PC", "2"},
+                            {"IR", "3213213"},
                             };
   public int getColumnCount() {
       return columnNames.length;

@@ -2,6 +2,15 @@
 public class Control implements TTK91Bridge {
     
  
+    /** This has control to all the files this program has opened.
+    */
+    private FileHandler fileHandler; 
+    
+    
+    private Compiler cmpler;
+    
+    
+    
     /** Compiles a symbolic TTK91-assembly language to binary executable
         application.
         @param source The source code to be compiled.
@@ -51,14 +60,6 @@ public class Control implements TTK91Bridge {
     
     
     
-    /** This is called when user has selected a file to be opened
-        in FileDialog after selecting Open File from the menu.
-        @param fileName The path of the file.
-    */
-    public void openFile(String filePath);
-    
-    
-    
     /** This compiles one next line of the t91 program that has been opened recently and
         hasn't yet been compiled to binary code.
         @return Returns CompileInfo object of the last line compiled.
@@ -88,7 +89,7 @@ public class Control implements TTK91Bridge {
         operations will be read in emulator.
         @param stdinFile The stdin file.
     */
-    public void selectSTDIN(File stdinFile);
+    public void setSTDIN(File stdinFile);
     
     
     
@@ -96,7 +97,7 @@ public class Control implements TTK91Bridge {
         operations will be written in emulator.
         @param stdoutFile The stdout file..
     */
-    public void selectSTDOUT(File stdoutFile);
+    public void setSTDOUT(File stdoutFile);
     
     
     

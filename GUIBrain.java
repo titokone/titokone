@@ -24,7 +24,7 @@ v	check if this is sent before continuing to their next step. An
 
     /** This method corresponds to the menu option File -> Open... It 
 	calls either openBinaryFile or openSourceFile correspondingly. */
-    public void menuOpenFile(String filepath) { }
+    public void menuOpenFile(File openedFile) { }
 
     /** This method corresponds to the menu option File -> Run. It does 
 	its work by calling runInstruction(). */
@@ -45,9 +45,9 @@ v	check if this is sent before continuing to their next step. An
     public void menuInterrupt() { }
 
     public void menuSetLanguage(String language) 
-    public void menuSetStdIn(String filepath) {}
+    public void menuSetStdIn(File stdinFile) {}
 
-    public void menuSetStdOut(String filepath) {}
+    public void menuSetStdOut(File stdoutFile) {}
     
     public void menuSetMemorySize(int newSize) {}
 
@@ -86,7 +86,7 @@ v	check if this is sent before continuing to their next step. An
 	CompileInfos. */
     private void compileLine() { }
 
-    private void openBinaryFile(String filePath) {}
+    private void openBinaryFile(File b91File) {}
 
-    private void openSourceFile(String filePath) {}
+    private void openSourceFile(File k91File) {}
 }
