@@ -88,7 +88,7 @@ public class Translations extends ListResourceBundle {
 
       // Class: Compiler				// line (approx)
       {"Compilation is not finished yet.", null},	// 203
-      {"Not a valid command.", null},			// 255
+      {"Invalid command.", null},			// 255
       {"Invalid label.", null},				// 271, 328, 345 and 349
       {"Found label {0} and variable {1}.", null},	// 323
       {"Variable {0} used.", null},			// 328
