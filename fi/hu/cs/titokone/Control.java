@@ -1,5 +1,13 @@
 package fi.hu.cs.titokone;
 
+import fi.hu.cs.ttk91.*;
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.ParseException;
+import java.util.ResourceBundle;
+import java.util.logging.Logger;
+
 /** Control class offers the extenal interface to titokone. Using the
     methods of this class one can compile and emulate the execution
     process of a ttk91-program from a text file or straight from a
@@ -14,15 +22,6 @@ package fi.hu.cs.titokone;
     and the GUI, which prepares the output provided here to be shown
     in GUI. In this software that piece of code is the GUIBrain class.
 */
-
-import java.text.ParseException;
-import java.io.File;
-import java.io.IOException;
-import fi.hu.cs.ttk91.*;
-import java.text.ParseException;
-import java.util.ResourceBundle;
-import java.util.logging.Logger;
-
 public class Control implements TTK91Core {
     /** This is the memory size that will be used by default, unless 
 	a higher class (GUIBrain) chooses to change the size later. */
@@ -140,7 +139,7 @@ public class Control implements TTK91Core {
 	Logger logger;
 	
 	symbols = application.getSymbolTable();
-	definitions = symbols.getAllDefinitions[];
+	definitions = symbols.getAllDefinitions();
 	for(int i = 0; i < definitions.length; i++) {
 	    if(definitions[i].equalsIgnoreCase("STDIN"))
 		result[DEF_STDIN_POS] = 
