@@ -94,10 +94,11 @@ public class Control implements TTK91Core {
 	@throws TTK91NoStdInData If the current STDIN file contains invalid
 	STDIN input or the file cannot be opened.
 	@throws IllegalStateException If application is null. */
-    public void load() throws TTK91AddressOutOfBounds, TTK91NoStdInData {
+    public LoadInfo load() throws TTK91AddressOutOfBounds, TTK91NoStdInData {
 	String errorMessage = "";
 	boolean pendingException = false;
 	File[] appDefinitions;
+	LoadInfo result;
 	if(application == null) {
 	    errorMessage = new Message("No application to load.").toString();
 	    throw new IllegalStateException(errorMessage);
@@ -129,9 +130,10 @@ public class Control implements TTK91Core {
 	}
 	Loader loader = new Loader(processor);
 	loader.setApplicationToLoad(application);
-	loader.loadApplication();
+	result = loader.loadApplication();
 	if(pendingException)
 	    throw new TTK91NoStdInData(errorMessage);
+	return result;
     }    
 
     /** This method does the actual inserting STDIN datat to an application.
@@ -329,17 +331,23 @@ public class Control implements TTK91Core {
 	RunInfo info;
 	int data;
 	int[] outData; 
+	String errorMessage;
 
+	if(application == null) {
+	    errorMessage = new Message("There is no application available " +
+				       "to run from!").toString();
+	    throw new IllegalStateException(errorMessage);
+	}
 	try {
 	    info = processor.runLine();
 	    if(info != null) {
 		// OutData becomes an array where slot 0 is the device 
 		// number and slot 1 the value written there.
 		outData = info.whatOUT();
-		if(outData != null) {
-		    if(info.whatDevice().equals("CRT"))
+		if(outData != null && info.whatDevice() != null) {
+		    if(info.whatDevice().equals("Display"))
 			application.writeToCrt(outData[1]); 
-		    if(info.whatDevice().equals("STDOUT")) {
+		    if(info.whatDevice().equals("Standard output")) {
 			application.writeToStdOut(outData[1]);
 			writeToStdoutFile("" + outData[1]);
 		    }
