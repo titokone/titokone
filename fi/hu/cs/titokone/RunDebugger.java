@@ -288,10 +288,10 @@ public class RunDebugger{
 		param[2] = parameters[2];
 		param[3] = "" + this.deviceValue;
 		
-		info.setComments = new Message("{0}{1} Indexing {2}, "+ memoryComment+", value {3}.", param).toString();	
+		info.setComments(new Message("{0}{1} Indexing {2}, "+ memoryComment+", value {3}.", param).toString());	
 	}	
 	else
-		info.setComments = new Message("{0}{1} Indexing {2}, "+ memoryComment +".", parameters).toString();
+		info.setComments(new Message("{0}{1} Indexing {2}, "+ memoryComment +".", parameters).toString());
     }
     
     /** Sets value of new PC. 
