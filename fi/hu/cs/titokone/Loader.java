@@ -17,6 +17,11 @@ public class Loader {
   private Processor processor; 
 
 public Loader(Processor processor) {
+  if (processor == null) {
+    throw new IllegalArgumentException("Null is an invalid parameter," +
+                                       " instance of " + Processor.class.getName() +
+                                       " required.");
+  }
   this.processor = processor;
 }
 
@@ -24,11 +29,16 @@ public Loader(Processor processor) {
 one.
 */
 public void setApplicationToLoad(Application application){
+  if (application == null) {
+    throw new IllegalArgumentException("Null is an invalid parameter, " +
+                                       "instance of " + Application.class.getName() +
+                                       " required.");
+  }
   this.application = application;
 }
 
 /**Loads an application to memory. LoadInfo contains all the needed information about the process.
-	@return Info from the load procedure.
+	@return Info from the load procedure, null if no application has been set for loading.
 */
 public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
   
@@ -44,27 +54,20 @@ public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
   
   int i;
   for (i=0 ; i<code.length ; i++) {
-    processor.memoryInput(i, code[i]);
-      /*throw new TTK91AddressOutOfBounds(new Message("Loading to memory failed " +
-						"on line {0}.", 
-						"" + i).toString());
-    }*/
-  }
+    processor.memoryInput(i, code[i]);   //May throw TTK91AddressOutOfBounds, but it's just thrown
+  }                                      //backwards
   
   for (int j=0 ; j<data.length ; j++) {
-    processor.memoryInput(i+j, data[i]);
-      /*throw new TTK91AddressOutOfBounds(new Message("Loading to memory failed " +
-						"on line {0}.", 
-						"" + (i + j)).toString());
-    }*/
-  }
+    processor.memoryInput(i+j, data[i]); //May throw TTK91AddressOutOfBounds, but it's just thrown
+  }                                      //backwards
   
   LoadInfo retValue = new LoadInfo( code, 
                                     data,
                                     application.getSymbolTable(),
                                     FP,
                                     SP,
-                                    new Message("Loads program").toString() ); // TODO: Messagen kirjoitus!!!
+                                    new Message("Program loaded into memory. FP set to "+FP+
+                                                " and SP to "+SP+".").toString() );
  
   processor.runInit(SP, FP);
 
