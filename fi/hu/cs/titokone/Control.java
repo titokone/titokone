@@ -54,6 +54,12 @@ public class Control implements TTK91Core {
     /** This constructor sets up the Control instance.
     */
     public Control(File defaultStdInFile, File defaultStdOutFile) { 
+        Logger logger = Logger.getLogger(getClass().getPackage().getName());
+
+        if(defaultStdInFile == null)
+	  logger.info(new Message("No default STDIN file set.").toString());
+	if(defaultStdOutFile == null)
+	  logger.info(new Message("No default STDOUT file set.").toString());
 	fileHandler = new FileHandler(); 
 	compiler = new Compiler(); 
 	//compiler = new __stub_compiler();//TEST
@@ -147,12 +153,21 @@ public class Control implements TTK91Core {
 	invalid input. */
     private void insertStdinToApplication(File applicationStdin) 
 	throws ParseException, IOException {
-	String contents, errorMessage;
+	String contents, errorMessage, preparedStdinData;
 	File stdinFile = defaultStdInFile;
 	File[] appDefinitions;
-
+	Logger logger;
+	
 	if(applicationStdin != null)
 	    stdinFile = applicationStdin;
+	// If the stdin file is not set by default (in Control's constructor)
+	// and not by the application, we assume it should not be used.
+	if(stdinFile == null) {
+	  logger = Logger.getLogger(getClass().getPackage().getName());
+	  logger.info(new Message("STDIN files were null, data not inserted " +
+				  "to the application.").toString());
+	  return; 
+	}
 	contents = fileHandler.loadStdIn(stdinFile).toString();
 	// We use a brutal way of testing the input in order to get 
 	// more detailed information on *where* the input fails. 
@@ -211,8 +226,10 @@ public class Control implements TTK91Core {
     */
     public void run(TTK91Application app, int steps) 
 	throws TTK91Exception, TTK91RuntimeException { 
-	String errorMessage;
-	int counter = 0;
+	String errorMessage = "";
+	RunInfo info = null;
+	int counter;
+	boolean pendingException = false, gotException = false;
 	try {
 	    this.application = (Application) app;
 	}
@@ -235,8 +252,29 @@ public class Control implements TTK91Core {
 	// equal to the step count. (The counter is incremented before
 	// comparing to the steps variable.) If the steps was 0, run
 	// infinitely. 
-	while(runLine() != null && (steps == 0 || ++counter <= steps))
-	    ; // All is done in the check. See runLine().
+	if(steps < 0) 
+	  return;
+	counter = 0;
+	// We then always run at least one step; 0 steps would mean "run 
+	// infinitely".
+	do {
+	  try {
+	    info = runLine(); // See runLine(). It does various things.
+	  }
+	  catch(TTK91FailedWrite err) {
+	    // If the write fails, it fails after all else, so we just
+	    // inform of it happening afterwards.
+	    errorMessage = err.getMessage();
+	    pendingException = true;
+	    gotException = true;
+	  }
+	}
+	while((info != null || gotException) && 
+	      (steps == 0 || ++counter <= steps));
+
+	if(pendingException) {
+	  throw new TTK91FailedWrite(errorMessage);
+	}
     }
 
     /** Returns a reference to the RandomAccessMemory object which is
@@ -377,6 +415,15 @@ public class Control implements TTK91Core {
 	@param data The data to append to the stdout file.
 	@throws TTK91FailedWrite If there was an I/O error. */
     private void writeToStdoutFile(String data) throws TTK91FailedWrite {
+        Logger logger = Logger.getLogger(getClass().getPackage().getName());
+        // The default stdout file is set at the constructor and may
+        // be null. If the application does not set it either, we 
+        // interpret it as the stdout file being disabled.
+        if(currentStdOutFile == null) {
+  	    logger.info(new Message("No STDOUT file set, not writing to " +
+				    "it.").toString());   
+	    return;
+        }
 	try {
 	    fileHandler.appendDataToStdOut(data, currentStdOutFile);
 	}
