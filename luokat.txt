@@ -25,11 +25,11 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	Application.java                        SR              SR 19.3.
 0	AssariUI.java
 0	Binary.java
-0	BinaryInterpreter.java
+0	BinaryInterpreter.java			
 0	CompileConstants.java
-0	CompileDebugger.java
-0	CompileInfo.java
-0	Compiler.java		
+0	CompileDebugger.java					AT 21.3.
+0	CompileInfo.java					AT 21.3.
+0	Compiler.java						AT 21.3.
 0	Control.java
 0	DebugInfo.java
 0	Debugger.java
@@ -53,6 +53,6 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	Settings.java                           SR              SR 19.3.
 0	Source.java
 3	SymbolTable.java                        ?               SY 20.3
-0	SymbolicInterpreter.java
+0	SymbolicInterpreter.java				AT 21.3.
 0	Titokone.java
 2	Translator.java                         SR              SR 19.3.
