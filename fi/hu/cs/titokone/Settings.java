@@ -55,7 +55,6 @@ public class Settings {
     public void setValue(String key, String value) {
 	String expMessage;
 	String[] parameters = new String[3];
-	StringTokenizer tokenChecker;
 
 	parameters[0] = new Message("value").toString();
 	// Check that the value string does not contain linebreaks
@@ -195,7 +194,10 @@ public class Settings {
 	    // (Trimming does not modify the string.)
 	    if(line.trim() != "" && !line.startsWith(COMMENT_MARKER)) {
 		parts = line.split(KEY_VALUE_SEPARATOR);
-		if(parts.length != 2) {
+		// parts.length can be > 2, because KEY_VALUE_SEPARATOR
+		// is allowed in the value string, even if not in the key
+		// string.
+		if(parts.length < 2) {
 		    // Log where we failed and on what.
 		    parameters[0] = "" + lineCounter;
 		    parameters[1] = line;
