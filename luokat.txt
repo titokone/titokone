@@ -58,4 +58,4 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 3	SymbolTable.java                        ?               SY 20.3
 2	SymbolicInterpreter.java				AT 21.3.
 2	Titokone.java						AÅ
-3	Translator.java                         SR              SR 19.3.
+5	Translator.java                         SR              SR 26.3.
