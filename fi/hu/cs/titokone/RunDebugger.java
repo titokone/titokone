@@ -286,7 +286,7 @@ public class RunDebugger{
 		param[0] = parameters[0];
 		param[1] = parameters[1];
 		param[2] = parameters[2];
-		param[3] = this.deviceValue;
+		param[3] = "" + this.deviceValue;
 		
 		info.setComments = new Message("{0}{1} Indexing {2}, "+ memoryComment+", value {3}.", param).toString();	
 	}	
