@@ -40,7 +40,7 @@ public class Debugger extends Translatable{
     public void directRegister(int toregister, int fromregister, int where,
                                 int value){ }
 
-    public void indirectRegister(int toregister, int fromregister, int  ...){ }
+    public void indirectRegister(int toregister, int fromregister/*, int  ...*/){ }
     
     /** This method tells debugger that an indexed direct memoryfetch was used. */
     public void indexedDirect(int toregister, int index, int where, int value){ }

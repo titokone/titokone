@@ -1,8 +1,11 @@
 package fi.hu.cs.titokone;
 
+
+import fi.hu.cs.ttk91.TTK91Cpu;
+
 /** This class represents the processor state. It can be told to run for one
     command cycle at a time. */
-public class Processor implements CPU {
+public class Processor implements TTK91Cpu {
     // has a pointer to memory and registers.
 
     // Implementations of CPU:
@@ -43,7 +46,7 @@ public class Processor implements CPU {
   it has the current memoryline to be read from memory or to
   be written to memory.
  */ 
-   private memoryLine mbr;
+   private MemoryLine mbr;
 
 /** Creates new processor, memory(with defaultsize) and registers.
     Processor state, program counter get initial values
@@ -52,12 +55,12 @@ public class Processor implements CPU {
 
 
 /** Initializes processor with new program
-    set fp and sp, pc = 0  and return runInfo
+    set fp and sp, pc = 0  and return RunInfo
 */
 
-    public runInfo runInit(); {}
+    public RunInfo runInit() {}
 
-/** Process next instruction, returns runInfo
+/** Process next instruction, returns RunInfo
    
     1. mar = pc
     2. mbr = RAM(pc)
@@ -85,7 +88,7 @@ public class Processor implements CPU {
 
 
  */
-    public runInfo runLine() {}
+    public RunInfo runLine() {}
 
 
 /** Returns the current of given registerID
@@ -94,7 +97,7 @@ public class Processor implements CPU {
 
 /** Method returns the current value of Processor
 	*/
-    public int getStatus() {  } // running status: still running, halted
+    public int getStatus() {} // running status: still running, halted
 
 /** Method erases memorylines from memory. Memory will be filled
     with 0-lines.
