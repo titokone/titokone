@@ -31,10 +31,12 @@ public class Compiler {
     private final int NOTVALID = -1;
     private final int EMPTY = -1;
 
-    /** Maximum value of the address part. */
-    private final int MAXINT = 32767;
-    /** Minimum value of the address part. */
-    private final int MININT = -32767;
+
+    /** Maximum value of the EQU and DC. */
+    private final int MAXINT = 2147483647;
+
+    /** Minimum value of the EQU and DC. */
+    private final int MININT = -2147483648;
 
     /** This field holds the value of Stdin if it was set with DEF command. */
     private String defStdin;
@@ -399,7 +401,7 @@ public class Compiler {
 					      "DS.").toString();
 			throw new TTK91CompileException(comment);
 		    }	
-		    if (intValue < 0 || intValue > MAXINT) {
+		    if (intValue < 0 || intValue > Integer.MAX_VALUE) {
 			comment = new Message("Invalid size for a " +
 					      "DS.").toString();
 			throw new TTK91CompileException(comment); 
