@@ -1,8 +1,7 @@
-//TODO: setChangedMemoryLines
-
 package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.*;
+import java.util.*;
 
 /** This class represents the processor. It can be told to run for one
     command cycle at a time. */
@@ -63,6 +62,7 @@ public class Processor implements TTK91Cpu {
     set FP and SP, PC = 0  and return RunInfo
     @return RunInfo created by RunDebugger. */
     public RunInfo runInit(int initSP, int initFP) {
+        // TODO RunInfo-olion generointi
         status = TTK91Cpu.STATUS_STILL_RUNNING;
         regs.setRegister (TTK91Cpu.CU_PC, 0);
         regs.setRegister (TTK91Cpu.CU_PC_CURRENT, 0);
@@ -128,9 +128,9 @@ public class Processor implements TTK91Cpu {
         int ADDR = IR.getBinary()&0xFFFF;                               // address
         
 
-        runDebugger.runCommand (opcode, Rj, regs.regRegister (Rj), 
+        runDebugger.runCommand (opcode, Rj, regs.getRegister (Rj), 
         			Ri, regs.getRegister(Ri), ADDR, M,
-        			opcode + ":" + Rj -TTK91Cpu.REG_R0 + ":" + M + ":" + Ri-TTK91Cpu.REG_R0 + ":" + ADDR);
+        			opcode + ":" + (Rj-TTK91Cpu.REG_R0) + ":" + M + ":" + (Ri-TTK91Cpu.REG_R0) + ":" + ADDR);
         			
 
         // fetch parameter from memory
@@ -169,8 +169,8 @@ public class Processor implements TTK91Cpu {
         
         
         // give registers to runDebugger
-        Integer[8] registers = new Integer[8];
-        for (int i=0; i < register.length; i++) 
+        Integer[] registers = new Integer[8];
+        for (int i=0; i < registers.length; i++) 
         	registers[i] = new Integer (regs.getRegister (i + TTK91Cpu.REG_R0));
         runDebugger.setRegisters (registers);
         	
@@ -520,39 +520,79 @@ public class Processor implements TTK91Cpu {
 /** Supervisor call. */
     private void svc(int Rj, int param)
     throws TTK91OutOfBounds, TTK91NoKbdData {
-    	runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
     	runDebugger.setSVCOperation (param);
+        Calendar calendar;
         
-        // make CALL operation
-        subr(49, Rj, regs.getRegister (TTK91Cpu.CU_PC), param);
+        // make CALL operation to supervisor
+        subr(49, Rj, -1, param);
         
         switch (param) {
             case 11 : // HALT
+        	runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
             status = TTK91Cpu.STATUS_SVC_SD;
             break;
             
             case 12 : // READ
             if (kbdData == null) throw new TTK91NoKbdData();
-            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (kbdData.intValue(), null));
+            try {
+                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (kbdData.intValue(), null));
+            } catch (ArrayIndexOutOfBoundsException e) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91OutOfBounds();
+            }
+                
             kbdData = null;
             subr (50, Rj, 0, 1);    // EXIT from SVC(READ)
             break;
             
             case 13 : // WRITE
+            try {
+                runDebugger.setOUT (0, ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2));
+            } catch (ArrayIndexOutOfBoundsException e) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91OutOfBounds();
+            }
             subr (50, Rj, 0, 1);    // EXIT from SVC(WRITE)
             break;
 
             case 14 : // TIME
+            calendar = new GregorianCalendar();
+
+            int hour = calendar.get(Calendar.HOUR);
+            int minute = calendar.get(Calendar.MINUTE);
+            int second = calendar.get(Calendar.SECOND);
             
-//TODO
+            try {
+                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (second, null));
+                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -3), new MemoryLine (minute, null));
+                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -4), new MemoryLine (hour, null));
+            } catch (ArrayIndexOutOfBoundsException e) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91OutOfBounds();
+            }
+                
             subr (50, Rj, 0, 3);    // EXIT from SVC(TIME)
             break;
             
             case 15 : // DATE
-//TODO
+            calendar = new GregorianCalendar();
+
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int date = calendar.get(Calendar.DATE);
+
+            try {
+                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (date, null));
+                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -3), new MemoryLine (month, null));
+                ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -4), new MemoryLine (year, null));
+            } catch (ArrayIndexOutOfBoundsException e) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91OutOfBounds();
+            }
             subr (50, Rj, 0, 3);    // EXIT from SVC(DATE)
             break;
         }
+    	runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
     }
     
     private void nop() {
