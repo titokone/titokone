@@ -43,7 +43,7 @@ public class CompileInfo extends DebugInfo {
 
   /** This field contains the value of the symbol found. If symbolDefined
       is false, the value in this field should be ignored. */
-  private String symbolValue;
+  private int symbolValue;
 
   /** This field contains the address of the symbol.*/
   private int symbolAddress;
@@ -106,7 +106,6 @@ public class CompileInfo extends DebugInfo {
 	@param lineContents String containing symbolic command.
     */
   public CompileInfo(short phase, int lineNumber, String lineContents) {
-
 	this.phase = phase;
 	this.lineNumber = lineNumber;
 	this.lineContents = lineContents;
@@ -134,11 +133,6 @@ public class CompileInfo extends DebugInfo {
 	symbolFound = true;
     }
 
-    /** This method sets labelFound field.*/
-    public void setLabelFound(){
-	labelFound = true;
-    }
-
     /** This method sets the name of a found symbol.
 	@param name String containing the symbol name.
     */
@@ -151,11 +145,15 @@ public class CompileInfo extends DebugInfo {
 	@param value Value of the symbol.
 	@param address Memoryaddress of the symbol.
     */
-    public void setSymbolName(String name, String value) {
+    public void setSymbolName(String name, int value) {
 	symbolName = name;
 	symbolValue = value;
 	symbolDefined = true;
-	symbolAddress = address;
+    }
+
+    /** This method sets labelFound field.*/
+    public void setLabelFound(){
+	labelFound = true;
     }
  
     /** This method sets the name of a found label and sets the labelDefined 
@@ -196,7 +194,6 @@ public class CompileInfo extends DebugInfo {
 	dcAddress = ADDR;
 	dcName = name;
     }
-
 
     /** This method sets the boolean field finalFinal to true.
      */
@@ -294,7 +291,7 @@ public class CompileInfo extends DebugInfo {
     /** This method returns value of current symbol.
 	@return An integer containing symbol's value.
     */
-    public String getSymbolValue() {
+    public int getSymbolValue() {
 	return symbolValue;
     }
 

@@ -124,7 +124,7 @@ public class SymbolicInterpreter extends Interpreter {
 
 	if (value < 0) { 
 		wasNegative = true; 
-		value = (value * -1) -1;
+		value = (value * -1);
 	}
 
 	
@@ -138,12 +138,7 @@ public class SymbolicInterpreter extends Interpreter {
 	}
 
 	if (wasNegative) {
-		for (int i = 0; i < returnValue.length; ++i) { 
-			if (returnValue[i] =='0') {
-				returnValue[i] = '1';
-			} else { returnValue[i] = '0'; }
-
-		} 
+		returnValue[0] = '1';
 	}
 	return new String(returnValue);
     }

@@ -22,11 +22,7 @@ public class CompileDebugger {
 
     /** This is the only constructor for CompileDebugger. It is called
 	when compiler is created.*/
-    public CompileDebugger() {
-
-	
-
-    }
+    public CompileDebugger() {    }
 
 /*----------- Compiler instructions -----------*/
 
@@ -37,15 +33,14 @@ public class CompileDebugger {
     */
     public void foundEQU(String name, int value) {
 	info.setSymbolFound();
-	info.setSymbolName(name, "" + value);
+	info.setSymbolName(name, value);
     }
 
     /** This method tells debugger that a DS compiler instruction was found
 	and it is added to the symboltable.
 	@param name String containing name of the symbol.
-	@param value Int containing the value.
     */
-    public void foundDS(String name, int value) { 
+    public void foundDS(String name) { 
 	info.setSymbolFound();
 	info.setSymbolName(name);
     }
@@ -69,7 +64,7 @@ public class CompileDebugger {
         @param isNew Boolean containing information if the DC is new or is it 
 	already in symboltable..
     */
-    public void foundDC(String name, boolean isNew) {
+    public void foundDC(String name) {
    	info.setSymbolFound();
 	info.setSymbolName(name);
     }
@@ -87,23 +82,12 @@ public class CompileDebugger {
 // TODO deprecated?
     }
 
-    /** This method tells debugger that a symbol was found on a line but it is 
-	unknown.
+    /** This Method  tells debugger that a symbol was used as an 
+	address. 
 	@param name String containing name of the symbol.
-        @param isNew Boolean containing the information if the symbol was new..
     */
-    public void foundSymbol(String name, boolean isNew) {
-	// TODO "Tunnuksen name (määrittelemättä) käyttö"
-
-    }
-
-    /** This Method  tells debugger that a known symbol was found and it's 
-	value is given as a paratmeter. 
-	@param name String containing name of the symbol.
-	@param value Int containing the value.
-    */
-    public void foundSymbol(String name, int value) {
-	// TODO "Tunnuksen name (määrittelemättä) käyttö"
+    public void foundSymbol(String name) {
+	
     }
 
     /** This method tells that a label was found and it is added to the
@@ -118,12 +102,9 @@ public class CompileDebugger {
     /** This method tells that for given label points to given line.
 	@param name String containing name of the symbol.
 	@param lineNumber Int containing the linenumber of the label.
-        @param isNew Boolean containing the information if the label was new.
     */
-    public void foundLabel(String name, int lineNumber, boolean isNew) {
-	info.setLabelFound();
-	info.setLabelName(name);
-	info.setLabelValue(lineNumber);
+    public void foundLabel(String name, int lineNumber) {
+	info.setLabelDefined(name, lineNumber);
     }
 
     /** This method tells that a DEF  was found and it is added to the
@@ -132,8 +113,9 @@ public class CompileDebugger {
      @param value String containing the value.
     */
     public void foundDEF(String name, String value) {
-	info.setSymbolFound();
-	info.setSymbolName(name, value);
+//TODO	info.setComment();
+//	info.setSymbolFound();
+//	info.setSymbolName(name, value);
     }
     
     /** This method tells debugger that first round of compilation is
@@ -178,8 +160,17 @@ public class CompileDebugger {
 
     }
 
+    /**	This method sets the comment to the compileInfo. 
+    */
+    public void setComments(String message, String[] parameters) {
 
+    }
 
+    /**	This method sets the status info to the compileInfo. 
+    */
+    public void setStatusMessage(String message, String[] parameters) {
+
+    }
 
     /** This method tells debugger that the second round of
     compilation is in progress. It creates CompileInfo object and sets
