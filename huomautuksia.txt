@@ -9,3 +9,5 @@ Application  SR 19.3.   Application meni ihan uusiksi. (Noei.)
 Luokka       Nimi+pvm   Huomautus
 Control      SR 23.3.   compile-metodin parametrinä TTK91Source, ei Source.
                         Lisätty kenttä DEFAULT_MEMORY_SIZE.
+
+CompileInfo  AT 23.3.	SetMemoryLine-metodin parametri value on String, ei int.

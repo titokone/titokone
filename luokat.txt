@@ -27,9 +27,9 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	Binary.java						SH 20.3
 2	BinaryInterpreter.java					SH 20.3
 0	CompileConstants.java
-0	CompileDebugger.java					AT 21.3.
-0	CompileInfo.java					AT 21.3.
-0	Compiler.java						AT 21.3.
+2	CompileDebugger.java					AT 21.3.
+2	CompileInfo.java					AT 21.3.
+2	Compiler.java						AT 21.3.
 0	Control.java
 0	DebugInfo.java
 0	Debugger.java
@@ -53,6 +53,6 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 2	Settings.java                           SR              SR 19.3.
 0	Source.java						SH 20.3
 3	SymbolTable.java                        ?               SY 20.3
-0	SymbolicInterpreter.java				AT 21.3.
+2	SymbolicInterpreter.java				AT 21.3.
 0	Titokone.java
 2	Translator.java                         SR              SR 19.3.

@@ -57,7 +57,8 @@ public class Compiler {
 	the application one line at a time, and finally getApplication() to get
 	the finished application. 
 	@param source The symbolic source code to be compiled. */
-    public void compile(Source source) { }
+    public void compile(String source) { }
+//java.util.StringTokenizerillä se riveiksi jne.
 
     /** This function goes through one line of the code. On the first round, it
 	gathers the symbols and their definitions to a symbol table and conducts 
