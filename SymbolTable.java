@@ -34,7 +34,7 @@ public class SymbolTable {
 	@throws SymbolNotDefinedException If there is no such
 	symbol in the SymbolTable. */
     public int getSymbolValue(String symbolName) 
-	throws SymbolNotDefinedException {}
+	throws InvalidSymbolException {}
 	
     /** This method returns a string array that contains all the
 	defined symbols.
