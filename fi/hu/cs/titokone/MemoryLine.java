@@ -18,16 +18,25 @@ public class MemoryLine {
 	@param symbolicCommand String that contains the corresponding
 	symbolic command, or an empty string ("") if there is no
 	representation. */
-    public MemoryLine (int binary, String symbolicCommand) {}
+    public MemoryLine (int binary, String symbolicCommand) {
+        this.binary = binary;
+        symbolic = symbolicCommand;
+        if (symbolic == null)
+            symbolic = "";
+    }
 	
     /** Returns the symbolic representation of the command. If the command
 	has no symbolic representation, an empty string is returned.
 	@return Symbolic presentation of command. If symbolic 
 	representation of the command is not defined, an empty string is 
 	returned. */
-    public String getSymbolic() {}
+    public String getSymbolic() {
+        return symbolic;
+    }
 	
     /** Returns the value of this memory slot. 
 	@return Integer value of this memory slot. */
-    public int getBinary() {}
+    public int getBinary() {
+        return binary;
+    }
 }
