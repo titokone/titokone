@@ -162,20 +162,25 @@ public class Control implements TTK91Core {
     public Settings getSettings() { }
     
     
+    // (Metodi lisanappaimistodatan lukemiseen lisatty 15.3. --Sini)    
+    /** GUIBrain calls this when it has recieved the TTK91NoKbdData
+        exception. The input is passed on to the processor. Note that 
+        primarily input is searched for in the Application instance.
+        @param inputValue The input to pass on. */
+    public keyboardInput(int inputValue) {}
 
-    public void setRunningOptions(boolean isCommentedExecution, 
-                                  boolean isPausedExecution, 
-                                  boolean isAnimatedExecution, 
-                                  int     speed) {}
+    // Control ei tarvitse naita metodeja, koska tiedot kasitellaan
+    // joka tapauksessa GUIBrainissa vasta. --Sini 15.3.
+    //public void setRunningOptions(boolean isCommentedExecution, 
+    //                              boolean isPausedExecution, 
+    //                              boolean isAnimatedExecution, 
+    //                              int     speed) {}
 
     
 
-    public void setCompilingOptions(boolean isCommentedExecution, 
-                                    boolean isPausedExecutionm,
-                                    int     speed) {}
-
-
-
+    //public void setCompilingOptions(boolean isCommentedExecution, 
+    //                                boolean isPausedExecutionm,
+    //                                int     speed) {}
 
 
     /** RunLine() calls this, when the processor wants to write a value to CRT.
@@ -189,8 +194,6 @@ public class Control implements TTK91Core {
         @param inputValue The inpuit to StdOut.
     */
     private void writeToStdOut(int inputValue) { }
-    
-    
     
     
 }
