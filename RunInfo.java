@@ -11,6 +11,18 @@ public class RunInfo extends DebugInfo{
     public static final short SUB_OPERATION = 5;
     public static final short SERVICE_OPERATION = 6;
     
+    public static final short IMMEDIATE = 0;
+    public static final short DIRECT = 1;
+    public static final short DIRECT_REGISTER = 2;
+    public static final short INDIRECT_REGISTER = 3;
+    public static final short INDEXED_DIRECT = 4;
+    public static final short INDEXED_INDIRECT= 5;
+    public static final short INDEXED_DIRECT_REGISTER = 6; 
+    public static final short INDEXED_INDERECT_REGISTER = 7;
+   
+
+
+
     private int operationType;
     /**This field contains line number.*/
     private int lineNumber;
@@ -25,6 +37,7 @@ public class RunInfo extends DebugInfo{
     
     
     private int memoryFetchType;
+    private int numberOfMemoryfetches;
     private int oldSP;
     private int oldFP;
     private int SP;
@@ -62,6 +75,11 @@ public class RunInfo extends DebugInfo{
     /** This method returns both old and new SP and FP. */
     public int[] returnPointers(){}
     
+    /** This methot tells GUIBrain how many memoryfetches were made. */
+    public int returnMemoryfetches(){}
+    /** This method tells what kind of memoryfetch was made.*/
+    public int returnFetchType(){}
+    
     /** */
     Public int returnLineNumber(){}
     
@@ -87,7 +105,9 @@ public class RunInfo extends DebugInfo{
      *value.*/
     public int[] whatIN(){}
     
-    public int[] 
+    public int[] returnAllRegisters(){}
+
+    public 
     
     
     
