@@ -329,6 +329,8 @@ public class Translations_fi extends ListResourceBundle {
       {"K91 source", "K91-lähdekooditiedosto"},  
       {"Class file", "Luokkatiedosto"},
       {"Memory contents erased", "Muistin sisältö nollattu"},
+      {"Execution finished", "Suoritus päättyi."},
+      {"Compilation finished", "Käännös päättyi."},
 
       // Class: GUICompileSettingsDialog
       // (Set compiling options already defined in GUI.)
