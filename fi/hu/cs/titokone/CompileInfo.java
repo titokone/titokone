@@ -218,6 +218,13 @@ public class CompileInfo extends DebugInfo {
 	return lineContents;
     }
 
+    /**	This method tells which line was processed.
+	@return Int value of the line in question.
+     */
+    public int getLineNumber() {
+	return lineNumber;
+    }
+
     /** This method returns found symbolname.
 	@return String containing the name.
     */
