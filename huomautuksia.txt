@@ -59,3 +59,6 @@ SymbolTable  SR 26.3.   Control (ja Compiler) tarvitsevat definitioneihin tuen, 
                         symbolitauluun String[] getAllDefinitions, String getDefinition(String) 
                         ja void addDefinition(String, String) sekä privaattikenttä HashMap 
                         definitions. Lisäksi InvalidDefinitionException uutena luokkana.
+
+Application  SR 27.3.   getSymbolTable() palauttaa pointterin 
+                        symbolitauluun, sillä sitä ei voi kloonata.
