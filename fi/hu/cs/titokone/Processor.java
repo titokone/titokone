@@ -112,7 +112,7 @@ public class Processor implements TTK91Cpu {
 	throws TTK91AddressOutOfBounds {
         try {
             ram.setMemoryLine(rowNumber, inputLine);
-        } (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
             throw new TTK91AddressOutOfBounds();
         }
     }
