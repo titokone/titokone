@@ -59,7 +59,9 @@ public class BinaryInterpreter extends Interpreter {
        	s=(String)commands.get(opcode);
 	if (s==null)
 	    return GARBLE;
-	
+	if(getMemoryModeFromBinary(command)==null)
+	    return GARBLE;
+	//System.out.println("mm "+getMemoryModeFromBinary(command));
 	Integer param = (Integer)parameters.get(opcode);
 	
 	switch(param.intValue()){
