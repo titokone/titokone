@@ -1,6 +1,5 @@
 /*
- *
- * 
+ * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 package fi.hu.cs.ttk91;
 
@@ -8,8 +7,6 @@ import java.text.ParseException;
 
 /**
  * @author Kalle Kärkkäinen
- *
- * 
  */
 public interface TTK91Core {
 	

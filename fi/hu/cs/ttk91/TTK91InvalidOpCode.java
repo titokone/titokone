@@ -1,17 +1,10 @@
 /*
  * Created on Mar 17, 2004
  *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 package fi.hu.cs.ttk91;
 
-/**
- * @author mustakko
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 public class TTK91InvalidOpCode extends TTK91RuntimeException {
   public TTK91InvalidOpCode(String message) {
     super(message);

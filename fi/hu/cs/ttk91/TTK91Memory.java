@@ -1,19 +1,12 @@
 /*
  * Created on Feb 24, 2004
  *
- * To change the template for this generated file go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 package fi.hu.cs.ttk91;
 
 import java.util.HashMap;
 
-/**
- * @author mustakko
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
- */
 public interface TTK91Memory {
 	public int getSize();
 	/**
