@@ -31,11 +31,11 @@ public class LoadInfo extends DebugInfo {
   //private String statusMessage;
   
   /**
-     @param codeArea Has the opcodes as MemoryLine array
-     @param dataArea Has the data part as MemoryLine array
-     @param symbols has the symboltable 
-     @param initSP The initial value of SP
-     @param initFP The initial value of FP
+     @param codeArea Has the opcodes as MemoryLine array.
+     @param dataArea Has the data part as MemoryLine array.
+     @param symbolTable Contains the symboltable.
+     @param initSP The initial value of SP.
+     @param initFP The initial value of FP.
      @param statusMessage Message to GUI to be displayed at the status bar.
     */ 
   public LoadInfo(MemoryLine[] codeArea, MemoryLine[] dataArea, 
