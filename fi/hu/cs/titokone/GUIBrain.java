@@ -14,6 +14,7 @@ package fi.hu.cs.titokone;
 import java.util.Locale;
 import java.io.File;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.io.IOException;
 import java.util.logging.Logger;
 import fi.hu.cs.ttk91.TTK91NoStdInData;
@@ -393,12 +394,14 @@ public void menuRun() {
     //gui.updateReg(GUI.PC, newRegisterValues[8]);
     
     LinkedList changedMemoryLines = runinfo.getChangedMemoryLines();
-    while (changedMemoryLines.isEmpty() == false) {
-      Object[] listItem = (Object[])changedMemoryLines.getFirst();
+    Iterator changedMemoryLinesListIterator = changedMemoryLines.iterator();
+    
+    while (changedMemoryLinesListIterator.hasNext()) {
+      Object[] listItem = (Object[])changedMemoryLinesListIterator.next();
       int line = ((Integer)listItem[0]).intValue();
       MemoryLine contents = (MemoryLine)listItem[1];
       gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
-      changedMemoryLines.removeFirst();
+      //changedMemoryLines.removeFirst();
     }
       
     
@@ -479,6 +482,10 @@ public void menuCompile() {
       break;
     }
     
+    if (compileinfo == null) {
+      compilingCompleted = true;
+    }
+    else {
     String comments = compileinfo.getComments();
 	  if (comments == null) 
 	    comments = "";
@@ -514,7 +521,12 @@ public void menuCompile() {
 	    if (symbolTable != null) {
   	    for (int i=0 ; i<symbolTable.length ; i++) {
           String symbolName = symbolTable[i][0];
-          Integer symbolValue = new Integer(symbolTable[i][1]);
+          Integer symbolValue = null;
+	  try {
+            symbolValue = new Integer(symbolTable[i][1]);
+	  }
+	  catch (NumberFormatException e) {
+	  }  
           gui.updateRowInSymbolTable(symbolName, symbolValue);  
       	}
       }
@@ -532,12 +544,12 @@ public void menuCompile() {
       gui.updateInstructionsAndDataTableLine(line, binary);
       gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
     }
-    else if (phase == CompileInfo.FINALIZING) {
+    /*else if (phase == CompileInfo.FINALIZING) {
       if (compileinfo.getFinalPhase() == true) {
         compilingCompleted = true;
         break;
       }
-    }
+    }*/
     
     gui.repaint();
             
@@ -557,6 +569,7 @@ public void menuCompile() {
           System.out.println("InterruptedException in menuRun()");
         }
       }
+    }
     }
     
   } while ( interruptSent == false ); // End of do-loop
