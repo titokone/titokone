@@ -52,7 +52,7 @@ public class BinaryInterpreter extends Interpreter {
 	the opcode is unknown, the memory address mode faulty or the
 	register ids do not point to real registers,
 	BinaryInterpreter.GARBLE is returned. */
-    //TODO parametrien määrä
+    //TODO siivousta ja tarkistuksia
     public String binaryToString(int binaryCommand) {
 	int command = binaryCommand;
        	
@@ -76,6 +76,7 @@ public class BinaryInterpreter extends Interpreter {
 	case 2:{ //SP and register
 	    s = s +" "+getFirstRegisterFromBinary(command);
 	    s = s +", "+getSecondRegisterFromBinary(command);
+	    return s;
 	}
 	case 3:{ //only SP
 	    s+=" "+getFirstRegisterFromBinary(command);
@@ -134,6 +135,9 @@ public class BinaryInterpreter extends Interpreter {
 	    s+=" "+getFirstRegisterFromBinary(command);
 	    
 	    Integer device = new Integer(getAddressFromBinary(command));
+	    if(!getMemoryModeFromBinary(command).equals("="))
+	       return GARBLE;
+
 	    if (device.intValue()==0){
 		s+=", =CRT";
 		return s;
@@ -277,6 +281,7 @@ public class BinaryInterpreter extends Interpreter {
 	int i = command >> 16;
 	i = i & 7;
 	String s = (String)registerData[i][0];
+	System.out.println(s);
 	return s;
 
 
