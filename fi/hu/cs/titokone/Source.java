@@ -11,12 +11,11 @@ public class Source implements TTK91CompileSource {
     
     /** This constructor initializes sourceString with its given string.
 	@param source String containing source delimited with \n, \r\n or \r.*/
-	//TODO ? 
    public Source(String source){
 	this.sourceString = source;
     }
     /** @return The source code in one long String, lines delimited with 
-	\n, \r\n or \r. */ //TODO ?
+	\n, \r\n or \r. */ 
     public String getSource() {
 	return sourceString;
     }
