@@ -107,6 +107,7 @@ public class Processor implements TTK91Cpu {
     with 0-lines. */
     public void eraseMemory() {
         ram = new RandomAccessMemory (ram.getSize());
+	regs = new Registers();
     }
 
 /** Method for loading MemoryLines to Processor, Loader classes uses
