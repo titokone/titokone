@@ -109,8 +109,7 @@ public class RunInfo extends DebugInfo{
 		this.newFP = newFP;
     
 		this.externalOperation = false;
-		this.memoryChanged = true;
-		
+
 	}
     
 	
@@ -221,7 +220,7 @@ public class RunInfo extends DebugInfo{
     */
     
     public boolean isInOp() {
-	 	return this.isIn;   
+	 	return this.isIN;   
     }
     
     
@@ -233,7 +232,7 @@ public class RunInfo extends DebugInfo{
     */
     public void setIN(String deviceName, int device, int value){
     	this.externalOperation = true;
-		this.isIn = true;
+		this.isIN = true;
     	this.deviceName = deviceName;
     	this.deviceNumber = device;
     	this.valueOfDevice = value;
@@ -248,10 +247,10 @@ public class RunInfo extends DebugInfo{
     */
     public void setOUT(String deviceName, int device, int value){
     	this.externalOperation = true;
-		this.isIn = false;
+		this.isIN = false;
     	this.deviceName = deviceName;
 		this.deviceNumber = device;
-		this.value = value;
+		this.valueOfDevice = value;
     }
     
     
@@ -305,7 +304,7 @@ public class RunInfo extends DebugInfo{
     /** This method returns the binary command.
 	@return int Integer containing the binary command.
     */
-    public String getBinary(){
+    public int getBinary(){
 		return this.binary;    
 	}
     
@@ -335,7 +334,7 @@ public class RunInfo extends DebugInfo{
     public int[] whatOUT(){
 	    int [] outD = new int[2];
 	    outD[0] = this.deviceNumber;
-	    outD[1] = this.value;
+	    outD[1] = this.valueOfDevice;
 
 	    return outD;
 	}
@@ -347,7 +346,7 @@ public class RunInfo extends DebugInfo{
     public int[] whatIN(){
 		int [] inD = new int[2];
 		inD[0] = this.deviceNumber;
-		inD[1] = this.value;
+		inD[1] = this.valueOfDevice;
 		
 		return inD;
 	}
@@ -411,9 +410,10 @@ public class RunInfo extends DebugInfo{
 		return this.svcOperation;    
 	}
     
-	//TODO, Guille.
+	//TODO, Guille. Pitää kysyä Artolta mihin käyttöön!
 	public String getSymbolUsed() {
-    }
+    		return "something";
+	}
     
     
    
