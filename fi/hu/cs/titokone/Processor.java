@@ -77,7 +77,7 @@ public class Processor implements TTK91Cpu {
 /** Returns the value of given registerID. The index numbers
     are available from the TTK91CPU interface.
     @param registerID Identifying number of the register.
-    @return Value of given register. Improper value returns -1. */
+    @return Value of given register. Inproper value returns -1. */
     public int getValueOf(int registerID) {
         return regs.getRegister (registerID);
     }
@@ -138,9 +138,9 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Initializes processor with new program
-    set FP and SP, PC = 0.  */
+    set FP and SP, PC = 0  and return RunInfo
+    @return RunInfo created by RunDebugger. */
     public void runInit(int initSP, int initFP) {
-        // TODO RunInfo-olion generointi
         status = TTK91Cpu.STATUS_STILL_RUNNING;
         regs.setRegister (TTK91Cpu.CU_PC, 0);
         regs.setRegister (TTK91Cpu.CU_PC_CURRENT, 0);
@@ -191,7 +191,7 @@ public class Processor implements TTK91Cpu {
             // fetch the next command to IR from memory and increase PC
             MemoryLine IR = ram.getMemoryLine(PC);
         
-            runDebugger.cycleStart (PC-1, IR.getSymbolic(), PC, regs.getRegister (TTK91Cpu.REG_SP), regs.getRegister (TTK91Cpu.REG_FP)); //TODO:Tarkista että PC-1 on oikea arvo lineNumberiksi.
+            runDebugger.cycleStart (PC, IR.getSymbolic(), PC+1, regs.getRegister (TTK91Cpu.REG_SP), regs.getRegister (TTK91Cpu.REG_FP));
         
             regs.setRegister (TTK91Cpu.CU_IR, IR.getBinary());
             regs.setRegister (TTK91Cpu.CU_PC, PC+1);
@@ -201,19 +201,23 @@ public class Processor implements TTK91Cpu {
             int Rj = ((IR.getBinary()&0xE00000) >>> 21) + TTK91Cpu.REG_R0;  // first operand (register 0..7)
             int M  = (IR.getBinary()&0x180000) >>> 19;                      // memory addressing mode
             int Ri = ((IR.getBinary()&0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
-            int ADDR = IR.getBinary()&0xFFFF;                               // address; assume always positive here.
+            int ADDR = IR.getBinary()&0xFFFF;                               // address
         
-
-            runDebugger.runCommand (opcode, Rj, regs.getRegister (Rj), 
-                Ri, regs.getRegister(Ri), ADDR, M,
-                opcode + ":" + (Rj-TTK91Cpu.REG_R0) + ":" + M + ":" + (Ri-TTK91Cpu.REG_R0) + ":" + ADDR);
-                    
+            runDebugger.runCommand (IR.getBinary(), regs.getRegister (Rj), regs.getRegister(Ri));
 
             // fetch parameter from memory
             if (Ri != TTK91Cpu.REG_R0) ADDR += regs.getRegister (Ri);   // add indexing register Ri
-            int param = ADDR;                                       // constant value
-            if (M == 1) param = ram.getValue(ADDR);                 // one memory fetch
-            if (M == 2) param = ram.getValue (ram.getValue(ADDR));  // two memory fetches
+            int param = ADDR;                               // constant value        
+            if (M == 1) {
+                param = ram.getValue(ADDR);                 // one memory fetch
+                runDebugger.setValueAtADDR (param);
+            }
+            if (M == 2) {
+                param = ram.getValue(param);                // two memory fetches
+                runDebugger.setValueAtADDR (param);
+                param = ram.getValue (param);
+                runDebugger.setSecondFetchValue (param);
+            }
         
             // run the command
             if (M == 3) {
@@ -308,7 +312,8 @@ public class Processor implements TTK91Cpu {
     }
 
 
-/** ALU-operations. */
+/** ALU-operations.
+    @return Result of the ALU-operation. */
     private void alu(int opcode, int Rj, int param) 
     throws TTK91IntegerOverflow, TTK91DivisionByZero {
     runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
@@ -620,7 +625,7 @@ public class Processor implements TTK91Cpu {
         runDebugger.addChangedMemoryLine (row, memoryLine);
     }        
         
-/** Tests if given long value is an acceptable int value. Returns false if it is. */
+/** Tests if given long value is acceptable int value. */
     private boolean isOverflow (long value) {
         return (value > (long)Integer.MAX_VALUE || value < (long)Integer.MIN_VALUE);
     }
