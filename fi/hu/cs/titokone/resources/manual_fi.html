@@ -798,6 +798,16 @@ ohjelman uudelleen.</li></ul>
   <img src="img/Animointi.jpg" title="Kuva animaattorista" 
   alt="Kuva animaattorista">
   </td>
+  <td valign=top> 
+    <ul>
+  		<li> Animaattori esitt‰‰ konekielisen k‰skyn suorituksen prosessorilla. </li>
+  		<li> Ruudun yl‰reunassa n‰kyy symbolinen k‰skymuoto kun k‰sky on tulkittu IR:ss‰.</li>
+  		<li> Ruudun alareunassa n‰kyv‰t kommentit suorituksen etenemisest‰. </li>
+  		<li> Kontrollia ja menev‰‰ dataa kuvaa punainen pallo, joka etenee v‰yl‰‰ pitkin. </li>
+  		<li> SVC-komentoja ei animoida. </li>
+  	        <li> Luettaessa laitteelta  MAR:iin ladataan koko k‰sky, ei pelkk‰‰ muistiviitett‰; esitystapa eroaa hieman oikeiden koneiden toiminnasta. </li>
+    </ul>
+  </td>
   </tr>
   </table>
   <br>
@@ -829,9 +839,16 @@ ohjelman uudelleen.</li></ul>
   <img src="img/Asetastd.jpg" title="STDIN ja STDOUT" 
   alt="STDIN- ja STDOUT-tiedostojen valinta">
   </td>
-  <td> 
-  
+   <td valign=top> 
+  <ul>
+  		<li> STDIN ja STDOUT -oletustiedostoina ovat tiedostot 'stdin' ja 'stdout' k‰ytt‰j‰n tyˆhakemistossa.</li>
+  		<li> Tiedostoja voidaan vaihtaa valitsemalla valikosta <b>Asetukset --> Aseta tiedostoj‰rjestelm‰</b></li>
+  		<li> Tiedostot voidaan m‰‰ritt‰‰ myˆs l‰hdekoodissa <a href=#stdindef>def-valek‰skyll‰</a>.</li>
+  		<li> Lis‰tietoa oletustiedostojen m‰‰rittelyst‰ lˆytyy kohdasta <a href=#asetustiedostot>asetustiedostot</a>.</li>  
+  </ul>
   </td>
+  
+  
   </tr>
   </table>
   <br>
@@ -1289,10 +1306,13 @@ symbolisen osoitteen "tunnus". K‰ytet‰‰n globaalien muuttujien tilanvaraukseen. 
 <pre>
 asetus DEF merkkijono
 </pre>
+
+<a name="stdindef">
 <p>
 DEF muuttaa TTK-91-koneen tiedostoj‰rjestelm‰n simulointiasetuksia. 
 Merkkijonon 'merkkijono' tulee olla absoluuttinen tiedostopolku. 
 </p>
+</a>
 
 <p>
 Esimerkkej‰: 
@@ -1324,7 +1344,7 @@ Jos yhteenveto Titokoneen k‰skykannasta ei tyydytt‰nyt tiedonjanoasi, lis‰‰ aihe
 
 <h2><a name="laajentaminen">5. J‰rjestelm‰n hienos‰‰tˆ ja laajentaminen</a></h2>
 
-  <h3><a name="#asetustiedostot">5.1 Asetustiedostot</a></h3>
+  <h3><a name="asetustiedostot">5.1 Asetustiedostot</a></h3>
 
 <p>
 Kun k‰ytt‰j‰ muuttaa asetuksia, Titokone tallentaa muutokset t‰m‰n
@@ -1475,7 +1495,7 @@ vaihtoehtona valikossa.
   <li><a href="#animointi">Animointi ja rivitt‰in suoritus -outous</a></li>
   <li><a href="#spfp"> Animaattorin SP ja FP, miss‰ ne ovat?</a></li>
   <li><a href="#R0"> Rekisterist‰ R0 tulee pelkk‰‰ nollaa </a></li>
-  <li><a href="#apua"> Ei n‰ist‰ mit‰‰n apua lˆytynyt...</a></li>
+  <li><a href="#apua"> Ei mik‰‰n n‰ist‰ ongelmista...</a></li>
   </ol>
 
   <br>
@@ -1544,7 +1564,7 @@ mik‰li h‰n ei ota uskoakseen "Titokone sˆi kotiteht‰v‰ni!" -selityst‰si.
 <br>
 
 <a name="muuttuja"><b>Saan k‰‰nnˆsvirheen "ep‰kelpo komento dc" (tai ds tai equ), kun k‰yt‰n
-n‰hd‰kseni ihan oikein muotoa "muuttuja dc 333333333333333" -Kai Koksimies</b></a>
+n‰hd‰kseni ihan oikein muotoa "muuttuja dc 333333333333333" </b></a>
 <div>Kun j‰lkimm‰inen luku on riitt‰v‰n pitk‰, k‰‰nt‰j‰ ei n‰e siin‰
 kelvollista dc-komentoa (suurin mahdollinen luku DC:lle on 2^31-1, eli
 2147483647), vaan yritt‰‰ tulkita komentoa muodossa "muistiviite komento
@@ -1563,7 +1583,7 @@ animoinnin kanssa.</div>
 
 <b><a name="R0">Rekisteri R0 ei toimi? Latasin luvun 14 rekisteriin R0, nyt yrit‰n
     saada sen sielt‰ pois, mutta sielt‰ tulee vaan nollaa. Johtuuko t‰m‰ kahden komplementista?
-    -M‰,lan </a></b>
+    </a></b>
 <div>Johtuen TTK-91 m‰‰rittelyist‰, rekisterille R0 on varattu
     erikoismerkitys; kun se on toisena parametrin‰, sielt‰
  palautetaan aina arvo 0, vaikka sis‰ltˆ olisi eri. Pahoittelemme mahdollista sekaannusta.</div>

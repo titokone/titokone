@@ -843,6 +843,18 @@ which point a cursor will appear on the line.</li>
   <img src="img/Animate.jpg" title="The animation window" 
   alt="Picture of the animation window">
   </td>
+  
+  <td valign=top> 
+    <ul>
+  		<li> Animator shows how machine language is executed in the processor. </li>
+  		<li> At the top of the screen is the symbolic form of the command shown after machine language form of the command has been processed in the IR.</li>
+  		<li> At the bottom are shown comments concerning the current phase of execution.. </li>
+  		<li> Red ball on the bus animates both the control and data flow. </li>
+  		<li> SVC-commands are not animated. </li>
+  	        <li> When reading from the device, MAR shows the whole command, not the memory address; this differs little bit from real machines. </li>
+    </ul>
+  </td>
+  
   </tr>
   </table>
   <br>
@@ -874,7 +886,14 @@ which point a cursor will appear on the line.</li>
   <img src="img/Setstd.jpg" title="Selecting the STDIN and STDOUT files" 
   alt="Selecting the STDIN and STDOUT files">
   </td>
-  <td> 
+  <td valign=top> 
+  <ul>
+  		<li> Default STDIN and STDOUT are files 'stdin' ja 'stdout' in the user's working directory.</li>
+  		<li> Default files can be defined from the menu <b>Options --> Configure file system</b>.</li>
+  		<li> It is possible to define files in the source code using <a href=#stdindef>fake command def</a>.</li>
+   		<li> More information about defining default files you can found from <a href="#settings_files">settings files</a>.</li>  
+  
+  </ul>
   
   </td>
   </tr>
@@ -1359,11 +1378,13 @@ global variables.
 <pre>
 option DEF string
 </pre>
+<a name="stdindef">
 <p>
 This special instruction changes options for simulating the file
 system of a TTK-91 machine. 'String' should be an absolute directory 
 path.
 </p>
+</a>
 
 <p>
 Examples: 
