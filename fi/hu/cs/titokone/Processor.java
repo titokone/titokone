@@ -579,6 +579,7 @@ public class Processor implements TTK91Cpu {
                 status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
                 throw new TTK91NoKbdData(new Message (Processor.NO_KDB_DATA_MESSAGE).toString());
             }
+            runDebugger.setIN (KBD, kbdData.intValue());
             writeToMemory (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), kbdData.intValue());
             kbdData = null;
             status = TTK91Cpu.STATUS_STILL_RUNNING;
