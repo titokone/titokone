@@ -1,4 +1,7 @@
-/** */
+/** This class tells GUIBrain what the processor has done. RunDebugger 
+creates objects from this class and passes them to onwards.*/
+
+//KESKEN varsinkin javadocin osalta
 
 public class RunInfo extends DebugInfo{
     
@@ -22,7 +25,7 @@ public class RunInfo extends DebugInfo{
    
 
 
-
+    /** This field contains the operation type. */
     private int operationType;
     /**This field contains line number.*/
     private int lineNumber;
@@ -90,24 +93,29 @@ public class RunInfo extends DebugInfo{
     public int returnBinaryCommand(){}
     
     /** This method tells GUIBrain which registers changed and what is new
-     value.*/
+	value.*/
     public int[] whatRegisterChanged(){}
     
     /** This method tells GUIBrain which line in data area changed and what is
-     new value.*/
+	new value.*/
     public int[] whatMemoryLineChanged(){}
     
-    /** This method tells GUIBrain what was result of an OUT command (device and 
-     value).*/
+    /** This method tells GUIBrain what was result of an OUT command (device 
+	and value).*/
     public int[] whatOUT(){}
     
     /** This method tells GUIBrain what was result of an IN command (device and
      *value.*/
     public int[] whatIN(){}
-    
+    /** This method returns all registers stored into an array. 
+     @return int[] Array containing registers.*/
     public int[] returnAllRegisters(){}
 
-    public 
+       
+    
+    
+   
+} 
     
     
     
@@ -123,8 +131,4 @@ public class RunInfo extends DebugInfo{
     
     
     
-    
-    
-    
-    
-}
+

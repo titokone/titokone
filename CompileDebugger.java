@@ -1,4 +1,7 @@
+/** This class is used by compiler when it compiles code. For each line compiled
+    compiler asks CompileDebugger to create a CompileInfo object and passes it to the GUIBrain. */
 
+//KESKEN
 
 public class CompileDebugger extends Debugger {
     
@@ -20,8 +23,11 @@ public class CompileDebugger extends Debugger {
     /** This method tells where given DC is located in the memory. */
     public void reserveDC(String name, int ADDR){}
 
-    
+    /** This method tells debugger that a symbol was found on a line but it is 
+	unknown.*/
     public void foundSymbol(String name){}
+    /** THis Method  tells debugger that a known symbol was found and it's value
+	is given as a partameter. */
     public void foundSymbol(String name, int value){}
 
     /** This method tells that a label was found and it is added to the
@@ -37,7 +43,7 @@ public class CompileDebugger extends Debugger {
     public void firstPhase(String statusMessage, short phase, int lineNumber,
                         boolean lineEmpty){}
     public void firstPhase(String statusMessage, short phase,
-			   int lineNumber){}
+			   int lineNumber, String lineContents){}
 			   
     
     /** This method informs debugger what was compiled. It creates a new 
@@ -53,6 +59,11 @@ public class CompileDebugger extends Debugger {
     
     public void finalPhase(String statusMessage, short phase, int lineNumber){}
     
+    public void setInitPointers(int sp, int fp){}
+
+    
+    public void setMemoryline(int line, int value){}
+  
     public void binary(int binary){}
     private void setStatusMessage(String message){}
     private void setComments(String comment){}
