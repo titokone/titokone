@@ -1,7 +1,8 @@
+// TODO: Poista pause() ellei sitä tarvita?
 package fi.hu.cs.titokone;
 
 import java.awt.*;
-import javax.swing.JFrame;
+import javax.swing.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.*;
 import javax.imageio.stream.ImageInputStream;
@@ -12,7 +13,7 @@ import fi.hu.cs.ttk91.TTK91Cpu;
 
 /** This class takes care of the animation window. It digs the 
     needed information from a RunInfo instance. */
-public class Animator extends JFrame {
+public class Animator extends JPanel {
     
   	private final static File backgroundImageFile = new File("animator.gif");
     private final static Font textFont = new Font ("Arial", Font.BOLD, 16);
@@ -85,6 +86,62 @@ public class Animator extends JFrame {
         {74,401},                       // ALU_OUT
     };
     
+    private final static int[][] whereWriteLabelTo = {
+        {35,103},                       // R0
+        {35,125},                       // R1
+        {35,147},                       // R2
+        {35,169},                       // R3
+        {35,191},                       // R4
+        {35,213},                       // R5
+        {35,235},                       // R6
+        {35,257},                       // R7
+        {376,116},                      // TR
+        {376,138},                      // PC
+        {376,160},                      // IR
+        {376,182},                      // SR
+        {376,302},                      // BASE
+        {376,324},                      // LIMIT
+        {376,346},                      // MAR
+        {376,368},                      // MBR
+        {35,333},                       // ALU_IN1
+        {35,355},                       // ALU_IN2
+        {35,400},                       // ALU_OUT
+        {35,80},                        // Registers
+        {261,80},                       // Control unit
+        {261,270},                      // MMU
+        {35,305},                       // ALU
+        {466,384},                      // External device
+        {608,157},                      // Memory
+    };
+
+    private final static String[] labels = {
+        "R0",
+        "R1",
+        "R2",
+        "R3",
+        "R4",
+        "R5",
+        "R6",
+        "R7",
+        "TR",
+        "PC",
+        "IR",
+        "SR",
+        "BASE",
+        "LIMIT",
+        "MAR",
+        "MBR",
+        "IN1",
+        "IN2",
+        "OUT",
+        new Message ("Registers").toString(),
+        new Message ("Control unit").toString(),
+        new Message ("MMU").toString(),
+        new Message ("ALU").toString(),
+        new Message ("External device").toString(),
+        new Message ("Memory").toString(),
+    };        
+    
     /** Contains values of registers, alu, memory and external device. */
     private int[] value = new int[routeToBus.length];
    
@@ -103,22 +160,13 @@ public class Animator extends JFrame {
     private int delay = 40;
     
     /** Creats new animator. 
-        @param width Width of created Frame.
-        @param height Height of created Frame.
-        @param title Title of created Frame.
         @throws IOException If there are problems reading background image throw IOException. */
-    public Animator (int wide, int height, String title)
-    throws IOException {
+    public Animator () throws IOException {
         // read the background image
         BufferedImage bi = ImageIO.read (backgroundImageFile);
 		backgroundImage = new BufferedImage (bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
         doubleBuffer = new BufferedImage (bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
 		backgroundImage.createGraphics().drawImage (bi, 0,0, null);
-        
-        setSize (wide, height);
-        setTitle (title);
-        setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        show();
     }
     
     public void paint (Graphics g) {
@@ -127,10 +175,13 @@ public class Animator extends JFrame {
         
         Graphics g2 = doubleBuffer.createGraphics();
         g2.setColor (Color.BLACK);
-        
-        // write values (registers, alu, control unit)
     	g2.setFont (textFont);
         
+        // write labels
+        for (int i=0; i < labels.length; i++)
+            g2.drawString (labels[i], whereWriteLabelTo[i][0], whereWriteLabelTo[i][1]);
+        
+        // write values (registers, alu, control unit, mmu)
         for (int i=0; i < whereWriteValueTo.length; i++)
             if (i != SR)
                 g2.drawString ("" + value[i], whereWriteValueTo[i][0], whereWriteValueTo[i][1]);
@@ -149,7 +200,7 @@ public class Animator extends JFrame {
         }
         
         // draw double buffer to frame
-        g.drawImage (doubleBuffer, 3,32, getWidth()-6, getHeight()-34, null);   // TODO. g edustaa koko Framea eikä vain sen piirtoaluetta!
+        g.drawImage (doubleBuffer, 0,0, getWidth(), getHeight(), null);
     }
 
     /** This method produces an animation of a command based on 
@@ -356,6 +407,7 @@ public class Animator extends JFrame {
                 animateAnEvent (MEMORY, MBR, popValue);
                 animateAnEvent (MBR, Ri);
                 animateAnEvent (Rj, Rj, value[Rj]-1);
+                break;
                 
                 case 53 : // PUSHR
                 for (int i=0; i <= 6; i++) {
@@ -471,27 +523,35 @@ public class Animator extends JFrame {
     
     private void pause() {
         repaint();
-        try {Thread.sleep(3000);} catch (Exception e) {}
+        //try {Thread.sleep(3000);} catch (Exception e) {}
     }
     
     public static void main (String[] args) throws IOException {
-        Animator a = new Animator(806, 634, "Animator");
+        Animator a = new Animator();
         a.setAnimationDelay (40);
         a.init (new Processor(512), 0, 512);
+
+        JFrame f = new JFrame();
+        f.setSize (810, 636);
+        f.setTitle ("Animator");
+        f.getContentPane().add (a);
+        f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        f.show();
+        
         RunDebugger runDebugger = new RunDebugger();
         
-/*
+        runDebugger.cycleStart (1, "STORE R1, @100");
+        runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
+        runDebugger.setValueAtADDR (666);
+        runDebugger.runCommand (27787365);
+        a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "NOP");
         runDebugger.setOperationType (RunDebugger.NO_OPERATION);
         runDebugger.runCommand (0);
         a.animate (runDebugger.cycleEnd());
-        
-        runDebugger.cycleStart (1, "STORE R1, @100";
-        runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
-        runDebugger.setValueAtADDR (666);
-        runDebugger.runCommand (27787365);
-        a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "LOAD R2, @10(R1)");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
@@ -499,48 +559,55 @@ public class Animator extends JFrame {
         runDebugger.setSecondFetchValue (1000);
         runDebugger.runCommand (38862858);
         a.animate (runDebugger.cycleEnd());
-*/
+        try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "COMP R0, @30");
         runDebugger.setOperationType (RunDebugger.COMP_OPERATION);
         runDebugger.runCommand (521142302);
         runDebugger.setCompareResult (0);
         a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
+        
+        runDebugger.cycleStart (0, "JZER R2, 100");
+        runDebugger.setOperationType (RunDebugger.BRANCH_OPERATION);
+        runDebugger.setNewPC (32);
+        runDebugger.runCommand (574619748);
+        a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "IN R7, 10(R1)");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.setIN (1, 75);
         runDebugger.runCommand (65601546);
         a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "OUT R3, =0");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.setOUT (0, -1);
         runDebugger.runCommand (73400320);
         a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
 
-        runDebugger.cycleStart (0, "JZER R2, 100");
-        runDebugger.setOperationType (RunDebugger.BRANCH_OPERATION);
-        runDebugger.setNewPC (32);
-        runDebugger.runCommand (574619748);
-        a.animate (runDebugger.cycleEnd());
-        
         runDebugger.cycleStart (0, "ADD R6, =20");
         runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
         runDebugger.setALUResult (20);
         runDebugger.runCommand (297795604);
         a.animate (runDebugger.cycleEnd());
-/*
+        try {Thread.sleep(3000);} catch (Exception e) {}
+
         runDebugger.cycleStart (0, "LOAD R1, =100");
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         runDebugger.runCommand (35651684);
         a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "CALL R3, 40(R1)");
         runDebugger.setOperationType (RunDebugger.SUB_OPERATION);
         runDebugger.runCommand (828440616);
         runDebugger.setNewPC (140);
         a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
         
         runDebugger.cycleStart (0, "EXIT SP, =4");
         runDebugger.setOperationType (RunDebugger.SUB_OPERATION);
@@ -548,31 +615,34 @@ public class Animator extends JFrame {
         runDebugger.setNewPC (5);
         runDebugger.setRegisters (new int[] {0,0,0,0,0,0,-6,100});
         a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "COMP R0, @30");
         runDebugger.setOperationType (RunDebugger.COMP_OPERATION);
         runDebugger.runCommand (521142302);
         runDebugger.setCompareResult (2);
         a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "PUSH R6, 100(R4)");
         runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
         runDebugger.runCommand (869007460);
         a.animate (runDebugger.cycleEnd());
+        try {Thread.sleep(3000);} catch (Exception e) {}
 
         runDebugger.cycleStart (0, "POP R6, R6");
         runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
         runDebugger.runCommand (885391360);
         runDebugger.setRegisters (new int[] {1, 2,3,4,5,6,99,8});
         a.animate (runDebugger.cycleEnd());
-*/
+        try {Thread.sleep(3000);} catch (Exception e) {}
+
 
         runDebugger.cycleStart (0, "POPR R0");
         runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
         runDebugger.setRegisters (new int[] {107,106,105,104,103,102,101,100});
         runDebugger.runCommand (905969664);
         a.animate (runDebugger.cycleEnd());
-        
-        
+        try {Thread.sleep(3000);} catch (Exception e) {}
      }
 }
