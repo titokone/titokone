@@ -1,4 +1,4 @@
-package fi.helsinki.cs.titokone;
+package fi.hu.cs.titokone;
 
 import java.util.HashMap;
 
@@ -7,6 +7,25 @@ import java.util.HashMap;
 public class SymbolTable {
     /** This field contains the SymbolTable's symbols. */
     private HashMap symbols;
+
+    /** Constant symbol CRT */
+    private static final int CRT = 0;
+    /** Constant symbol KBD */
+    private static final int KBD = 1;
+    /** Constant symbol STDIN */
+    private static final int STDIN = 6;
+    /** Constant symbol STDOUT */
+    private static final int STDOUT = 7;
+    /** Constant symbol HALT */
+    private static final int HALT = 11;
+    /** Constant symbol READ */
+    private static final int READ = 12;
+    /** Constant symbol WRITE */
+    private static final int WRITE = 13;
+    /** Constant symbol TIME */
+    private static final int TIME = 14;
+    /** Constant symbol DATE */
+    private static final int DATE = 15;
 	
     /** This function eturns the integer value that corresponds to a 
 	given symbol.
