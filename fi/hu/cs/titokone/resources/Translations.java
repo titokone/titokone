@@ -214,10 +214,12 @@ public class Translations extends ListResourceBundle {
       {"Select default stdout file", null},
       {"Set language", null},
       {"Select from a file...", null},
+      {"manual.html", null},
+      {"about.html", null},
 
       {"Line", null},   
-      {"Numeric", null},    
-      {"Symbolic", null},
+      {"Numeric value", null},    
+      {"Symbolic content", null},
 
       {"Open a new file", null},
       {"Compile the opened file", null},
@@ -225,10 +227,15 @@ public class Translations extends ListResourceBundle {
       {"Continue current operation", null},
       {"Continue current operation without pauses", null},
       {"Stop current operation", null},
-      {"Open the selected file", null},
+      //{"Open the selected file", null},
+      {"Enable/disable animated execution", null},
+      {"Enable/disable extra comments during execution", null}, 
+      {"Enable/disable line by line execution", null},
       {"Enter", null}, // button used to enter a number to the KBD device.
       {"Symbol table", null}, 
       {"Registers", null}, 
+      {"__MANUAL_FILENAME__", "manual.html"}, // non-foolproof backup
+      {"__ABOUT_FILENAME__" , "about.html"},  // in case GUI changes lost.
       
       // Class: GUIBrain 
       {"Main path not found! (Trying to locate etc/settings.cfg.) " +
@@ -250,6 +257,10 @@ public class Translations extends ListResourceBundle {
       {"Overwrite?", null},    
       {"Do you want to overwrite the file? Select {1} to append or {0} " +
        "to overwrite.", null},
+      {"Waiting for KBD input...", null},
+      {"Execution aborted due to an error", null},
+      {"Compilation aborted due to an error", null},
+      {"Current operation aborted", null},
       {"B91 binary", null},   
       {"K91 source", null},  
       {"Class file", null},
@@ -291,6 +302,8 @@ public class Translations extends ListResourceBundle {
       {"List", null},    
       {"Details", null},    
       {"All files", null},    
+      {"Abort file selection", null},
+      {"Open the selected file", null},
       
       // Class: JOptionPane    
       {"Yes", null},    

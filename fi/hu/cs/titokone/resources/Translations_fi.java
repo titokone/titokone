@@ -196,7 +196,10 @@ public class Translations_fi extends ListResourceBundle {
       {"Enable/disable animated execution", "Animoitu suoritus päälle/pois"},
       {"Enable/disable extra comments while execution", "Suorituksen ylimääräinen kommentointi päälle/pois"},
       {"Enable/disable line by line execution", "Riveittäin suoritus päälle/pois"},
-      
+      {"about.html", "about_fi.html"},
+      {"manual.html", "manual_fi.html"},
+      {"__ABOUT_FILENAME__", "about_fi.html"},
+      {"__MANUAL_FILENAME__", "manual_fi.html"},
       
       {"Enter", "Syötä"}, // button used to enter a number to the KBD device.
       {"Symbol table", "Symbolitaulu"}, 
@@ -392,13 +395,11 @@ public class Translations_fi extends ListResourceBundle {
       // Class: SymbolTable
       {"SymbolName was null.", "SymbolName oli arvoltaan null."},
       {"Definition key was null.", "Asetuksen tunniste oli null."},
-      {"Definition {0} not found.", "Asetusta {0} ei löytynyt."},
+      {"Definition {0} not found.", "Asetusta {0} ei löytynyt."}
 
       // Class: Translator: no translateable strings set to avoid 
       // looping bugs.
       
-      {"__ABOUT_FILENAME__", "about_fi.html"},
-      {"__MANUAL_FILENAME__", "manual_fi.html"}
 
       // Localizable bit ends. 
   };

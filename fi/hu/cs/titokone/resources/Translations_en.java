@@ -214,6 +214,8 @@ public class Translations_en extends ListResourceBundle {
       {"Select default stdout file", null},
       {"Set language", null},
       {"Select from a file...", null},
+      {"etc/manual.html", null},
+      {"etc/about.html", null},
 
       {"Line", null},   
       {"Numeric value", null},    
