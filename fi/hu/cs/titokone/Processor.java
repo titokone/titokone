@@ -60,11 +60,12 @@ public class Processor implements TTK91Cpu {
     public RunInfo runInit(int initSP, int initFP) {
         status = TTK91Cpu.STATUS_STILL_RUNNING;
         regs.setRegister (TTK91Cpu.CU_PC, 0);
-        PC_CURRENT?
+        regs.setRegister (TTK91Cpu.CU_PC_CURRENT, 0);
         
         regs.setRegister (TTK91Cpu.REG_SP, initSP);
         regs.setRegister (TTK91Cpu.REG_FP, initFP);
-        ASETA FP JA SP ram-olion avulla! (sieltä löytyy codeAreaLength ja dataAreaLength)
+        
+        return null;
     }
 
 /** Process next instruction, 
@@ -101,13 +102,13 @@ public class Processor implements TTK91Cpu {
             
         // if PC is out of bounds throw an exception
         int PC = regs.getRegister (TTK91Cpu.CU_PC);
-        if (PC >= size) {
+        if (PC >= ram.getSize() || PC < 0) {
             status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
             throw new TTK91AddressOutOfBounds();    
         }
         
         // fetch the next command to IR from memory and increase PC
-        int IR = ram.getMemoryLine(PC);     
+        int IR = ram.getValue(PC);
         regs.setRegister (TTK91Cpu.CU_IR, IR);
         regs.setRegister (TTK91Cpu.CU_PC, PC+1);
         
@@ -119,9 +120,8 @@ public class Processor implements TTK91Cpu {
         int ADDR = IR&0xFFFF;                               // address
         
         // fetch parameter from memory
-        int param;
         if (Ri != TTK91Cpu.REG_R0) ADDR += regs.getRegister (Ri);   // add indexing register Ri
-        if (M == 0) param2 = ADDR;                                  // constant parameter
+        int param = ADDR;
         try {
             if (M == 1) param = ram.getValue(ADDR);                 // one memory fetch
             if (M == 2) param = ram.getValue (ram.getValue(ADDR));  // two memory fetches
@@ -137,13 +137,13 @@ public class Processor implements TTK91Cpu {
         }
 
         if (opcode == 0) nop();
-        else if (opcode >= 1 && opcode <= 4) transfer (opcode, Rj, M, ADDR);
+        else if (opcode >= 1 && opcode <= 4) transfer (opcode, Rj, M, ADDR, param);
         else if (opcode >= 17 && opcode <= 27) alu (opcode, Rj, param);
         else if (opcode == 31) comp (Rj, param);
-        else if (opcode >= 32 && opcode <= 44) branch (opcode, Rj, M, ADDR, param);
-        else if (opcode >= 49 && opcode <= 50) subr (opcode, Rj, param);
-        else if (opcode >= 51 && opcode <= 54) Stack (opcode, Rj, param);
-        else if (opcode == 112) svc (opcode, Rj, param2);
+        else if (opcode >= 32 && opcode <= 44) branch (opcode, Rj, ADDR, param);
+        else if (opcode >= 49 && opcode <= 50) subr (opcode, Rj, ADDR, param);
+        else if (opcode >= 51 && opcode <= 54) stack (opcode, Rj, Ri, param);
+        else if (opcode == 112) svc (Rj, param);
         else {
             status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
             throw new TTK91InvalidOpCode();
@@ -151,6 +151,8 @@ public class Processor implements TTK91Cpu {
         
         // update PC_CURRENT
         regs.setRegister (TTK91Cpu.CU_PC_CURRENT, regs.getRegister (TTK91Cpu.CU_PC));
+        
+        return null;
     }
 
 
@@ -159,7 +161,7 @@ public class Processor implements TTK91Cpu {
     @param registerID Identifying number of the register.
     @return Value of given register. Inproper value returns -1. */
     public int getValueOf(int registerID) {
-        regs.getRegister (registerID);
+        return regs.getRegister (registerID);
     }
 
 /** Method returns the current value of Processor. Status values
@@ -171,8 +173,8 @@ public class Processor implements TTK91Cpu {
 
 /** Method erases memorylines from memory. Memory will be filled
     with 0-lines. */
-    public boolean eraseMemory() {
-        ram = new RandomAccessMemory (size);
+    public void eraseMemory() {
+        ram = new RandomAccessMemory (ram.getSize());
     }
 
 /** Method for loading MemoryLines to Processor, Loader classes uses
@@ -188,7 +190,7 @@ public class Processor implements TTK91Cpu {
     repeated). 
     @param kbdInput An int to be "read from the keyboard". */
     public void keyboardInput(int kbdInput) {
-        kbdData = new Integer (kndInput);
+        kbdData = new Integer (kbdInput);
     }
 
 
@@ -201,11 +203,14 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Transfer-operations. */
-    private void transfer(int opcode, int Rj, int M, int ADDR, int param) {
+    private void transfer(int opcode, int Rj, int M, int ADDR, int param) 
+    throws TTK91BadAccessMode, TTK91OutOfBounds, TTK91NoKbdData, TTK91NoStdInData, TTK91InvalidDevice {
         switch (opcode) {
             case 1 : // STORE
             if (M == 0) throw new TTK91BadAccessMode(); // in STORE parameter must be a pointer
+            
             // find out if binary in Rj can be converted to symbolic command
+            int binary = regs.getRegister(Rj);
             MemoryLine ml = new MemoryLine (binary, new BinaryInterpreter().binaryToString(binary));
             // write new memory line to memory
             try {
@@ -218,20 +223,20 @@ public class Processor implements TTK91Cpu {
             break;
             
             case 2 : // LOAD
-            regs.setRegiser (Rj, param);
+            regs.setRegister (Rj, param);
             break;
             
             case 3 : // IN
             switch (param) {
                 case 1 : // Keyboard
                 if (kbdData == null) throw new TTK91NoKbdData();
-                regs.setRegister (Rj, kbdData.int_value());
+                regs.setRegister (Rj, kbdData.intValue());
                 kbdData = null;
                 break;
                 
                 case 6 : // Standard input file
-                if (stdinData == null) throw new TTK91NoFileData();
-                regs.setRegister (Rj, stdinData.int_value());
+                if (stdinData == null) throw new TTK91NoStdInData();
+                regs.setRegister (Rj, stdinData.intValue());
                 stdinData = null;
                 break;
                 
@@ -256,59 +261,60 @@ public class Processor implements TTK91Cpu {
 
 /** ALU-operations.
     @return Result of the ALU-operation. */
-    private int alu(int opcode, int Rj, int param2) {
+    private void alu(int opcode, int Rj, int param) 
+    throws TTK91IntegerOverflow, TTK91DivisionByZero {
         long n;
         switch (opcode) {
             case 17 : // ADD
-            n = (long)regs.getRegister (Rj) - (long)param2;
+            n = (long)regs.getRegister (Rj) - (long)param;
             if (isOverflow (n)) throw new TTK91IntegerOverflow();
             regs.setRegister (Rj, (int)n);
             break;
             
             case 18 : // SUB
-            n = (long)regs.getRegister (Rj) - (long)param2;
+            n = (long)regs.getRegister (Rj) - (long)param;
             if (isOverflow (n)) throw new TTK91IntegerOverflow();
             regs.setRegister (Rj, (int)n);
             break;
             
             case 19 : // MUL
-            n = (long)regs.getRegister (Rj) * (long)param2;
+            n = (long)regs.getRegister (Rj) * (long)param;
             if (isOverflow (n)) throw new TTK91IntegerOverflow();
             regs.setRegister (Rj, (int)n);
             break;
             
             case 20 : // DIV
-            if (param2 == 0) throw new TTK91DivisionByZero();
-            regs.setRegister (Rj, regs.getRegister (Rj) / param2);
+            if (param == 0) throw new TTK91DivisionByZero();
+            regs.setRegister (Rj, regs.getRegister (Rj) / param);
             break;
             
             case 21 : // MOD
-            if (param2 == 0) throw new TTK91DivisionByZero();
-            regs.setRegister (Rj, regs.getRegister (Rj) % param2);
+            if (param == 0) throw new TTK91DivisionByZero();
+            regs.setRegister (Rj, regs.getRegister (Rj) % param);
             break;
             
             case 22 : // AND
-            regs.setRegister (Rj, regs.getRegister (Rj) & param2);
+            regs.setRegister (Rj, regs.getRegister (Rj) & param);
             break;
             
             case 23 : // OR
-            regs.setRegister (Rj, regs.getRegister (Rj) | param2);
+            regs.setRegister (Rj, regs.getRegister (Rj) | param);
             break;
             
             case 24 : // XOR
-            regs.setRegister (Rj, regs.getRegister (Rj) ^ param2);
+            regs.setRegister (Rj, regs.getRegister (Rj) ^ param);
             break;
             
             case 25 : // SHL
-            regs.setRegister (Rj, regs.getRegister(Rj) << param2);
+            regs.setRegister (Rj, regs.getRegister(Rj) << param);
             break;
             
             case 26 : // SHR
-            regs.setRegister (Rj, regs.getRegister(Rj) >>> param2);
+            regs.setRegister (Rj, regs.getRegister(Rj) >>> param);
             break;
             
             case 27 : // SHRA
-            regs.setRegister (Rj, regs.getRegister(Rj) >> param2);
+            regs.setRegister (Rj, regs.getRegister(Rj) >> param);
             break;
         }
     }
@@ -327,6 +333,7 @@ public class Processor implements TTK91Cpu {
             sr[0] = false;
             sr[1] = false;
             sr[2] = true;
+        }
         else { 
             sr[0] = false;
             sr[1] = true;
@@ -335,9 +342,7 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Branching. */
-    private int branch(int opcode, int Rj, int M, int ADDR, int param) {
-        if (M == 0) throw new TTK91BadAccessMode(); // in jump-commands parameter must be a pointer
-        
+    private void branch(int opcode, int Rj, int ADDR, int param) {
         switch (opcode) {
             case 32 : // JUMP
             regs.setRegister (TTK91Cpu.CU_PC, ADDR);
@@ -394,7 +399,8 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Stack. */
-    private int stack(int opcode, int Rj, int param) {
+    private void stack(int opcode, int Rj, int Ri, int param) 
+    throws TTK91OutOfBounds {
         switch (opcode) {
             case 51 : // PUSH
             regs.setRegister (Rj, regs.getRegister(Rj) +1);
@@ -408,23 +414,45 @@ public class Processor implements TTK91Cpu {
             break;
             
             case 52 : // POP
-            
+            try {
+                regs.setRegister (Ri, ram.getValue (regs.getRegister(Rj)));
+            } catch (ArrayIndexOutOfBoundsException e) {
+                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
+                throw new TTK91OutOfBounds();
+            }
+            regs.setRegister (Rj, regs.getRegister(Rj) -1);
             break;
             
             case 53 : // PUSHR
+            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R0));      // PUSH R0
+            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R1));      // PUSH R1
+            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R2));      // PUSH R2
+            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R3));      // PUSH R3
+            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R4));      // PUSH R4
+            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R5));      // PUSH R5
+            stack(51, Rj, Ri, regs.getRegister (TTK91Cpu.REG_R6));      // PUSH R6
             break;
             
             case 54 : // POPR
+            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R6), param);   // POP R6
+            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R5), param);   // POP R5
+            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R4), param);   // POP R4
+            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R3), param);   // POP R3
+            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R2), param);   // POP R2
+            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R1), param);   // POP R1
+            stack(52, Rj, regs.getRegister (TTK91Cpu.REG_R0), param);   // POP R0
             break;
         }
     }
 
 /** Subroutine. */
-    private int subr(int opcode, int Rj, int ADDR, int param) {
+    private void subr(int opcode, int Rj, int ADDR, int param)
+    throws TTK91OutOfBounds {
+        int sp;
         switch (opcode) {
             case 49 : // CALL
             // push PC and FP to stack (Rj is stack pointer)
-            int sp = regs.getRegister (Rj);
+            sp = regs.getRegister (Rj);
             try {
                 ram.setMemoryLine (++sp, new MemoryLine (regs.getRegister (TTK91Cpu.CU_PC), null));
                 ram.setMemoryLine (++sp, new MemoryLine (regs.getRegister (TTK91Cpu.REG_FP), null));
@@ -444,7 +472,7 @@ public class Processor implements TTK91Cpu {
             
             case 50 : // EXIT
             // pop FP and PC from stack (Rj is stack pointer)
-            int sp = regs.getRegister (Rj);
+            sp = regs.getRegister (Rj);
             try {
                 regs.setRegister (TTK91Cpu.REG_FP, ram.getValue (sp--));
                 regs.setRegister (TTK91Cpu.CU_PC, ram.getValue (sp--));
@@ -461,7 +489,8 @@ public class Processor implements TTK91Cpu {
     }
 
 /** Supervisor call. */
-    private int svc(int Rj, int param) {
+    private void svc(int Rj, int param)
+    throws TTK91OutOfBounds, TTK91NoKbdData {
         
         // make CALL operation
         subr(49, Rj, regs.getRegister (TTK91Cpu.CU_PC), param);
@@ -473,7 +502,7 @@ public class Processor implements TTK91Cpu {
             
             case 12 : // READ
             if (kbdData == null) throw new TTK91NoKbdData();
-            ram.setMemoryLine (ram.getValue (sp -2), new MemoryLine (kbdData.intValue(), null));
+            ram.setMemoryLine (ram.getValue (regs.getRegister(TTK91Cpu.REG_FP) -2), new MemoryLine (kbdData.intValue(), null));
             kbdData = null;
             subr (50, Rj, 0, 1);    // EXIT from SVC(READ)
             break;
@@ -483,17 +512,18 @@ public class Processor implements TTK91Cpu {
             break;
 
             case 14 : // TIME
-            TODO
+//TODO
             subr (50, Rj, 0, 3);    // EXIT from SVC(TIME)
             break;
             
             case 15 : // DATE
-            TODO
+//TODO
             subr (50, Rj, 0, 3);    // EXIT from SVC(DATE)
             break;
-            
-            
-        
+        }
+    }
+    
+    private void nop() {
     }
     
 /** Tests if given long value is acceptable int value. */
