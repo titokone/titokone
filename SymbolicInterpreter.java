@@ -8,14 +8,19 @@ import java.util.HashMap;
     opcodes etc. The main purpose for this class is to provide methods to convert
     symbolic commands to binary form.  */
 public class SymbolicInterpreter extends Interpreter {
-    /** This hashtable contains the opcode values keyed to the symbolic
-	commands. */
+    /** This hashtable contains the opcode values keyed to the symbolic commands. */
     private HashMap opcodes;
+    /** This hashtable contains integer values for given addressingmodes. */
     private HashMap addressModes;
+    /** This hashtable  */
     private HashMap registers;
+    
+    /** This field holds the value to be returned if given value is invalid. */
     private final int NOTVALID = -1;
+    /** This field holds the value to be returned if given value results in an empty line. */
     private final int EMPTY = 0;
-    private final String validLabelChars = "0123456789abcdefghijklmnopqrstuvwxyzåäö_";
+    /** This field holds all the valid symbols on a label. */
+    private final String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyzåäö_";
 
     /** This constructor sets up a SymbolicInterpreter instance. It calls
 	the private method dataSetup() to set up its data structures. */
@@ -39,111 +44,21 @@ public class SymbolicInterpreter extends Interpreter {
 	@param registerName String form of a register (R0-R7, SP or FP).
     public int getRegisterId(String registerName) { }
 
-    /** Transforms a String to an int. Operates much like the compiler. First it
-     	checks whether there is a label, then checks the opCode, then register, address mode, 
-     	other register and finally the address. There can be extra spaces and tabs but nothing
-     	more. All the rest must begin with a ;-sign that acts as a comment tag.
-     	@param symbolicOpCode Symbolic operation code (LOAD R1, 100)
-     	@return Int format of a symbolic opCode. (00000010 00101000 00000000 01100100 as int)
+    /** This method coverts a complete command in a symbolic form to a binary form.
+        caller must split up the original command and give the parts as parameters
+	@param opCode String form of an operation code. (STORE)
+	@param firstRegister String form of a first register. (R0-R7, SP or FP)
+	@param addressingMode = or @ or an empty string that representes the memory addressing 
+	mode.
+	@param address String form of an address, must be a valid int.
+	@param otherRegister String form of an other register. (R0-R7, SP or FP)
+     	@return Int format of a symbolic opCode. (etc 00000010 00101000 00000000 01100100 as int)
      */
-    public int stringToBinary(String symbolicOpCode) { }
-	int opCode = 0;		
-	int firstRegister = 0;	// values if nothing else is found (like if String is "NOP")
-	int addressingMode = 0;
-	int secondRegister = 0;
-	int address = 0;
+    public int stringToBinary(String opCode, String firstRegister, String addressingMode, 
+							String address, String otherRegister) { 
+
 	
-	String wordTemp = "";
-	int nextToCheck = 0;	// for looping out the spacing
-	int fieldEnd = 0;	// searches the end of a field (' ', ',')
 
-	symbolicOpCode = symbolicOpCode.toLowerCase();
-	symbolicOpCode = symbolicOpCode.trim();
-	if (symbolicOpCode.length() == 0) { return EMPTY; }
+    }
 
-/*label or opCode*/
-	fieldEnd = symbolicOpCode.indexOf(" ");
-	if (fieldEnd == -1) {
-		fieldEnd = symbolicOpCode.length();
-	} 
-
-	wordTemp = symbolicOpCode.substring(nextToCheck, fieldEnd);
-	opCode = getOpCode(wordTemp);	
-	if (opCode == -1) { 	// try to find a label (not a valid opCode)
-				// label must have one non-number (valid chars A-Ö, 0-9 and _)
-		boolean allCharsValid = true;
-		boolean atLeastOneNonNumber = false;
-		for (int i = 0; i < wordTemp.length(); ++i) {
-			if (atLeastOneNonNumber == false) {
-				if (validLabelChars.indexOf(wordTemp.charAt(i)) > 9) {
-					atLeastOneNonNumber = true;
-				}
-			} 
-			if (validLabelChars.indexOf(wordTemp.charAt(i)) < 0) {
-				allCharsValid = false;
-			}
-		}
-		if (atLeastOneNonNumber == false || allCharsValid == false) { return NOTVALID; }
-		
-				// opCode must follow the label
-		fieldEnd = symbolicOpCode.indexOf(" ", nextToCheck);
-        	if (fieldEnd == -1) {
-                	fieldEnd = symbolicOpCode.length();
-        	}
-        	opCode = getOpCode(symbolicOpCode.substring(nextToCheck, fieldEnd));
-		if (opCode < 0) { return NOTVALID; }
-	}			// now opCode has integer value of an opcode.
-
-	nextToCheck = fieldEnd + 1;
-
-	/* TODO if jump or other not normal then do something.*/
-
-
-/*first register*/
-	if (nextToCheck < symbolicOpCode.length()) {
-		if (symbolicOpCode.charAt(nextToCheck) != ' ') { return NOTVALID; }
-		while (nextToCheck == ' ') { ++nextToCheck }	// needs a space, then R0-R7, SP or FP
-		fieldEnd = symbolicOpCode.indexOf(",", nextToCheck);
-                if (fieldEnd == -1) {
-                        fieldEnd = symbolicOpCode.length();
-                }
-
-		firstRegister = getRegisterId(symbolicOpCode.substring(nextToCheck, fieldEnd));
-		if (firstRegister == NOTVALID) { return NOT VALID; }
-
-		nextToCheck = fieldEnd + 1;
-	}
-
-/*addressingMode*/
-	if (nextToCheck < symbolicOpCode.length()) {
-		while (nextToCheck == ' ') { ++nextToCheck; }
-		if (symbolicOpCode.charAt(nextToCheck) == '=' || 
-				symbolicOpCode.charAt(nextToCheck) == '@') {
-			addressingMode = getAddressingMode(symbolicOpCode.charAt(nextToCheck));
-			++nextToCheck;
-		} else { addressingMode = getAddressingMode(""); }
-	}
-
-/*address and other register*/
-	while (nextToCheck == ' ') { ++nextToCheck; }
-	if (symbolicOpCode.charAt(nextToCheck).isDigit) {
-		if (symbolicOpCode.indexOf("(", nextToCheck) != -1) {
-			if (symbolicOpCode.indexOf(")", nextToCheck) < 
-						symbolicOpCode.indexOf("(", nextToCheck)) {
-				return NOTVALID; 
-			} else {
-				address = symbolicOpCode.substring(nextToCheck, 
-						symbolicOpCode.indexOf("(", nextToCheck));
-			
-				otherRegister = getRegisterId(
-					symbolicOpCode.substring(
-						symbolicOpCode.indexOf("(", nextToCheck)
-						, symbolicOpCode.indexOf(")", nextToCheck)));
-			}
-		} else {
-			address = symbolicOpCode.substring(nextToCheck);
-		}
-	} else {
-		otherRegister = getRegisterId(symbolicOpCode.substring(nextToCheck).trim());
-	}
 }

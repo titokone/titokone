@@ -3,9 +3,6 @@ package fi.hu.cs.titokone;
 /** This class is used by compiler when it compiles code. For each line 
     compiled compiler asks CompileDebugger to create a CompileInfo object and 
     passes it to the GUIBrain. */
-
-
-
 public class CompileDebugger {
     
     /** This field contains current CompileInfo object. */
@@ -13,9 +10,11 @@ public class CompileDebugger {
 
     /** This field contains current phase of compilation. */
     private int phase;
+
     /** This field contains current statusmessage. */
     private String statusMessage;
-    /** This field contains current comments.This string is created by
+
+    /** This field contains current comments. This string is created by
      * debugger when its different methods are called.*/
     private String comments;
 
