@@ -43,12 +43,13 @@ public class Compiler {
 	round of compilation. */
     private MemoryLine[] data;
 
-    /** This field contains the debugger instance to inform of any compilation
+
+    /** This field contains the CompileDebugger instance to inform of any compilation
 	happenings. */
-    private Debugger debugger;
+    private CompileDebugger compileDebugger;
 
     /** This constructor sets up the class. It also initializes an instance of 
-	CompileConstants and Debugger. */
+	CompileDebugger. */
     public Compiler() { }
 
     /** This function initializes transforms a symbolic source code into an 
@@ -163,6 +164,8 @@ Basic functionality: (Trim between each phase.)
 	int nextToCheck = 0;	// for looping out the spacing
 	int fieldEnd = 0;	// searches the end of a field (' ', ',')
 
+	symbolicOpCode = line;
+	
 	symbolicOpCode = symbolicOpCode.toLowerCase();
 	symbolicOpCode = symbolicOpCode.trim();
 	if (symbolicOpCode.length() == 0) { return EMPTY; }
@@ -174,7 +177,7 @@ Basic functionality: (Trim between each phase.)
 	} 
 
 	wordTemp = symbolicOpCode.substring(nextToCheck, fieldEnd);
-	opCode = getOpCode(wordTemp);	
+	opCode = SymbolicInterpreter.getOpCode(wordTemp);	
 	if (opCode == -1) { 	// try to find a label (not a valid opCode)
 				// label must have one non-number (valid chars A-Ö, 0-9 and _)
 		boolean allCharsValid = true;
@@ -197,7 +200,8 @@ Basic functionality: (Trim between each phase.)
         	if (fieldEnd == -1) {
                 	fieldEnd = symbolicOpCode.length();
         	}
-        	opCode = getOpCode(symbolicOpCode.substring(nextToCheck, fieldEnd));
+        	opCode = SymbolicInterpreter.getOpCode(
+					symbolicOpCode.substring(nextToCheck, fieldEnd));
 		if (opCode < 0) { return NOTVALID; }
 	}			// now opCode has integer value of an opcode.
 
@@ -215,7 +219,8 @@ Basic functionality: (Trim between each phase.)
                         fieldEnd = symbolicOpCode.length();
                 }
 
-		firstRegister = getRegisterId(symbolicOpCode.substring(nextToCheck, fieldEnd));
+		firstRegister = SymbolicInterpreter.getRegisterId(
+				symbolicOpCode.substring(nextToCheck, fieldEnd));
 		if (firstRegister == NOTVALID) { return NOTVALID; }
 
 		nextToCheck = fieldEnd + 1;
@@ -226,9 +231,10 @@ Basic functionality: (Trim between each phase.)
 		while (nextToCheck == ' ') { ++nextToCheck; }
 		if (symbolicOpCode.charAt(nextToCheck) == '=' || 
 				symbolicOpCode.charAt(nextToCheck) == '@') {
-			addressingMode = getAddressingMode(symbolicOpCode.charAt(nextToCheck));
+			addressingMode = SymbolicInterpreter.getAddressingMode(
+						symbolicOpCode.charAt(nextToCheck));
 			++nextToCheck;
-		} else { addressingMode = getAddressingMode(""); }
+		} else { addressingMode = SymbolicInterpreter.getAddressingMode(""); }
 	}
 
 /*address and other register*/
@@ -242,16 +248,16 @@ Basic functionality: (Trim between each phase.)
 				address = symbolicOpCode.substring(nextToCheck, 
 						symbolicOpCode.indexOf("(", nextToCheck));
 			
-				otherRegister = getRegisterId(
-					symbolicOpCode.substring(
-						symbolicOpCode.indexOf("(", nextToCheck)
+				otherRegister = SymbolicInterpreter.getRegisterId(
+				   symbolicOpCode.substring(symbolicOpCode.indexOf("(", nextToCheck)
 						, symbolicOpCode.indexOf(")", nextToCheck)));
 			}
 		} else {
 			address = symbolicOpCode.substring(nextToCheck);
 		}
 	} else {
-		otherRegister = getRegisterId(symbolicOpCode.substring(nextToCheck).trim());
+		otherRegister = SymbolicInterpreter.getRegisterId(
+					symbolicOpCode.substring(nextToCheck).trim());
 	}
     }
 

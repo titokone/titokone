@@ -143,15 +143,14 @@ public class CompileDebugger {
     /** This method tells debugger that the second round of
     compilation is in progress. It creates CompileInfo object and sets
     its phase to 3, lineContents and binary fields. It also creates a
-    local comment and the IR is !!!KATENOIDAAN!!! after it.
+    local comment and the IR is cathenated after it.
     @param lineNumber number of the compiled line.
     @param lineContents Contents of the line.
     @param binary Line as a binary (presented as an integer).
     @param IR String containing binary command splitted into parts
     which are presented as integers.
     */
-    public void secondPhase(int lineNumber, String lineContents, int binary,
-			     String IR){}
+    public void secondPhase(int lineNumber, String lineContents, int binary, String IR){}
 
     /** This method tells debugger that final phase of compilation is
     in progress. It creates CompileInfo object and sets its phase to 4.

@@ -61,6 +61,7 @@ public class CompileInfo extends DebugInfo {
 
     /** This field is true if found label was defined before. */
   private boolean labelDefined = false;
+
     /** This field contains value of the current label.*/
   private int labelValue;
 
@@ -81,7 +82,7 @@ public class CompileInfo extends DebugInfo {
      */
   private boolean definingDS; 
   private boolean definingDC;
-  private int value; // DC/DS.
+  private int value; // DC/DS.	TODO! rename this. also can't see definingDC!
 
   
     /** This is normal constructor for CompileInfo. It sets initial values for
@@ -99,156 +100,223 @@ public class CompileInfo extends DebugInfo {
   public CompileInfo(short phase) {}
     
     /** This method sets lineEmpty value to true. */
-    public void setLineEmpty(){}
+    public void setLineEmpty(){
+	lineEmpty = true;
+    }
 
     /** This method sets symbolFound field.*/
-    public void setSymbolFound(){}
+    public void setSymbolFound(){
+	symbolFound = true;
+    }
 
     /** This method sets labelFound field.*/
-    public void setLabelFound(){}
+    public void setLabelFound(){
+	labelFound = true;
+    }
 
     /** This method sets the name of a found symbol.
 	@param name String containing the symbol name.
     */
-    public void setSymbolName(String name){}
+    public void setSymbolName(String name){
+	symbolName = name;
+    }
     
     /** This method sets the name of a found symbol and its value.
 	@param name Name of the symbol.
 	@param value Value of the symbol.
 	@param address Memoryaddress of the symbol.
     */
-    public void setSymbolName(String name, int address, int value){}
+    public void setSymbolName(String name, int address, int value) {
+	symbolName = name;
+	symbolValue = value;
+	symbolAddress = address;
+    }
  
     /** This method sets the name of a found label and sets the labelDefined 
 	field to true.
 	@param name Name of the label.
     */
-    public void setLabelName(String name){}
+    public void setLabelName(String name) { 
+    	labelName = name;
+    }
     
     /** This method tells CompileInfo that a given label was defined and it's
 	value. It sets labelDefined field to true.
 	@param name String containing the name of the label.
 	@param value An integer value where the label points.
     */
-    public void setLabelDefined(String name, int value){}
+    public void setLabelDefined(String name, int value) { 
+	labelName = name;
+	labelValue = value;
+	labelDefined = true;
+    }
     
     /** This method tells what integer represents the compiled line of the
 	code.
 	@param binary An integer value representing the symbolic command.
     */
-    public void setLineBinary(int binary){}
+    public void setLineBinary(int binary) {
+	lineBinary = binary;
+    }
 
+    public void setDefiningDS(int ADDR, int size) { // TODO! dont understand.
+	definingDS = true; 
+    }
 
-    public void setDefiningDS(int ADDR, int size){}
     /** This method sets the boolean field finalFinal to true.
      */
-    public void setFinal(){}
+    public void setFinal() {
+	finalFinal = true;
+    }
+
     /** This method sets the initial SP and FP pointers to given values.
 	@param SP Initial value of SP.
 	@param FP Initial value of FP.
     */
-    public void setInitPointers(int SP, int FP){}
+    public void setInitPointers(int SP, int FP) {
+	initPointers[SP_POS] = SP;
+	initPointers[FP_POS] = FP;
+    }
 
     /** This method sets given line to given value.
 	@param lineNumber Number of the line.
 	@param value New value for the line.
     */
-    public void setMemoryline(int lineNumber, int value){}
+    public void setMemoryline(int lineNumber, String value) {
+/* Value used to be int, but I changed it to a String - Antti */
+
+	this.lineNumber = lineNumber;
+	lineContents = value;
+    }
 
     /** This method sets memory array to contain all codelines after first
 	round of compilation. It contains only symbolic lines.
 	@param memory array containing lines.
     */
-    public void setMemory(String[] memory){}
-
-    
+    public void setMemory(String[] memory) {
+	this.memory = memory;	
+    }
 
     /** This message tells that an empty line or line containing only 
 	whitespaces was compiled.
     */
-    public boolean returnLineEmpty(){}
+    public boolean returnLineEmpty() {
+	return lineEmpty;
+    }
     
     /** This method returns current phase as a short. 0 for first round, 1 for
 	finalizing first round, 2 for second and 3 for final.
 	@return Short containing phase.
     */
-    public short returnPhase(){}
+    public short returnPhase() {
+	return phase;
+    }
 
     /** This method return symbolic contents of the line.
 	@return String containing comments.
     */
-    public String returnLineContents(){}
+    public String returnLineContents() {
+	return lineContents;
+    }
 
     /** This method returns found symbolname.
 	@return String containing the name.
     */
-    public String returnSymbolName(){}
+    public String returnSymbolName() {
+	return symbolName;
+    }
 
     /** This method returns true if a symbol was defined.
 	@return boolean containing information if symbol was defined.
     */
-    public boolean returnSymbolDefined(){}
+    public boolean returnSymbolDefined() {
+	return symbolDefined;
+    }
 
     /** This method returns true if a label was found.
 	@return boolean containing information if label was found.
     */
-    public boolean returnLabelFound(){}
+    public boolean returnLabelFound() {
+	return labelFound;
+    }
 
     /** This method returns true if a symbol was found.
 	@return boolean containing information if symbol was found.
     */
-    public boolean returnSymbolFound(){}
+    public boolean returnSymbolFound() {
+	return symbolFound;
+    }
 
     /** This method returns value of current symbol.
 	@return An integer containing symbol's value.
     */
-    public int returnSymbolValue(){}
+    public int returnSymbolValue() {
+	return symbolValue;
+    }
 
     /** This method returns compiled binary machinecommand represented as an
 	integer value.
 	@return An integer representing machine command.
     */
-    public int returnLineBinary(){}
+    public int returnLineBinary() {
+	return lineBinary;
+    }
 
     /** This method returns the name of the current label.
 	@return Name of the current label.
     */
-    public String returnLabelName(){}
+    public String returnLabelName() { 
+	return labelName;
+    } 
 
     /** This method returns value of the current label.
 	@return An integer containing value of the label. */
-    public int returnLabelValue(){} 
+    public int returnLabelValue() {
+	return labelValue;
+    } 
 
     /** This method tells GUIBrain that compiler is setting DS area.
      */
-    public boolean returnDefiningDS(){} // samoin
+    public boolean returnDefiningDS() {
+	return definingDS;
+    } 
 
     /** This methot tells GUIBrain that compiler is setting DC.
      */
-    public boolean returnDefiningDC(){} //samoin
+    public boolean returnDefiningDC() {
+	return definingDC;
+    } 
 
     /** This method returns the value of DC or DS.
 	@return An integer containing value of DC or DS.
     */
-    public int returnValue(){}
+    public int returnValue() {
+	return value;
+    }
 
     /** This method returns true if field finalFinal is set.
 	@return Boolean.
     */
-    public boolean returnFinalPhase(){}
+    public boolean returnFinalPhase() {
+	return finalFinal;
+    }
 
     /** This method returns initial SP and FP pointers in an interger array
 	where first value is SP and second is FP.
 	@return An integer array.
     */
-    public int[] returnInitPointers(){}
+    public int[] returnInitPointers() {
+	return initPointers;
+    }
 
     /** This method returns memorylines after compiler has finished first 
 	round of compilation. This array contains all codelines but all white
 	spaces and empty lines has been removed.
 	@return String array containing symbolic lines.
     */
-    public String[] returnMemory(){}
+    public String[] returnMemory() {
+	return memory;
+    }
 
 }
 
