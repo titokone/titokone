@@ -1,3 +1,5 @@
+//TODO: setChangedMemoryLines
+
 package fi.hu.cs.titokone;
 
 import fi.hu.cs.ttk91.*;
@@ -15,6 +17,9 @@ public class Processor implements TTK91Cpu {
  
     /** Is program running. */
     private int status = TTK91Cpu.STATUS_SVC_SD;
+    
+    /** Rundebugger */
+    private RunDebugger runDebugger = new RunDebugger();
 
     /**
     state register array.
@@ -99,26 +104,35 @@ public class Processor implements TTK91Cpu {
     public RunInfo runLine() throws TTK91RuntimeException{
     
         if (status != TTK91Cpu.STATUS_STILL_RUNNING) return null;   // *** palauta sopiva RunInfo
-            
+        
         // if PC is out of bounds throw an exception
         int PC = regs.getRegister (TTK91Cpu.CU_PC);
         if (PC >= ram.getSize() || PC < 0) {
             status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-            throw new TTK91AddressOutOfBounds();    
+            throw new TTK91AddressOutOfBounds();
         }
         
         // fetch the next command to IR from memory and increase PC
-        int IR = ram.getValue(PC);
-        regs.setRegister (TTK91Cpu.CU_IR, IR);
+        MemoryLine IR = ram.getMemoryLine(PC);
+        
+        runDebugger.cycleStart (IR.getSymbolic(), PC, regs.getRegister (TTK91Cpu.REG_SP), regs.getRegister (TTK91Cpu.REG_FP));
+        
+        regs.setRegister (TTK91Cpu.CU_IR, IR.getBinary());
         regs.setRegister (TTK91Cpu.CU_PC, PC+1);
         
         // cut up the command in IR
-        int opcode = IR >>> 24;                             // operation code
-        int Rj = ((IR&0xE00000) >>> 21) + TTK91Cpu.REG_R0;  // first operand (register 0..7)
-        int M  = (IR&0x180000) >>> 19;                      // memory addressing mode
-        int Ri = ((IR&0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
-        int ADDR = IR&0xFFFF;                               // address
+        int opcode = IR.getBinary() >>> 24;                             // operation code
+        int Rj = ((IR.getBinary()&0xE00000) >>> 21) + TTK91Cpu.REG_R0;  // first operand (register 0..7)
+        int M  = (IR.getBinary()&0x180000) >>> 19;                      // memory addressing mode
+        int Ri = ((IR.getBinary()&0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
+        int ADDR = IR.getBinary()&0xFFFF;                               // address
         
+
+        runDebugger.runCommand (opcode, Rj, regs.regRegister (Rj), 
+        			Ri, regs.getRegister(Ri), ADDR, M,
+        			opcode + ":" + Rj -TTK91Cpu.REG_R0 + ":" + M + ":" + Ri-TTK91Cpu.REG_R0 + ":" + ADDR);
+        			
+
         // fetch parameter from memory
         if (Ri != TTK91Cpu.REG_R0) ADDR += regs.getRegister (Ri);   // add indexing register Ri
         int param = ADDR;
@@ -129,7 +143,8 @@ public class Processor implements TTK91Cpu {
             status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
             throw new TTK91AddressOutOfBounds();
         }
-            
+        
+        
         // run the command
         if (M == 3) {
             status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
@@ -152,6 +167,13 @@ public class Processor implements TTK91Cpu {
         // update PC_CURRENT
         regs.setRegister (TTK91Cpu.CU_PC_CURRENT, regs.getRegister (TTK91Cpu.CU_PC));
         
+        
+        // give registers to runDebugger
+        Integer[8] registers = new Integer[8];
+        for (int i=0; i < register.length; i++) 
+        	registers[i] = new Integer (regs.getRegister (i + TTK91Cpu.REG_R0));
+        runDebugger.setRegisters (registers);
+        	
         return null;
     }
 
@@ -205,6 +227,7 @@ public class Processor implements TTK91Cpu {
 /** Transfer-operations. */
     private void transfer(int opcode, int Rj, int M, int ADDR, int param) 
     throws TTK91BadAccessMode, TTK91OutOfBounds, TTK91NoKbdData, TTK91NoStdInData, TTK91InvalidDevice {
+    	runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         switch (opcode) {
             case 1 : // STORE
             if (M == 0) throw new TTK91BadAccessMode(); // in STORE parameter must be a pointer
@@ -231,12 +254,14 @@ public class Processor implements TTK91Cpu {
                 case 1 : // Keyboard
                 if (kbdData == null) throw new TTK91NoKbdData();
                 regs.setRegister (Rj, kbdData.intValue());
+	        runDebugger.setIN (param, kbdData.intValue());
                 kbdData = null;
                 break;
                 
                 case 6 : // Standard input file
                 if (stdinData == null) throw new TTK91NoStdInData();
                 regs.setRegister (Rj, stdinData.intValue());
+	        runDebugger.setIN (param, stdinData.intValue());
                 stdinData = null;
                 break;
                 
@@ -245,15 +270,8 @@ public class Processor implements TTK91Cpu {
             break;
             
             case 4 : // OUT
-            switch (param) {
-                case 0 : // CRT
-                break;
-                
-                case 7 : // Standard output file
-                break;
-                
-                default : throw new TTK91InvalidDevice();
-            }
+            if (param != 0 && param != 7) throw new TTK91InvalidDevice();	// device not CRT or STDOUT
+            runDebugger.setOUT (param, regs.getRegister(Rj));
             break;
         }
     }
@@ -263,6 +281,7 @@ public class Processor implements TTK91Cpu {
     @return Result of the ALU-operation. */
     private void alu(int opcode, int Rj, int param) 
     throws TTK91IntegerOverflow, TTK91DivisionByZero {
+	runDebugger.setOperationType (RunDebugger.ALU_OPERATION);
         long n;
         switch (opcode) {
             case 17 : // ADD
@@ -317,6 +336,8 @@ public class Processor implements TTK91Cpu {
             regs.setRegister (Rj, regs.getRegister(Rj) >> param);
             break;
         }
+        
+        runDebugger.setALUResult (regs.getRegister (Rj));
     }
 
 /** Compare-method manipulates status register.
@@ -324,25 +345,30 @@ public class Processor implements TTK91Cpu {
     @param param Second value. */
     private void comp(int Rj, int param) {
         // COMP
+        runDebugger.setOperationType (RunDebugger.COMP_OPERATION);
         if (regs.getRegister (Rj) > param) {
             sr[0] = true;
             sr[1] = false;
             sr[2] = false;
+            runDebugger.setCompareResult (0);
         }
         else if (regs.getRegister (Rj) < param) {
             sr[0] = false;
             sr[1] = false;
             sr[2] = true;
+            runDebugger.setCompareResult (2);
         }
         else { 
             sr[0] = false;
             sr[1] = true;
             sr[2] = false;
+            runDebugger.setCompareResult (1);
         }
     }
 
 /** Branching. */
     private void branch(int opcode, int Rj, int ADDR, int param) {
+    	runDebugger.setOperationType (RunDebugger.BRANCH_OPERATION);
         switch (opcode) {
             case 32 : // JUMP
             regs.setRegister (TTK91Cpu.CU_PC, ADDR);
@@ -401,6 +427,7 @@ public class Processor implements TTK91Cpu {
 /** Stack. */
     private void stack(int opcode, int Rj, int Ri, int param) 
     throws TTK91OutOfBounds {
+    	runDebugger.setOperationType (RunDebugger.STACK_OPERATION);
         switch (opcode) {
             case 51 : // PUSH
             regs.setRegister (Rj, regs.getRegister(Rj) +1);
@@ -448,6 +475,8 @@ public class Processor implements TTK91Cpu {
 /** Subroutine. */
     private void subr(int opcode, int Rj, int ADDR, int param)
     throws TTK91OutOfBounds {
+    	runDebugger.setOperationType (RunDebugger.SUB_OPERATION);
+    	runDebugger.setSubOperation (opcode -49);
         int sp;
         switch (opcode) {
             case 49 : // CALL
@@ -491,6 +520,8 @@ public class Processor implements TTK91Cpu {
 /** Supervisor call. */
     private void svc(int Rj, int param)
     throws TTK91OutOfBounds, TTK91NoKbdData {
+    	runDebugger.setOperationType (RunDebugger.SVC_OPERATION);
+    	runDebugger.setSVCOperation (param);
         
         // make CALL operation
         subr(49, Rj, regs.getRegister (TTK91Cpu.CU_PC), param);
@@ -512,6 +543,7 @@ public class Processor implements TTK91Cpu {
             break;
 
             case 14 : // TIME
+            
 //TODO
             subr (50, Rj, 0, 3);    // EXIT from SVC(TIME)
             break;
@@ -524,6 +556,8 @@ public class Processor implements TTK91Cpu {
     }
     
     private void nop() {
+    	runDebugger.setOperationType (RunDebugger.NO_OPERATION);
+    	runDebugger.setNoOperation();
     }
     
 /** Tests if given long value is acceptable int value. */
