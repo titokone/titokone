@@ -201,7 +201,7 @@ public class FileHandler {
 	// readLine() returns null when the end of the stream has been
 	// reached.
 	while(line != null) {
-	    result.append(line);
+	    result.append(line + "\n");
 	    line = loadFileContents.readLine();
 	}
 	loadFileContents.close();
