@@ -145,9 +145,10 @@ public class FileHandler {
 	// Open the file in append mode.
 	BufferedWriter writer =  new BufferedWriter(new FileWriter(stdoutFile, 
 								   true));
-	if(fileExisted)
-	    writer.newLine();
+	//if(fileExisted)
+	//  writer.newLine();
 	writer.write(dataItem, 0, dataItem.length());
+	writer.newLine(); // Add newlines to end instead of beginning.
 	writer.flush();
 	writer.close();
     }
