@@ -8,27 +8,22 @@ creates objects from this class and passes them to onwards.*/
 
 public class RunInfo extends DebugInfo{
 
-   /** This field contains the number of operation type. */
-   private int operationType;
-   /** This field contains the description of operation type */
-   private String operationDescription;
-   
+    /** This field contains the number of operation type. */
+    private int operationType;
+    /** This field contains the description of operation type */
+    private String operationDescription;
     /** This field contains line number.*/
     private int lineNumber;
     /** This field contains contents of the line, */
     private String lineContents;
     /** This field contains the command in binary format. */
     private int binary;
-   
     /** This array contains the current values of registers 0-7 */
     private Integer [] registers;
-    
     /** This String contains the colon-representation of current line */
-    private String binaryString;
-    
+    private String colonString;
     /** This int represents the number of memoryfetches */
     private int numberOfMemoryfetches;
-
     /** Old value of program counter */
     private int oldPC;
 	/** New value of program counter */    
@@ -41,7 +36,6 @@ public class RunInfo extends DebugInfo{
     private int oldSP;
     /** New value of stack pointer */
     private int newSP;
-    
     /** This field contains first operand of the command. */
     private int rj; 
     /** This field contains the value of first operand of the command */
@@ -54,7 +48,8 @@ public class RunInfo extends DebugInfo{
     private int addr;
     /** This field contains the value of address field */
     private int valueAtADDR;
-
+    /** This field contains the value of second memory fetch */
+    private int secondFetchValue;
     /** This field contains the value of ALU-operation */
     private int aluResult;
     /** This field contains the representation which bit has the value true after comparing 
@@ -62,24 +57,18 @@ public class RunInfo extends DebugInfo{
     */
     //TO DO: Bittien tila säilyy vertailun jälkeen, päivitetäänkö ainoastaan muutokset GUIBRAINILLE? Jos ylipäänsä tarvitaan...
     private int srBit;
-    
 	/** This boolean value tells is the operation in or out -operation */
     private boolean externalOperation;
     /** This boolean value is set true if operation is in operation, otherwise false */
     private boolean isIN;
-    
     /** This String value contains the name of the device */
     private String deviceName;
-    
     /** This value contains the value of the device */
     private int deviceNumber;
-    
     /** This value contains the value read or written from / to device */
     private int valueOfDevice;
-
     /** This value contains the String representation of SVC-operation */
     private String svcOperation;
-
     /** This list contains all changed memory lines. List contains object 
     arrays, whose first element is a Integer and second a MemoryLine. 
     Integer tells the row where MemoryLine is in memory. */
@@ -95,7 +84,6 @@ public class RunInfo extends DebugInfo{
      @param oldFP value of the old FP.
      @param newFP value of the old FC.
 */
-
     public RunInfo(int lineNumber, String lineContents, int oldPC, int newPC,
 		   int oldSP, int newSP, int oldFP, int newFP){
 
@@ -132,11 +120,18 @@ public class RunInfo extends DebugInfo{
 		this.operationDescription = description;
     }
     
-    /** This method sets the binary value of the command.
+    /** This method sets the colon-presentation of the command.
 	@param binary Binary value of the command.
     */
-    public void setBinary(String binary){
-		this.binaryString = binary;
+    public void setColonString(String colonString){
+		this.colonString = colonString;
+    }
+    
+    /** This method gets the colon-presentation of the command.
+	@return The colon-presentation of the command.
+    */
+    public String getColonString(String colonString){
+		return colonString;
     }
 
     /** this method sets the index register.
@@ -307,6 +302,13 @@ public class RunInfo extends DebugInfo{
     public int getBinary(){
 		return this.binary;    
 	}
+	
+    /** This method sets the binary command.
+	@param binary Contains the binary command.
+    */
+    public void setBinary(int binary){
+		this.binary = binary;
+	}
     
     /** This method tells GUIBrain which registers changed and what are new
 	values.
@@ -394,6 +396,21 @@ public class RunInfo extends DebugInfo{
     public int getValueAtADDR(){
 	    return this.valueAtADDR;
 	}
+	
+    /** This method sets value of second memory fetch. Indirect memory
+        accessing mode needs two memory fetches.
+    @param secondFetchValue Value which have got at second memory fetch. */
+    public void setSecondFetchValue (int secondFetchValue) {
+        this.secondFetchValue = secondFetchValue;
+    }
+
+    /** This method gets value of second memory fetch. Indirect memory
+        accessing mode needs two memory fetches.
+    @return Value which have got at second memory fetch. */
+    public int getSecondFetchValue () {
+        return secondFetchValue;
+    }
+	
 
     /** This method returns the result of the ALU operation.
 	@return int Integer containing the result.
