@@ -28,6 +28,9 @@ Control      SR 23.3.   compile-metodin parametrin‰ TTK91Source, ei Source.
                         heitett‰viin (koska se
                         tunkee applicationiin sit‰ STDIN-dataa samalla).
                         Lis‰tty saveBinary() ja saveBinary(File).
+Control      SR 26.3.   Lis‰tty 3  private-final kentt‰‰ DEF_*_POS, ja 
+                        private File getApplicationDefinitions() kaivamaan
+                        Application-luokasta m‰‰ritelm‰t STDIN/STDOUT/HOME.
 
 CompileInfo  AT 23.3.	SetMemoryLine-metodin parametri value on String, ei int.
 
