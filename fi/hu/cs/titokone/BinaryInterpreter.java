@@ -17,12 +17,7 @@ public class BinaryInterpreter extends Interpreter {
     /** This hashmap contains parameters for each command with Integer forms
 	of their opcodes as keys.*/
     private HashMap parameters;
-    /** This String[] contains a string for each addressing mode. They can 
-	be found by using the address mode number as index. */
-    private String[] addressModes; //Mihin tätä tarvitaan?
-    /** This String[] contains the register names. The names can be found
-	by using the register id as index. */
-    private String[] registerNames; //Mihin tätä tarvitaan?
+
 
     /** This constructor sets up a binaryinterpreter and initializes the 
 	internal command information data structures. */
@@ -30,6 +25,7 @@ public class BinaryInterpreter extends Interpreter {
     public BinaryInterpreter() {
 	commands = new HashMap(37);
 	parameters = new HashMap(37);
+	
 	for (int i = 0; i<37; i++){
 	    commands.put(commandData[i][1], commandData[i][0]);
 	    parameters.put(commandData[i][1], commandData[i][2]);
@@ -84,11 +80,7 @@ public class BinaryInterpreter extends Interpreter {
 	}
 	case 4:{ //address only TODO Not used?
 	    String mem = getMemoryModeFromBinary(command);
-	    /*if (mem.equals("="))  //HACK, Some commands use less fetches
-		mem = "";         //so ordinary transformation doesn't work
-	    if (mem.equals(""))
-	        mem="@";
-	    */
+
 	    if (mem.equals(null))
 		return GARBLE;
 
@@ -110,13 +102,6 @@ public class BinaryInterpreter extends Interpreter {
 	case 6:{//Full with less fetches
 	    
 	    String mem = getMemoryModeFromBinary(command);
-	    /*
-	    if (mem.equals("="))  //HACK, Some commands use less fetches
-		mem = "";         //so ordinary transformation doesn't work
-	    else{
-		if (mem.equals(""))
-		    mem="@";
-		    }*/
 	    if (mem==null)
 		return GARBLE;
 	   
@@ -159,13 +144,6 @@ public class BinaryInterpreter extends Interpreter {
 	}
 	case 8:{ //Address with less fetches
 	    String mem = getMemoryModeFromBinary(command);
-	    /*
-	    if (mem.equals("="))  //HACK, Some commands use less fetches
-		mem = "";         //so ordinary transformation doesn't work
-	    else {
-		if (mem.equals(""))
-		mem="@";
-		}*/
 	    if (mem==null)
 		return GARBLE;
 
@@ -208,12 +186,13 @@ public class BinaryInterpreter extends Interpreter {
 	@return Operation code in a String format.
       */
     public String getOpCodeFromBinary(int binaryCommand) {
-	int command = binaryCommand;
-	if (command == 0)
+	int command = binaryCommand; 
+	if (command == 0)  //if command is zero, then return nop
 	    return "0";
+	//then check if command has no operation code
 	if (command > 0 && command < 16777216)
 	    return null;
-
+	//get opcode and get its name and return it
 	Integer opcode = new Integer(command >> 24);
 	if(commands.get(opcode)!=null){
 	    String s = "" + opcode;
@@ -230,8 +209,8 @@ public class BinaryInterpreter extends Interpreter {
       */
     public String getFirstRegisterFromBinary(int binaryCommand) {
 	int command = binaryCommand;
-	int i = command >> 21;
-	i = i & 7;
+	int i = command >> 21; //remove addr, 2. register, memorymode
+	i = i & 7;             //get 1. register and check its name
 	String s = (String)registerData[i][0];
 	return s;
     }
@@ -241,14 +220,17 @@ public class BinaryInterpreter extends Interpreter {
 	three legal values)
 	@param binaryCommand The command's binary-form representation.
 	@return Memory address mode from binary command in a String format.
-    *///TODO Entä muistiosoitus = 4? Kaapataan nullista
+    */
     public String getMemoryModeFromBinary(int binaryCommand) {
 	int command = binaryCommand;
-	int i = command >> 19;
-	i = i & 3;
+	int i = command >> 19; //remove addr and second register
+	i = i & 3;             //get memorymode
 	String operationCode = getOpCodeFromBinary(binaryCommand);
 	Integer opcode = new Integer(operationCode);
 	Integer params = (Integer)parameters.get(opcode);
+	
+	/* Store and jumps use less memoryfetches so we need to return
+	   different symbols for them.*/
 	
 	if(params.intValue()==6||params.intValue()==8){
 	    if (i==0)
@@ -278,10 +260,10 @@ public class BinaryInterpreter extends Interpreter {
       */
     public String getSecondRegisterFromBinary(int binaryCommand) {
 	int command = binaryCommand;
-	int i = command >> 16;
+	int i = command >> 16; //remove address and get first three bits
 	i = i & 7;
 	String s = (String)registerData[i][0];
-	System.out.println(s);
+
 	return s;
 
 
@@ -297,36 +279,14 @@ public class BinaryInterpreter extends Interpreter {
 
     public String getAddressFromBinary(int binaryCommand) {
 	int command = binaryCommand;
-	int i = command & 65535;
+	int i = command & 65535; //AND first 16 bits
 	
 	Integer opcode = new Integer(getOpCodeFromBinary(command));
 	String mem = getMemoryModeFromBinary(binaryCommand);
-	/*Integer param = (Integer)parameters.get(opcode);
 	
-	//Check if operation has less memoryfetches
-	switch(param.intValue()){
-	case 6:{
-	    if (mem.equals("="))  //HACK, Some commands use less fetches
-		mem = "";         //so ordinary transformation doesn't work
-	    else {
-		if (mem.equals(""))
-		    mem="@";
-	    }
-	    break;
-	}
-	case 8:{
-	    if (mem.equals("="))  //HACK, Some commands use less fetches
-		mem = "";         //so ordinary transformation doesn't work
-	    else{
-		if (mem.equals(""))
-		    mem="@";
-	    }
-	    break;
-	}
-	default: {}
-
-	}
-	*/
+	/*If memorymode is =, then map addresses over 32767 to negative 
+	  values.*/
+	
 	if (i>=32768&&mem.equals("=")){
 	 
 	    i=i-32768;
@@ -338,16 +298,4 @@ public class BinaryInterpreter extends Interpreter {
 
     }
 
-    /** This method deals with the more complicated bit of extracting
-	the parameter string needed for this command in translating
-	a binary command to a string.
-	@param commandParameters A binary command with its opcode 
-	bits shifted out. 
-	@return A string to add after the opcode with a space in between,
-	or an empty string if no parameters are wanted. 
-    */
-    //TODO mutta mihin tätä tarvitaan? Saman hoitaa jo binaryToString helpommin
-    private String getParameterString(int commandParameters) {
-	return null;
-    }
 }

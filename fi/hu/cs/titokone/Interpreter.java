@@ -20,7 +20,7 @@ public class Interpreter {
     public static final Integer FULL = new Integer(5);
     public static final Integer FULL_LESS_FETCHES = new Integer(6);
     public static final Integer REG_DEVICE = new Integer(7);
-    public static final Integer ADDR_LESS_FETCH = new Integer(8);
+    public static final Integer ADDR_LESS_FETCHES = new Integer(8);
     public static final Integer SVC = new Integer(9);
   
     /** This field contains a two-dimensional array of translations 
@@ -31,8 +31,8 @@ public class Interpreter {
 	capital letters. */
     protected static final Object[][] commandData = {
 	{"NOP", new Integer(0), NONE},
-        {"STORE", new Integer(1), FULL},
-        {"LOAD", new Integer(2), FULL_LESS_FETCHES},
+        {"STORE", new Integer(1), FULL_LESS_FETCHES},
+        {"LOAD", new Integer(2), FULL},
         {"IN", new Integer(3), REG_DEVICE},	//I guess you could have KBD stored in
 	                                //some weird way
         {"OUT", new Integer(4), REG_DEVICE},
@@ -49,20 +49,20 @@ public class Interpreter {
         {"SHR", new Integer(26), FULL},
 	{"SHRA", new Integer(27), FULL},	//same int as NOT!,
         {"COMP", new Integer(31), FULL},
-        {"JUMP", new Integer(32), ADDR_LESS_FETCH},	//Jump has only one param. 
+        {"JUMP", new Integer(32), ADDR_LESS_FETCHES},	//Jump has only one param. 
 	                                        //Jump Address
-        {"JNEG", new Integer(33), FULL},	//JNEG Rj, Address
-        {"JZER", new Integer(34), FULL},
-        {"JPOS", new Integer(35), FULL},
-        {"JNNEG", new Integer(36), FULL},
-        {"JNZER", new Integer(37), FULL},
-        {"JNPOS", new Integer(38), FULL},
-        {"JLES", new Integer(39), ADDR_LESS_FETCH},
-        {"JEQU", new Integer(40), ADDR_LESS_FETCH},
-        {"JGRE", new Integer(41), ADDR_LESS_FETCH},
-        {"JNLES", new Integer(42), ADDR_LESS_FETCH},
-        {"JNEQU", new Integer(43), ADDR_LESS_FETCH},
-        {"JNGRE", new Integer(44), ADDR_LESS_FETCH},
+        {"JNEG", new Integer(33), FULL_LESS_FETCHES},	//JNEG Rj, Address
+        {"JZER", new Integer(34), FULL_LESS_FETCHES},
+        {"JPOS", new Integer(35), FULL_LESS_FETCHES},
+        {"JNNEG", new Integer(36), FULL_LESS_FETCHES},
+        {"JNZER", new Integer(37), FULL_LESS_FETCHES},
+        {"JNPOS", new Integer(38), FULL_LESS_FETCHES},
+        {"JLES", new Integer(39), ADDR_LESS_FETCHES},
+        {"JEQU", new Integer(40), ADDR_LESS_FETCHES},
+        {"JGRE", new Integer(41), ADDR_LESS_FETCHES},
+        {"JNLES", new Integer(42), ADDR_LESS_FETCHES},
+        {"JNEQU", new Integer(43), ADDR_LESS_FETCHES},
+        {"JNGRE", new Integer(44), ADDR_LESS_FETCHES},
         {"CALL", new Integer(49), FULL},
         {"EXIT", new Integer(50), FULL},
         {"PUSH", new Integer(51), FULL},
