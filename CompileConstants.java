@@ -17,7 +17,7 @@ public class CompileConstants {
     public CompileConstants() { // Set up the hashtables.
     }
 
-    public String getCommand(int opcode) {  }
+    public String getCommand(int opcode) {}
 
-    public int getOpcode(String command) { }
+    public int getOpcode(String command) {}
 }
