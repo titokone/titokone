@@ -1,13 +1,12 @@
 /*
  * Created on Feb 24, 2004
- *
- * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 package fi.hu.cs.ttk91;
 
 /**
  * @author Kalle Kärkkäinen
  *
+ * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 public interface TTK91Application {
 	/**

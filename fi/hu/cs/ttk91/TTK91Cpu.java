@@ -1,10 +1,11 @@
 /*
  * Created on Feb 24, 2004
- *
- * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 package fi.hu.cs.ttk91;
 
+/*
+ * See separate documentation in yhteisapi.pdf in the javadoc root.
+ */
 public interface TTK91Cpu {
 	public static final int CU_TR         = 201;
 	public static final int CU_IR         = 202;
