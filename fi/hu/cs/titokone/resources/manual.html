@@ -92,7 +92,10 @@ in a simple processor.
 
 <h2><a name="install">2 Installing Titokone</a></h3>
 <br>
-<p> Jos olet jo asentanut Titokoneen, siirry suoraan Titokoneen <a href="#doables">toimintoihin</a>.</p>
+<p> 
+First part is about installing the Titokone. If you've already done that, then
+you can move directly to the <a href="#doables">Titokone functions</a>.
+</p>
 
 <table cellspacing=10>
 <tr>
@@ -145,7 +148,9 @@ if you want to use Titokone at eg. your home machine.
 <p>
 You can get Titokone via the Tietokoneen toiminta (Computer Organization) 
 course homepage, currently at
-<a href="http://www.cs.helsinki.fi/teemu.kerola/tito/">http://www.cs.helsinki.fi/teemu.kerola/tito/</a>. You can choose between downloading the JAR package containing Titokone(titokone.jar) directly or downloading a ZIP file which contains the
+<a  h ref="http://www.cs.helsinki.fi/teemu.kerola/tito/">
+http://www.cs.helsinki.fi/teemu.kerola/tito/</a>. You can choose between downloading the JAR 
+package containing Titokone(titokone.jar) directly or downloading a ZIP file which contains the
 JAR file itself along with some instructions and helper programs. 
 </p>
 
@@ -263,7 +268,7 @@ is not sufficient.
 
 
 
-<h2><a name="doables">3. J‰rjestelm‰n toiminnot</a></h2> <!-- mit‰ t‰ll‰ voi tehd‰? -->
+<h2><a name="doables">3. Titokone functions</a></h2> <!-- mit‰ t‰ll‰ voi tehd‰? -->
 
 <br>
 
@@ -281,7 +286,7 @@ is not sufficient.
   </td>
 
 <td>
-  <h3>3.1 TTK-91-ohjelman avaaminen</h3> 
+  <h3>3.1 Opening a TTK-91-program</h3> 
 </td>
 
 </tr>
@@ -301,10 +306,9 @@ alt="Open file from menu">
       
 <td valign=top>
 <p> 
-  Uuden tiedoston avaaminen tapahtuu painamalla <a href="1en.html">avaa-pikakuvaketta</a> tai
-  valitsemalla valikosta Tiedosto -->  Avaa. Valinnan seurauksena
-  avautuu <a href="#file">tiedoston‰kym‰</a>.
-
+  Opening a file is done either by pressing the <a href="1en.html">open-button</a> or 
+  by choosing Open from the File menu. Once you've done this you get the <a href="#file">
+  file dialog</a> window.
 </p>
 </td>
 
@@ -322,18 +326,19 @@ alt="Picture of file dialog">
 </td>
 <td valign=top>
 <p>
-Tiedoston‰kym‰ n‰ytt‰‰ nykyhakemiston tiedostot valitun p‰‰tteen mukaan. 
-N‰ytett‰v‰t tiedostotyypit erotellaan p‰‰tteen mukaan: k91-p‰‰te tarkoittaa l‰hdekooditiedostoa ja
-b91-p‰‰te bin‰‰ritiedostoa.
+The file dialog shows the file listing of the current folder by the selected file type.
+There are two possible file types: .k91 is for the source code while .b91 is the binary
+form of the program.
 </p>
 <ul><li>
-Avattaessa k91-p‰‰tteinen tiedosto, avautuu <a href="Sourcecode.html">l‰hdekoodin‰kym‰</a> ruudulle.
-L‰hdekooditiedosto on <a href="#compile">k‰‰nnett‰v‰</a> ennen kuin se voidaan <a href="#run">suorittaa</a>.
+When .k91 file is opened Titokone displays a <a href="Sourcecode.html">source code view</a>.
+Source code must be <a href="#compile">compiled</a> before it can be <a href="#run">run</a>.
 </li>
 <br>
 <li>
-Avattaessa b91-p‰‰tteinen tiedosto, avautuu <a href="Running.html">suoritusn‰kym‰</a> ruudulle.
-Bin‰‰ritiedosto on valmiiksi konekielimuodossa, joten se voidaan <a href="#run">suorittaa</a> ilman k‰‰nt‰mist‰.
+And when .b91 file is opened Titokone shows the <a href="Running.html">run view</a>.
+Since .b91 is already compiled and in the binary form, it can be <a href="#run">run</a> 
+without being compiled again.
 </li>
 </ul>
 </td>
@@ -362,20 +367,11 @@ source code-file while .b91 is the ending for a compiled binary file.
 <ul><li>
 When file with k91-extension is opened, <a href="manual1.html#gui">source code view</a> is shown.
 Source code file has to be <a href="#compile">compiled</a> before <a href=#run>executing</a> the file.
-
-
-Avattaessa k91-p‰‰tteinen tiedosto, avautuu <a href="manual_fi1.html#gui">l‰hdekoodin‰kym‰</a> ruudulle.
-L‰hdekooditiedosto on <a href="#kaanna">k‰‰nnett‰v‰</a> ennen kuin se voidaan <a href="#aja">suorittaa</a>.
 </li>
 <br>
 <li>
 When file with b91-extension is opened, <a href="manual3.html#gui">runnable view</a> is shown.
 Binary file is already in machine language form, so it can be <a href="#run">executed</a> immediately.
-
-<!-- Avattaessa b91-p‰‰tteinen tiedosto, avautuu <a href="manual_fi3.html#gui">suoritusn‰kym‰</a> 
-ruudulle.
- Bin‰‰ritiedosto on valmiiksi konekielimuodossa, joten se voidaan <a href="#aja">suorittaa</a> 
-ilman k‰‰nt‰mist‰.-->
 </li>
 </ul>
 </td>
@@ -397,25 +393,48 @@ alt="">
 </td>
 <td>
 <a name="code-editing">
-<h3> 3.2 L‰hdekoodin muokkaaminen </h3>
+<h3> 3.2 Editing the source code</h3>
 </a>
 </td>
 </tr>
 </table>
 
 
-<p>L‰hdekoodia on mahdollista muokata Titokoneessa seuraavasti: </p>
+<p> 
+	It is possible to edit the source code by doing this:
+</p>
 <ul>
-<li> Avataan k91-p‰‰tteinen tiedosto. </li>
-<p>joko</p>
-<li> Napsautetaan l‰hdekoodin rivi‰ vasemmalla hiiren napilla, jolloin kursori ei ilmesty n‰kyviin, mutta riville voi kirjoittaa.</li>
-<p><img src="img/this.jpg"></p>
-<p>tai</p>
-<li> Kaksoisnapsautetaan l‰hdekoodin rivi‰ vasemmalla hiiren napilla, kursori ilmestyy riville. </li>
-<p><img src="img/orthis.jpg"></p>
-<li> Kirjoitetaan riville muutokset. </li>
-<li> Vahvistetaan muutokset painamalla enteri‰. </li>
-<li> Tehdyt muutokset tallettuvat alkuper‰iseen tiedostoon. </li>
+<li> 
+	First you must open a .k91 file.
+</li>
+<p> 
+	either
+</p>
+<li> 
+	Prsee the left mouse button on top of the line you wish to edit. This does not
+	display the cursor but the text can be edited.
+</li>
+<p>
+	<img src="img/this.jpg">
+</p>
+<p>
+	or
+</p>
+<li> 
+	Double click the line you wish to edit and you see the cursor.
+</li>
+<p>
+	<img src="img/orthis.jpg">
+</p>
+<li> 
+	Edit the line
+</li>
+<li>
+	Confirm the changes by pressing the enter or moving out from the line.
+</li>
+<li> 
+	Once confirmed, the changes are saved to the original file.	
+</li>
 </ul>
 
  
@@ -444,7 +463,7 @@ alt="">
   
   <td>
   <a name="compile">
-  <h3>3.3 TTK-91-ohjelman k‰‰nt‰minen</h3> <!-- Ja mahd. tekstin muokkaus -->
+  <h3>3.3 Compiling the TTK-91-program</h3> <!-- Ja mahd. tekstin muokkaus -->
   </a>
   </td>
   
@@ -461,10 +480,13 @@ alt="">
   
   <td valign=top>
   <p>
-  Titokoneen k‰‰nnˆs on kaksivaiheinen: ensin tehd‰‰n syntaksitarkistus ja luodaan symbolitaulu. Toisella kierroksella muodostetaan objektikoodi.
-  K‰‰nt‰minen aloitetaan painamalla <a href="2en.html">k‰‰nn‰-pikakuvaketta</a> tai valitsemalla valikosta Tiedosto --> K‰‰nn‰.
-  K‰‰nt‰minen toteutetaan <a href="#compilesettings">k‰‰nnˆsasetusten</a> mukaisesti.
-  joko pys‰hdellen tai kerralla loppuun asti k‰‰nt‰en. 
+Compilation in Titokone is done in two phases: During the first phase compiled checks the syntax
+and gathers the symbol table. During the second phase compiler creates the object code and checks 
+that the used variables are defined. Compilation starts by pressing the <a 
+href="2en.html">compile-button</a> ob by sleecting compile from the file-menu.
+Compilation is done according to the 
+<a href="#compilesettings">compile setting</a> defined before. Compiler may stop and comment or 
+it may continue directly to the end without stopping in between.
   </p>
   </td>
   </tr>
@@ -473,12 +495,13 @@ alt="">
   <br>
   <a name="compilingfunctions">
   <b>
-  Toiminnot k‰‰nt‰misen aikana
+Functions during the compilation
   </b>
   </a>
   
   <table cellspacing=10>
   <tr>1 Javan hakemine
+TODO what is this?
    
   <td>
   <img src="img/4.jpg" title="Forward" 
