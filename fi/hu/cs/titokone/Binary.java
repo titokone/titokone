@@ -63,7 +63,7 @@ public class Binary {
 	}
 	    
 
-	if(x.intValue()!=0 || x.intValue()>y.intValue())
+	if(x.intValue()!=0 || x.intValue()>y.intValue()+1)
 	    throw new ParseException(new Message("Invalid code area "+
 						 "length on line: {0}",
 						 ""+(i+1)).toString(),i+1);
@@ -91,7 +91,6 @@ public class Binary {
 							 " line: {0}", 
 							 ""+(i+1)).toString(),
 					     i+1); 
-		
 		i++;	    
 	    }
 	
@@ -116,12 +115,13 @@ public class Binary {
 						 "value on line: {0}",
 						 ""+(i+1)).toString(),i+1);
 	}
-
-	if(x.intValue()>y.intValue())
-	    throw new ParseException(new Message("Invalid data area " + 
-						 "length on line: {0}",
-						 ""+(i+1)).toString(),i+1);
 	
+	if(x.intValue()>y.intValue()+1)
+
+		throw new ParseException(new Message("Invalid data area " + 
+						     "length on line: {0}",
+						     ""+(i+1)).toString(),i+1);
+
 	areaLength=y.intValue()-x.intValue()+1;
 
 	i++;
@@ -228,29 +228,20 @@ public class Binary {
 	while(b91[i].startsWith("_"))
 	    i++;
 	i++;
-	//	try{
+
 	    while(!b91[i].startsWith("_")){
 		command=new Integer(b91[i]);
 		String symbolic = bini.binaryToString(command.intValue());
-		//if (symbolic.equals(""))
-		//    throw new ParseException(new Message("Invalid command "+
-		//					 "on line: {0}"
-		//					 ,""+(i+1)).toString(),
-		//			     i+1);
 		line = new MemoryLine(command.intValue(), symbolic);
 		code.add(line);
 		i++;
 	    }
-//}catch(Exception e){
-//    throw new ParseException(new Message("Invalid command on line:"+
-//						 " {0}",""+(i+1)).toString(),
-//			     i+1);
-//}
+
 	i++;//Pass ___data___
 	
 	i++;//Pass data area pointers
 	
-//try{
+
 	    while(!b91[i].startsWith("_")){
 		command=new Integer(b91[i]);
 		String symbolic = bini.binaryToString(command.intValue());
@@ -258,11 +249,7 @@ public class Binary {
 		data.add(line);
 		i++;	    
 	}
-//}catch(Exception e){
-//    throw new ParseException(new Message("Invalid data value on "+
-//					 "line: {0}",
-//					 ""+(i+1)).toString(),i+1);
-//}
+
 	
 	i++; //pass __symboltable___
 	while(!b91[i].startsWith("_")){
@@ -275,15 +262,8 @@ public class Binary {
 		symbolTable.addDefinition(symbol[0], symbol[1]);
 	    }
 	    else{
-
-		//	try {
 		Integer j = new Integer(symbol[1]);
 		symbolTable.addSymbol(symbol[0], j.intValue());
-		//}catch(Exception e){
-		//    throw new ParseException(new Message("Invalid symbol "+
-		//				 "value on line: {0}",
-		//			     ""+(i+1)).toString(),i+1);
-		//}
 	    }
 	    i++;	    
 	}	
@@ -353,29 +333,27 @@ public class Binary {
 	s+="___code___";
 	s+=System.getProperty("line.separator", "\n");
 	
-	if(length>0)
-	    s+=+0+" "+(length-1);
-	else 
-	    s+="0 0";
-
+	
+	s+=+0+" "+(length-1);
+	
 	s+=System.getProperty("line.separator", "\n");
 
 	for(int i =0; i<length;i++)
 	    s+=code[i].getBinary()+System.getProperty("line.separator", "\n");
 	
 	length=code.length+data.length;
+
 	s+="___data___";
 	s+=System.getProperty("line.separator", "\n");
 
 	if(data.length>0)
 	    s+=""+code.length+" "+(length-1);
 	else
-	    s+=""+code.length+" "+code.length;
+	    s+=""+code.length+" "+(code.length-1);
 	s+=System.getProperty("line.separator", "\n");
 	
 	if (data!=null){
 	    for(int i = 0; i<data.length;i++){
-		//System.out.println(data[i].getBinary());
 		s+=""+data[i].getBinary();
 		s+=System.getProperty("line.separator", "\n");
 	    }
