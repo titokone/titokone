@@ -1,5 +1,0 @@
-msgid "Sample message."
-msgstr "Esimerkkiviesti."
-
-msgid "Sample message with a parameter %s."
-msgstr "Esimerkkiviesti, jossa on parametri %s."
