@@ -3,6 +3,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 import javax.swing.border.*;
+import javax.swing.table.*;
 
 
 public class GUI extends JFrame {
@@ -32,14 +33,14 @@ private JPanel  upperRightPanel,
         JMenuItem compileMenuItem;
 	      JMenuItem runMenuItem;
 	      JMenuItem stopMenuItem;
-	
+	      
+	      String[][] codeTableContents;
         
         JFileChooser openFileDialog;
         GUIRunSettingsDialog setRunningOptionsDialog;
         
         Font tableFont = new Font("Courier", java.awt.Font.PLAIN, 12);
-  
-
+       
 
 public GUI() {
   
@@ -78,7 +79,13 @@ public void initGUI() {
   
   setGUIView(1);
   setGUIView(2);
-  setGUIView(3);
+  addRowToCodeTable("", "Jaahas");
+  addRowToCodeTable("", "Jaahah56h4hu4u5nej5j53j65s");
+  addRowToCodeTable("", "Jaaha321515555432523gewrs");
+  addRowToCodeTable("", "Jaaha543gj429 tg95nt53hyu6h386uhu3985hg09hg53m9s");
+  addRowToCodeTable("", "Jaahas");
+  addRowToCodeTable("", "Jaaha543s");
+  //setGUIView(3);
   
   //instructionsTable.selectRow(1,true);
 }
@@ -133,7 +140,11 @@ private void setGUIView(int view) {
     
     
     JPanel registersPanel = new JPanel();
-    registersTable = new JTable(new RegistersTableModel());
+    
+    String[][] regTableContents = new String[][] 
+      { {"R0",""}, {"R1",""}, {"R2",""}, {"R3",""}, {"R4",""}, 
+        {"SP",""}, {"FP",""}, {"PC",""}, {"IR",""}};
+    registersTable = new JTable(new DefaultTableModel(regTableContents, new String[] {"",""}));
     JScrollPane registersScrollPane = new JScrollPane(registersTable);
     
     registersScrollPane.setPreferredSize(new Dimension(150, 150));
@@ -201,7 +212,7 @@ private void setGUIView(int view) {
       
     JPanel southeastPanel = new JPanel(new BorderLayout());
     
-    String[] joo = {"KJ odottaa syötettä laitteelta KBD","...","...","...","...","...","...","...","...","...","...","jne"};
+    //String[] joo = {"KJ odottaa syötettä laitteelta KBD","...","...","...","...","...","...","...","...","...","...","jne"};
     
     JList commentList = new JList();
     JScrollPane commentListScrollPane = new JScrollPane(commentList);
@@ -277,6 +288,8 @@ private void setGUIView(int view) {
 }
 
 
+
+
 private void setInputFieldEnabled(boolean b) {
   enterNumberLabel.setEnabled(b);
   inputField.setEnabled(b);
@@ -285,8 +298,8 @@ private void setInputFieldEnabled(boolean b) {
 
 
 
-
-
+/** This creates the toolbar and returns it.
+*/
 private JToolBar makeToolBar() {
   
   JToolBar toolbar;
@@ -357,12 +370,75 @@ private JToolBar makeToolBar() {
 
 private JTableX prepareCodeTable() {
  
-  JTableX codeTable = new JTableX(new CodeTableModel());
-  
+  String[] columnNames = {"",""};
+  JTableX codeTable = new JTableX(new DefaultTableModel(columnNames,0));
   codeTable.setFont(tableFont);
+  codeTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+  codeTable.setEnabled(false);
+  codeTable.setShowGrid(false);
+  codeTable.selectRow(3,true);
+  codeTable.getColumnModel().getColumn(0).setMinWidth(0);
+  codeTable.getColumnModel().getColumn(1).setMinWidth(0);
+  codeTable.getColumnModel().getColumn(0).setPreferredWidth(0);
+  codeTable.getColumnModel().getColumn(1).setPreferredWidth(0);
   
   return codeTable;
 }
+
+
+private void addRowToCodeTable(String rowNum, String str) {
+  
+  DefaultTableModel tableModel = (DefaultTableModel)codeTable.getModel();
+  String[] data = {""+rowNum, ""+str};
+  tableModel.addRow(data);
+  
+   
+  int nowAddedRowNumber = codeTable.getRowCount() - 1;
+  int column0Width = codeTable.getColumnModel().getColumn(0).getWidth();
+  int column1Width = codeTable.getColumnModel().getColumn(1).getWidth();
+  
+  //System.out.println(column1Width + ", " + codeTable.getTextLength(nowAddedRowNumber, 1));
+  
+  if (column0Width < codeTable.getTextLength(nowAddedRowNumber, 0)) {
+    codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 0));   
+  }
+  
+  if (column1Width < codeTable.getTextLength(nowAddedRowNumber, 1)) {
+    codeTable.getColumnModel().getColumn(1).setPreferredWidth(codeTable.getTextLength(nowAddedRowNumber, 1));
+  }
+  codeTable.getRootPane().validate();
+  //codeTable.getColumnModel().getColumn(1).setPreferredWidth(joo);
+  
+  //System.out.println(joo);;
+}
+  
+/*
+private int getMaxTextLengthInColumn(JTableX tbl, int column) {
+  
+  Font tblFont = tbl.getFont();
+  Graphics tblGraphics = tbl.getGraphics();
+  FontMetrics tblFontMetrics = tbl.getFontMetrics(tblFont);
+  int marginLength = tbl.getColumnModel().getColumnMargin();
+  
+  int maximumLength = 0;
+  
+  for (int i=0; i<tbl.getRowCount(); i++) {
+    
+    String cellValue = (String)(tbl.getValueAt(i,column));
+    int textLength = (int)(tblFontMetrics.getStringBounds(cellValue, tblGraphics).getWidth()) + 1;
+    int totalLength = textLength + 2*marginLength;
+    
+    if (totalLength > maximumLength) {
+      maximumLength = totalLength;
+    }
+  }
+  
+  return maximumLength;
+}
+  */
+    
+  
+    
 
 
 
@@ -472,11 +548,28 @@ private void insertMenuBar(JFrame destFrame) {
 
 
 
+    
+
 class MyTableModel extends javax.swing.table.AbstractTableModel {
   
   protected String[] columnNames;
   protected Object[][] data;
   
+  /**
+   *  inserts a row at the end of the table model
+   */
+  /*public void insertRow() {
+  
+    Vector data = new Vector();
+    int length = getColumnCount();
+    for (int i=0; i<length ; i++)
+    //just add blank string values in this instance but your code will initialise a default object no doubt
+    data.addElement("");
+    //baseData is the vector containing all your row vectors
+    baseData.addElement(data);
+    fireTableDataChanged();
+  }*/
+  
   public int getColumnCount() {
       return columnNames.length;
   }
@@ -503,39 +596,6 @@ class MyTableModel extends javax.swing.table.AbstractTableModel {
   }
 }
 
-
-
-class CodeTableModel extends MyTableModel {
-  protected String[] columnNames = {""};
-  protected Object[][] data = {{"     STORE R1,=100"},
-                            {"Alku: LOAD R2,=R1"},
-                            };
- 
-  public int getColumnCount() {
-      return columnNames.length;
-  }
-
-  public int getRowCount() {
-      return data.length;
-  }
-
-  public String getColumnName(int col) {
-      return columnNames[col];
-  }
-
-  public Object getValueAt(int row, int col) {
-      return data[row][col];
-  }
-
-  public Class getColumnClass(int c) {
-      return getValueAt(0, c).getClass();
-  }
-
-  public void setValueAt(Object value, int row, int col) {
-      data[row][col] = value;
-      fireTableCellUpdated(row, col);
-  }                          
-}
 
 
 class InstructionsTableModel extends MyTableModel {

@@ -12,7 +12,7 @@ public class GUIBrain {
     private Settings currentSettings;
     /** This field is set when menuInterrupt is called, and all continuous
 	loops which do many things and wait for input in between should 
-v	check if this is sent before continuing to their next step. An 
+ 	check if this is sent before continuing to their next step. An 
 	interrupt sent means they should stop doing whatever they were doing
 	as soon as is reasonable. (Usually when it would be the time to 
 	wait for input from the user. */
@@ -51,7 +51,14 @@ v	check if this is sent before continuing to their next step. An
     
     public void menuSetMemorySize(int newSize) {}
 
-    public void menuSetRunningOptions(/* parameters not decided */) {}
+    public void menuSetRunningOptions(boolean isCommentedExecution, 
+                                      boolean isPausedExecution, 
+                                      boolean isAnimatedExecution, 
+                                      int     speed) {}
+    
+    public void menuSetCompilingOptions(boolean isCommentedExecution, 
+                                        boolean isPausedExecutionm,
+                                        int     speed) {}
 
     public void menuAbout() {}
     
@@ -79,14 +86,12 @@ v	check if this is sent before continuing to their next step. An
     /** This method calls the Control class service for running one 
 	instruction and deals with the possible animation according to the 
 	returned RunInfos. */
-    private void runInstruction() { }
+    private void runLine() { }
 
     /** This method calls the Control class service for compiling a line
 	and deals with the possible animation according to the returned
 	CompileInfos. */
     private void compileLine() { }
 
-    private void openBinaryFile(File b91File) {}
 
-    private void openSourceFile(File k91File) {}
 }
