@@ -124,6 +124,8 @@ public class Compiler {
 		while (source.indexOf("\r\n") != -1) {
 			source = source.substring(0, source.indexOf("\r\n")) + source.substring(source.indexOf("\r\n") + 1);
 		}
+
+		//Creates an array spearated with various linechanges
 		this.source = source.split("[\n\r\f\u0085\u2028\u2029]");
 
 		nextLine = 0;
@@ -282,7 +284,7 @@ public class Compiler {
 			// FIXME tämä if. 
 
 			lineTemp = parseCompilerCommandLine(line); 
-System.err.println("Foo1");
+System.err.println(lineTemp[0]+"; "+ lineTemp[1]);
 			// compiler command
 			boolean allCharsValid = true;
 			boolean atLeastOneNonNumber = false;
@@ -632,25 +634,31 @@ System.err.println("Foo2");
 						}			
 						// implementing the emptyDCs
 						
-						int tmpCounter = 1;
 						boolean wasDC = false;
 						String[] emptyDCLine;
 						
 						do {
 						emptyDCLine = (String[])symbolTable.get(i+1);
 						wasDC = false;
-						if(emptyDCLine[0].equals("") && emptyDCLine[1].substring(0,2).equalsIgnoreCase("dc")){
-						System.err.println("Bar2");
+						System.err.println(emptyDCLine[0]);	
+						
+						System.err.println(emptyDCLine[1]);	
+						if(
+							emptyDCLine[0].equals("") && 
+							emptyDCLine[1].substring(0,2).equalsIgnoreCase("dc")){
+							System.err.println("Bar2");
 							
 							wasDC = true;
-							i++;
 						
-							if (emptyDCLine[1].trim().length() > 2) {
-								data[nextPosition+1] = lineTemp[1].substring(3);
+							if (emptyDCLine[0].trim().length() > 2) {
+								data[nextPosition+1] = emptyDCLine[1].substring(3);
+								System.err.println("yeehaw");
 							} else { 
 								data[nextPosition+1] = "" + 0; 
 							}
+							i++;
 							nextPosition++;
+							nextMemorySlot++;
 						}
 						} while (wasDC);
 						
