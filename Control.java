@@ -1,4 +1,16 @@
-/** This control class Controls Everything(TM). */
+/** Control class offers the extenal interface to titokone. Using the methods of this class
+    one can compile and emulate an exection process of a ttk91-program from a text file
+    or straight from a string object, which contain symbolic ttk91 machine code, A complete
+    debugging and trackability of compilation, loading and execution cycles are provided with 
+    CompileInfo, LoadInfo and RunInfo objects, which can be used to get information of what
+    had just happened.
+    
+    This doesn't take a position on how to show the output, that's left for the GUI, maybe even for
+    a piece of code between Control and the GUI, which prepares the output provided here to be shown
+    in GUI. In this software that piece of code is the GUIBrain class.
+*/
+
+
 public class Control implements TTK91Core {
     
  
