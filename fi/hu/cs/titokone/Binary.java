@@ -68,10 +68,11 @@ public class Binary {
 						 "length on line: {0}",
 						 ""+(i+1)).toString(),i+1);
 	int areaLength=y.intValue()+1;
-
+	System.out.println("area length"+areaLength);
 	i++;
 	
-	if(y.intValue()!=0){
+	//if(y.intValue()!=-1)
+	if(areaLength!=0){
 	    while(!b91[i].startsWith("_")){
 		Integer j;
 		try{
@@ -93,7 +94,7 @@ public class Binary {
 					     i+1); 
 		i++;	    
 	    }
-	
+	   
 	    if(i-3!=areaLength)
 		throw new ParseException(new Message("Invalid number of " + 
 						 "code lines.").toString(), 
@@ -183,9 +184,9 @@ public class Binary {
 	}
 
 	this.contents="";
+
 	//Assembling parsed b91 array to string
 	for (int l=0;l<=EOF;l++){
-
 	    this.contents= this.contents +b91[l];
 	    this.contents+=System.getProperty("line.separator","\n");
 	}
