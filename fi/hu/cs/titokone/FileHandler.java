@@ -102,6 +102,15 @@ public class FileHandler {
     public ResourceBundle loadResourceBundle(File filename) 
 	throws ResourceLoadFailedException {}
 
+    /** This method checks whether the given file can be a) written
+        to, b) appended to, or c) read.
+        @param filename The file to check.
+        @param permission The persmission to check against.
+        @return True if actually going through with the operation
+        should go fine and not throw an IOException. (This also
+        means testing whether the file exists if it should be read.) */
+    public boolean checkAccess(File filename, int permission) {}
+
     /*
       How to find a config file:
       - include the file bar.txt in the jar/directory structure in 
