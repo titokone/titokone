@@ -50,7 +50,7 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	ResourceLoadFailedException.java
 0	RunDebugger.java
 0	RunInfo.java
-0	Settings.java
+2	Settings.java                           SR              SR 19.3.
 0	Source.java
 0	SymbolTable.java
 0	SymbolicInterpreter.java
