@@ -484,6 +484,7 @@ public void menuCompile() {
     
     if (compileinfo == null) {
       compilingCompleted = true;
+      break;
     }
     else {
     String comments = compileinfo.getComments();
@@ -497,6 +498,8 @@ public void menuCompile() {
     phase = compileinfo.getPhase();
     
     if (phase == CompileInfo.FIRST_ROUND) {  
+	System.out.println(compileinfo.getSymbolFound());
+	System.out.println(compileinfo.getLabelFound());
       if (compileinfo.getSymbolFound()) {      	
       	String symbolName = compileinfo.getSymbolName();
       	Integer symbolValue = null;
