@@ -621,8 +621,10 @@ System.err.println("Foo2");
 					}
 					nextPosition += dsValue;
 				} else {
+					System.err.println("Bar0");
 					//Eeva: FIXME, insert the values of empty dc-commands here
 					if (lineTemp[1].substring(0,2).equalsIgnoreCase("dc")) {
+						System.err.println("Bar1");
 						if (lineTemp[1].trim().length() > 2) {
 							data[nextPosition] = lineTemp[1].substring(3);
 						} else { 
@@ -637,7 +639,9 @@ System.err.println("Foo2");
 						do {
 						emptyDCLine = (String[])symbolTable.get(i+1);
 						wasDC = false;
-						if(emptyDCLine[0].equals("") && emptyDCLine[1].equalsIgnoreCase("dc")){
+						if(emptyDCLine[0].equals("") && emptyDCLine[1].substring(0,2).equalsIgnoreCase("dc")){
+						System.err.println("Bar2");
+							
 							wasDC = true;
 							i++;
 						
