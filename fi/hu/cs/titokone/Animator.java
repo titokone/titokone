@@ -407,7 +407,7 @@ public class Animator extends JPanel implements Runnable {
             int popValue;
             switch (opcode) {
                 case 51 : // PUSH
-                comment1 = new Message ("Incrase stack pointer R{0} by one then write second operand to stack", ""+Rj).toString();
+                comment1 = new Message ("Increase stack pointer R{0} by one then write second operand to stack", ""+Rj).toString();
                 animateAnEvent (Rj, Rj, value[Rj]+1);
                 animateAnEvent (Rj, MAR);
                 animateAnEvent (whereIsSecondOperand, MBR);
@@ -427,7 +427,7 @@ public class Animator extends JPanel implements Runnable {
                 
                 case 53 : // PUSHR
                 for (int i=0; i <= 6; i++) {
-                    comment1 = new Message ("Incrase stack pointer R{0} by one then write R{1} to stack.", new String[] {""+Rj, ""+i}).toString();
+                    comment1 = new Message ("Increase stack pointer R{0} by one then write R{1} to stack.", new String[] {""+Rj, ""+i}).toString();
                     animateAnEvent (Rj, Rj, value[Rj]+1);
                     animateAnEvent (Rj, MAR);
                     animateAnEvent (i, MBR);
@@ -453,7 +453,7 @@ public class Animator extends JPanel implements Runnable {
             break;
 
             case RunDebugger.SVC_OPERATION :
-            comment1 = new Message ("Super visor call to operating system's services.").toString();
+            comment1 = new Message ("Supervisor call to operating system's services.").toString();
             pause();
             // update possibly changed registers
             for (int i=0; i < 8; i++)

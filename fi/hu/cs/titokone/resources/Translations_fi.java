@@ -23,8 +23,54 @@ public class Translations_fi extends ListResourceBundle {
       // Remove lines which you do not wish to translate completely. Leaving
       // in a value of "" will translate the message to "" as well.
 
-      // Class: Animator, not processed yet - TODO.
+      // Class: Animator 
 
+      { "Registers", "Rekisterit"},
+      { "Control unit", "Kontrolliyksikkö"},
+      { "MMU", "Muistinhallintayksikkö"},
+      { "ALU", "ALU"},
+      { "External device", "Ulkoinen laite"},
+      { "Memory", "Muisti"},
+      { "Current command: ", "Suoritettava komento: "},
+      { "Fetch the next instruction from memory slot {0} to IR and " +
+        "increase PC by one.", "Nouda seuraava käsky muistipaikasta {0} IR:iin ja kasvata PC:n arvoa yhdellä"},
+      { "No-operation command completed.", "NOP-käsky suoritettu"},
+      { "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
+      { "Indirect memory addressing mode.", "Epäsuora muistiosoitus."},
+      { "1: Fetch indexing value from memory slot {0}.", "1: Nouda indeksointiarvo muistipaikasta {0}."}, 
+      { "2: Fetch second operand from memory slot {0}.", "2: Nouda jälkimmäinen operandi muistipaikasta {0}."},
+      { "Write value {0} from register R{1} to memory slot {2}.", "Kirjoita rekisterin R{1} arvo {0} muistipaikkaan {2}."}, 
+      { "Load value {0} to register R{1}.", "Lataa arvo {0} rekisteriin R{1}"},
+      { "Read value {0} from device {1} to register R{2}.", "Lue laitteen {1} arvo {0} rekisteriin R{2}."},
+      { "Write value {0} from register R{1} to device {2}.", "Kirjoita rekisterin R{1} arvo {0} laitteelle {2}."},
+      { "Copy register R{0} to ALU IN1.", "Kopioi rekisterin R{0} sisältö ALU:n paikkaan IN1."},
+      { "Copy second operand to ALU IN2.", "Kopioi jälkimmäinen operandi ALU:n paikkaan IN2."},
+      { "ALU computes the result.", "ALU laskee tuloksen."},
+      { "Copy ALU result to register R{0}", "Kopioi ALU:n laskema tulos rekisteriin R{0}."},
+      { "ALU computes the comparison result.", "ALU laskee vertailun tuloksen."}, 
+      { "0=greater, 1=equal, 2=less", "0=suurempi kuin, 1=yhtä suuri, 2=vähemmän kuin"},
+      { "Set comparison result to SR", "Aseta vertailun tulos tilarekisteriin."},
+      { "Branching command - branching condition is false, so do nothing.", 
+        "Haarautumiskäskyn ehto on epätosi, joten ei tehdä mitään."},
+      { "Branching command - branching condition is true, so update PC.",
+        "Haarautumiskäskyn ehto on tosi, PC:n arvo päivitetään"},
+      { "Save new PC to TR", "Talleta uusi PC:n arvo TR:iin"},
+      { "Increase stack pointer R{0} by one and push PC to stack.", "Kasvata pinorekisterin R{0} arvoa yhdellä ja vie PC:n arvo pinoon."},
+      { "Increase stack pointer R{0} by one and push FP to stack.", "Kasvata pinorekisterin R{0} arvoa yhdellä ja vie FP:n arvo pinoon."},
+      { "Copy stack pointer to FP.", "Kopioi pino-osoittimen arvo FP:n arvoksi."},
+      { "Update PC.", "Päivitä PC:n arvo."},
+      { "Pop PC from stack and decrease stack pointer R{0} by one.", 
+        "Tuo PC:n arvo pinosta ja vähennä pino-osoittimen R{0} arvoa yhdellä."},
+      { "Pop FP from stack and decrease stack pointer R{0} by one.", 
+        "Tuo FP:n arvo pinosta ja vähennä pino-osoittimen R{0} arvoa yhdellä."},
+      { "Decrease {0} parameters from stack pointer R{1}.", 
+        "Vähennä arvo {0} pino-osoittimen R{1} arvosta."},
+      { "Increase stack pointer R{0} by one, then write second operand to " +
+        "stack", "Kasvata pino-osoittimen R{0} arvoa yhdellä ja kirjoita jälkimmäisen operandin arvo pinoon."},
+      { "Read value from stack to R{0}, then decrease stack pointer R{1} " +
+        "by one.", "Lue arvo pinosta rekisteriin R{0} ja vähennä pino-osoittimen R{1} arvoa yhdellä."},
+      
+      
       // Class: Application.
       // General messages: (none)
       // Exception messages:
