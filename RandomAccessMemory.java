@@ -5,6 +5,7 @@ import fi.hu.cs.ttk91.TTK91Memory;
 
 /** This class represents the memory of a TTK-91 computer. */
 public class RandomAccessMemory implements TTK91Memory {
+   private SymbolTable symbols;
 
 	/** Creates a memory with a given size and initializes it with
 	    rows containing 0.
@@ -50,6 +51,11 @@ public class RandomAccessMemory implements TTK91Memory {
 	    @param index Index to memory.
 	    @return Memory line at given slot. */
 	public MemoryLine getMemoryLine(int index) {}
+
+        /** Changes the symbol table stored in this class. It is not 
+            used by RandomAccessMemory, but can be returned as a HashMap.
+            @param symbols The new symboltable to store here. */
+        public void setSymbolTable(SymbolTable symbols) {}
 
 	/** Sets new memory line to given memory slot.
 	    @param index Index to memory.
