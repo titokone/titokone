@@ -51,6 +51,26 @@ public class Translations_en extends ListResourceBundle {
 
       // Class: Animator
       // General messages:
+      {"R0","R0"},
+      {"R1","R1"},
+      {"R2","R2"},
+      {"R3","R3"},
+      {"R4","R4"},
+      {"R5","R5"},
+      {"R6","R6"},
+      {"R7","R7"},
+      {"TR","TR"},
+      {"PC","PC"},
+      {"IR","IR"},
+      {"SR","SR"},
+      {"BASE","BASE"},
+      {"LIMIT","LIMIT"},
+      {"MAR","MAR"},
+      {"MBR","MBR"},
+      {"IN1","IN1"},
+      {"IN2","IN2"},
+      {"OUT","OUT"},
+      
       { "Registers", null },
       { "Control unit", null },
       { "MMU", null },

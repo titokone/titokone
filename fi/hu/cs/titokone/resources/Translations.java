@@ -52,13 +52,37 @@ public class Translations extends ListResourceBundle {
       // in a value of "" will translate the message to "" as well.
 
       // Class: Animator
-      // General messages:
+      //Animator background texts:
+      
+      
+      {"R0", null},
+      {"R1", null},
+      {"R2", null},
+      {"R3", null},
+      {"R4", null},
+      {"R5", null},
+      {"R6", null},
+      {"R7", null},
+      {"TR", null},
+      {"PC", null},
+      {"IR", null},
+      {"SR", null},
+      {"BASE", null},
+      {"LIMIT", null},
+      {"MAR", null},
+      {"MBR", null},
+      {"IN1", null},
+      {"IN2", null},
+      {"OUT", null},
+      
       { "Registers", null },
       { "Control unit", null },
       { "MMU", null },
       { "ALU", null },
       { "External device", null },
       { "Memory", null },
+      
+      // General messages:
       { "Current command: ", null },
       { "Fetch the next instruction from memory slot {0} to IR and " +
         "increase PC by one.", null },

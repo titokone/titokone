@@ -133,12 +133,12 @@ public class Animator extends JPanel implements Runnable {
         "IN1",
         "IN2",
         "OUT",
-        new Message ("Registers").toString(),
-        new Message ("Control unit").toString(),
-        new Message ("MMU").toString(),
-        new Message ("ALU").toString(),
-        new Message ("External device").toString(),
-        new Message ("Memory").toString(),
+        "Registers",
+        "Control unit",
+        "MMU",
+        "ALU",
+        "External device",
+        "Memory"
     };        
     
     /** Contains values of registers, alu, memory and external device. */
@@ -191,7 +191,7 @@ public class Animator extends JPanel implements Runnable {
         
         // write labels
         for (int i=0; i < labels.length; i++)
-            g2.drawString (labels[i], whereWriteLabelTo[i][0], whereWriteLabelTo[i][1]);
+            g2.drawString (new Message(labels[i]).toString(), whereWriteLabelTo[i][0], whereWriteLabelTo[i][1]);
         
         // write values (registers, alu, control unit, mmu)
         for (int i=0; i < whereWriteValueTo.length; i++)

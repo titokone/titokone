@@ -24,13 +24,33 @@ public class Translations_fi extends ListResourceBundle {
       // in a value of "" will translate the message to "" as well.
 
       // Class: Animator 
-
+      
+      {"R0","R0"},
+      {"R1","R1"},
+      {"R2","R2"},
+      {"R3","R3"},
+      {"R4","R4"},
+      {"R5","R5"},
+      {"R6","R6"},
+      {"R7","R7"},
+      {"TR","TR"},
+      {"PC","PC"},
+      {"IR","IR"},
+      {"SR","SR"},
+      {"BASE","BASE"},
+      {"LIMIT","LIMIT"},
+      {"MAR","MAR"},
+      {"MBR","MBR"},
+      {"IN1","IN1"},
+      {"IN2","IN2"},
+      {"OUT","OUT"},
       { "Registers", "Rekisterit"},
       { "Control unit", "Kontrolliyksikkö"},
-      { "MMU", "Muistinhallintayksikkö"},
+      { "MMU", "MMU"},
       { "ALU", "ALU"},
       { "External device", "Ulkoinen laite"},
       { "Memory", "Muisti"},
+      
       { "Current command: ", "Suoritettava komento: "},
       { "Fetch the next instruction from memory slot {0} to IR and " +
         "increase PC by one.", "Nouda seuraava käsky muistipaikasta {0} IR:iin ja kasvata PC:n arvoa yhdellä"},
