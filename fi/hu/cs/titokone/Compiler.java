@@ -289,8 +289,10 @@ public class Compiler {
 				symbolTableEntry[0] = lineTemp[0];
 				symbolTableEntry[1] = "" + 
 				    (code.size() - 1);
-				symbolTable.add(Integer.parseInt((String) symbols.get(lineTemp[0])), 
-						symbolTableEntry.clone());
+				/* MUUTETTU 23.04. (OLLI)  
+                                */                                
+				symbolTable.add(Integer.parseInt(symbols.get(lineTemp[0]).toString()), 
+				symbolTableEntry.clone());
 			    } else {
 				symbols.put(lineTemp[0], 
 					    new Integer(code.size() - 1));
@@ -835,8 +837,9 @@ public class Compiler {
 		if (opcode.equalsIgnoreCase("nop")) {
 		    // (do nothing)
 		} else {
-		    
-		    if (opcode.equalsIgnoreCase("pop")) {
+		    //MUUTETTU! 23.4.04 oli pelkkä "pop" (Olli)
+		    if (opcode.equalsIgnoreCase("pop")|| 
+opcode.equalsIgnoreCase("pushr") || opcode.equalsIgnoreCase("popr")) {
 			if (addressingMode.equals("@") || 
 			    addressingMode.equals("=") || !address.equals("")) 
 			    return null;	
