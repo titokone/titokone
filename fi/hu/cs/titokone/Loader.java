@@ -62,7 +62,7 @@ public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
   }                                      //backwards
   
   for (int j=0 ; j<data.length ; j++) {
-    processor.memoryInput(i+j, data[i]); //May throw TTK91AddressOutOfBounds, but it's just thrown
+    processor.memoryInput(i+j, data[j]); //May throw TTK91AddressOutOfBounds, but it's just thrown
   }                                      //backwards
   
   messageParameters[0] = "" + FP;
