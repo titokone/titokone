@@ -953,8 +953,10 @@ public class Compiler {
 			} catch (NumberFormatException e) { return null; }
 		    }
 	    }
-	}	
-
+	} //OLLI: lisättiin ELSE 26.4., jotta rivit 'KISSA DC ' eivät mene läpi 
+	else { return null; }
+	
+	
 	if (!opcode.equalsIgnoreCase("dc") && value.equals("")) return null;
 	
 	parsedLine = new String[3];
