@@ -82,7 +82,7 @@ public class RunInfo extends DebugInfo{
     
     
     
-    public RunInfo(int lineNumber, String lineContents, int oldPC, int newPC
+    public RunInfo(int lineNumber, String lineContents, int oldPC, int newPC,
 		   int oldSP, int newSP, int oldFP, int newFP){}
     
     public void setBinary(int binary){}
@@ -127,7 +127,7 @@ public class RunInfo extends DebugInfo{
     public int returnFetchType(){}
     
     /** */
-    Public int returnLineNumber(){}
+    public int returnLineNumber(){}
     
     /** */
     public String returnLineContents(){}

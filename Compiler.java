@@ -1,5 +1,10 @@
 package fi.hu.cs.titokone;
 
+import fi.hu.cs.ttk91.TTK91CompileSource;
+import fi.hu.cs.ttk91.TTK91CompileException;
+import java.util.StringTokenizer;
+import java.util.Hashtable;
+
 /** This class knows everything about the relation between symbolic
     code and binary code. It can transform a full source to binary or
     one symbolic command to binary or vice versa. Empty out all compiler 
@@ -12,7 +17,7 @@ public class Compiler {
     /** This field contains the symbol table in its incomplete form. Some of 
 	the values corresponding to the keys may be null, if they have not
 	been defined yet. */
-    private HashTable symbols;
+    private Hashtable symbols;
 
     /** This field keeps track of whether we are in the first round of compilation
 	or the second. It is set by compile() and updated by compileLine(). */
@@ -47,7 +52,7 @@ public class Compiler {
 	the application one line at a time, and finally getApplication() to get
 	the finished application. 
 	@param source The symbolic source code to be compiled. */
-    public void compile(CompileSource source) { }
+    public void compile(TTK91CompileSource source) { }
 
     /** This function goes through one line of the code. On the first round, it
 	gathers the symbols and their definitions to a symbol table and conducts 
