@@ -1,11 +1,9 @@
 package fi.hu.cs.titokone;
 
 
-/** This class tells GUIBrain what the processor has done. RunDebugger 
-creates objects from this class and passes them to onwards.*/
-
-//KESKEN varsinkin javadocin osalta
-
+/** This class tells GUIBrain and Animator what the processor has done.
+RunDebugger creates objects from this class and passes them onwards.*/
+// TODO: lisaa javadocia.
 public class RunInfo extends DebugInfo{
 
    

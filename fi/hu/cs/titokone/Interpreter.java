@@ -8,15 +8,20 @@ public class Interpreter {
     public static final int registerFieldLength = 3; 
     public static final int addressFieldLength = 16; 
     
-
+    /** This field represents one of the ranges of parameters a command 
+        might take. See commandData. */
     public static final Integer NONE = new Integer(0);
     public static final Integer REG = new Integer(1);
     public static final Integer SP_REG = new Integer(2);
-    public static final Integer FULL = new Integer(3);
+    public static final Integer SP_ONLY = new Integer(3);
+    public static final Integer ADDR = new Integer(5); // Addr only.
+    public static final Integer FULL = new Integer(4);
 
     /** This field contains a two-dimensional array of translations 
 	between opcodes as integers, as symbolic command names and the
-	parameters they accept. The command names are in all 
+	variety of parameters they accept (nothing, one register (usually 
+        SP) only, two registers only or possibly two registers and 
+        possibly a memory address/constant). The command names are in all 
 	capital letters. */
     protected static final Object[][] commandData = {
 	{"NOP", new Integer(0), NONE},
@@ -36,7 +41,7 @@ public class Interpreter {
         {"SHR", new Integer(26), FULL},
 	{"SHRA", new Integer(27), FULL},	//same int as NOT!,
         {"COMP", new Integer(31), FULL},
-        {"JUMP", new Integer(32), FULL},	//Jump has only one param. Jump Address
+        {"JUMP", new Integer(32), ADDR},	//Jump has only one param. Jump Address
         {"JNEG", new Integer(33), FULL},	//JNEG Rj, Address
         {"JZER", new Integer(34), FULL},
         {"JPOS", new Integer(35), FULL},

@@ -28,10 +28,10 @@ public class DebugInfo{
     /** This method returns statusmessage.
 	@return String containing the message.
     */
-    public String returnStatusMessage(){}
+    public String getStatusMessage(){}
 
     /** This method returns comments.
 	@return String containing comments..
     */
-    public String returnComments(){}
+    public String getComments(){}
 }

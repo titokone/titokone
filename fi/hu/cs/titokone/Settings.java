@@ -6,7 +6,8 @@ import java.util.HashMap;
 /** This class keeps track of the settings. It can parse and save settings
     file content. It provides support for a standard set of settings, but
     basically anything can be stored in it. Keys used in this file cannot
-    contain KEY_VALUE_SEPARATOR. */
+    contain KEY_VALUE_SEPARATOR. Whitespace around KEY_VALUE_SEPARATOR is 
+    ignored. */
 public class Settings { 
     private HashMap settings;
     
@@ -25,6 +26,7 @@ public class Settings {
     public static final String DEFAULT_STDIN = "Stdin file";
     public static final String STDIN_PATH = "Stdin path"; 
     public static final String DEFAULT_STDOUT = "Stdout file";
+    public static final String STDOUT_USE = "Stdout use";
     public static final String STDOUT_PATH = "Stdout path";
     public static final String MEMORY_SIZE = "Memory size";
 

@@ -8,24 +8,27 @@ public class SymbolTable {
     /** This field contains the SymbolTable's symbols. */
     private HashMap symbols;
 
+    // The symboltable will not be able to say what a constant symbol
+    // not "in use" would have as its value, nor does it need to. This
+    // data should be in some form in Compiler, not here. --Sini 17.3.
     /** Constant symbol CRT */
-    private static final int CRT = 0;
+    //private static final int CRT = 0;
     /** Constant symbol KBD */
-    private static final int KBD = 1;
+    //private static final int KBD = 1;
     /** Constant symbol STDIN */
-    private static final int STDIN = 6;
+    //private static final int STDIN = 6;
     /** Constant symbol STDOUT */
-    private static final int STDOUT = 7;
+    //private static final int STDOUT = 7;
     /** Constant symbol HALT */
-    private static final int HALT = 11;
+    //private static final int HALT = 11;
     /** Constant symbol READ */
-    private static final int READ = 12;
+    //private static final int READ = 12;
     /** Constant symbol WRITE */
-    private static final int WRITE = 13;
+    //private static final int WRITE = 13;
     /** Constant symbol TIME */
-    private static final int TIME = 14;
+    //private static final int TIME = 14;
     /** Constant symbol DATE */
-    private static final int DATE = 15;
+    //private static final int DATE = 15;
 	
     /** This function eturns the integer value that corresponds to a 
 	given symbol.
@@ -37,7 +40,9 @@ public class SymbolTable {
 	throws InvalidSymbolException {}
 	
     /** This method returns a string array that contains all the
-	defined symbols.
+	currently defined symbols. (Not pre-defined value symbols 
+        which are not used in the application this symbol table 
+        is related to.)
 	@return An Array that contains all the defined symbols. */
     public String[] getAllSymbols() {}
 

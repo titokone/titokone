@@ -163,89 +163,89 @@ public class CompileInfo extends DebugInfo {
     /** This message tells that an empty line or line containing only 
 	whitespaces was compiled.
     */
-    public boolean returnLineEmpty(){}
+    public boolean lineEmpty(){}
     
     /** This method returns current phase as a short. 0 for first round, 1 for
 	finalizing first round, 2 for second and 3 for final.
 	@return Short containing phase.
     */
-    public short returnPhase(){}
+    public short getPhase(){}
 
     /** This method return symbolic contents of the line.
 	@return String containing comments.
     */
-    public String returnLineContents(){}
+    public String getLineContents(){}
 
     /** This method returns found symbolname.
 	@return String containing the name.
     */
-    public String returnSymbolName(){}
+    public String getSymbolName(){}
 
     /** This method returns true if a symbol was defined.
 	@return boolean containing information if symbol was defined.
     */
-    public boolean returnSymbolDefined(){}
+    public boolean symbolDefined(){}
 
     /** This method returns true if a label was found.
 	@return boolean containing information if label was found.
     */
-    public boolean returnLabelFound(){}
+    public boolean labelFound(){}
 
     /** This method returns true if a symbol was found.
 	@return boolean containing information if symbol was found.
     */
-    public boolean returnSymbolFound(){}
+    public boolean symbolFound(){}
 
     /** This method returns value of current symbol.
 	@return An integer containing symbol's value.
     */
-    public int returnSymbolValue(){}
+    public int getSymbolValue(){}
 
     /** This method returns compiled binary machinecommand represented as an
 	integer value.
 	@return An integer representing machine command.
     */
-    public int returnLineBinary(){}
+    public int getLineBinary(){}
 
     /** This method returns the name of the current label.
 	@return Name of the current label.
     */
-    public String returnLabelName(){}
+    public String getLabelName(){}
 
     /** This method returns value of the current label.
 	@return An integer containing value of the label. */
-    public int returnLabelValue(){} 
+    public int getLabelValue(){} 
 
     /** This method tells GUIBrain that compiler is setting DS area.
      */
-    public boolean returnDefiningDS(){} // samoin
+    public boolean definingDS(){} // samoin
 
     /** This methot tells GUIBrain that compiler is setting DC.
      */
-    public boolean returnDefiningDC(){} //samoin
+    public boolean definingDC(){} //samoin
 
     /** This method returns the value of DC or DS.
 	@return An integer containing value of DC or DS.
     */
-    public int returnValue(){}
+    public int getDValue(){}
 
     /** This method returns true if field finalFinal is set.
 	@return Boolean.
     */
-    public boolean returnFinalPhase(){}
+    public boolean finalPhase(){}
 
     /** This method returns initial SP and FP pointers in an interger array
 	where first value is SP and second is FP.
 	@return An integer array.
     */
-    public int[] returnInitPointers(){}
+    public int[] getInitPointers(){}
 
     /** This method returns memorylines after compiler has finished first 
 	round of compilation. This array contains all codelines but all white
 	spaces and empty lines has been removed.
 	@return String array containing symbolic lines.
     */
-    public String[] returnMemory(){}
+    public String[] getMemory(){}
 
 }
 

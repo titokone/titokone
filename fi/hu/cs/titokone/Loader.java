@@ -13,7 +13,7 @@ public class Loader {
 /**You can set the file to load. Each time an application is set to load, the counter is set to 
 one.
 */
-public void setFileToLoad(Application application){}
+public void setApplicationToLoad(Application application){}
 
 /**Loads an application to memory. LoadInfo contains all the needed information about the process.
 	@return Info from the load procedure.

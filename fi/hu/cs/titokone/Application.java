@@ -18,7 +18,9 @@ public class Application implements TTK91Application {
 	initial SP value can be determined from code.length +
 	initialData.length - 1. (It points to the last reserved memory
 	address, since there is no "top of stack" yet.) If the data
-	area is empty, this field contains a zero-length array. */
+	area is empty, this field contains a zero-length array. 
+        For reserved but uninitialized data rows, the array contains 
+        null values. */
     private MemoryLine[] initialData;
     /** This field stores the local symbol table of the application. */
     private SymbolTable symbols;

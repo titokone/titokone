@@ -1,10 +1,13 @@
 package fi.hu.cs.titokone;
 
-import javax.servlet.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+//import javax.servlet.HttpServlet;
+//import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.*;
 import java.io.PrintWriter;
+import java.io.IOException;
+import javax.servlet.*;
 import java.util.Enumeration;
+import fi.hu.cs.ttk91.TTK91Core;
 
 /** This class is a servlet providing a HTML interface to the TTK91
     simulator's core functions. It provides a method for compiling a
