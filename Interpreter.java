@@ -6,13 +6,20 @@ public class Interpreter {
     public static final int registerFieldLength = 3; // ?
     public static final int addressFieldLength = 16; // ?
     
+
+    public static final Integer NONE = new Integer(0);
+    public static final Integer REG = new Integer(1);
+    public static final Integer SP_REG = new Integer(2);
+    public static final Integer FULL = new Integer(3);
+
     /** This field contains a two-dimensional array of translations 
-	between opcodes as integers and as symbolic command names. 
-	The command names are in all capital letters. */
+	between opcodes as integers, as symbolic command names and the
+	parameters they accept. The command names are in all 
+	capital letters. */
     protected static final Object[][] commandData = {
-	{"NOP", new Integer(0)},
-        {"STORE", new Integer(1)},
-        {"LOAD", new Integer(2)},
+	{"NOP", new Integer(0), NONE},
+        {"STORE", new Integer(1), FULL},
+        {"LOAD", new Integer(2), FULL},
         {"IN", new Integer(3)},
         {"OUT", new Integer(4)},
         {"ADD", new Integer(17)},
@@ -25,7 +32,7 @@ public class Interpreter {
         {"XOR", new Integer(24)},
         {"SHL", new Integer(25)},
         {"SHR", new Integer(26)},
-	{"SHRA"), new Integer(27)},
+	{"SHRA", new Integer(27)},
         {"COMP", new Integer(31)},
         {"JUMP", new Integer(32)},
         {"JNEG", new Integer(33)},
