@@ -1,6 +1,6 @@
 package fi.hu.cs.titokone;
 
-import fi.hu.cs.ttk91.TTK91OutOfMemory;
+import fi.hu.cs.ttk91.TTK91AddressOutOfBounds;
 
 /** This class can load a TTK91Application. It changes the processor
     state accordingly. Everything is loaded when loadApplication is
@@ -39,29 +39,34 @@ public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
   MemoryLine[] code = application.getCode();
   MemoryLine[] data = application.getInitialData();
   
+  int FP = code.length - 1;
+  int SP = code.length + data.length - 1;
+  
   int i;
   for (i=0 ; i<code.length ; i++) {
-    if( processor.memoryInput(code[i]) == false) {
-      throw TTK91AddressOutOfBounds(new Message("Loading to memory failed " +
+    processor.memoryInput(i, code[i]);
+      /*throw new TTK91AddressOutOfBounds(new Message("Loading to memory failed " +
 						"on line {0}.", 
 						"" + i).toString());
-    }
+    }*/
   }
   
   for (int j=0 ; j<data.length ; j++) {
-    if( processor.memoryInput(i+j, data[i]) == false) {
-      throw TTK91AddressOutOfBounds(new Message("Loading to memory failed " +
+    processor.memoryInput(i+j, data[i]);
+      /*throw new TTK91AddressOutOfBounds(new Message("Loading to memory failed " +
 						"on line {0}.", 
 						"" + (i + j)).toString());
-    }
+    }*/
   }
   
   LoadInfo retValue = new LoadInfo( code, 
                                     data,
                                     application.getSymbolTable(),
-                                    processor.getValueOf(6),        // Tarkista onko R6 SP
-                                    processor.getValueOf(7),        // samoin onko R7 FP
-                                    new Message("Loads program") ); // TODO: Messagen kirjoitus!!!
+                                    FP,
+                                    SP,
+                                    new Message("Loads program").toString() ); // TODO: Messagen kirjoitus!!!
+ 
+  processor.runInit(SP, FP);
 
   return retValue;
 } 
