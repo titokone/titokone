@@ -12,6 +12,7 @@
 <body>
 <h1>The Titokone user's manual</h1>
 
+
 <!-- OLLI: Laitoin yl‰otsikoille (h2) valmiiksi a name -ankkurit,
      jotta #-linkit toimivat. Lis‰ile ankkureita ja tunnuksia
      loogiseksi katsomallasi nime‰misperusteella sit‰ mukaa kun tulee
@@ -19,10 +20,13 @@
      esimerkiksi esimerkkivirhetilanteessa, jonka kirjailin
      loppup‰‰h‰n). T‰m‰n kommentin voi poistaa lukemisen j‰lkeen. -->
 
+
 <h2>Contents</h2>
+
 
 <ol>
   <li><a href="#general">Overview</a></li>
+  <li><a href="#asennus"> Titokoneen asennusohjeet</a></li>
   <li><a href="#doables">What you can do with the Titokone</a></li>
   <li><a href="#machinelanguage">The TTK-91 machine language</a></li>
   <li><a href="#extension">Extending and adjusting the system</a></li>
@@ -30,11 +34,14 @@
   <!-- <li><a href="hakemisto">Glossary</a></li> --> <!-- jos jaksaa ker‰t‰-->
 </ol>
 
+
 <h2><a name="general">1. Overview</a></h2> 
+
 
 <p>
 Titokone is an assembler simulator, which is intended to show how symbolic assembly language is executed
 in a simple processor.
+
 
 * kun kuvaillaan koodin‰kym‰‰, siin‰ pit‰‰ muistaa korostaa ett‰ muisti
 on yhten‰inen alue vaikka siit‰ onkin eristetty osa koodialueeksi. Myˆs
@@ -42,11 +49,14 @@ maininta siit‰, ett‰ data-alueella symbolisella arvolla ei ole
 merkityst‰ (ja ett‰ suurin osa komennoista on jonkinlaisia noppeja)
 lienee hyv‰st‰.
 
+
 * n‰pp‰inshortcutit, jahka varmistuvat, mukaan kuvauksiin.
 </p>
 
+
 <table>
 <tr>
+
 
  <td valign=top>
 <a href="manual1.html#gui" name="gui">
@@ -54,6 +64,7 @@ lienee hyv‰st‰.
   alt="Basic view">
 </a>
 </td>
+
 
  <td>
 <ol>
@@ -75,23 +86,197 @@ lienee hyv‰st‰.
 </ol>
 
 
+
+
 </td>
+
 
 </tr>
 </table>
 
 
-
-
-
-
-<h2><a name="doables">2. What you can do with the Titokone</a></h2> 
-
-  <h3>2.1 Using Titokone </h3>
-<p> Titokone is programmed in Java and the program is started from the Java package. </p>
-
-
 <br>
+
+<!-- TITOKONEEN ASENNUS -->
+
+
+
+
+
+<h2><a name="asennus">2 Titokoneen asennusohjeet</a></h3>
+<br>
+<p> Jos olet jo asentanut Titokoneen, siirry suoraan Titokoneen <a href="#toiminnot">toimintoihin</a>.</p>
+
+<table cellspacing=10>
+<tr>
+<td>  
+<img src="0.jpg" title="" alt="">
+</td>
+<td>
+<h3> 2.1 Javan hakeminen ja asennus</h3>
+</td>
+</tr>
+</table>
+
+<p>
+Titokone on Javalla toteutettu TTK-91-konekielisimulaattori. Tarvitset
+sit‰ k‰ytt‰‰ksesi Javan virtuaalikoneen (v‰hint‰‰n version 1.4.2)
+koneellesi. Javan virtuaalikoneen Sunin implementaation voi ladata
+osoitteesta <a href="http://java.sun.com">http://java.sun.com</a>. Seuraa siell‰ annettuja
+asennusohjeita.
+</p>
+<p>
+Sunin Java-sivuilta on joskus hieman hankala lˆyt‰‰ hakemaansa. Jos
+haluat asentaa pelk‰n virtuaalikoneen, haluat "JRE"-paketin, jos taas
+haluat myˆs kehitysymp‰ristˆn tehd‰ksesi omia Java-ohjelmiasi (tai
+esimerkiksi uusia k‰‰nnˆksi‰ Titokoneeseen), haluat todenn‰kˆisesti
+"SDK"-pakkauksen. T‰t‰ kirjoitettaessa J2SE:n versiot 1.4.2, sek‰
+SDK:n‰ ett‰ JRE:n‰ (2 on alustan j‰rjestysnumero, versionumero on
+erikseen), voi ladata sivulta
+<a href="http://java.sun.com/j2se/1.4.2/download.html">http://java.sun.com/j2se/1.4.2/download.html</a>. 
+</p>
+<p>
+Huomaa, ett‰ Helsingin yliopiston tietojenk‰sittelytieteen laitoksella
+on jo valmiiksi asennettuna Java SDK 1.4.2 (tai uudempi versio), joten
+Javan asennus on vain tarpeen jos haluat k‰ytt‰‰ Titokonetta
+esimerkiksi kotikoneellasi.
+</p>
+
+
+
+<table cellspacing=10>
+<tr>
+<td>  
+<img src="0.jpg" title="" alt="">
+</td>
+<td>
+<h3> 2.2 Titokoneen hakeminen </h3>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+Titokoneen voi hakea Tietokoneen toiminta -kurssin kotisivun
+kautta. Sivut ovat t‰ll‰ hetkell‰ osoitteessa
+<a href="http://www.cs.helsinki.fi/teemu.kerola/tito/">http://www.cs.helsinki.fi/teemu.kerola/tito/</a>. Voit joko hakea
+suoraan JAR-paketin, joka sis‰lt‰‰ Titokoneen (titokone.jar), tai
+ZIP-tiedoston, joka sis‰lt‰‰ JAR-paketin, hieman ohjeita ja
+apuskriptej‰. 
+</p>
+
+
+<table cellspacing=10>
+<tr>
+<td>  
+<img src="0.jpg" title="" alt="">
+</td>
+<td>
+<h3> 2.3 Titokoneen asennus </h3>
+</td>
+</tr>
+</table>
+
+<p>
+<b>
+Pika-asennus (Windows, Linux, jne)
+</b>
+</p>
+
+<p>
+Jos JAR-paketit ovat sinulle jo tuttuja, riitt‰‰ jos haet
+titokone.jar-tiedoston. (JAR on pakettitiedostomuoto; jos
+Windowsissasi on p‰iv‰ntasainen versio WinZipist‰, se osannee myˆs
+avata paketin jos n‰in haluat. Linuxissa komento jar avaa paketin,
+ks. alla.) Sen kummempaa asennusta ei tarvita, voit ajaa jar-tiedoston
+suoraan. Esimerkiksi Windowsissa sinun tarvitsee vain suorittaa
+komento
+<pre>java.exe -jar titokone.jar</pre>
+
+hakemistossa, johon tallensit titokone.jar -paketin. Vastaavastaa ohjelman.
+T‰h‰n menness‰ sinulla tulisi olla Java asennettuna ja suorituspolullasi.
+</p>
+
+<b>Melko nopea asennus Windowsissa</b>
+<p>
+Hae titokone.zip ja avaa paketti haluamaasi kohdehakemistoon. Paketti
+luo avautuessaan alihakemiston titokone. Vaihda sitten t‰h‰n
+alihakemistoon ja tuplaklikkaa titokone-nimist‰ BAT-tiedostoa (MS-DOS
+Batch). Titokone.bat erottuu titokone.jar-tiedostosta ikoninsa
+perusteella; titokone.jar n‰ytt‰‰ yleens‰ keltaiselta joltakin
+ruuvipuristimessa, kun taas titokone.bat n‰ytt‰‰ enemm‰nkin
+hammasrattaalta ohjelmaikkunassa. Titokone.sh, k‰ynnistyskripti
+Linux-koneita varten, on todenn‰kˆisesti Windowsin tuntematon
+tiedostotyyppi. 
+</p>
+<p>
+Jos BAT-tiedostot eiv‰t en‰‰ toimi Windowsin versiossa MEGASUPERHYPER
+(testasimme niit‰ Windows XP:hen asti), lienee siell‰ kuitenkin viel‰
+tuki komennon 'java.exe -jar C:\polku\hakemistoon\titokone\titokone.jar' 
+ajamiseksi k‰ynnistysvalikon kautta. Korvaa C:\polku\hakemistoon\titokone 
+oikealla polulla, jolta titokone.jar lˆytyy.
+</p>
+
+<b> Melko nopea asennus Linuxissa</b>
+<p>
+Hae titokone.zip ja avaa se (esim. gunzip titokone.zip) valitsemassasi
+kohdehakemistossa. (Paketti luo avautuessaan alihakemiston
+'titokone'.) Ohjelman ajaaksesi avaa terminaali-ikkuna, vaihda
+avautuneesta paketista luotuun titokone-hakemistoon ja aja komento
+</p>
+<pre>java -jar titokone.jar</pre>
+<p>
+Jos kirjoittaminen on rasittavaa, ZIP-paketissa on myˆs
+titokone.sh-aloitusskripti. Voit uudelleennimet‰ skriptin haluamaasi
+muotoon (esim. tk), jonka j‰lkeen riitt‰‰ pelkk‰ komento ./tk (tai,
+jos et nime‰ tiedostoa uudelleen, ./titokone.sh). Skripti ei vaihda
+tyˆhakemistoa, joten joko sinun tulee s‰ilytt‰‰ se samassa
+hakemistossa titokone.jar-paketin kanssa tai muokata sit‰.
+</p>
+
+<b>Jar-paketin avaaminen (l‰hinn‰ jatkokehitt‰ji‰ kiinnostavaa)</b>
+<p>
+Halutessasi voit avata jar-paketin:
+</p>
+<pre>
+  Windowsissa: Paketti on varmaankin helpointa avata k‰ytt‰m‰ll‰
+               WinZipi‰ tai vastaavaa paketink‰sittelyohjelmaa.
+	 
+  Linuxissa: jar -xvf titokone.jar
+</pre>
+<p>
+Jar-paketti sis‰lt‰‰ mm. l‰hdekooditiedostoja, esimerkiksi koska haluat lis‰t‰
+uuden kielitiedoston (ks. mukana tuleva k‰yttˆohjeen k‰‰nnˆsten
+lis‰ysohjeet), huomaa ett‰ luokkatiedostot ovat osa Java-pakettia
+(tarkemmin ottaen kolmea pakettia).
+K‰ynnist‰‰ksesi muokatun ohjelman vaihda paketin juurihakemistoon
+(jossa 'fi'-alihakemisto on) ja aja seuraava komento:
+</p>
+<pre>
+  Windowsissa: java.exe fi.hu.cs.titokone.Titokone
+  
+  Linuxissa: java fi.hu.cs.titokone.Titokone
+</pre>
+<p>
+Luokkien javadocit ovat hakemistossa javadoc/. Jotta voit k‰‰nt‰‰
+java-tiedostoja (esimerkiksi lis‰tess‰si uuden kielen), tarvitset
+Javan SDK-pakkauksen, JRE ei t‰h‰n riit‰.
+</p>
+<br>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -99,43 +284,58 @@ lienee hyv‰st‰.
 
 
 
+
+
+
+
+<h2><a name="doables">3. What you can do with the Titokone</a></h2>
+
+
+
 <table cellspacing=10>
 <tr>
   <td align=center>
   <a name="avaa">
-  <img src="1.jpg" title="Open button" 
+  <img src="1en.html" title="Open button" 
   alt="Open button">
   </a>
   </td>
 
+
 <td>
-  <h3>2.2 Opening a TTK-91 file</h3> 
+  <h3>3.1 Opening a TTK-91 file</h3> 
 </td>
+
 
 </tr>
 </table>
   
 <br>
 
+
 <table cellspacing=10>
 <tr>
   
 <td valign=top>
 
+
 <img src="Fileopen.jpg" title="Open from menu" 
 alt="Open from menu">
+
 
 </td>
       
 <td valign=top>
 <p> 
-  Open a new file pressing the <a href="1.jpg">compile-icon</a> or
+  Open a new file pressing the <a href="1en.html">compile-icon</a> or
   choose File -->  Open from the menu. <a href="#file">File dialog</a> is opened.
 </p>
 </td>
 
+
 </tr>
 </table>
+
 
 <table cellspacing=10>
 <tr>
@@ -151,13 +351,17 @@ alt="File dialog">
 File dialog shows the files of current directory by extension.
 
 
+
+
 Tiedoston‰kym‰ n‰ytt‰‰ nykyhakemiston tiedostot valitun p‰‰tteen mukaan. 
 N‰ytett‰v‰t tiedostotyypit erotellaan p‰‰tteen mukaan: k91-p‰‰te tarkoittaa l‰hdekooditiedostoa ja
 b91-p‰‰te bin‰‰ritiedostoa.
 </p>
 <ul><li>
-When file with k91-extension is opened, <a href="manual1.html#gui">source code view</a> is shown.
+When file with k91-extension is opened, <a href="Sourcecode.html#gui">source code view</a> is shown.
 Source code file has to be <a href="#compile">compiled</a> before <a href=#run>executing</a> the file.
+
+
 
 
 Avattaessa k91-p‰‰tteinen tiedosto, avautuu <a href="manual_fi1.html#gui">l‰hdekoodin‰kym‰</a> ruudulle.
@@ -168,6 +372,7 @@ L‰hdekooditiedosto on <a href="#kaanna">k‰‰nnett‰v‰</a> ennen kuin se voidaan <a
 When file with b91-extension is opened, <a href="manual3.html#gui">runnable view</a> is shown.
 Binary file is already in machine language form, so it can be <a href="#run">executed</a> immediately.
 
+
 Avattaessa b91-p‰‰tteinen tiedosto, avautuu <a href="manual_fi3.html#gui">suoritusn‰kym‰</a> ruudulle.
 Bin‰‰ritiedosto on valmiiksi konekielimuodossa, joten se voidaan <a href="#aja">suorittaa</a> ilman k‰‰nt‰mist‰.
 </li>
@@ -176,12 +381,21 @@ Bin‰‰ritiedosto on valmiiksi konekielimuodossa, joten se voidaan <a href="#aja">
 </tr>
 </table>
 
+
 <br>
 
 
 
 
+
+
+
+
 <!-- LƒHDEKOODIN MUOKKAUS -->
+
+
+
+
 
 
 
@@ -200,6 +414,7 @@ alt="">
 </tr>
 </table>
 
+
 <p>Source code can be edited in Titokone: </p>
 <p>L‰hdekoodia on mahdollista muokata Titokoneessa seuraavasti: </p>
 <ul>
@@ -210,17 +425,29 @@ alt="">
 <li> Modified source is saved to original file. Tehdyt muutokset tallettuvat alkuper‰iseen tiedostoon. </li>
 </ul>
 
+
  
 
 
+
+
   <!-- Voi olla k91 tai b91, viittaa vastaaviin 2.x-lukuihin -->
+
 
 <br>
 
 
 
 
+
+
+
+
 <!-- OHJELMAN KƒƒNTƒMINEN-->
+
+
+
+
 
 
 
@@ -245,6 +472,7 @@ alt="">
       
   <table cellspacing=10>
   <tr>
+
 
   <td valign=top>
   <img src="Filecompile.jpg" title="Compile from menu" 
@@ -691,7 +919,9 @@ alt="">
   </tr>
   </table>
 
+
  <!-- Jne, sopivassa j‰rjestyksess‰. -->
+
 
 <h2><a name="konekieli">3. TTK-91-konekieli</a></h2>
 <!-- T‰ss‰ voi mietti‰, haluaako toistaa tekstitiedoston speksin v‰h‰n 
@@ -702,15 +932,19 @@ alt="">
                    A SUMMARY OF TTK-91 COMMANDS
 ======================================================================
 
+
 +--------------------------------------------------------------------+
 ¶  Operation code  ¶  Rj ¶ M ¶  Ri ¶      address part ADDR          ¶
 ¶  8 bits          ¶  3  ¶ 2 ¶  3  ¶         16 bits                 ¶
 +--------------------------------------------------------------------+
 31               24 23           16 15                               0
 
+
 In the symbolic machine language, the commands are of the form
 
+
 LABEL OPER Rj,M ADDR(Ri)
+
 
 where  OPER    the symbolic name of the command
        Rj      the first operand (register R0..R7)
@@ -721,13 +955,16 @@ where  OPER    the symbolic name of the command
        ADDR    address part (memory address or constant value)
        Ri      possible index register (register R0..R7)        
 
+
 If some part of a command has no meaning, it can be left out. It is 
 possible to add a label (symbolic address) in front of a command. The 
 label should consist of the letters A-÷, 0-9 and _, and contain at 
 least one non-numerical character. Only the first 8 characters are
 considered.
 
+
 Almost all commands have the following forms available:
+
 
    OPER Rj,ADDR        direct memory addressing
    OPER Rj,=ADDR       immediate operand
@@ -737,7 +974,9 @@ Almost all commands have the following forms available:
    OPER Rj,@ADDR(Ri)   indexed indirect memory addressing      
    OPER Rj,Ri          direct register addressing
 
+
 There are exceptions:
+
 
     STORE           The latter operand is always the target address;
                     it cannot be a register or a constant value.
@@ -748,11 +987,14 @@ There are exceptions:
                     ignored.               
     NOP             The operands are ignored.  
 
+
 ======================================================================
          The symbolic commands of the TTK-91 machine language
 ======================================================================
 
+
 Data transfer commands:
+
 
 LOAD   Stores the value of the latter operand to the register Rj.
 STORE  Stores the integer in Rj as the value of the latter operand.    
@@ -761,9 +1003,12 @@ IN     Reads an integer from the device given as the latter operand
 OUT    Outputs the integer in the register Rj to the device given as 
        the latter operand (eg. OUT R1,=CRT to print to screen).
 
+
 Arithmetic and logical commands:
 
+
 The result of the calculation is stored in register Rj.
+
 
 ADD    Adds the value of the latter operand to the integer in the
        register Rj.
@@ -787,14 +1032,18 @@ SHRA   Performs an arithmetic right shift; as in SHR, but fills the
        left end with copies of the leftmost bit, thus keeping negative
        numbers negative.
 
+
 COMP   Compares the first operand with the second operand and stores
        the result in the status register SR's bits L=less, E=equal,
        G=greater. See eg. JLES.
 
+
 Forking commands:
+
 
 JUMP   An unconditional jump to the target address expressed by the
        second operand.
+
 
 JNEG   Jump if negative. If Rj < 0, jumps to the address given as the
        second operand, otherwise continues with the next command.
@@ -803,6 +1052,7 @@ JPOS   Jump if positive,      if Rj > 0
 JNNEG  Jump if not negative,  if Rj >= 0
 JNZER  Jump if not zero,      if Rj <> 0
 JNPOS  Jump if not positive,  if Rj <= 0
+
 
 JLES   Jump if less - if the status register SR has its L bit set,
        jumps to the address given as the second operand, otherwise
@@ -814,29 +1064,37 @@ JNLES  Jump if not less,       if E or G bit is set in SR
 JNEQU  Jump if not equal       if L or G bit is set in SR 
 JNGRE  Jump if not greater     if L or E bit is set in SR
 
+
 Stack commands:
+
 
 The first operand of the command, the register Rj, points to the top
 of the stack, ie. the topmost item in it. Usually, the register SP
 (which is also R6) is used as the stack pointer.
 
+
 PUSH   Increases the stack pointer Rj's value by one and stores the latter
        operand as the topmost item in the stack.
+
 
 POP    Removes the topmost item in the stack and stores it as the  
        register Ri (the latter operand is always a register). Substracts
        one from the stack pointer Rj.           
 
+
 PUSHR  Pushes the registers R0, R1, R2, R3, R4, R5 and R6 (SP) to the 
        stack, in this order. Before pushing each register, increases the
        stack pointer Rj's value by one.
+
 
 POPR   Pops values to the registers R6 (SP), R5, R4, R3, R2, R1 and
        R0, in this order, from the stack. For each pop, first fetches
        the value from the top of the stack indicated by the register  
        Rj, and then substracts one from Rj.
 
+
 Subroutine commands:
+
 
 CALL   Call procedure. Moves the control (by manipulating the program 
        counter) to the address given by the latter operand. Stores the
@@ -846,7 +1104,9 @@ EXIT   Returns from a procedure to the command following its call. The
        points to. The latter operand indicates the number of parameters
        passed to the subroutine in the call.
 
+
 System calls:  
+
 
 SVC    Supervisor call. Calls a service routine in the operating system.
        The first operand is Rj, indicating the top of the stack, the 
@@ -855,7 +1115,9 @@ SVC    Supervisor call. Calls a service routine in the operating system.
        procedures. Their code is invisible to the user, and is considered
        to be stored "outside" the memory space.
 
+
        Service identifiers:
+
 
        HALT : Stops the execution of the program.
        TIME : Gives the time of day. The stack should contain the 
@@ -868,28 +1130,36 @@ SVC    Supervisor call. Calls a service routine in the operating system.
        WRITE: Prints an integer to the screen. The stack should
               contain the value to print.
 
+
 Other:
 
+
 NOP    No operation. This command does nothing.
+
 
 ======================================================================
               The operation codes of the TTK-91 commands
 ======================================================================
 
+
    Command   Binary     Decimal  Hexadecimal   
 
+
    NOP       0000 0000     0        00            
+
 
    STORE     0000 0001     1        01
    LOAD      0000 0010     2        02
    IN        0000 0011     3        03
    OUT       0000 0100     4        04
 
+
    ADD       0001 0001    17        11
    SUB       0001 0010    18        12
    MUL       0001 0011    19        13
    DIV       0001 0100    20        14
    MOD       0001 0101    21        15
+
 
    AND       0001 0110    22        16
    OR        0001 0111    23        17
@@ -898,7 +1168,9 @@ NOP    No operation. This command does nothing.
    SHR       0001 1010    26        1A
    SHRA      0001 1011    27        1B
 
+
    COMP      0001 1111    31        1F
+
 
    JUMP      0010 0000    32        20
    JNEG      0010 0001    33        21
@@ -908,12 +1180,14 @@ NOP    No operation. This command does nothing.
    JNZER     0010 0101    37        25
    JNPOS     0010 0110    38        26
 
+
    JLES      0010 0111    39        27
    JEQU      0010 1000    40        28
    JGRE      0010 1001    41        29
    JNLES     0010 1010    42        2A
    JNEQU     0010 1011    43        2B
    JNGRE     0010 1100    44        2C
+
 
    CALL      0011 0001    49        31
    EXIT      0011 0010    50        32
@@ -922,14 +1196,18 @@ NOP    No operation. This command does nothing.
    PUSHR     0011 0101    53        35
    POPR      0011 0110    54        36
 
+
    SVC       0111 0000   112        70
+
 
 ======================================================================
                 Predefined symbols of the TTK-91 machine   
 ======================================================================
 
+
 These symbols can be used without explicitly defining them in a 
 TTK-91 program.
+
 
 Symbol          Value
 ---------------------
@@ -945,21 +1223,29 @@ DATE            15
 
 
 
+
+
+
 ======================================================================
              Instructions to the compiler (fake commands)
 ======================================================================
 
+
 The compiler instructions direct the program translating the symbolic
 machine language to binary. They are NOT actual symbolic commands.
 
+
 name EQU value
+
 
 The alias command EQU defines a symbolic name for an integer
 value. The symbol name can be used in the ADDR field of a command, in
 which case it will be handled as 'value' written in its stead
 would be.
 
+
 name DC value
+
 
 The memory allocation command DC (data constant) allocates one word of
 memory for a constant, aliases 'name' with the constant's memory
@@ -967,7 +1253,9 @@ address and stores 'value' in the allocated address in the
 memory. 'Name' can then be used in a command's ADDR field as a
 memory address.
 
+
 name DS size
+
 
 The memory allocation command DS (data segment) allocates an area of
 memory, sized 'size' words. It aliases 'name' with the start address
@@ -975,13 +1263,16 @@ of the memory area. 'Name' can then be used in a command's ADDR field
 as a memory address. This instruction is used for allocating space for
 global variables.
 
+
 option DEF string
+
 
 This special instruction changes options for simulating the file
 system of a TTK-91 machine. 'String' should be an absolute directory 
 path. Examples:
   STDIN DEF /home/myuser/ttk91/stdin
   STDOUT DEF C:\mydir\stdout
+
 
 Available options are:
   STDIN   To set which file stdin data is read from.
@@ -990,14 +1281,19 @@ Available options are:
           unused in Titokone as the home directory is requested from
           the underlying operating system via the Java virtual machine.
 
+
 The default files for the two first options are stdin and stdout in
 the user's home directory.
 
+
 </pre>
+
 
 <h2><a name="extension">4. Extending and adjusting the system</a></h2>
 
+
   <h3>4.1 Asetustiedostot</h3>
+
 
   <h3>4.2 Uuden kielen tukeminen</h3>
 <pre>
@@ -1012,23 +1308,32 @@ k‰‰nnˆksist‰, t‰ss‰ tapauksessa Translations_fi.javasta.
 </pre>
 
 
+
+
   <!-- Jne. -->
+
 
 <h2><a name="troubleshooting">5. Troubleshooting</a></h2>
 
+
   <!-- Virheilmoituksia -->
+
 
   <!-- Oudot taustas‰ievirheet: yleisohje, jos levi‰‰, kokeile uudelleen. 
        Yleens‰ johtuvat kuun v‰‰r‰st‰ asennosta ja poistuvat toisella
        yrityksell‰. Pahoittelumme. -->
 
 
+
+
   <!-- N‰m‰ voi vaihtaa divist‰ esim. p:ksi jos v‰lej‰ ei tule riitt‰v‰sti. -->
+
 
   <div class="virhekuvaus">Kun ohjelma latautuu k‰‰nnˆksen tai ajon
   p‰‰ttymisen j‰lkeen, saan kommenttikentt‰‰n virheilmoituksen muotoa
   "STDIN-datatiedostoa ei voi lukea: /minun/hakemistoni/stdin (Joku
   syy)".</div>
+
 
   <div class="virhetoipuminen">Ohjelma ilmoittaa vain, ett‰ mik‰li
   tulevaisuudessa n‰ill‰ asetuksilla joku TTK-91-sovellus yritt‰‰
@@ -1041,9 +1346,11 @@ k‰‰nnˆksist‰, t‰ss‰ tapauksessa Translations_fi.javasta.
     
   <div class="virhekuvaus">On tyls‰‰.</div>
 
+
 <pre>
 * virheilmoitukset pit‰‰ k‰yd‰ l‰pi ja selvitt‰‰, mit‰ kukin tarkoittaa.
 T‰t‰ pit‰nee tehd‰ osittain ryhm‰ss‰ tai ainakin kysellen.
+
 
 ---------------------
 eka:
@@ -1051,7 +1358,10 @@ Puhuin viime kokouksessa, ett‰ olen ottanut GUIhin Look And Feel -jutut mukaan, 
 
 Mahdollisesti bugin voi kiert‰‰ parilla lis‰rivill‰ koodia, mutta se maksaa silloin t‰llˆin pidemm‰ll‰ latausajalla enk‰ voi taata ett‰ ohjelma v‰ltt‰m‰tt‰ edes k‰ynnistyy joka kerta. Tosin, todenn‰kˆisyys sille on koneesta rippuen 1/100. Tulevissa Javan versioissa kyseist‰ ongelmaa ei tietenk‰‰n ole, sill‰ eikˆh‰n lˆydetyt bugit yleens‰ korjata.
 
+
 Toinen mahdollisuus on, mik‰li Exception tulee, ilmoittaa pahoitellen, ett‰ ohjelma ei k‰ynnisty johtuen Javassa olevasta bugista ja pyydet‰‰n k‰ynnist‰m‰‰n uudelleen. Harvoin tuo kahta kertaa per‰kk‰in tulee. Mun mielest‰ kuitenkaan ei kannata tinki‰ siit‰ hienosta ulkon‰ˆst‰ jonkun typer‰n bugin vuoksi, joka tuskin vaivaa en‰‰ ainakaan syksyll‰, jolloin ohjelmaa oikeasti k‰ytet‰‰n.
+
+
 
 
 ennen:
@@ -1062,6 +1372,7 @@ On Wed, 2004-08-18 at 11:10, Arto ≈kerlund wrote:
 > sille on koneesta rippuen 1/100. Tulevissa Javan versioissa kyseist‰
 > ongelmaa ei tietenk‰‰n ole, sill‰ eikˆh‰n lˆydetyt bugit yleens‰
 > korjata.
+
 
 Hmm, laitetaan Titokoneeseen varmuuden vuoksi optio ton yli
 hypp‰‰miseksi (jos parametrien joukossa on vaikka --disablelookandfeel,
@@ -1074,10 +1385,17 @@ itsellesi ylˆs ett‰ kirjaat maininnan k‰yttˆohjeeseen?
 
 
 
+
+
+
+
+
+
 On Sun, 2004-04-18 at 14:41, Olli Alm wrote:
 > Ok, pist‰n korvan taakse tuon asian. Kuulostaa kyll‰
 > hieman enemm‰n toteutusdokkarin kuin k‰yttˆohjeen asialta
 > mielest‰ni. Mutta joo.
+
 
 Siis k‰yttˆohjeeseen se menee muodossa "voit tˆrm‰t‰ t‰llaiseen
 virheeseen, joka johtuu Javan 1.4.2-version bugista eik‰ yleens‰ toistu,
@@ -1087,9 +1405,14 @@ parametrit joilla ohjelman voi k‰ynnist‰‰, mutta niille ei taida olla
 juuri nyt j‰rkev‰‰ paikkaa.
 
 
+
+
 -------------------
 </pre>
   <div class="virhetoipuminen">Syˆ leip‰‰ ni ei o tyls‰‰. --Jukka Tilsa</div>
+
+
+
 
 
 
