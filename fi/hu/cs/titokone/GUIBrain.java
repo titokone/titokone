@@ -13,6 +13,7 @@ package fi.hu.cs.titokone;
 
 import java.util.Locale;
 import java.io.File;
+import java.io.InputStream;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.io.IOException;
@@ -113,6 +114,8 @@ private static final short K91_PAUSED = 7;
 private static final short INTERRUPTED_WITHOUT_PAUSE = 10;
 private static final short INTERRUPTED_WITH_PAUSE = 11;
 
+/** This field contains our logger. */
+private Logger logger;
 
 public static String DEFAULT_STDIN_FILENAME = "stdin";
 public static String DEFAULT_STDOUT_FILENAME = "stdout";
@@ -125,6 +128,7 @@ public GUIBrain(GUI gui) {
   
   this.gui = gui;
 
+  logger = Logger.getLogger(getClass().getPackage().getName());
   File defStdinFile = new File(System.getProperty("user.dir") + DEFAULT_STDIN_FILENAME);
   File defStdoutFile = new File(System.getProperty("user.dir") + DEFAULT_STDOUT_FILENAME);
   try {
@@ -1023,45 +1027,61 @@ private void getCurrentSettings() throws IOException {
   String defaultUILanguage = "English";
   int defaultRunningMode = 0;
   int defaultCompilingMode = 0;
+  boolean useDefaultSettings = false;
+  InputStream defaultSettingsStream = null;
   
-  URI fileURI;
+  //URI fileURI;
   
-  try {
-    fileURI = new URI( getClass().getClassLoader().getResource(programPath).toString() + "etc/settings.cfg" );
-    settingsFile = new File(fileURI);
-  }
-  catch (Exception e) {
-    System.out.println("Main path not found!...exiting");
-    System.exit(0);
-  }
+  //try {
+  //  fileURI = new URI( getClass().getClassLoader().getResource(programPath).toString() + "etc/settings.cfg" );
+  //  settingsFile = new File(fileURI);
+  settingsFile = new File(System.getProperty("user.home"), "titokone.cfg");
+  //}
+  //catch (Exception e) {
+  //  System.out.println("Main path not found!...exiting");
+  //  System.exit(0);
+  //}
   
-    
-  
+  // First, check if the user has a settings file. Otherwise we'll use the default
+  // file in <the class directory>etc/settings.cfg.
   if (settingsFile.exists() == false) {
-    settingsFile.createNewFile(); // throws IOException
+    useDefaultSettings = true;
+    // (Creating a new settings file will not be necessary; the settings saving
+    // will take care of it. In fact, we do not want to uselessly create an empty
+    // settings file to confuse us on the next run. But we will want to check 
+    // if we are allowed to.)
+    settingsFile.createNewFile(); // May throw an IOException.
+    settingsFile.delete(); // May throw an IOException, hardly if createNewFile didn't.
   }
   
-  String settingsFileContents;
+  String settingsFileContents = "";
   try {
-     settingsFileContents = control.loadSettingsFileContents(settingsFile);
+      if(!useDefaultSettings) { // Use user's own settings file.
+	  settingsFileContents = control.loadSettingsFileContents(settingsFile);
+	  logger.info("Used user's own settings file.");
+      }
+      else { // Use default settings file.
+	  ClassLoader loader = getClass().getClassLoader();
+	  defaultSettingsStream = loader.getResourceAsStream(programPath + 
+							     "etc/settings.cfg");
+	  settingsFileContents = control.loadSettingsStreamContents(defaultSettingsStream);
+	  logger.info("Used default settings file.");
+      }
   }
   catch (IOException e) {
-    System.out.println("Error while reading settings file.");
-    throw e;
+      logger.warning("Error while reading " + 
+		     (useDefaultSettings ? "default" : "user's") +
+		     " settings file.");
+      throw e;
   }
     
   try {
     //System.out.println( control.loadSettingsFileContents(settingsFile) );
-    currentSettings = new Settings( control.loadSettingsFileContents(settingsFile) );
+    currentSettings = new Settings(settingsFileContents);
   }
   catch (Exception e) {
-    System.out.println("Parse error in settings file.");
-    try {
-      currentSettings = new Settings(null);
-    }
-    catch (ParseException parseError) {
-      System.out.println("This error shouldn't occur!");
-    }
+    logger.warning("Parse error in settings file, using hard-coded defaults.");
+    currentSettings = new Settings(); // Create an empty settings instance.
   }
   
   
@@ -1266,31 +1286,33 @@ private File getCurrentDefaultStdinFile() {
     "Finnish, fi", or "English (GB), en, GB". 
 */
 private void findAvailableLanguages() {
-  Logger logger;
+  InputStream fileStream = null;  
+  //URI fileURI;
+  //File languageFile = null;
   
-  URI fileURI;
-  File languageFile = null;
-  
-  try {
-    fileURI = new URI( getClass().getClassLoader().getResource(programPath).toString() + "etc/languages.cfg" );
-    languageFile = new File(fileURI);
-  }
-  catch (Exception e) {
-    System.out.println("Main path not found!...exiting");
-    System.exit(0);
-  }
+  //try {
+  //fileURI = new URI( getClass().getClassLoader().getResource(programPath).toString() + "etc/languages.cfg" );
+  //languageFile = new File(fileURI);
+  ClassLoader loader = getClass().getClassLoader();
+  fileStream = loader.getResourceAsStream(programPath + "etc/languages.cfg");
+  //}
+  //catch (Exception e) {
+  //  System.out.println("Main path not found!...exiting");
+  //  System.exit(0);
+  //}
   
   String languageName, language, country, variant;
   
-  if (languageFile.exists()) {
+  if (fileStream != null) {
     String languageFileContents;
     try {
-      languageFileContents = control.loadSettingsFileContents(languageFile);
+      languageFileContents = control.loadSettingsStreamContents(fileStream);
     }
     catch (IOException e) {
-      System.out.println("IOException in settings file");
-      return;
+      logger.warning("IOException in language settings file.");
+       return;
     }
+
     String[] languageFileRow = languageFileContents.split("\n|\r|\r\n");
     
     System.out.println(languageFileContents);
@@ -1325,10 +1347,8 @@ private void findAvailableLanguages() {
       }
       
       else {
-        //logger = Logger.getLogger(this.getClass().getPackage().toString());
-	      //logger.fine(new Message("Parse error in language file").toString());
-	      System.out.println("Parse error in language file");
-	    }
+	  System.out.println("Parse error in language file");
+      }
     }
   }
 }
