@@ -34,15 +34,6 @@ public class RunDebugger{
     /** constant short for supervisor call Date */
     public static final short SVC_DATE  = 15;
     
-    /** constant short for CRT-device */
-    public static final short CRT = 0;
-    /** constant short for KBD-device */
-    public static final short KBD = 1;
-    /** constant short for STDIN-device */
-    public static final short STDIN = 6;
-    /** constant short for STDOUT-device */
-    public static final short STDOUT = 7;
-
     
     /** constant String for comment line memory addressing */
     private static final String DIRECT = "direct";
@@ -216,12 +207,12 @@ public class RunDebugger{
         this.deviceValue = value;
 	
 	switch(deviceNumber) {
-            case KBD:
-                info.setIN("Keyboard", KBD, value);
+            case Processor.KBD:
+                info.setIN("Keyboard", Processor.KBD, value);
             break;
             
-            case STDIN:
-                info.setIN("Standard input", STDIN, value);
+            case Processor.STDIN:
+                info.setIN("Standard input", Processor.STDIN, value);
             break;
         }
     }
@@ -236,12 +227,12 @@ public class RunDebugger{
 	
 	switch(deviceNumber) {
             
-            case CRT:
-                info.setOUT("Display", CRT, value);
+            case Processor.CRT:
+                info.setOUT("Display", Processor.CRT, value);
             break;
             
-            case STDOUT:
-                info.setOUT("Standard output", STDOUT, value);
+            case Processor.STDOUT:
+                info.setOUT("Standard output", Processor.STDOUT, value);
             break;
         }
         
