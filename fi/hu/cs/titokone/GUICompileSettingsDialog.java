@@ -9,7 +9,7 @@ import javax.swing.event.*;
 
 public class GUICompileSettingsDialog extends JDialog {
   
-private JButton applyButton, closeButton;
+public JButton applyButton, closeButton;
 public JCheckBox lineByLineCheckBox;
 public JCheckBox showCommentsCheckBox;
 	  
@@ -57,4 +57,15 @@ public GUICompileSettingsDialog(Frame ownerFrame, boolean modal) {
 	
 }
 
+
+public void updateAllTexts() {
+  setTitle(new Message("Set compiling options").toString());
+  lineByLineCheckBox.setText(new Message("Pause whenever a comment occurs").toString());
+  showCommentsCheckBox.setText(new Message("Show extra comments while compiling").toString());
+  applyButton.setText(new Message("Apply").toString());
+  closeButton.setText(new Message("Close").toString());
+  pack();
 }
+
+}
+

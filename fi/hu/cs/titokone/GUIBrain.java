@@ -12,12 +12,13 @@ package fi.hu.cs.titokone;
 import java.util.Locale;
 import java.io.File;
 import java.util.Hashtable;
-import java.io.*;
+//import java.io.*;
+import java.io.IOException;
 import java.util.logging.Logger;
 import fi.hu.cs.ttk91.TTK91OutOfMemory;
 import fi.hu.cs.ttk91.*;
 import java.text.ParseException;
-
+import java.util.LinkedList;
 
 
 
@@ -122,6 +123,11 @@ public GUIBrain(GUI gui) {
   gui.setSelected(GUI.OPTION_RUNNING_PAUSED, (runmode & PAUSED) != 0);
   gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, (runmode & ANIMATED) != 0);
   
+  int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
+  
+  gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
+  gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
+  
   availableLanguages = new Hashtable();
   
   findAvailableLanguages();
@@ -134,6 +140,38 @@ public GUIBrain(GUI gui) {
 
   
   
+private void load() {
+  
+  __stupid_LoadInfo loadinfo;
+  try {
+    loadinfo = control.load();
+  }
+  catch (Exception  e) {  //T‰‰ tullaan muuttamaan TTK91OutOfMemory:ksi
+    // TODO: Mit‰ tehd‰‰n kun loppuu muisti
+    return;
+  }
+  
+  gui.updateStatusBar(loadinfo.getStatusMessage());
+  gui.updateReg(GUI.SP, loadinfo.getSP());
+  gui.updateReg(GUI.FP, loadinfo.getFP());
+   
+  String[][] symbolsAndValues = loadinfo.getSymbolTable();
+  gui.insertSymbolTable(symbolsAndValues);
+    
+  int binaryCommands[] = loadinfo.getBinaryCommands();
+  String symbolicCommands[] = loadinfo.getSymbolicCommands();
+  int data[] = loadinfo.getData();
+  
+  gui.insertToInstructionsTable(binaryCommands, symbolicCommands);
+  gui.insertToDataTable(data);
+  
+  gui.addComment(loadinfo.getComments());
+  
+  currentState = B91_NOT_RUNNING;
+  setGUICommandsForCurrentState();
+  gui.setGUIView(3);
+}
+
 
 
 /** This method corresponds to the menu option File -> Open... It 
@@ -145,7 +183,6 @@ public void menuOpenFile(File openedFile) {
   interruptCurrentTasks();
   
   String suffix = getExtension(openedFile);
-  __stupid_LoadInfo loadinfo;
   
   gui.resetAll();
   
@@ -154,55 +191,10 @@ public void menuOpenFile(File openedFile) {
       control.openBinary(openedFile);
     }
     catch (IOException e) {
-      //TODO: Mit‰ tehd‰‰n kun tulee IOException
+      gui.showError(e.getMessage());
     }
     
-    try {
-      loadinfo = control.load();
-    }
-    catch (Exception  e) {  //T‰‰ tullaan muuttamaan TTK91OutOfMemory:ksi
-      // TODO: Mit‰ tehd‰‰n kun loppuu muisti
-      return;
-    }
-    
-    
-    gui.updateStatusBar(loadinfo.getStatusMessage());
-    gui.updateReg(__stupid_GUI.SP, loadinfo.getSP());
-    gui.updateReg(__stupid_GUI.FP, loadinfo.getFP());
-     
-    currentState = B91_NOT_RUNNING;
-    setGUICommandsForCurrentState();
-    
-    String[][] symbolsAndValues = loadinfo.getSymbolTable();
-    gui.insertSymbolTable(symbolsAndValues);
-    
-    
-    int binaryCommands[] = loadinfo.getBinaryCommands();
-    String symbolicCommands[] = loadinfo.getSymbolicCommands();
-    int line[] = new int[binaryCommands.length];
-    for (int i=0 ; i<line.length ; i++) {
-      line[i] = i;
-    }
-    
-    gui.insertToInstructionsTable(line, binaryCommands, symbolicCommands);
-    
-    int data[] = loadinfo.getData();
-    line = new int[data.length];
-    for (int i=0 ; i<line.length ; i++) {
-      line[i] = binaryCommands.length + i;
-    }
-    
-    gui.insertToDataTable(line, data);
-    
-    gui.addComment(loadinfo.getComments());
-    
-    
-    gui.setGUIView(3);
-  
-  
-  
-  
-  
+    load();
   }
   else if (suffix.equals("k91")) {
     gui.resetAll();
@@ -213,7 +205,7 @@ public void menuOpenFile(File openedFile) {
       k91Source = control.openSource(openedFile);
     }
     catch (IOException e) {
-      //TODO: Mit‰ tehd‰‰n kun tulee IOException
+      gui.showError(e.getMessage());
     }
     
     String[] src = k91Source.split("\n|\r|\r\n");
@@ -226,8 +218,8 @@ public void menuOpenFile(File openedFile) {
     
     
   }
-  else {
-    // TODO: Mit‰ tehd‰‰n kun tiedoston p‰‰te ei ole "k91" tai "b91"
+  else { // if file extension isn't either b91 or k91
+    gui.showError("File extension must be k91 or b91");
   } 
 }
 
@@ -273,13 +265,12 @@ public void menuRun() {
   
   currentState = B91_RUNNING;
   setGUICommandsForCurrentState();
-  
-  
-  /* This is a variable for debugging */int n = 0; 
-  do {
+   
+  do { 
+    currentState = B91_RUNNING;
+    setGUICommandsForCurrentState();
     
     runmode = currentSettings.getIntValue(Settings.RUN_MODE);
-    /* This is for debugging */ //if(n++ > 20) interruptSent = true;
     
     try {
       runinfo = control.runLine();
@@ -292,7 +283,7 @@ public void menuRun() {
       currentState = B91_WAIT_FOR_KBD;
       setGUICommandsForCurrentState();
       gui.enable(GUI.INPUT_FIELD);
-      /* Wait while continueTask() is run. In this case it's done by pressing
+      /* Wait until continueTask() is run. In this case it's done by pressing
          enter-button below the text field where user enter kbd-data.
       */
       waitForContinueTask();
@@ -304,39 +295,60 @@ public void menuRun() {
     if ((runmode & COMMENTED) != 0) {
       gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
     }
-    gui.selectRow(GUI.INSTRUCTIONS_AND_DATA_TABLE, runinfo.getLineNumber());
+    gui.selectLine(runinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
     if (runinfo.getCrtData() != null) {
       gui.addOutputData( runinfo.getCrtData().intValue() );
     }
-    gui.invalidate();
+    
+    int[] newRegisterValues = runinfo.getRegisters();
+    gui.updateReg(GUI.R0, newRegisterValues[TTK91Cpu.REG_R0]);
+    gui.updateReg(GUI.R1, newRegisterValues[TTK91Cpu.REG_R1]);
+    gui.updateReg(GUI.R2, newRegisterValues[TTK91Cpu.REG_R2]);
+    gui.updateReg(GUI.R3, newRegisterValues[TTK91Cpu.REG_R3]);
+    gui.updateReg(GUI.R4, newRegisterValues[TTK91Cpu.REG_R4]);
+    gui.updateReg(GUI.R5, newRegisterValues[TTK91Cpu.REG_R5]);
+    gui.updateReg(GUI.R6, newRegisterValues[TTK91Cpu.REG_R6]);
+    gui.updateReg(GUI.R7, newRegisterValues[TTK91Cpu.REG_R7]);
+    gui.updateReg(GUI.PC, newRegisterValues[TTK91Cpu.CU_PC]);
+    
+    LinkedList changedMemoryLines = runinfo.getChangedMemoryLines();
+    while (changedMemoryLines.isEmpty() == false) {
+      Object[] listItem = (Object[])changedMemoryLines.getFirst();
+      int line = ((Integer)listItem[0]).intValue();
+      MemoryLine contents = (MemoryLine)listItem[1];
+      gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
+      changedMemoryLines.removeFirst();
+    }
+      
+    
+    
+    //gui.invalidate();
     gui.repaint();
     
-    if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {   // If program is set to run line by line then
+    
+    if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
       currentState = B91_PAUSED;
       setGUICommandsForCurrentState();
       waitForContinueTask();
-      currentState = B91_RUNNING;
-      setGUICommandsForCurrentState();
+      
+    }
+    else {
+      synchronized(this) {
+        try {
+          wait(70);
+        }
+        catch(InterruptedException e) {
+          System.out.println("InterruptedException in menuRun()");
+        }
+      }
     }
     
-    synchronized(this) {
-      try {
-        wait(50);
-      }
-      catch(InterruptedException e) {
-        System.out.println("InterruptedException in menuRun()");
-      }
-    }
   } while (interruptSent == false); // End of do-while -loop
   
   currentState = B91_NOT_RUNNING;
   setGUICommandsForCurrentState();
   
   gui.unselectAll();
-  
- 
-  
-  
 }
 
 
@@ -349,7 +361,7 @@ public void menuCompile() {
   
   interruptSent = false;
   noPauses = false;
-  
+
   currentState = K91_COMPILING;
   setGUICommandsForCurrentState();
   
@@ -367,14 +379,26 @@ public void menuCompile() {
   /* This is a variable for debugging */int n = 0; 
   do {
     
-    /* This is for debugging */ if(n++ > 20) interruptSent = true;
+    /* This is for debugging */ //if(n++ > 20) interruptSent = true;
+    currentState = K91_COMPILING;
+    setGUICommandsForCurrentState();
     
-    compileinfo = control.compileLine();
+    try {
+      compileinfo = control.compileLine();
+    }
+    catch (Exception e) { // TODO: will be changed to TTK91CompileException
+      gui.addComment(e.getMessage());
+      currentState = K91_PAUSED;
+      setGUICommandsForCurrentState();
+      waitForContinueTask();
+      break;
+    }
+    
     compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);    
     phase = compileinfo.getPhase();
     
     if (phase == __stupid_CompileInfo.FIRST_ROUND) {  
-      if (compileinfo.symbolFound()) {      	
+      if (compileinfo.getSymbolFound()) {      	
       	String symbolName = compileinfo.getSymbolName();
       	Integer symbolValue = null;
       	if (compileinfo.getSymbolDefined()) {
@@ -382,60 +406,69 @@ public void menuCompile() {
 	      }
       	gui.updateRowInSymbolTable(symbolName, symbolValue);
       }
+      if (compileinfo.getLabelFound()) {
+        String symbolName = compileinfo.getLabelName();
+      	Integer symbolValue = new Integer(compileinfo.getLabelValue());
+        gui.updateRowInSymbolTable(symbolName, symbolValue);
+      }
+      
+      gui.selectLine(compileinfo.getLineNumber(), GUI.CODE_TABLE);
     }
 
     else if (phase == __stupid_CompileInfo.FINALIZING_FIRST_ROUND) {
-	    String symbolName;
-	    Integer symbolValue;
-	    if (compileinfo.definingDS()) {
-  	    symbolName = compileinfo.getSymbolName();
-  	    symbolValue = new Integer(compileinfo.getDSAddress());
-  	    gui.updateRowInSymbolTable(symbolName, symbolValue);
-  	  }
-	    else if (compileinfo.definingDC()) {
-  	    symbolName = compileinfo.getSymbolName();
-  	    symbolValue = new Integer(compileinfo.getDCAddress());
-  	    gui.updateRowInSymbolTable(symbolName, symbolValue);
-  	  }
-	    else {
-  	    String[] newInstructionsContents = compileinfo.getInstructions();
-  	    String[] newDataContents = compileinfo.getData();
-  	    int[] instructionsLineNumber = new int[newInstructionsContents.length];
-  	    int[] dataLineNumber = new int[newDataContents.length];
-  	    int i;
-  
-  	    for (i = 0 ; i < instructionsLineNumber.length ; i++) {
-		      instructionsLineNumber[i] = i;
-	      }
-	      for (int j = 0 ; j < dataLineNumber.length ; j++) {
-		      dataLineNumber[j] = j+i;
-	      }
-
-  	    gui.insertToInstructionsTable(instructionsLineNumber, newInstructionsContents);
-  	    gui.insertToDataTable(dataLineNumber, newDataContents);
-  	    gui.setGUIView(3);
-	    }
+	    String[][] symbolTable = compileinfo.getSymbolTable();
+	    if (symbolTable != null) {
+  	    for (int i=0 ; i<symbolTable.length ; i++) {
+          String symbolName = symbolTable[i][0];
+          Integer symbolValue = new Integer(symbolTable[i][1]);
+          gui.updateRowInSymbolTable(symbolName, symbolValue);  
+      	}
+      }
+      
+      String[] newInstructionsContents = compileinfo.getInstructions();
+	    String[] newDataContents = compileinfo.getData();
+	    gui.insertToInstructionsTable(newInstructionsContents);
+	    gui.insertToDataTable(newDataContents);
+	    gui.setGUIView(3);
+    
     }
     else if (phase == __stupid_CompileInfo.SECOND_ROUND) {
-    
+      int line = compileinfo.getLineNumber();
+      int binary = compileinfo.getLineBinary();
+      gui.updateInstructionsAndDataTableLine(line, binary);
+      gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
+    }
+    else if (phase == __stupid_CompileInfo.FINALIZING) {
+      if (compileinfo.getFinal() == true) {
+        compilingCompleted = true;
+        break;
+      }
     }
     
-    gui.selectRow(GUI.CODE_TABLE, compileinfo.getLineNumber());
     gui.repaint();
             
 	  if ( ((compilemode & PAUSED) != 0) && !compileinfo.getComments().equals("")  && noPauses == false) {
       currentState = K91_PAUSED;
       setGUICommandsForCurrentState();
       waitForContinueTask();
-      currentState = K91_COMPILING;
-      setGUICommandsForCurrentState(); 
     }
+    else {
+      synchronized(this) {
+        try {
+          wait(70);
+        }
+        catch(InterruptedException e) {
+          System.out.println("InterruptedException in menuRun()");
+        }
+      }
+    }
+    
   } while ( interruptSent == false ); // End of do-loop
   
   
   if (compilingCompleted == true) {
-    currentState = B91_NOT_RUNNING;
-    setGUICommandsForCurrentState();
+    gui.resetAll();
+    load();
   }
   else {
     currentState = K91_NOT_COMPILING;
@@ -461,7 +494,9 @@ public void menuEraseMemory() {
 
 /** This method corresponds to the menu option File -> Exit. 
 */
-public void menuExit() { }
+public void menuExit() { 
+  interruptCurrentTasks();
+}
 
 
 
@@ -493,17 +528,43 @@ public void menuInterrupt() {
 public void menuSetLanguage(String language) { 
   
  if (availableLanguages.containsKey(language)) {
-    
+    System.out.println((Locale)availableLanguages.get(language));
     Translator.setLocale((Locale)availableLanguages.get(language));  
     currentSettings.setValue(Settings.UI_LANGUAGE, language);
     control.saveSettings(currentSettings.toString(), settingsFile);
+    gui.updateAllTexts();
+  }
+}
+
+
+
+public void menuSetLanguage(File languageFile) { 
+  
+ if (languageFile.exists()) {
+    try {
+      Translator.setLocale(Locale.CHINESE, control.loadLanguageFile(languageFile));
+    }
+    catch (ResourceLoadFailedException e) {
+      gui.showError(new Message("Not a language file").toString());
+      System.out.println(e.getMessage());
+      return;
+    }
+    //currentSettings.setValue(Settings.UI_LANGUAGE, language);
+    //control.saveSettings(currentSettings.toString(), settingsFile);
+    gui.updateAllTexts();
   }
 }
 
 
 
 public void menuSetStdin(File stdinFile) {
-  control.setDefaultStdIn(stdinFile);
+  try {
+    control.setDefaultStdIn(stdinFile);
+  }
+  catch (ParseException e) {
+    gui.showError(e.getMessage());
+    return;
+  }
   currentSettings.setValue(Settings.STDIN_PATH, stdinFile.getPath());
   control.saveSettings(currentSettings.toString(), settingsFile);
 }
@@ -511,7 +572,13 @@ public void menuSetStdin(File stdinFile) {
 
 
 public void menuSetStdout(File stdoutFile) {
-  control.setDefaultStdOut(stdoutFile);
+  try {
+    control.setDefaultStdOut(stdoutFile);
+  }
+  catch (IOException e) {
+    gui.showError(e.getMessage());
+    return;
+  }
   currentSettings.setValue(Settings.STDOUT_PATH, stdoutFile.getPath());
   control.saveSettings(currentSettings.toString(), settingsFile);
 }
@@ -519,7 +586,12 @@ public void menuSetStdout(File stdoutFile) {
 
 
 public void menuSetMemorySize(int newSize) {
-  control.changeMemorySize(newSize);
+  try { 
+    control.changeMemorySize(newSize);
+  }
+  catch (IllegalArgumentException e) {
+    return;
+  }
   currentSettings.setValue(Settings.MEMORY_SIZE, newSize);
   control.saveSettings(currentSettings.toString(), settingsFile);
   gui.setGUIView(1);
@@ -672,7 +744,7 @@ public String[] getAvailableLanguages() {
 private void findAvailableLanguages() {
   Logger logger;
   File languageFile = new File("etc/languages.cfg");
-  String language, country, variant;
+  String languageName, language, country, variant;
   
   if (languageFile.exists()) {
     String languageFileContents = control.loadSettingsFileContents(languageFile);
@@ -685,18 +757,30 @@ private void findAvailableLanguages() {
        the language.cfg is not a proper language file for this program.
     */
     for (int i=0 ; i<languageFileRow.length ; i++) {
-      String[] token = languageFileRow[i].split(",|=");
-      if (token.length == 2) {
-        language = token[0];
-        country = token[1];
-        availableLanguages.put(language, new Locale(country));
+      String[] token = languageFileRow[i].split("=");
+      if (token.length != 2) {
+        System.out.println("Parse error in language file");
+        return;
+      }
+      languageName = token[0].trim();
+      
+      token = token[1].split("\\.");
+      if (token.length == 1) {
+        language = token[0].trim();
+        availableLanguages.put(languageName, new Locale(language));
+      }
+      else if (token.length == 2) {
+        language = token[0].trim();
+        country = token[1].trim();
+        availableLanguages.put(languageName, new Locale(language, country));
       }
       else if (token.length == 3) {
-        language = token[0];
-        country = token[1];
-        variant = token[2];
-        availableLanguages.put(language, new Locale(country, variant));
+        language = token[0].trim();
+        country = token[1].trim();
+        variant = token[2].trim();
+        availableLanguages.put(languageName, new Locale(language, country, variant));
       }
+      
       else {
         //logger = Logger.getLogger(this.getClass().getPackage().toString());
 	      //logger.fine(new Message("Parse error in language file").toString());

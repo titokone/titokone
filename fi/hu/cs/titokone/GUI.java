@@ -21,6 +21,7 @@ import java.util.*;
 import javax.swing.border.*;
 import javax.swing.table.*;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.event.*;
 import java.io.File;
 
 /** Class GUI is namely the class that implements the Graphical User Interface.
@@ -43,41 +44,121 @@ public class GUI extends JFrame implements ActionListener {
   
         GUIBrain guibrain;
         
+        /** This holds (@link rightSplitPane rightSplitPane) and 
+            (@link leftPane leftPane).
+        */
         JSplitPane mainSplitPane;;
         
+        /** What this holds, depends on the view of this gui. If it's 1, then this
+            is empty. If it's 2, then this holds (@link codeTableScrollPane codeTableScrollPane). 
+            If it's 3, then this holds (@link dataAndInstructionsTableSplitPane 
+            dataAndInstructionsTableSplitPane).
+        */
         JPanel leftPanel;
+        /** This holds (@link upperRightPanel upperRightPanel) and (@link commentListScrollPane
+            commentListScrollPane).
+        */
+        JSplitPane rightSplitPane;
+        /** This holds (@link registersTableScrollPane registersTableScrollPane), 
+            (@link symbolTableScrollPane symbolTableScrollPane) and (@link ioPanel
+            ioPanel).
+        */
         JPanel  upperRightPanel;
-        JPanel  lowerRightPanel;
         
+        /** This holds (@link codeTable codeTable).
+        */
+        JScrollPane codeTableScrollPane;
+        /** This table is used to visualize the K91 source code.
+        */
         JTableX codeTable;
         Object[] codeTableIdentifiers = {""};
         
+        /** This holds (@link instructionsTable instructionsTable)
+        */
+        JScrollPane instructionsTableScrollPane;
+        /** This table is used to visualize the instructions side of Titokone's memory by showing
+            its numeric contents and their symbolic equivalencies.
+        */
         JTableX instructionsTable;
         Object[] instructionsTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
+        
+        /** This holds (@link dataTable dataTable).
+        */
+        JScrollPane dataTableScrollPane;
+        /** This table is used to visualize the data side of Titokone's memory by showing its numeric
+            contents and their symbolic equivalencies.
+        */
         JTableX dataTable;
         Object[] dataTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
-        JScrollPane codeTableScrollPane;
-        JScrollPane instructionsTableScrollPane;
-        JScrollPane dataTableScrollPane;
+        
+        /** This holds (@link instructionsTableScrollPane instructionsTableScrollPane) and 
+            (@link dataTableScrollPane dataTableScrollPane).
+        */
         JSplitPane dataAndInstructionsTableSplitPane;   
         
+        /** This holds @link registersTable.
+        */
+        JScrollPane registersTableScrollPane;
+        /** This table is used to visualize the contents of Titokone's registers. There's one row for
+            each of there registers: R0, R1, R2, R3, R4, R5, SP, FP and PC.
+        */
         JTableX registersTable;
         Object[] registersTableIdentifiers = {"", ""};
-        JScrollPane registersTableScrollPane;
         
+        /** This holds (@link symbolTable symbolTable).
+        */
+        JScrollPane symbolTableScrollPane;
+        /** This table is used to visualize the symbols that are declared in source code, and their values.
+            There's one row for each symbol.
+        */
         JTableX symbolTable;
         Object[] symbolTableIdentifiers = {"", ""};
-        JScrollPane symbolTableScrollPane;
         
-        HashMap symbolsHashMap; // This has symbol name as key and its row in the symbol table as value
         
-        JTextArea outputTextArea;
+        /** This has symbol name as key and its row in the symbolTable as value. Thus it's easy to find
+            out if a symbol is already included in symbolTable and a new row is not needed.
+        */
+        HashMap symbolsHashMap; 
+        
+        
+        /** This holds (@link inputPanel) and (@link outputPanel).
+        */
+        JPanel ioPanel;
+        
+        /** This holds (@link outputScrollPane).
+        */
+        JPanel outputPanel;
+        /** This holds (@link outputTextArea).
+        */
         JScrollPane outputScrollPane;
+        /** This text area is used to visualize the output data that Titokone sends to CRT.
+        */
+        JTextArea outputTextArea;
+        
+        /** This holds (@link enterNumberLabel enterNumberLabel), (@link inputField inputField) 
+            and (@link enterNumberButton enterNumberButton).
+        */
+        JPanel inputPanel;
+        /** This is used to show for example errors, when an invalid number is given etc.
+        */
         JLabel enterNumberLabel;
+        /** The number that will be sent to Titokone as KBD data is given here.
+        */
         JTextField inputField;
+        /** This sends the number to GUIBrain, which checks if it's valid and then sends it to Titokone.
+        */
         JButton enterNumberButton;
     
+        /** This holds (@link commentList commentList).
+        */
+        JScrollPane commentListScrollPane;
+	      /** The comments are shown here.
+        */
+        JList commentList;
+	      
+	      
         
+        JButton openFileButton;
         JButton compileButton;
         JButton runButton;
         JButton continueButton;
@@ -106,6 +187,7 @@ public class GUI extends JFrame implements ActionListener {
         JMenuItem selectDefaultStdoutFile;
         JMenuItem setCompilingOptions;
         JMenuItem setRunningOptions;
+        JMenuItem selectLanguageFromFile;
         
 	      JMenu setLanguage;
 	      
@@ -114,20 +196,18 @@ public class GUI extends JFrame implements ActionListener {
 	      JMenuItem about;
 	
 	      
-	      JList commentList;
-	      JScrollPane commentListScrollPane;
-	      
-	      String[][] codeTableContents;
-	      
 	      public static final short R0 = 0,
         	                        R1 = 1,
         	                        R2 = 2,
         	                        R3 = 3,
         	                        R4 = 4,
-        	                        R5 = 5,   // r5 == sp
-        	                        R6 = 6,   // r6 == fp
-        	                        SP = 5,   // ^^
-        	                        FP = 6;   // ^^
+        	                        R5 = 5,   
+        	                        R6 = 6,   // r6 == sp
+        	                        R7 = 7,   // r7 == fp
+        	                        SP = 6,   // ^^
+        	                        FP = 7,   // ^^
+        	                        PC = 8;
+        	                        
 
         public static final short COMPILE_COMMAND = 0,
                                   RUN_COMMAND = 1,
@@ -237,6 +317,9 @@ private void initGUI() {
   dataTable.setRowSelectionAllowed(false);
   dataTableScrollPane = insertTableToScrollPane(dataTable);
   
+  dataTable.setDoubleBuffered(true);
+  dataTableScrollPane.setDoubleBuffered(true);
+  
   dataAndInstructionsTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
   dataAndInstructionsTableSplitPane.setTopComponent(instructionsTableScrollPane);
   dataAndInstructionsTableSplitPane.setBottomComponent(dataTableScrollPane);
@@ -255,7 +338,7 @@ private void initGUI() {
  
   String[][] regTableContents = new String[][] 
     { {"R0",""}, {"R1",""}, {"R2",""}, {"R3",""}, {"R4",""}, 
-      {"SP",""}, {"FP",""}, {"PC",""}, {"IR",""}};
+      {"R5",""}, {"SP",""}, {"FP",""}, {"PC",""}};
   
   registersTable = new JTableX(new DefaultTableModel(regTableContents, registersTableIdentifiers));
   registersTable.setEnabled(false);
@@ -266,9 +349,9 @@ private void initGUI() {
   registersTableScrollPane.setPreferredSize(new Dimension(150, 150));
   registersTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
   
-  JPanel ioPanel = new JPanel(new BorderLayout());
-  JPanel inputPanel = new JPanel(new BorderLayout());
-  JPanel outputPanel = new JPanel(new BorderLayout());
+  ioPanel = new JPanel(new BorderLayout());
+  inputPanel = new JPanel(new BorderLayout());
+  outputPanel = new JPanel(new BorderLayout());
  
   outputTextArea = new JTextArea(1,7);
   outputTextArea.setLineWrap(true);
@@ -300,15 +383,41 @@ private void initGUI() {
   
   commentListScrollPane = new JScrollPane(commentList);
   commentListScrollPane.setPreferredSize(new Dimension(1,50));
+  commentList.setDoubleBuffered(true);
+  commentListScrollPane.setDoubleBuffered(true);
   
-  JPanel southeastPanel = new JPanel(new BorderLayout());
-  southeastPanel.add(commentListScrollPane, BorderLayout.CENTER);
+  commentList.addListSelectionListener( new ListSelectionListener() {
+    public void valueChanged( ListSelectionEvent e ) {
+      JList src = (JList)(e.getSource());
+      String str = (String)src.getSelectedValue();
+      
+      Integer line = null;
+      int i = 1;
+      while (true) {
+        try {
+          line = new Integer(str.substring(0,i));
+          
+        }
+        catch (NumberFormatException excp) {
+          break;
+        }
+        catch (IndexOutOfBoundsException excp2) {
+          break;
+        }
+        i++;
+      }
+      
+      if (line != null) {
+        if (activeView == 3) {
+          centerToLine(line.intValue(),INSTRUCTIONS_AND_DATA_TABLE);
+        }
+      }
+    }
+  } );
   
-  lowerRightPanel = new JPanel(new BorderLayout());
-  lowerRightPanel.add(southeastPanel, BorderLayout.CENTER);
-  
-  JSplitPane rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, lowerRightPanel);
+  rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, commentListScrollPane);
   rightSplitPane.setResizeWeight(0.5);
+  
   
   leftPanel = new JPanel(new BorderLayout());
   mainSplitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, leftPanel, rightSplitPane);
@@ -331,14 +440,7 @@ private void initGUI() {
 
 
 public void setGUIView(int view) {
-  
-  if (activeView == view)  {
-    return;
-  }
-  else {
-    activeView = view;
-  }
-     
+    
   leftPanel = new JPanel(new BorderLayout());
   
   if (view == 1) {
@@ -359,19 +461,19 @@ public void setGUIView(int view) {
     validate();
     pack();
     int dividerLocation;
-    
+  
     /* Set the location of divider between data and instructions table */
-    dividerLocation = instructionsTable.getRowHeight() * instructionsTable.getRowCount();
+    dividerLocation = instructionsTable.getRowHeight() * ((DefaultTableModel)instructionsTable.getModel()).getRowCount();
     dividerLocation += dataAndInstructionsTableSplitPane.getDividerSize()*2;
     
     leftPanel.invalidate();
-    System.out.println(leftPanel.getSize());
     if (dividerLocation > leftPanel.getHeight() / 2) {
       dividerLocation = leftPanel.getHeight() / 2;
     }
     
     dataAndInstructionsTableSplitPane.setDividerLocation(dividerLocation);
   }
+  activeView = view;
   mainSplitPane.setDividerLocation(0.5);
 }
 
@@ -400,7 +502,6 @@ public void unselectAll() {
   registersTable.unselectAllRows();
   symbolTable.unselectAllRows();
   this.repaint();
-  
 }
 
 
@@ -410,12 +511,11 @@ public void unselectAll() {
 private JToolBar makeToolBar() {
   
   JToolBar toolbar;
-  JButton openFileButton;
- 
+  
   toolbar = new JToolBar("Toolbar");
   
   openFileButton = new JButton();
-  openFileButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/general/open24.gif", "Open file"));
+  openFileButton.setIcon(new ImageIcon("etc/open24.gif", "Open file"));
   openFileButton.setToolTipText("Open a file");
   openFileButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(openFileButton);
@@ -423,46 +523,46 @@ private JToolBar makeToolBar() {
   toolbar.addSeparator();
   
   compileButton = new JButton();
-  compileButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/compile24.gif", "Compile"));
+  compileButton.setIcon(new ImageIcon("etc/compile24.gif", "Compile"));
   compileButton.setToolTipText("Compile the program");
   compileButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(compileButton);
   
   runButton = new JButton();
-  runButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/run24.gif", "Run"));
+  runButton.setIcon(new ImageIcon("etc/run24.gif", "Run"));
   runButton.setToolTipText("Run the program");
   runButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(runButton);
   
   continueButton = new JButton();
-  continueButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/StepForward24.gif", "Continue"));
+  continueButton.setIcon(new ImageIcon("etc/StepForward24.gif", "Continue"));
   continueButton.setToolTipText("Continue operation");
   continueButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(continueButton);
   
   continueToEndButton = new JButton();
-  continueToEndButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/FastForward24.gif", "Continue w/o pauses"));
+  continueToEndButton.setIcon(new ImageIcon("etc/FastForward24.gif", "Continue w/o pauses"));
   continueToEndButton.setToolTipText("Continue operation without pauses");
   continueToEndButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(continueToEndButton);
   
   stopButton = new JButton();
-  stopButton.setIcon(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/general/Stop24.gif", "Stop"));
+  stopButton.setIcon(new ImageIcon("etc/Stop24.gif", "Stop"));
   stopButton.setToolTipText("Stop the current operation");
   stopButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(stopButton);
   
   toolbar.addSeparator();
   
-  lineByLineToggleButton = new JToggleButton(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/table/RowInsertAfter24.gif", "Run line by line"));
+  lineByLineToggleButton = new JToggleButton(new ImageIcon("etc/RowInsertAfter24.gif", "Run line by line"));
   lineByLineToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(lineByLineToggleButton);
   
-  showCommentsToggleButton = new JToggleButton(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/general/History24.gif", "Show comments"));
+  showCommentsToggleButton = new JToggleButton(new ImageIcon("etc/History24.gif", "Show comments"));
   showCommentsToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showCommentsToggleButton);
   
-  showAnimationToggleButton = new JToggleButton(new ImageIcon("jlfgr-1_0/toolbarButtonGraphics/media/Movie24.gif", "Show comments"));
+  showAnimationToggleButton = new JToggleButton(new ImageIcon("etc/Movie24.gif", "Show comments"));
   showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showAnimationToggleButton);
   
@@ -514,7 +614,7 @@ public void updateStatusBar(String str) {
     @param reg The register to be updated.
     @param newValue The new value.
 */
-public void updateReg(int reg, int newValue) {
+public void updateReg(short reg, int newValue) {
   DefaultTableModel registersTableModel = (DefaultTableModel)registersTable.getModel(); 
   registersTable.setValueAt(""+newValue, reg, 1);
 }
@@ -545,34 +645,35 @@ public boolean insertToCodeTable(String[] src) {
 
 
 
-public boolean insertToInstructionsTable(int[] lineNum, String[] binaryCommand, String[] symbolicCommand) {
+public boolean insertToInstructionsTable(String[] binaryCommand, String[] symbolicCommand) {
   
-  if (lineNum.length != binaryCommand.length || lineNum.length != symbolicCommand.length) {
+  if (binaryCommand.length != symbolicCommand.length) {
     return false;
   }
-  int rows = lineNum.length;
+  int rows = binaryCommand.length;
   DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
   Object[][] tableContents = new Object[rows][3];
   for (int i=0 ; i<rows ; i++) {
-    tableContents[i][0] = ""+lineNum[i];
+    tableContents[i][0] = ""+i;
     tableContents[i][1] = binaryCommand[i];
     tableContents[i][2] = symbolicCommand[i];
   }
   instructionsTableModel.setDataVector(tableContents, instructionsTableIdentifiers);
+  instructionsTable.validate();
   return true;
 }
 
 
-public boolean insertToInstructionsTable(int[] lineNum, int[] binaryCommand, String[] symbolicCommand) {
+public boolean insertToInstructionsTable(int[] binaryCommand, String[] symbolicCommand) {
   
-  if (lineNum.length != binaryCommand.length || lineNum.length != symbolicCommand.length) {
+  if (binaryCommand.length != symbolicCommand.length) {
     return false;
   }
-  int rows = lineNum.length;
+  int rows = binaryCommand.length;
   DefaultTableModel instructionsTableModel = (DefaultTableModel)instructionsTable.getModel(); 
   Object[][] tableContents = new Object[rows][3];
   for (int i=0 ; i<rows ; i++) {
-    tableContents[i][0] = ""+lineNum[i];
+    tableContents[i][0] = ""+i;
     tableContents[i][1] = ""+binaryCommand[i];
     tableContents[i][2] = symbolicCommand[i];
   }
@@ -582,31 +683,61 @@ public boolean insertToInstructionsTable(int[] lineNum, int[] binaryCommand, Str
 
 
 
-public boolean insertToInstructionsTable(int[] lineNum, String[] symbolicCommand) {
-  String[] empty = new String[lineNum.length];
-  return insertToInstructionsTable(lineNum, empty, symbolicCommand);
+public boolean insertToInstructionsTable(String[] symbolicCommand) {
+  String[] empty = new String[symbolicCommand.length];
+  return insertToInstructionsTable(empty, symbolicCommand);
 }
 
 
 
-
-
-
-
-//public boolean insertToDataTable(int[] lineNum, int[] binaryCommand, String[] symbolicCommand) {
-public boolean insertToDataTable(int[] lineNum, int[] data) {
+public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryCommand) {
   
-  if (lineNum.length != data.length) {
+  if (lineNumber < instructionsTable.getRowCount()) {
+    ((DefaultTableModel)instructionsTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
+    return true;
+  }
+  else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
+    lineNumber = lineNumber-instructionsTable.getRowCount();
+    ((DefaultTableModel)dataTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
+    return true;
+  }
+  else {
     return false;
   }
-  int rows = lineNum.length;
+}
+
+
+public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryCommand, String symbolicCommand) {
+  
+  if (lineNumber < instructionsTable.getRowCount()) {
+    ((DefaultTableModel)instructionsTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
+    ((DefaultTableModel)instructionsTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
+    return true;
+  }
+  else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
+    lineNumber = lineNumber-instructionsTable.getRowCount();
+    ((DefaultTableModel)dataTable.getModel()).setValueAt(""+binaryCommand, lineNumber, 1);
+    ((DefaultTableModel)dataTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+
+
+public boolean insertToDataTable(int[] data) {
+  
+  int rows = data.length;
+  int instructionsTableRowCount = instructionsTable.getRowCount();
+  
   DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
   Object[][] tableContents = new Object[rows][3];
   for (int i=0 ; i<rows ; i++) {
-    tableContents[i][0] = ""+lineNum[i];
+    tableContents[i][0] = ""+ (i + instructionsTableRowCount);
     tableContents[i][1] = ""+data[i];
     tableContents[i][2] = "";
-    //tableContents[i][2] = symbolicCommand[i];
   }
   dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
   return true;
@@ -622,15 +753,15 @@ public boolean insertToDataTable(int[] lineNum, int[] data) {
     @param dataContents Contents of the second column.
     @return True if operation was successful.
 */
-public boolean insertToDataTable(int[] lineNum, String[] dataContents) {
-  if (lineNum.length != dataContents.length) {
-    return false;
-  }
-  int rows = lineNum.length;
+public boolean insertToDataTable(String[] dataContents) {
+  
+  int rows = dataContents.length;
+  int instructionsTableRowCount = instructionsTable.getRowCount();
+  
   DefaultTableModel dataTableModel = (DefaultTableModel)dataTable.getModel(); 
   Object[][] tableContents = new Object[rows][3];
   for (int i=0 ; i<rows ; i++) {
-    tableContents[i][0] = ""+lineNum[i];
+    tableContents[i][0] = ""+ (i + instructionsTableRowCount);
     tableContents[i][1] = ""+dataContents[i];
     tableContents[i][2] = "";
   }
@@ -746,7 +877,6 @@ public void addComment(String comment) {
     commentListModel.removeElementAt(numberOfComponents-1);
   }
   commentListModel.add(0, comment);
-  commentListScrollPane.getViewport().setViewPosition(new Point(0,0));
   commentList.setSelectedIndex(0);
 }
 
@@ -771,6 +901,7 @@ public void addOutputData(int outputValue) {
   outputScrollPane.getViewport().setViewPosition(new Point(0, newY));
   */
 }
+
 
 
 
@@ -887,6 +1018,55 @@ public static final short CODE_TABLE = 2;
 public static final short INSTRUCTIONS_AND_DATA_TABLE = 3;
 
 
+
+public boolean centerToLine(int line, short table) {
+  
+  switch (table) {
+    case INSTRUCTIONS_AND_DATA_TABLE:
+      if ( line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) ) {
+        return false;
+      }
+      
+      JScrollPane activeScrollPane;
+      JTableX activeTable;
+      
+      if (line < instructionsTable.getRowCount()) {
+        activeScrollPane = instructionsTableScrollPane;
+        activeTable = instructionsTable;
+      }
+      else {
+        activeScrollPane = dataTableScrollPane;
+        activeTable = dataTable;
+        line -= instructionsTable.getRowCount();
+      }
+        
+      int tableViewHeight = activeScrollPane.getHeight() - activeTable.getTableHeader().getHeight();
+      int y;
+      
+      if (tableViewHeight > activeTable.getHeight()) {
+        y = 0;
+      }
+      else {
+        y = line * activeTable.getRowHeight() - tableViewHeight/2 + activeTable.getRowHeight()/2;
+        y = (y<0)?0:y;
+        if (y + tableViewHeight > activeTable.getHeight()) {
+          y = activeTable.getHeight() - tableViewHeight + activeTable.getRowMargin() + 2; 
+          /* I don't know where that number 2 comes from, but I included it there, because the viewport
+             doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :) */
+        }          
+      }
+      activeScrollPane.getViewport().setViewPosition(new Point(0, y));
+        
+      return true;
+    
+    default:
+      break;
+  }
+  return false;
+}
+      
+
+
 /** Selects a row from code table or from instructions and data table. Instructions
     and data table, although two tables, are treated as one. Suppose that instructions
     table is n rows and data table is m rows. This is treated as one table of length
@@ -894,37 +1074,44 @@ public static final short INSTRUCTIONS_AND_DATA_TABLE = 3;
     rows are same as data table's rows.
     @param table The desired table. Proper values are CODE_TABLE and 
                  INSTRUCTIONS_AND_DATA_TABLE.
-    @param row Row to be selected.
+    @param line Line to be selected.
 */
-public void selectRow(short table, int row) {
-    
-  if (row < 0) {
+public void selectLine(int line, short table) {
+  
+  if (line < 0) {
     return;
   }
   
   switch (table) {
     case CODE_TABLE:
-      if (row > codeTable.getRowCount()) {
+      if (line > codeTable.getRowCount()) {
         return;
       }
-      codeTable.selectRow(row);
+      codeTable.selectRow(line);
       break;
     
     case INSTRUCTIONS_AND_DATA_TABLE:
-      if ( row > (instructionsTable.getRowCount() + dataTable.getRowCount()) ) {
+      if ( line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) ) {
         return;
       }
-      if (row < instructionsTable.getRowCount()) {
-        instructionsTable.selectRow(row);
+      
+      if (line < instructionsTable.getRowCount()) {
+        centerToLine(line, INSTRUCTIONS_AND_DATA_TABLE);       
+        instructionsTable.selectRow(line);
       }
-      else if (row == instructionsTable.getRowCount()) {
+      else if (line == instructionsTable.getRowCount()) {
         instructionsTable.unselectAllRows();
-        dataTable.selectRow(row - instructionsTable.getRowCount());
+        dataTable.selectRow(line - instructionsTable.getRowCount());
+        dataTableScrollPane.getViewport().setViewPosition(new Point(0, 0));
       }
       else {
-        dataTable.selectRow(row - instructionsTable.getRowCount());
+        int dataTableRow = line - instructionsTable.getRowCount();
+        centerToLine(line, INSTRUCTIONS_AND_DATA_TABLE);
+        dataTable.selectRow(dataTableRow);
+        
       }
       break;
+    
     default:
       break;
   }
@@ -986,6 +1173,7 @@ private void insertMenuBar(JFrame destFrame) {
     newLanguage.addActionListener( setLanguageActionListener );
       
   }
+  selectLanguageFromFile = setLanguage.add("Select from file...");
   optionsMenu.add(setLanguage);
   
   
@@ -1009,6 +1197,16 @@ private void insertMenuBar(JFrame destFrame) {
 	selectDefaultStdinFile.addActionListener(selectStdinFileActionListener);
 	selectDefaultStdoutFile.addActionListener(selectStdoutFileActionListener);
 	eraseMem.addActionListener(eraseMemoryActionListener);
+	setMemTo512.addActionListener(new SetMemSizeActionListener(9));
+	setMemTo1024.addActionListener(new SetMemSizeActionListener(10));
+	setMemTo2048.addActionListener(new SetMemSizeActionListener(11));
+	setMemTo4096.addActionListener(new SetMemSizeActionListener(12));
+	setMemTo8192.addActionListener(new SetMemSizeActionListener(13));
+	setMemTo16384.addActionListener(new SetMemSizeActionListener(14));
+	setMemTo32768.addActionListener(new SetMemSizeActionListener(15));
+	setMemTo65536.addActionListener(new SetMemSizeActionListener(16));
+	selectLanguageFromFile.addActionListener(selectLanguageFromFileActionListener);
+  
 }
 
 
@@ -1020,12 +1218,15 @@ private void insertMenuBar(JFrame destFrame) {
     this method in setLanguage() method.
 */
 public void updateAllTexts() {
+  fileMenu.setText( new Message("File").toString() );
   openFile.setText( new Message("Open").toString() );
 	compileMenuItem.setText( new Message("Compile").toString() );
   runMenuItem.setText( new Message("Run").toString() );
 	continueMenuItem.setText( new Message("Continue").toString() );
 	continueToEndMenuItem.setText( new Message("Continue without pauses").toString() );
 	stopMenuItem.setText( new Message("Stop").toString() );
+	eraseMem.setText( new Message("Erase memory").toString() );
+	quit.setText( new Message("Exit").toString() );
 	optionsMenu.setText( new Message("Options").toString() );
   setMemSize.setText( new Message("Set memory size").toString() );
   helpMenu.setText( new Message("Help").toString() );
@@ -1037,19 +1238,37 @@ public void updateAllTexts() {
   selectDefaultStdinFile.setText( new Message("Select default stdin file").toString() );
   selectDefaultStdoutFile.setText( new Message("Select default stdout file").toString() );
   setLanguage.setText( new Message("Set language").toString() );
-  
+  selectLanguageFromFile.setText( new Message("Select from a file...").toString() );
 	
+  openFileButton.setToolTipText(new Message("Open a new file").toString());
   compileButton.setToolTipText(new Message("Compile the opened file").toString());
   runButton.setToolTipText(new Message("Run the loaded program").toString());
   continueButton.setToolTipText(new Message("Continue current operation").toString());
   continueToEndButton.setToolTipText(new Message("Continue current operation without pauses").toString());
   stopButton.setToolTipText(new Message("Stop current operation").toString());
-
+  
+  enterNumberButton.setText(new Message("Enter").toString());
+  
   ((TitledBorder)symbolTableScrollPane.getBorder()).setTitle( new Message("Symbol table").toString() );
   ((TitledBorder)registersTableScrollPane.getBorder()).setTitle( new Message("Registers").toString() );
   
+  openFileDialog.setDialogTitle( new Message("Open a new file").toString() );
+  openFileDialog.setApproveButtonText(new Message("Open").toString());
+  openFileDialog.setApproveButtonToolTipText(new Message("Open the selected file").toString());
+  
+  setRunningOptionsDialog.updateAllTexts();
+  setCompilingOptionsDialog.updateAllTexts();
+  
+  
+  invalidate();
+  validate();
+  repaint();
 }
 
+
+public void showError(String errorMsg) {
+  JOptionPane.showMessageDialog(null, errorMsg, "Error", JOptionPane.ERROR_MESSAGE);
+}
 
 
 
@@ -1069,6 +1288,8 @@ private ActionListener openCommandActionListener = new ActionListener() {
 
 private ActionListener selectStdinFileActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {						
+    openFileDialog.resetChoosableFileFilters();
+	  openFileDialog.setAcceptAllFileFilterUsed(true);
 
 		int rv = openFileDialog.showOpenDialog(null);
 		if (rv == JFileChooser.APPROVE_OPTION) {
@@ -1079,6 +1300,8 @@ private ActionListener selectStdinFileActionListener = new ActionListener() {
 
 private ActionListener selectStdoutFileActionListener = new ActionListener() {
 	public void actionPerformed(ActionEvent e) {						
+    openFileDialog.resetChoosableFileFilters();
+	  openFileDialog.setAcceptAllFileFilterUsed(true);
 
 		int rv = openFileDialog.showOpenDialog(null);
 		if (rv == JFileChooser.APPROVE_OPTION) {
@@ -1146,6 +1369,18 @@ private ActionListener setLanguageActionListener = new ActionListener() {
   }
 };
 
+private ActionListener selectLanguageFromFileActionListener = new ActionListener() {
+  public void actionPerformed(ActionEvent e) {
+    openFileDialog.resetChoosableFileFilters();
+	  openFileDialog.setAcceptAllFileFilterUsed(true);
+
+		int rv = openFileDialog.showOpenDialog(null);
+		if (rv == JFileChooser.APPROVE_OPTION) {
+		   guibrain.menuSetLanguage(openFileDialog.getSelectedFile());
+		}
+	} 
+};
+
 private ActionListener enterNumberButtonActionListener = new ActionListener() {
   public void actionPerformed(ActionEvent e) {						
   
@@ -1160,6 +1395,18 @@ private ActionListener enterNumberButtonActionListener = new ActionListener() {
      
   }
 };
+
+private class SetMemSizeActionListener implements ActionListener {
+  private int memsize;
+  public SetMemSizeActionListener(int memsize) {
+    this.memsize = memsize;
+  }
+  public void actionPerformed(ActionEvent e) {
+    guibrain.menuSetMemorySize(memsize);
+  }
+};
+  
+    
 
 
 private FileFilter B91FileFilter = new FileFilter() {
@@ -1214,9 +1461,4 @@ private FileFilter K91FileFilter = new FileFilter() {
 public void changeTextInEnterNumberLabel(String newText) {
   enterNumberLabel.setText(newText);
 }
-
-
-
-
-
 }

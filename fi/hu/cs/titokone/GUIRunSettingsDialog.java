@@ -66,4 +66,15 @@ public GUIRunSettingsDialog(Frame ownerFrame, boolean modal) {
 	
 }
 
+
+public void updateAllTexts() {
+  setTitle(new Message("Set running options").toString());
+  lineByLineCheckBox.setText(new Message("Execute code line by line").toString());
+  showCommentsCheckBox.setText(new Message("Show extra comments while executing").toString());
+  showAnimationCheckBox.setText(new Message("Show animation while executing").toString());
+  applyButton.setText(new Message("Apply").toString());
+  closeButton.setText(new Message("Close").toString());
+  pack();
+}
+
 }
