@@ -105,6 +105,7 @@ public class Translations extends ListResourceBundle {
       {"No application to load.", null},
       {"STDIN data file unreadable: {0}", null}, 
       {"STDIN data file contains invalid data: {0}", null},
+      {"STDIN files were null, data not inserted to the application.", null },
       {"Application contained an odd definition key '{0}'.", null},
       {"Trying to run an unsupported type of application. (The application " +
        "must be created using the same program.)", null},
