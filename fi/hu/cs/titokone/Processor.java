@@ -110,10 +110,14 @@ public class Processor implements TTK91Cpu {
 */
     public void memoryInput(int rowNumber, MemoryLine inputLine) 
 	throws TTK91AddressOutOfBounds {
+	String errorMessage;
         try {
             ram.setMemoryLine(rowNumber, inputLine);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new TTK91AddressOutOfBounds();
+	    errorMessage = new Message("Rownumber {0} is beyond memory " +
+				       "limits.", "" + rowNumber).toString();
+	    throw new TTK91AddressOutOfBounds(errorMessage);
+
         }
     }
 
@@ -188,7 +192,7 @@ public class Processor implements TTK91Cpu {
             // fetch the next command to IR from memory and increase PC
             MemoryLine IR = ram.getMemoryLine(PC);
         
-            runDebugger.cycleStart (IR.getSymbolic(), PC, regs.getRegister (TTK91Cpu.REG_SP), regs.getRegister (TTK91Cpu.REG_FP));
+            runDebugger.cycleStart (PC-1, IR.getSymbolic(), PC, regs.getRegister (TTK91Cpu.REG_SP), regs.getRegister (TTK91Cpu.REG_FP)); //TODO:Tarkista että PC-1 on oikea arvo lineNumberiksi.
         
             regs.setRegister (TTK91Cpu.CU_IR, IR.getBinary());
             regs.setRegister (TTK91Cpu.CU_PC, PC+1);
@@ -607,7 +611,7 @@ public class Processor implements TTK91Cpu {
         runDebugger.setOperationType (RunDebugger.NO_OPERATION);
     }
     
-    private void writeToMemory (int row, int value) {
+    private void writeToMemory (int row, int value) throws TTK91AddressOutOfBounds {
         MemoryLine memoryLine;
         // if write is to code area checks if given value has symbolic presentation
         if (row < ram.getCodeAreaSize())
