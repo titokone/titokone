@@ -43,8 +43,8 @@ Vaihe	Nimi					Suunnittelija	Tekijä		Testaaja
 0	LoadInfo.java
 0	Loader.java
 3	MemoryLine.java                         SY              SY 18.3.
-0	Message.java
-0	Processor.java
+3	Message.java                            ?               SY 20.3
+1	Processor.java                                          SY 21.3
 3	RandomAccessMemory.java                 ?               SY 19.3
 3	Registers.java                          SY              SY 19.3
 0	ResourceLoadFailedException.java
