@@ -234,6 +234,7 @@ public class GUI extends JFrame implements ActionListener {
         
         private static final int COMMENT_LIST_SIZE = 100;
 
+        public static final String resourceHomeDir = "fi/hu/cs/titokone/";
 
 /** This is called when ActionEvent of some kind is fired.
 */
@@ -263,17 +264,49 @@ public GUI() {
   
   
   
+  System.out.println("Setting title...");        
   setTitle("Titokone");
+  System.out.println("Initializing openFileDialog...");        
   openFileDialog = new JFileChooser();
-  selectDefaultStdinFileDialog = new JFileChooser();
-  selectDefaultStdoutFileDialog = new JFileChooser();
+  
+  
+  System.out.println("Initializing selectDefaultStdinFileDialog...");        
+  /* This has to be while-looped this way, because of a bug in Java*/
+  while (true) {
+    try {
+      selectDefaultStdinFileDialog = new JFileChooser();
+      break;
+    }
+    catch (NullPointerException e) {
+      System.out.println("Darned that bug in Java! :(");
+    }
+  }
+  
+  System.out.println("Initializing selectDefaultStdoutFileDialog...");        
+  while (true) {
+    try {
+      selectDefaultStdoutFileDialog = new JFileChooser();
+      break;
+    }
+    catch (NullPointerException e) {
+      System.out.println("Darned that bug in Java! (2) :(");;
+    }
+  }
+  
+  
+  System.out.println("Initializing setRunningOptionsDialog...");        
   setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
+  System.out.println("Initializing setCompilingOptionsDialog...");        
   setCompilingOptionsDialog = new GUICompileSettingsDialog(this, false);
   
+  System.out.println("Initializing symbolsHashMap...");        
   symbolsHashMap = new HashMap();
-          
+  
+  System.out.println("Initializing GUI...");        
   initGUI();
+  System.out.println("Initializing GUIBrain...");        
   guibrain = new GUIBrain(this);
+  System.out.println("Inserting menubar...");        
   insertMenuBar(this);
   disable(GUI.COMPILE_COMMAND);
   disable(GUI.RUN_COMMAND);
@@ -288,10 +321,15 @@ public GUI() {
 	}
 	);
 	
-	updateAllTexts();
+	System.out.println("Updating texts...");        
+  updateAllTexts();
   
-	this.setVisible(true);
-	this.pack(); 
+  System.out.println("Packing...");        
+  this.pack();
+	System.out.println("Setting visible...");        
+  this.setVisible(true);
+	System.out.println("Complete!");        
+   
 }
 
 
@@ -373,19 +411,21 @@ private void initGUI() {
 
   outputScrollPane = new JScrollPane(outputTextArea);
   outputScrollPane.setPreferredSize(new Dimension(30,300));
+  outputScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "CRT"));
   outputPanel.add(outputScrollPane, BorderLayout.CENTER);
   
   inputPanel.add(enterNumberLabel, BorderLayout.NORTH);
   inputPanel.add(inputField, BorderLayout.CENTER);
   inputPanel.add(enterNumberButton, BorderLayout.SOUTH);
+  inputPanel.setBorder(BorderFactory.createTitledBorder(blacklined, "KBD"));
   
   ioPanel.add(outputPanel, BorderLayout.CENTER);
   ioPanel.add(inputPanel, BorderLayout.SOUTH);
   
   upperRightPanel = new JPanel(new BorderLayout());
-  upperRightPanel.add(registersTableScrollPane, BorderLayout.WEST);
+  upperRightPanel.add(registersTableScrollPane, BorderLayout.EAST);
   upperRightPanel.add(symbolTableScrollPane, BorderLayout.CENTER);
-  upperRightPanel.add(ioPanel, BorderLayout.EAST);
+  upperRightPanel.add(ioPanel, BorderLayout.WEST);
   
   commentListScrollPane = new JScrollPane(commentList);
   commentListScrollPane.setPreferredSize(new Dimension(1,50));
@@ -396,6 +436,8 @@ private void initGUI() {
     public void valueChanged( ListSelectionEvent e ) {
       JList src = (JList)(e.getSource());
       String str = (String)src.getSelectedValue();
+      
+      //System.out.println(str);
       
       Integer line = null;
       int i = 1;
@@ -516,12 +558,16 @@ private JToolBar makeToolBar() {
   
   toolbar = new JToolBar("Toolbar");
   
-  System.out.println(getClass().getClassLoader().getResource("etc/open24.gif"));
+  //System.out.println(getClass().getClassLoader().getResource("etc/open24.gif"));
   
   openFileButton = new JButton();
-  openFileButton.setIcon(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/open24.gif"), "Open file")
-  );
+  try {
+    openFileButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/open24.gif"), "Open file")
+    );
+  }
+  catch (Exception e) {
+  }
   openFileButton.setToolTipText("Open a file");
   openFileButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(openFileButton);
@@ -529,64 +575,98 @@ private JToolBar makeToolBar() {
   toolbar.addSeparator();
   
   compileButton = new JButton();
-  compileButton.setIcon(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/compile24.gif"), "Compile")
-  );
+  try {  
+    compileButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource("etc/compile24.gif"), "Compile")
+    );
+  }
+  catch (Exception e) {
+  }
   compileButton.setToolTipText("Compile the program");
   compileButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(compileButton);
   
   runButton = new JButton();
-  runButton.setIcon(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/run24.gif"), "Run")
-  );
+  try {  
+    runButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource("etc/run24.gif"), "Run")
+    );
+  }
+  catch (Exception e) {
+  }
   runButton.setToolTipText("Run the program");
   runButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(runButton);
   
   continueButton = new JButton();
-  continueButton.setIcon(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/StepForward24.gif"), "Continue")
-  );
+  try {  
+    continueButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/StepForward24.gif"), "Continue")
+    );
+  }
+  catch (Exception e) {
+  }
   continueButton.setToolTipText("Continue operation");
   continueButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(continueButton);
   
   continueToEndButton = new JButton();
-  continueToEndButton.setIcon(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/FastForward24.gif"), "Continue w/o pauses")
-  );
+  try {  
+    continueToEndButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/FastForward24.gif"), "Continue w/o pauses")
+    );
+  }
+  catch (Exception e) {
+  }
   continueToEndButton.setToolTipText("Continue operation without pauses");
   continueToEndButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(continueToEndButton);
   
   stopButton = new JButton();
-  stopButton.setIcon(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/Stop24.gif"), "Stop")
-  );
+  try {  
+    stopButton.setIcon(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Stop24.gif"), "Stop")
+    );
+  }
+  catch (Exception e) {
+  }
   stopButton.setToolTipText("Stop the current operation");
   stopButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(stopButton);
   
   toolbar.addSeparator();
   
-  //settingsFile = new File(getClass().getClassLoader().getResource("etc/settings.cfg").toString());
   
-  lineByLineToggleButton = new JToggleButton(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/RowInsertAfter24.gif"), "Run line by line")
-  );
+  lineByLineToggleButton = new JToggleButton(); 
+  try {  
+    lineByLineToggleButton = new JToggleButton(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/RowInsertAfter24.gif"), "Run line by line")
+    );
+  }
+  catch (Exception e) {
+  }
   lineByLineToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(lineByLineToggleButton);
   
-  showCommentsToggleButton = new JToggleButton(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/History24.gif"), "Show comments")
-  );
+  showCommentsToggleButton = new JToggleButton(); 
+  try {  
+    showCommentsToggleButton = new JToggleButton(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/History24.gif"), "Show comments")
+    );
+  }
+  catch (Exception e) {
+  }
   showCommentsToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showCommentsToggleButton);
-  
-  showAnimationToggleButton = new JToggleButton(
-    new ImageIcon(getClass().getClassLoader().getResource("etc/Movie24.gif"),"Show comments")
-  );
+   
+  showAnimationToggleButton = new JToggleButton(); 
+  try {  
+    showAnimationToggleButton = new JToggleButton(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Movie24.gif"),"Show comments")
+    );
+  }
+  catch (Exception e) {
+  }
   showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showAnimationToggleButton);
   
@@ -632,15 +712,21 @@ public void updateStatusBar(String str) {
 }
 
 
+public void updateReg(short reg, int newValue) {
+	updateReg(reg, new Integer(newValue));
+}
 
 
 /** Updates a register value.
     @param reg The register to be updated.
     @param newValue The new value.
 */
-public void updateReg(short reg, int newValue) {
+public void updateReg(short reg, Integer newValue) {
+  if (newValue == null) {
+  return;
+  }
   DefaultTableModel registersTableModel = (DefaultTableModel)registersTable.getModel(); 
-  registersTable.setValueAt(""+newValue, reg, 1);
+  registersTable.setValueAt(""+newValue.intValue(), reg, 1);
 }
 
 
@@ -893,6 +979,9 @@ public void updateRowInSymbolTable(String symbolName, Integer symbolValue) {
 /** Adds a comment into the comment list.
 */
 public void addComment(String comment) {
+  if (comment == null) 
+    return;
+    
   DefaultListModel commentListModel = (DefaultListModel)commentList.getModel();
   int numberOfComponents = commentListModel.size();
   
@@ -1433,8 +1522,8 @@ private ActionListener setCompilingOptionsCommandActionListener = new ActionList
 
 private ActionListener stopCommandActionListener = new ActionListener() {
   public void actionPerformed(ActionEvent e) {
-    //guibrain.menuInterrupt();
-    new Thread(new GUIThreader(GUIThreader.TASK_STOP, guibrain)).start();
+    guibrain.menuInterrupt(false);
+    //new Thread(new GUIThreader(GUIThreader.TASK_STOP, guibrain)).start();
   }
 };
 

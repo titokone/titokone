@@ -4,6 +4,8 @@
     Lisäsin metodin public void waitForContinueTask()
     Lisäsin metodin public void continueTaskWithoutPauses()
     Lisäsin kentän noPauses
+    
+    Lisäsin kentän File openedFile
 
 */
 
@@ -19,7 +21,7 @@ import fi.hu.cs.ttk91.TTK91OutOfMemory;
 import fi.hu.cs.ttk91.*;
 import java.text.ParseException;
 import java.util.LinkedList;
-
+import java.net.URI;
 
 
 /** This class contains the intellect the GUI class needs to provide 
@@ -42,7 +44,7 @@ public class GUIBrain {
 */
 private Hashtable availableLanguages;
 
-private __stupid_Control control;
+private Control control;
   
   
     
@@ -56,7 +58,10 @@ private Settings currentSettings;
 
 private GUI gui;  
 
+private String programPath = "fi/hu/cs/titokone/";
 private File settingsFile;
+
+private File currentlyOpenedFile;
 
 public static final int COMMENTED = 1;
 public static final int LINE_BY_LINE = 2;
@@ -98,6 +103,8 @@ private static final short B91_WAIT_FOR_KBD = 4;
 private static final short K91_NOT_COMPILING = 5;
 private static final short K91_COMPILING = 6;
 private static final short K91_PAUSED = 7;
+private static final short INTERRUPTED_WITHOUT_PAUSE = 10;
+private static final short INTERRUPTED_WITH_PAUSE = 11;
 
 
 public static String DEFAULT_STDIN_FILENAME = "stdin";
@@ -120,20 +127,21 @@ public GUIBrain(GUI gui) {
   catch (IOException e) {
     System.out.println(e.getMessage());
   }
-  control = new __stupid_Control(defStdinFile, defStdoutFile);
+  control = new Control(defStdinFile, defStdoutFile);
 
-  settingsFile = new File(getClass().getClassLoader().getResource("etc/settings.cfg").toString());
-  
-  try {
-    currentSettings = new Settings( control.loadSettingsFileContents(settingsFile) );
+  try { 
+    getCurrentSettings();
   }
-  catch (ParseException e) {
-    System.out.println("ParseException in settings");
+  catch (IOException e) {
+    System.out.println("Settings file cannot be accessed. ...exiting.");
+    System.exit(0);
   }
   
+    
+    
   
   String filemode = currentSettings.getStrValue(Settings.STDIN_PATH);
-  String path = currentSettings.getStrValue(Settings.DEFAULT_STDIN);
+  String path = currentSettings.getStrValue(Settings.DEFAULT_STDIN); 
   
   if (path != null && !path.equals("")) {
     if (filemode.equals("absolute")) {
@@ -146,7 +154,7 @@ public GUIBrain(GUI gui) {
   try {
     control.setDefaultStdIn(defStdinFile);
   }
-  catch (IOException e) {
+  catch (Exception e) {
     System.out.println(e.getMessage());
   }
     
@@ -165,64 +173,225 @@ public GUIBrain(GUI gui) {
   try {
     control.setDefaultStdOut(defStdoutFile);
   }
-  catch (IOException e) {
+  catch (Exception e) {
     System.out.println(e.getMessage());
   }
   
-  
   int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
-  
   gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, (runmode & COMMENTED) != 0);
   gui.setSelected(GUI.OPTION_RUNNING_PAUSED, (runmode & PAUSED) != 0);
   gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, (runmode & ANIMATED) != 0);
   
   int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
-  
   gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
   gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
   
-  availableLanguages = new Hashtable();
+  int memorysize = currentSettings.getIntValue(Settings.MEMORY_SIZE);
+  if (memorysize != Control.DEFAULT_MEMORY_SIZE) {
+    try {
+      control.changeMemorySize(memorysize);
+    }
+    catch (IllegalArgumentException wrongsize) {
+      control.changeMemorySize(Control.DEFAULT_MEMORY_SIZE);
+    }
+  }
   
+  
+  availableLanguages = new Hashtable();
   findAvailableLanguages();
+  
+  String language = currentSettings.getStrValue(Settings.UI_LANGUAGE);
+  
+  if ( availableLanguages.containsKey(language) ) {
+    Translator.setLocale((Locale)availableLanguages.get(language));
+    gui.updateAllTexts();
+  }
+  
   
   noPauses = false;
   interruptSent = false;
+  saveSettings();
   
   currentState = NONE;
 }
 
   
+
+private void getCurrentSettings() throws IOException {
+  String defaultStdinFile = System.getProperty("user.dir") + "/stdin";
+  String defaultStdinPath = "absolute";
+  String defaultStdoutFile = System.getProperty("user.dir") + "/stdout";
+  String defaultStdoutPath = "absolute";
+  String defaultStdoutUse = "overwrite";
+  int defaultMemorySize = Control.DEFAULT_MEMORY_SIZE;
+  String defaultUILanguage = "English";
+  int defaultRunningMode = 0;
+  int defaultCompilingMode = 0;
   
-private void load() {
+  URI fileURI;
   
-  __stupid_LoadInfo loadinfo;
+  try {
+    fileURI = new URI( getClass().getClassLoader().getResource(programPath).toString() + "etc/settings.cfg" );
+    settingsFile = new File(fileURI);
+  }
+  catch (Exception e) {
+    System.out.println("Main path not found!...exiting");
+    System.exit(0);
+  }
+  
+    
+  
+  if (settingsFile.exists() == false) {
+    settingsFile.createNewFile(); // throws IOException
+  }
+  
+  String settingsFileContents;
+  try {
+     settingsFileContents = control.loadSettingsFileContents(settingsFile);
+  }
+  catch (IOException e) {
+    System.out.println("Error while reading settings file.");
+    throw e;
+  }
+    
+  try {
+    //System.out.println( control.loadSettingsFileContents(settingsFile) );
+    currentSettings = new Settings( control.loadSettingsFileContents(settingsFile) );
+  }
+  catch (Exception e) {
+    System.out.println("Parse error in settings file.");
+    try {
+      currentSettings = new Settings(null);
+    }
+    catch (ParseException parseError) {
+      System.out.println("This error shouldn't occur!");
+    }
+  }
+  
+  
+  
+  try {
+    if (currentSettings.getStrValue(Settings.STDIN_PATH) == null)
+      currentSettings.setValue(Settings.STDIN_PATH, defaultStdinPath);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.STDIN_PATH, defaultStdinPath);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.DEFAULT_STDIN) == null)
+      currentSettings.setValue(Settings.DEFAULT_STDIN, defaultStdinFile);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.DEFAULT_STDIN, defaultStdinFile);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.STDOUT_PATH) == null) 
+      currentSettings.setValue(Settings.STDOUT_PATH, defaultStdoutPath);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.STDOUT_PATH, defaultStdoutPath);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.DEFAULT_STDOUT) == null)
+      currentSettings.setValue(Settings.DEFAULT_STDOUT, defaultStdoutFile);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.DEFAULT_STDOUT, defaultStdoutFile);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.STDOUT_USE) == null)
+      currentSettings.setValue(Settings.STDOUT_USE, defaultStdoutUse);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.STDOUT_USE, defaultStdoutUse);
+  }
+  
+  try {
+    currentSettings.getIntValue(Settings.MEMORY_SIZE);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.MEMORY_SIZE, defaultMemorySize);
+  }
+  
+  try {
+    if (currentSettings.getStrValue(Settings.UI_LANGUAGE) == null) 
+      currentSettings.setValue(Settings.UI_LANGUAGE, defaultUILanguage);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.UI_LANGUAGE, defaultUILanguage);
+  }
+    
+  try {
+    currentSettings.getIntValue(Settings.RUN_MODE);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.RUN_MODE, defaultRunningMode);
+  }
+  
+  try {
+    currentSettings.getIntValue(Settings.COMPILE_MODE);
+  }
+  catch (Exception e) {
+    currentSettings.setValue(Settings.COMPILE_MODE, defaultCompilingMode);
+  }
+}
+
+  
+private LoadInfo load() {
+  
+  LoadInfo loadinfo;
   try {
     loadinfo = control.load();
   }
-  catch (Exception  e) {  //Tää tullaan muuttamaan TTK91OutOfMemory:ksi
-    // TODO: Mitä tehdään kun loppuu muisti
-    return;
+  catch (TTK91AddressOutOfBounds e) { 
+    gui.showError(new Message("Titokone out of memory").toString());
+    return null;
+  }
+  catch (TTK91NoStdInData e) {
+    File[] appDefs = control.getApplicationDefinitions();
+    String[] stdinFilePath = { getCurrentDefaultStdinFile().getPath() };
+    if ( appDefs[Control.DEF_STDIN_POS] != null ) {
+      stdinFilePath[0] = appDefs[Control.DEF_STDIN_POS].getPath();
+    }
+    
+    gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
+    return null;
   }
   
-  gui.updateStatusBar(loadinfo.getStatusMessage());
-  gui.updateReg(GUI.SP, loadinfo.getSP());
-  gui.updateReg(GUI.FP, loadinfo.getFP());
-   
-  String[][] symbolsAndValues = loadinfo.getSymbolTable();
-  gui.insertSymbolTable(symbolsAndValues);
+  return loadinfo;
+  
+}
+
+
+
+private void loadAndUpdateGUI() {
+  LoadInfo loadinfo = load();
+ 
+  if (loadinfo != null) {
+    gui.updateStatusBar(loadinfo.getStatusMessage());
+    gui.updateReg(GUI.SP, loadinfo.getSP());
+    gui.updateReg(GUI.FP, loadinfo.getFP());
+     
+    String[][] symbolsAndValues = loadinfo.getSymbolTable();
+    gui.insertSymbolTable(symbolsAndValues);
+      
+    int binaryCommands[] = loadinfo.getBinaryCommands();
+    String symbolicCommands[] = loadinfo.getSymbolicCommands();
+    int data[] = loadinfo.getData();
     
-  int binaryCommands[] = loadinfo.getBinaryCommands();
-  String symbolicCommands[] = loadinfo.getSymbolicCommands();
-  int data[] = loadinfo.getData();
-  
-  gui.insertToInstructionsTable(binaryCommands, symbolicCommands);
-  gui.insertToDataTable(data);
-  
-  gui.addComment(loadinfo.getComments());
-  
-  currentState = B91_NOT_RUNNING;
-  setGUICommandsForCurrentState();
-  gui.setGUIView(3);
+    gui.insertToInstructionsTable(binaryCommands, symbolicCommands);
+    gui.insertToDataTable(data);
+    
+    gui.addComment(loadinfo.getComments());
+    
+    currentState = B91_NOT_RUNNING;
+    setGUICommandsForCurrentState();
+    gui.setGUIView(3);
+  }
 }
 
 
@@ -233,7 +402,7 @@ private void load() {
 public void menuOpenFile(File openedFile) { 
   
   /* Opening a file is a command that interrupts all other tasks. */
-  interruptCurrentTasks();
+  interruptCurrentTasks(true);
   
   String suffix = getExtension(openedFile);
   
@@ -243,12 +412,14 @@ public void menuOpenFile(File openedFile) {
     try {
       control.openBinary(openedFile);
     }
-    catch (IOException e) {
+    catch (Exception e) {
       gui.showError(e.getMessage());
+      return;
     }
     
-    load();
-  }
+    loadAndUpdateGUI();
+    
+}
   else if (suffix.equals("k91")) {
     gui.resetAll();
     
@@ -259,7 +430,10 @@ public void menuOpenFile(File openedFile) {
     }
     catch (IOException e) {
       gui.showError(e.getMessage());
+      return;
     }
+    
+    currentlyOpenedFile = openedFile;
     
     String[] src = k91Source.split("\n|\r|\r\n");
     gui.insertToCodeTable(src);
@@ -332,7 +506,7 @@ public void menuRun() {
     }
   }
   
-  __stupid_RunInfo runinfo;
+  RunInfo runinfo;
   int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
   
   currentState = B91_RUNNING;
@@ -363,25 +537,35 @@ public void menuRun() {
       continue; // And then go to beginning of the do-while-loop.
       
     }
+    catch (TTK91RuntimeException e) {
+      gui.addComment(e.getMessage());
+      break;
+    }
+      
+    System.out.println(runinfo.getComments());
+    System.out.println(runinfo.whatDevice());
     
     if ((runmode & COMMENTED) != 0) {
-      gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
+      if (runinfo.getComments() != null) 
+        gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
     }
     gui.selectLine(runinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
-    if (runinfo.getCrtData() != null) {
-      gui.addOutputData( runinfo.getCrtData().intValue() );
+    if (runinfo.whatDevice() != null && runinfo.whatDevice().equals("Display")) {
+      if(runinfo.whatOUT() != null) {
+        gui.addOutputData( runinfo.whatOUT()[1] );
+      }
     }
     
-    int[] newRegisterValues = runinfo.getRegisters();
-    gui.updateReg(GUI.R0, newRegisterValues[TTK91Cpu.REG_R0]);
-    gui.updateReg(GUI.R1, newRegisterValues[TTK91Cpu.REG_R1]);
-    gui.updateReg(GUI.R2, newRegisterValues[TTK91Cpu.REG_R2]);
-    gui.updateReg(GUI.R3, newRegisterValues[TTK91Cpu.REG_R3]);
-    gui.updateReg(GUI.R4, newRegisterValues[TTK91Cpu.REG_R4]);
-    gui.updateReg(GUI.R5, newRegisterValues[TTK91Cpu.REG_R5]);
-    gui.updateReg(GUI.R6, newRegisterValues[TTK91Cpu.REG_R6]);
-    gui.updateReg(GUI.R7, newRegisterValues[TTK91Cpu.REG_R7]);
-    gui.updateReg(GUI.PC, newRegisterValues[TTK91Cpu.CU_PC]);
+    Integer[] newRegisterValues = runinfo.getRegisters();
+    gui.updateReg(GUI.R0, newRegisterValues[0]);
+    gui.updateReg(GUI.R1, newRegisterValues[1]);
+    gui.updateReg(GUI.R2, newRegisterValues[2]);
+    gui.updateReg(GUI.R3, newRegisterValues[3]);
+    gui.updateReg(GUI.R4, newRegisterValues[4]);
+    gui.updateReg(GUI.R5, newRegisterValues[5]);
+    gui.updateReg(GUI.R6, newRegisterValues[6]);
+    gui.updateReg(GUI.R7, newRegisterValues[7]);
+    //gui.updateReg(GUI.PC, newRegisterValues[8]);
     
     LinkedList changedMemoryLines = runinfo.getChangedMemoryLines();
     while (changedMemoryLines.isEmpty() == false) {
@@ -417,6 +601,12 @@ public void menuRun() {
     
   } while (interruptSent == false); // End of do-while -loop
   
+  if (currentState == INTERRUPTED_WITH_PAUSE) {
+    setGUICommandsForCurrentState();
+    waitForContinueTask();
+  }
+  
+  load();
   currentState = B91_NOT_RUNNING;
   setGUICommandsForCurrentState();
   
@@ -437,7 +627,7 @@ public void menuCompile() {
   currentState = K91_COMPILING;
   setGUICommandsForCurrentState();
   
-  __stupid_CompileInfo compileinfo;
+  CompileInfo compileinfo;
   int compilemode;
   int phase;
   
@@ -448,17 +638,15 @@ public void menuCompile() {
   */
   boolean compilingCompleted = false;
   
-  /* This is a variable for debugging */int n = 0; 
   do {
     
-    /* This is for debugging */ //if(n++ > 20) interruptSent = true;
     currentState = K91_COMPILING;
     setGUICommandsForCurrentState();
     
     try {
       compileinfo = control.compileLine();
     }
-    catch (Exception e) { // TODO: will be changed to TTK91CompileException
+    catch (TTK91CompileException e) {
       gui.addComment(e.getMessage());
       currentState = K91_PAUSED;
       setGUICommandsForCurrentState();
@@ -466,10 +654,16 @@ public void menuCompile() {
       break;
     }
     
+    String comments = compileinfo.getComments();
+	  if (comments == null) 
+	    comments = "";
+	  
+	  gui.addComment(compileinfo.getLineNumber() + ": " + comments);
+	    
     compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);    
     phase = compileinfo.getPhase();
     
-    if (phase == __stupid_CompileInfo.FIRST_ROUND) {  
+    if (phase == CompileInfo.FIRST_ROUND) {  
       if (compileinfo.getSymbolFound()) {      	
       	String symbolName = compileinfo.getSymbolName();
       	Integer symbolValue = null;
@@ -484,10 +678,13 @@ public void menuCompile() {
         gui.updateRowInSymbolTable(symbolName, symbolValue);
       }
       
+      System.out.println(compileinfo.getLineContents());
+      System.out.println(compileinfo.getLineNumber() + ": " + comments);
+      System.out.println("");
       gui.selectLine(compileinfo.getLineNumber(), GUI.CODE_TABLE);
     }
 
-    else if (phase == __stupid_CompileInfo.FINALIZING_FIRST_ROUND) {
+    else if (phase == CompileInfo.FINALIZING_FIRST_ROUND) {
 	    String[][] symbolTable = compileinfo.getSymbolTable();
 	    if (symbolTable != null) {
   	    for (int i=0 ; i<symbolTable.length ; i++) {
@@ -504,14 +701,14 @@ public void menuCompile() {
 	    gui.setGUIView(3);
     
     }
-    else if (phase == __stupid_CompileInfo.SECOND_ROUND) {
+    else if (phase == CompileInfo.SECOND_ROUND) {
       int line = compileinfo.getLineNumber();
       int binary = compileinfo.getLineBinary();
       gui.updateInstructionsAndDataTableLine(line, binary);
       gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
     }
-    else if (phase == __stupid_CompileInfo.FINALIZING) {
-      if (compileinfo.getFinal() == true) {
+    else if (phase == CompileInfo.FINALIZING) {
+      if (compileinfo.getFinalPhase() == true) {
         compilingCompleted = true;
         break;
       }
@@ -519,7 +716,9 @@ public void menuCompile() {
     
     gui.repaint();
             
-	  if ( ((compilemode & PAUSED) != 0) && !compileinfo.getComments().equals("")  && noPauses == false) {
+	  
+	  
+	  if ( ((compilemode & PAUSED) != 0) && !comments.equals("")  && noPauses == false) {
       currentState = K91_PAUSED;
       setGUICommandsForCurrentState();
       waitForContinueTask();
@@ -527,7 +726,7 @@ public void menuCompile() {
     else {
       synchronized(this) {
         try {
-          wait(70);
+          wait(700);
         }
         catch(InterruptedException e) {
           System.out.println("InterruptedException in menuRun()");
@@ -537,14 +736,30 @@ public void menuCompile() {
     
   } while ( interruptSent == false ); // End of do-loop
   
+  if (currentState == INTERRUPTED_WITH_PAUSE) {
+    setGUICommandsForCurrentState();
+    waitForContinueTask();
+  }
+  
   if (compilingCompleted == true) {
     gui.resetAll();
-    load();
+    loadAndUpdateGUI();
   }
   else {
+    /* Reload the source so that the compiling starts again from the beginning. */
+    try {
+      control.openSource(currentlyOpenedFile);
+    }
+    catch (IOException e) {
+      gui.showError(e.getMessage());
+      currentState = NONE;
+      setGUICommandsForCurrentState();
+      return;
+    }
     currentState = K91_NOT_COMPILING;
     setGUICommandsForCurrentState();
     gui.setGUIView(2);
+    gui.resetAll();
   }
 }
 
@@ -553,7 +768,7 @@ public void menuCompile() {
 /** This method corresponds to the menu option File -> Erase memory. 
 */
 public void menuEraseMemory() { 
-  interruptCurrentTasks();
+  interruptCurrentTasks(true);
   control.eraseMemory();
   gui.setGUIView(1);
   currentState = NONE;
@@ -566,34 +781,9 @@ public void menuEraseMemory() {
 /** This method corresponds to the menu option File -> Exit. 
 */
 public void menuExit() { 
-  interruptCurrentTasks();
+  interruptCurrentTasks(true);
 }
 
-
-
-private void interruptCurrentTasks() {
-  interruptSent = true;
-  synchronized(this) {
-    notifyAll();
-  }
-}
-/** This method corresponds to a request to interrupt whatever we 
-    were doing once it becomes possible. 
-*/
-public void menuInterrupt() { 
-  
-  interruptCurrentTasks();
-  
-  switch (currentState) {
-    case B91_NOT_RUNNING:
-    case B91_RUNNING:
-    case B91_PAUSED:
-    case B91_WAIT_FOR_KBD:
-      control.load();
-      break;
-  }
-  
-}
 
 
 
@@ -602,9 +792,9 @@ public void menuSetLanguage(String language) {
  if (availableLanguages.containsKey(language)) {
     //System.out.println((Locale)availableLanguages.get(language));
     Translator.setLocale((Locale)availableLanguages.get(language));
-    gui.setLocale((Locale)availableLanguages.get(language));
+    //gui.setLocale((Locale)availableLanguages.get(language));
     currentSettings.setValue(Settings.UI_LANGUAGE, language);
-    control.saveSettings(currentSettings.toString(), settingsFile);
+    saveSettings();
     gui.updateAllTexts();
     
   }
@@ -635,15 +825,15 @@ public void menuSetStdin(File stdinFile) {
   try {
     control.setDefaultStdIn(stdinFile);
   }
-  catch (IOException e) {
+  catch (Exception e) {
     gui.showError(e.getMessage());
     return;
   }
   String[] filename = { stdinFile.getPath() };
   currentSettings.setValue(Settings.DEFAULT_STDIN, filename[0]);
   currentSettings.setValue(Settings.STDIN_PATH, "absolute");
-  control.saveSettings(currentSettings.toString(), settingsFile);
-
+  saveSettings();
+  
   gui.addComment(new Message("Default stdin file set to {0}", filename).toString());
 }
 
@@ -660,14 +850,14 @@ public void menuSetStdout(File stdoutFile, boolean append) {
   try {
     control.setDefaultStdOut(stdoutFile);
   }
-  catch (IOException e) {
+  catch (Exception e) {
     gui.showError(e.getMessage());
     return;
   }
   String[] filename = { stdoutFile.getPath() };
   currentSettings.setValue(Settings.DEFAULT_STDOUT, filename[0]);
   currentSettings.setValue(Settings.STDOUT_PATH, "absolute");
-  control.saveSettings(currentSettings.toString(), settingsFile);
+  saveSettings();
   
   gui.addComment(new Message("Default stdout file set to {0}", filename).toString());
 }
@@ -682,7 +872,7 @@ public void menuSetMemorySize(int newSize) {
     return;
   }
   currentSettings.setValue(Settings.MEMORY_SIZE, newSize);
-  control.saveSettings(currentSettings.toString(), settingsFile);
+  saveSettings();
   gui.setGUIView(1);
 }
 
@@ -702,7 +892,7 @@ public void menuSetRunningOption(int option,boolean b) {
   }
   
   currentSettings.setValue(Settings.RUN_MODE, runmode);
-  System.out.println(runmode);
+  saveSettings();
   
   switch (option) {
     case LINE_BY_LINE: // Synonym for case PAUSED:
@@ -719,6 +909,7 @@ public void menuSetRunningOption(int option,boolean b) {
 
 
 public void menuSetCompilingOption(int option,boolean b) {
+  //System.out.println(option + "" + b);
   int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
   
   if (((compilemode & option) != 0) == b) {
@@ -732,8 +923,8 @@ public void menuSetCompilingOption(int option,boolean b) {
   }
   
   currentSettings.setValue(Settings.COMPILE_MODE, compilemode);
-  System.out.println(compilemode);
-  
+  saveSettings();
+   
   switch (option) {
     case PAUSED:
       gui.setSelected(GUI.OPTION_COMPILING_PAUSED, b);
@@ -751,6 +942,60 @@ public void menuAbout() {}
 
 
 public void menuManual() {}
+
+
+
+/** This method corresponds to a request to interrupt whatever we 
+    were doing once it becomes possible.
+    @param immediate If this is true, then continueTask is being waited before
+                     the previous job ends.
+                     If this is false, then it stops immediately and next job
+                     can start right after calling this.                    
+*/
+public void menuInterrupt(boolean immediate) { 
+  
+  interruptCurrentTasks(immediate);
+  /*
+  switch (currentState) {
+    case B91_NOT_RUNNING:
+    case B91_RUNNING:
+    case B91_PAUSED:
+    case B91_WAIT_FOR_KBD:
+      try {
+        control.load();
+      }
+      catch (TTK91AddressOutOfBounds e) {
+        System.out.println("address out of bounds");
+      }
+      catch (TTK91NoStdInData e) {
+        System.out.println("no stdin data");
+     }
+      break;
+  }
+  */
+}
+
+
+
+private void interruptCurrentTasks(boolean immediate) {
+  if (immediate == true) {
+    currentState = INTERRUPTED_WITHOUT_PAUSE;
+    interruptSent = true;
+    synchronized(this) {
+      notifyAll();
+    }
+    /* This method must be notified that 
+    waitForContinueTask();*/
+  }
+  else {
+    currentState = INTERRUPTED_WITH_PAUSE;
+    interruptSent = true;
+    synchronized(this) {
+      notifyAll();
+    }
+  }
+  
+}
 
 
 
@@ -826,6 +1071,17 @@ public String[] getAvailableLanguages() {
 // Private methods. ---------------------------------------------------
 
 
+private void saveSettings() {
+  try {
+    control.saveSettings(currentSettings.toString(), settingsFile);
+  }
+  catch (IOException e) {
+    //String[] name = { settingsFile.getName() };
+    //gui.showError(new Message("{0} is inaccessible", name).toString());
+  }
+}
+  
+  
 
 private File getCurrentDefaultStdoutFile() {
   
@@ -880,7 +1136,14 @@ private void findAvailableLanguages() {
   String languageName, language, country, variant;
   
   if (languageFile.exists()) {
-    String languageFileContents = control.loadSettingsFileContents(languageFile);
+    String languageFileContents;
+    try {
+      languageFileContents = control.loadSettingsFileContents(languageFile);
+    }
+    catch (IOException e) {
+      System.out.println("IOException in settings file");
+      return;
+    }
     String[] languageFileRow = languageFileContents.split("\n|\r|\r\n");
     
     System.out.println(languageFileContents);
@@ -1005,6 +1268,15 @@ private void setGUICommandsForCurrentState() {
       gui.enable(GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
       gui.enable(GUI.STOP_COMMAND);
       break;
+    
+    case INTERRUPTED_WITH_PAUSE:
+      gui.disable(GUI.COMPILE_COMMAND);
+      gui.disable(GUI.RUN_COMMAND);
+      gui.enable(GUI.CONTINUE_COMMAND);
+      gui.enable(GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
+      gui.disable(GUI.STOP_COMMAND);
+      break;
+    
   }
 }
 }
