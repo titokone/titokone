@@ -222,7 +222,7 @@ public GUIBrain(GUI gui, Animator animator) {
   
   noPauses = false;
   interruptSent = false;
-  // Removed 26.4./Sini. The settings have not really changed into anything
+  // The settings have not really changed into anything
   // interesting at this point.
   //saveSettings();
   
@@ -484,7 +484,7 @@ public synchronized void menuRun() {
 }
 
   /** This method is used to save the source after it has been 
-      modified in the code window. */ // Added by Sini 5.5.
+      modified in the code window. */ 
   public void saveSource() {
     try {
       control.modifySource(gui.getCodeTableContents());
@@ -1214,7 +1214,6 @@ private LoadInfo load() {
   catch (TTK91AddressOutOfBounds e) { 
     gui.showError(new Message("Titokone out of memory").toString());
     return control.getPendingLoadInfo(); // This is null; load really failed.
-    // Above line changed by Sini 26.4.
   }
   catch (TTK91NoStdInData e) {
     File[] appDefs = control.getApplicationDefinitions();
@@ -1226,7 +1225,6 @@ private LoadInfo load() {
     //gui.showError(new Message("Stdin file {0} is not in valid format or it doesn't exist", stdinFilePath).toString());
     //gui.addComment(e.getMessage()); // The message is already translated.
     return control.getPendingLoadInfo(); // This is != null; load succeeded.
-    // Above 3 lines changed by Sini 26.4.
   }
   
   return loadinfo;
