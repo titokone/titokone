@@ -331,11 +331,11 @@ public class Animator extends JPanel implements Runnable {
             animateAnEvent (Rj, ALU_IN1);
             comment1 = new Message ("Copy second operand to ALU IN2.").toString();
             animateAnEvent (whereIsSecondOperand, ALU_IN2, param);
-            comment1 = new Message ("ALU computes the comparision result.").toString();
+            comment1 = new Message ("ALU computes the comparison result.").toString();
             comment2 = new Message ("0=greater, 1=equals, 2=less").toString();
             pause();
             value[ALU_OUT] = info.getCompareStatus();
-            comment1 = new Message ("Set comparision result to SR").toString();
+            comment1 = new Message ("Set comparison result to SR").toString();
             animateAnEvent (ALU_OUT, SR);
             switch (info.getCompareStatus()) {
                 case  0 : SR_String = "1   0   0...";break;
