@@ -51,7 +51,7 @@ public class FileHandler {
 	@param srcFile The file to save the source to. 
 	@throws IOException If an I/O error occurds. */
     public void saveSource(Source src, File srcFile) throws IOException {
-      saveStringToFile(src.toString(), srcFile);
+      saveStringToFile(src.getSource(), srcFile);
     }
     
     /** This function loads a settings file into a StringBuffer.
