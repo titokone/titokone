@@ -1,6 +1,4 @@
-package fi.helsinki.cs.titokone;
-
-import fi.helsinki.cs.ttk91.IllegalArgumentException;
+package fi.hu.cs.titokone;
 
 /** This data class contains all the register information. The registers
     are accessed via index numbers which are defined in the TTK91CPU 
