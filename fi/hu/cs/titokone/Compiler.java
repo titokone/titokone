@@ -593,12 +593,19 @@ Address can be either a variable or a number and that must be noticed also.
 		    newSymbolTableLine[0] = lineTemp[0];
 		    newSymbolTableLine[1] = "" + nextMemorySlot;
 		    symbolTable.set(i, newSymbolTableLine.clone());
-		    ++nextMemorySlot;
 		    
-		    for (int j = 0; j < dsValue; ++j) {
+			// Allaolevat rivit puukotti Jari S. 12.11.2005, sillä
+			// taulukoiden symboliarvot olivat syvältä!
+			// Ei vakuuttavasti testattu ja muutos arvaus, joka
+			// tehty tuntematta luokan toimintaa juurikaan!
+			//++nextMemorySlot;
+		    nextMemorySlot += dsValue;
+		    
+			for (int j = 0; j < dsValue; ++j) {
 			data[j + nextPosition] = "" + 0;		
 		    }
 		    nextPosition += dsValue;
+			System.out.println(dsValue);
 		} else {
 		    if (lineTemp[1].substring(0,2).equalsIgnoreCase("dc")) {
 			if (lineTemp[1].trim().length() > 2) {

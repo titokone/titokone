@@ -1,0 +1,116 @@
+Muutosloki v1.1b
+================
+
+Korjattu taulukoiden alustukseen (DS) liittyv‰ bugi, jossa
+symbolitauluun vietiin virheellisi‰ muistiosotteita. Muutettiin
+luokkaa Compiler. Virheen kuvaus oli:
+
+	DS ei toimi oikein eli esim.
+	Tbl DS 5
+	Xprt DC 0 
+	niin Xprt symbolin arvoksi tullee Tbl+1
+
+(Jari Suominen, 15.11.2005)
+
+
+
+Titokoneen piirteit‰/ongelmia
+=============================
+
+Titokone 1.1b vaatii ainakin toistaisesti JRE 1.5:n, eli vanhemmat
+versiot eiv‰t toimi.
+---
+LOAD R1, (R2) ei toimi, pit‰isi olla sama kuin LOAD R1, 0(R2) eli sama
+kuin LOAD R1, @R2. Voi kiert‰‰ k‰ytt‰m‰ll‰ LOAD R1, @R2:ta tai sitten
+LOAD R1, 0(R2).
+---
+STORE R1, @R2 ei toimi eik‰ tietenk‰‰n myˆs STORE R1, (R2). Voi kiert‰‰ 
+taas: STORE R1, 0(R2).
+---
+NOT ei toimi ollenkaan. Ei tunne opkoodia - joka muuten muistaakseni 
+onkin dokumentoimaton. Muistaisin, ett‰ NOT R1 tekee siis NOT-operaation
+R1:lle joka on k‰skyn ensimm‰inen operandi eik‰ NOT v‰lit‰ toisesta 
+operandista mit‰‰n.
+(Heikki Lindholm, 26.8.2004)
+---
+Titokoneesta on uusi versio 1.1. 
+N‰ytt‰‰ silt‰, ett‰ t‰m‰ Titokone pysyy pystyss‰ Javan uusimmassa
+buildissa (1.4.2_05) ja lis‰ksi myˆs ainakin Macin Java 1.4.1:ll‰, jossa
+oli aiemmin tiedostodialogia avatessa kaatumisen ongelma. Kaikkiaan noin
+nelj‰n rivin muutos, yksi Translator.javassa ja kolme GUI.javassa. 
+
+Uusi versio on jo jakelussa. 
+(Sini Ruohomaa, 23.8.2004)
+---
+Nimettˆm‰t DC:t eiv‰t toimi kuten ehk‰ joku odottaisi. Esim.
+    Pekka DC 0
+          DC 2
+          DC 4
+antaa virheilmoituksia.
+
+Koodin seassa pit‰isi DC:t eiv‰t toimi oikein. Ohjelman alussa 
+olevat DC:t varataan lopusta ja keskell‰ olevat siit‰, miss‰ ovat.
+(Heikki Lindholm, 20.8.2004)
+---
+Animoinnissa ainakin joillakin koneilla suurin animointinopeus
+on niin nopea, ett‰ sit‰ ei n‰e!
+(Teemu Kerola, 18.8.2004)
+---
+Exactumin luokalle B221 p‰tee: lˆysin Sunin arkistoista version vanhemman 
+javan (1.4.2_04). Testasin Titokonetta sill‰ ja se n‰ytti toimivan. 
+Nyt vanha java on paketoitu ja pistetty asennukseen eli kun koneen 
+boottaa se poistaa java 1.4.2_05:n ja asentaa 1.4.2_04:n.  
+
+Kotikoneessa vanhempi java (sek‰ sdk ett‰ jre) lˆytyy osoitteesta
+http://java.sun.com/products/archive/j2se/1.4.2_04/index.html
+Kumpikaan paketti ei asenna javaa polkuun, joten se on teht‰v‰ k‰sin, 
+jotta titokone.bat skripti toimii.
+
+Polku asetetaan seuraavasti:
+
+Windows NT/2000/XP
+
+Napsautetaan hiiren oikealla n‰pp‰imell‰ My Computer-ikonia jolloin 
+aukeaa harmaa laatikko josta valitaan vaihtoehto Properties. Nyt pit‰isi 
+olla auki System Properties-ikkuna. Valitaan sielt‰ v‰lilehti Advanced 
+ja painetaan alhaalla olevaa Enviroment Variables nappia. Valitaan 
+System variables listasta Path-muuttuja ja editoidaan siihen javan 
+asennus hakemisto\bin, ja sen j‰lkeen ;-merkki.
+
+;-merkin teht‰v‰ on erottaa hakemistot toisistaan.
+
+esim.
+Alkuper‰inen polku:
+%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;
+
+Uusi polku:
+%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;C:\JavaSDK1.4.2\bin;
+
+DOS tai Windows 95/98/ME
+
+Avataan c:\autoexec.bat tekstieditoriin (esim. notepad). Etsit‰‰n rivi
+set PATH=<t‰ss‰ on systeemin polku> ja editoidaan javan asennus 
+hakemisto polun per‰‰n kuten yll‰. T‰m‰n j‰lkeen tallennetaan tiedosto 
+ja k‰ynnistet‰‰n kone uudelleen.
+
+Windows NT/2000/XP:ss‰ polku tulee voimaan seuraavaan k‰ynnistettyyn 
+komentorivitulkkiin, kun taas DOS tai Windows 95/98/ME on syyt‰ k‰ynnist‰‰ 
+uudelleen.
+
+(Pasi Vettenranta, 17.8.2004)
+---
+Titokone ei tunnu toimivan ihan kaikkien Windowsien 
+Javan kanssa. Esimerkiksit‰ll‰ hetkell‰ uusin Java 
+versio (1.4.2_05) ja Titokone eiv‰t oikein sovi yhteen.
+Vika voi yht‰ hyvin olla Javassa kuin Titokoneessakin.
+Sini Ruohomaa selvitt‰‰ tilannetta.
+(Teemu Kerola, 16.8.2004)
+---
+Muisti ilmeisesti alustetaan aina suorituksen alussa.
+DC-valek‰skyill‰ m‰‰ritellyt alustetaan arvonsa mukaisesti
+ja DS-valek‰skyill‰ m‰‰ritellyt alueet nollataan.
+Suorituksen alussa n‰kyv‰ data-alue ei n‰yt‰ n‰it‰ alustuksia.
+(Teemu Kerola, 4.8.2004)
+
+Raportoikaa muut uudet piirteet/ongelmat minulle, kiitos.
+Teemu Kerola
