@@ -23,10 +23,10 @@ public class BinaryInterpreter extends Interpreter {
 	internal command information data structures. */
     
     public BinaryInterpreter() {
-	commands = new HashMap(37);
-	parameters = new HashMap(37);
+	commands = new HashMap(38); // 38 was 37, increased to 38 (added NOT-command) - Lauri 2004-12-09
+	parameters = new HashMap(38);
 	
-	for (int i = 0; i<37; i++){
+	for (int i = 0; i<38; i++){
 	    commands.put(commandData[i][1], commandData[i][0]);
 	    parameters.put(commandData[i][1], commandData[i][2]);
 	}
@@ -53,14 +53,17 @@ public class BinaryInterpreter extends Interpreter {
 	int command = binaryCommand;
        	
 	String s = getOpCodeFromBinary(command);
-	if (s==null)
+	if (s==null) {
 	    return GARBLE;
+	}
 	Integer opcode = new Integer(s);
        	s=(String)commands.get(opcode);
-	if (s==null)
+	if (s==null) {
 	    return GARBLE;
-	if(getMemoryModeFromBinary(command)==null)
+	}
+	if(getMemoryModeFromBinary(command)==null) {
 	    return GARBLE;
+	}
 
 	Integer param = (Integer)parameters.get(opcode);
 	
@@ -83,9 +86,9 @@ public class BinaryInterpreter extends Interpreter {
 	case 4:{ //address only
 	    String mem = getMemoryModeFromBinary(command);
 
-	    if (mem.equals(null))
+	    if (mem.equals(null)) {
 		return GARBLE;
-
+	    }
 	    s+=" "+mem;
 	    s+= getAddressFromBinary(command); 
 	    s = s + "(" + getSecondRegisterFromBinary(command);
@@ -104,9 +107,9 @@ public class BinaryInterpreter extends Interpreter {
 	case 6:{//Full with less fetches
 	    
 	    String mem = getMemoryModeFromBinary(command);
-	    if (mem==null)
+	    if (mem==null) {
 		return GARBLE;
-	   
+	    }
 
 	    s = s + " " + getFirstRegisterFromBinary(command);
 	    s = s + ", " + mem;
@@ -122,9 +125,9 @@ public class BinaryInterpreter extends Interpreter {
 	    s+=" "+getFirstRegisterFromBinary(command);
 	    
 	    Integer device = new Integer(getAddressFromBinary(command));
-	    if(!getMemoryModeFromBinary(command).equals("="))
+	    if(!getMemoryModeFromBinary(command).equals("=")) {
 	       return GARBLE;
-
+	    }
 	    if (device.intValue()==0){
 		s+=", =CRT";
 		return s;
@@ -141,13 +144,14 @@ public class BinaryInterpreter extends Interpreter {
 		s+=", =STDOUT";
 		return s;
 	    }
-	    
+
 	    return GARBLE;
 	}
 	case 8:{ //Address with less fetches
 	    String mem = getMemoryModeFromBinary(command);
-	    if (mem==null)
+	    if (mem==null) {
 		return GARBLE;
+	    }
 
 	    s = s + " " + mem;
 	    s = s + getAddressFromBinary(command);
@@ -180,7 +184,7 @@ public class BinaryInterpreter extends Interpreter {
 		s+="DATE";
 		return s;
 	    }
-	    
+
 	    return GARBLE;
 	}
 	}
@@ -198,7 +202,6 @@ public class BinaryInterpreter extends Interpreter {
       */
     public String getOpCodeFromBinary(int binaryCommand) {
 	int command = binaryCommand; 
-			
 	//get opcode and get its name and return it
 	Integer opcode = new Integer(command >> 24);
 	if(commands.get(opcode)!=null){

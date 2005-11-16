@@ -1,5 +1,5 @@
-Muutosloki v1.1b
-================
+Muutosloki v1.201
+=================
 
 Korjattu taulukoiden alustukseen (DS) liittyv‰ bugi, jossa
 symbolitauluun vietiin virheellisi‰ muistiosotteita. Muutettiin
@@ -13,26 +13,40 @@ luokkaa Compiler. Virheen kuvaus oli:
 (Jari Suominen, 15.11.2005)
 
 
+Muutosloki v1.2
+===============
 
-Titokoneen piirteit‰/ongelmia
-=============================
+Alkuper‰isen Koksi-ohjelman tuntema k‰sky 'NOT' puuttui
+Titokoneesta. Not k‰sky lis‰ttiin k‰skykoodilla 27.
 
-Titokone 1.1b vaatii ainakin toistaisesti JRE 1.5:n, eli vanhemmat
-versiot eiv‰t toimi.
----
-LOAD R1, (R2) ei toimi, pit‰isi olla sama kuin LOAD R1, 0(R2) eli sama
-kuin LOAD R1, @R2. Voi kiert‰‰ k‰ytt‰m‰ll‰ LOAD R1, @R2:ta tai sitten
-LOAD R1, 0(R2).
----
-STORE R1, @R2 ei toimi eik‰ tietenk‰‰n myˆs STORE R1, (R2). Voi kiert‰‰ 
-taas: STORE R1, 0(R2).
----
-NOT ei toimi ollenkaan. Ei tunne opkoodia - joka muuten muistaakseni 
-onkin dokumentoimaton. Muistaisin, ett‰ NOT R1 tekee siis NOT-operaation
-R1:lle joka on k‰skyn ensimm‰inen operandi eik‰ NOT v‰lit‰ toisesta 
-operandista mit‰‰n.
-(Heikki Lindholm, 26.8.2004)
----
+Titokoneen yhteydess‰ esitelty uusi k‰sky SHRA siirrettiin, koska
+se k‰ytti NOT-k‰skylle varattua k‰skykoodia. SHRA-k‰skyn uusi koodi
+on 28.
+
+Nyt k‰skyt LOAD/STORE R1, (R2) toimivat. Korjaus tapahtui lis‰‰m‰‰ll‰ 0 ennen 
+alkavaa sulkua. STORE R1, @R2 toimii, korjaaminen tapahtui sallimalla 
+@-osoitusmoodin k‰yttˆ STORE k‰skyn yhteydess‰.
+
+Lis‰tty Titokoneeseen k‰skylaskuri, jolla saadaan tieto suoritettujen
+konek‰skyjen m‰‰r‰st‰. Lis‰tty metodi on nimelt‰‰n GiveCommAmount().
+
+Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto pinon 
+lopullisesta koosta. Lis‰tty metodi on nimelt‰‰n GiveStackSize().
+
+Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto ajettavana olevan
+ohjelman lopullistesta koodisegmentin koosta. Lis‰tty metodi on nimelt‰‰n 
+getCodeAreaSize().
+
+Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto ajettavana olevan
+ohjelman lopullistesta datasegmentin koosta. Lis‰tty metodi on nimelt‰‰n
+getDataAreaSize().
+
+(Koskelo-ryhm‰ 2004)
+
+
+Muutosloki v1.1
+===============
+
 Titokoneesta on uusi versio 1.1. 
 N‰ytt‰‰ silt‰, ett‰ t‰m‰ Titokone pysyy pystyss‰ Javan uusimmassa
 buildissa (1.4.2_05) ja lis‰ksi myˆs ainakin Macin Java 1.4.1:ll‰, jossa
@@ -41,6 +55,13 @@ nelj‰n rivin muutos, yksi Translator.javassa ja kolme GUI.javassa.
 
 Uusi versio on jo jakelussa. 
 (Sini Ruohomaa, 23.8.2004)
+
+
+Titokoneen piirteit‰/ongelmia
+=============================
+
+Titokone vaatii ainakin toistaisesti JRE 1.5:n, eli vanhemmat
+versiot eiv‰t toimi.
 ---
 Nimettˆm‰t DC:t eiv‰t toimi kuten ehk‰ joku odottaisi. Esim.
     Pekka DC 0
@@ -98,13 +119,6 @@ komentorivitulkkiin, kun taas DOS tai Windows 95/98/ME on syyt‰ k‰ynnist‰‰
 uudelleen.
 
 (Pasi Vettenranta, 17.8.2004)
----
-Titokone ei tunnu toimivan ihan kaikkien Windowsien 
-Javan kanssa. Esimerkiksit‰ll‰ hetkell‰ uusin Java 
-versio (1.4.2_05) ja Titokone eiv‰t oikein sovi yhteen.
-Vika voi yht‰ hyvin olla Javassa kuin Titokoneessakin.
-Sini Ruohomaa selvitt‰‰ tilannetta.
-(Teemu Kerola, 16.8.2004)
 ---
 Muisti ilmeisesti alustetaan aina suorituksen alussa.
 DC-valek‰skyill‰ m‰‰ritellyt alustetaan arvonsa mukaisesti

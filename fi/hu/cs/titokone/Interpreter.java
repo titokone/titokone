@@ -46,7 +46,8 @@ public class Interpreter {
         {"XOR", new Integer(24), FULL},		//(AND, OR and XOR
         {"SHL", new Integer(25), FULL},
         {"SHR", new Integer(26), FULL},
-	{"SHRA", new Integer(27), FULL},	//same int as NOT!,
+	{"NOT", new Integer(27), SP_ONLY},      // Not sure about addressing mode - this seems to be the right one - Lauri 2004-12-09
+	{"SHRA", new Integer(28), FULL},	// moved from 27->28 - Lauri 2004-09-23
         {"COMP", new Integer(31), FULL},
         {"JUMP", new Integer(32), ADDR_LESS_FETCHES},	//Jump has only one param. 
 	                                        //Jump Address

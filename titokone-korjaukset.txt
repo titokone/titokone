@@ -1,0 +1,68 @@
+Koskelo-ryhm‰n tekem‰t muutokset Titokoneeseen
+
+1. Johdanto
+
+ Ohjelmistotuotantoprojekti "Koski"
+ (http://www.cs.helsinki.fi/group/koski/) tuotti Tietokoneen toiminta
+ -kurssia varten uuden TTK-91 konekielisimulaattorin,
+ Titokoneen. Ohjelmasta on paljastunut muutamia puutteita ja/tai
+ eroavaisuuksia vanhaan Auvo H‰kkisen Koksi-ohjelmaan verrattuna. Muun
+ tyˆns‰ ohessa projektiryhm‰ "Koskelo"
+ (http://www.cs.helsinki.fi/group/koskelo/) korjasi n‰it‰ puutteita ja
+ muutenkin teki Titokoneeseen muutoksia. Muutoksista lyhyesti t‰ss‰
+ tekstiss‰.
+
+2. Korjatut bugit/puutteet
+
+2.1 NOT-k‰skyn toteutus
+
+ Alkuper‰isen Koksi-ohjelman tuntema k‰sky 'NOT' puuttui
+ Titokoneesta. Not k‰sky lis‰ttiin k‰skykoodilla 27.
+
+2.2 SHRA-k‰skyn siirto toiselle k‰skykoodille
+
+ Titokoneen yhteydess‰ esitelty uusi k‰sky SHRA siirrettiin, koska
+ se k‰ytti NOT-k‰skylle varattua k‰skykoodia. SHRA-k‰skyn uusi koodi
+ on 28.
+
+2.3 LOAD ja STORE -k‰skyjen toiminta
+
+ Kaikki Koksin tukemat tavat k‰ytt‰‰ LOAD ja STORE -k‰skyj‰ eiv‰t toimineet 
+ Titokoneessa. LOAD R1, (R2) ei toiminut. STORE R1, @R2 ei toiminut eik‰ 
+ tietenk‰‰n myˆsk‰‰n STORE R1, (R2). Pystyi kiert‰m‰‰n k‰ytt‰m‰ll‰ 
+ STORE R1, 0(R2). 
+
+ Nyt k‰skyt LOAD/STORE R1, (R2) toimivat. Korjaus tapahtui lis‰‰m‰‰ll‰ 0 ennen 
+ alkavaa sulkua. STORE R1, @R2 toimii, korjaaminen tapahtui sallimalla 
+ @-osoitusmoodin k‰yttˆ STORE k‰skyn yhteydess‰.
+
+3. Lis‰tyt ominaisuudet
+
+ Koskelo-ryhm‰ lis‰si Titokoneeseen muutamia
+ ominaisuuksia. Tarkoituksena oli parantaa mahdollisuuksia saada
+ tietoa Titokoneen toiminnasta varsinkin ulkoisen rajapinnan l‰pi
+ k‰ytettyn‰.
+
+3.1 K‰skylaskuri
+
+ Lis‰tty Titokoneeseen k‰skylaskuri, jolla saadaan tieto suoritettujen
+ konek‰skyjen m‰‰r‰st‰. Lis‰tty metodi on nimelt‰‰n GiveCommAmount().
+
+3.2 Pinon kokomittari
+
+ Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto pinon 
+ lopullisesta koosta. Lis‰tty metodi on nimelt‰‰n GiveStackSize().
+
+3.3 Koodisegmentin koko
+
+ Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto ajettavana olevan
+ ohjelman lopullistesta koodisegmentin koosta. Lis‰tty metodi on nimelt‰‰n 
+ getCodeAreaSize().
+
+
+3.4 Datasegmentin koko
+
+ Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto ajettavana olevan
+ ohjelman lopullistesta datasegmentin koosta. Lis‰tty metodi on nimelt‰‰n
+ getDataAreaSize().
+

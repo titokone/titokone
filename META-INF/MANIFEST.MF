@@ -1,5 +1,5 @@
-Manifest-Version: 1.0
+Manifest-Version: 1.1
 Class-Path: file://fi/hu/cs/titokone/ file://fi/hu/cs/ttk91/
-Created-By: Koski group, HY TKTL
+Created-By: Koski group, HY TKTL, modifications by Koskelo group
 Main-Class: fi.hu.cs.titokone.Titokone
 
