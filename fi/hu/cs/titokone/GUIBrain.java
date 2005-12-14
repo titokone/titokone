@@ -30,6 +30,12 @@ import java.net.URI;
 */
 public class GUIBrain {
     
+
+/** This variable can be set to e.g. 70 to slow down the GUI on 
+    compilation and runtime for overly fast machines. It should 
+    preferrably be completely replaced with a user-selectable option,
+    however. The value should be at minimum 0. */
+private final int SLOWDOWN = 0;
     
     
 /** This field contains the languages available, with the long,
@@ -451,7 +457,7 @@ public synchronized void menuRun() {
       }
       else {
         try {
-          wait(70);
+          wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
         }
         catch(InterruptedException e) {
           System.out.println("InterruptedException in menuRun()");
@@ -639,7 +645,7 @@ public synchronized void menuCompile() {
         }
         else {
           try {
-            wait(70);
+            wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
           }
           catch(InterruptedException e) {
             System.out.println("InterruptedException in menuRun()");

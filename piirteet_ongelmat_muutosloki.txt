@@ -1,5 +1,16 @@
-Muutosloki v1.201
+Muutosloki v1.202
 =================
+
+Poistettu graafisesta käyttöliittymästä turhaksi todettu käännös- ja
+ajoaikainen hidaste, joka teki pitkien ohjelmien kääntämisestä turhan 
+tuskallista ("wait(70)"). 
+
+Muutetut luokat: fi/hu/cs/titokone/GUIBrain.java
+
+(Sini Ruohomaa, 14.12.2005)
+
+Muutosloki v1.201
+================
 
 Korjattu taulukoiden alustukseen (DS) liittyvä bugi, jossa
 symbolitauluun vietiin virheellisiä muistiosotteita. Muutettiin
@@ -60,7 +71,7 @@ Uusi versio on jo jakelussa.
 Titokoneen piirteitä/ongelmia
 =============================
 
-Titokone vaatii ainakin toistaisesti JRE 1.5:n, eli vanhemmat
+Titokone 1.1b vaatii ainakin toistaisesti JRE 1.5:n, eli vanhemmat
 versiot eivät toimi.
 ---
 Nimettömät DC:t eivät toimi kuten ehkä joku odottaisi. Esim.
