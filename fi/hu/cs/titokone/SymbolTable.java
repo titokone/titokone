@@ -100,7 +100,6 @@ public class SymbolTable {
     names as key Strings and the integer values as Integer
     objects. */
     public HashMap toHashMap() {
-        System.out.println(symbols);
         return (HashMap) symbols.clone();
     }
 }

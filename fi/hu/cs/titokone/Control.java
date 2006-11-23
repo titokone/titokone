@@ -238,6 +238,7 @@ public class Control implements TTK91Core {
         @param steps Number of steps the application will be run.
 	@throws TTK91NoStdInData If the STDIN data file is unreadable or 
 	syntactically incorrect even if the file is not really needed.
+	@throws TTK91ExecutionOverrun if program overruns the limit set in steps
     */
     public void run(TTK91Application app, int steps) 
 	throws TTK91Exception, TTK91RuntimeException { 
@@ -286,6 +287,14 @@ public class Control implements TTK91Core {
 	}
 	while((info != null || gotException) && 
 	      (steps == 0 || ++counter <= steps));
+
+        // Added by Kohahdus project 2006-11-23
+        if ((steps != 0) && (counter > steps)) {
+          throw new TTK91ExecutionOverrun("Program exection killed after "
+                                           + steps + " instructions. Likely an "
+                                           + "infinite loop");
+        }
+        
 
 	if(pendingException) {
 	  throw new TTK91FailedWrite(errorMessage);

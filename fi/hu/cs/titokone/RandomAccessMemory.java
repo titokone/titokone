@@ -140,8 +140,8 @@ public class RandomAccessMemory implements TTK91Memory {
 	    throw new TTK91AddressOutOfBounds(errorMessage);
 
 	}
-
         memory[index] = memoryLine;
+        memory_references++;        
     }
 
     /** Sets the size of the code area.
@@ -160,10 +160,11 @@ public class RandomAccessMemory implements TTK91Memory {
         dataAreaSize = size;
     }
 
-    //Added by HT, 12.10.2004, Koskelo-project
+    // Added by HT, 12.10.2004, Koskelo-project. Modiefied by Kohahdus
+    // to substract code and data area size 2006-11-23.
+    /** Return the number of data references made. */
     public int getMemoryReferences() {
-
-	return this.memory_references;
+	return memory_references - getCodeAreaSize() - getDataAreaSize();
 
     }//getMemoryReferences
 }

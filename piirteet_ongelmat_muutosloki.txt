@@ -1,3 +1,22 @@
+Muutosloki v1.203
+=================
+Kohahdus projekti teki titokoneeseen seuraavat muutokset
+
+- RandomAccessMemory.setMemoryLine(..)
+  Lisätty "memory_references++;"
+
+- RandomAccessMemory.getMemoryReferences()
+  Lisätty "- getCodeAreaSize() - getDataAreaSize()". Nämä vähentävät
+  muistiviitelaskurista ohjelman latauksen aiheuttamat viitteet.
+
+- Control.run(..)
+  Lisätty "Throw new TTK91ExecutionOverrun(..)" jos steps liian iso
+
+- Uusi luokka TTK91ExecutionOverrun
+
+(Mikko Kinnunen 2006-11-23)
+
+
 Muutosloki v1.202
 =================
 
