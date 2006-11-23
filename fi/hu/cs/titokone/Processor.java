@@ -563,7 +563,9 @@ public class Processor implements TTK91Cpu {
             // push PC and FP to stack (Rj is stack pointer)
             sp = regs.getRegister (Rj);
             writeToMemory (++sp, regs.getRegister (TTK91Cpu.CU_PC));
+            addToStack(); // By Kohahdus 2006-11-23
             writeToMemory (++sp, regs.getRegister (TTK91Cpu.REG_FP));
+            addToStack(); // By Kohahdus 2006-11-23
             
             // update stack and frame pointers
             regs.setRegister (Rj, sp);
@@ -577,7 +579,9 @@ public class Processor implements TTK91Cpu {
             // pop FP and PC from stack (Rj is stack pointer)
             sp = regs.getRegister (Rj);
             regs.setRegister (TTK91Cpu.REG_FP, ram.getValue (sp--));
+            stack_size--; // By Kohahdus 2006-11-23
             setNewPC (ram.getValue (sp--));
+            stack_size--; // By Kohahdus 2006-11-23
             
             // decrease number of parameters from stack
             regs.setRegister (Rj, sp -param);

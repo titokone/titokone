@@ -9,10 +9,14 @@ Kohahdus projekti teki titokoneeseen seuraavat muutokset
   Lisätty "- getCodeAreaSize() - getDataAreaSize()". Nämä vähentävät
   muistiviitelaskurista ohjelman latauksen aiheuttamat viitteet.
 
+- Processor.subr(..)
+  Lisätty 2x "addToStack();" sekä "stack_size--;"
+
 - Control.run(..)
   Lisätty "Throw new TTK91ExecutionOverrun(..)" jos steps liian iso
 
 - Uusi luokka TTK91ExecutionOverrun
+
 
 (Mikko Kinnunen 2006-11-23)
 
