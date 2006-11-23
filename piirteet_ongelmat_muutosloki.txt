@@ -11,6 +11,7 @@ Kohahdus projekti teki titokoneeseen seuraavat muutokset
 
 - Processor.subr(..)
   Lisätty 2x "addToStack();" sekä "stack_size--;"
+  Lisätty "stack_size = stack_size - param;"
 
 - Control.run(..)
   Lisätty "Throw new TTK91ExecutionOverrun(..)" jos steps liian iso
