@@ -212,6 +212,7 @@ public class GUI extends JFrame implements ActionListener {
         JToggleButton lineByLineToggleButton;
         JToggleButton showCommentsToggleButton;
         JToggleButton showAnimationToggleButton;
+        JToggleButton showDisplayToggleButton;
         
         JLabel statusBar;
         
@@ -246,6 +247,9 @@ public class GUI extends JFrame implements ActionListener {
 	      Animator animator;
 	      JSlider animatorSpeedSlider;
 	      JButton animatorContinueButton;
+
+      JFrame displayFrame;
+      Display display;
 	      
         public static final int ANIMATOR_SPEED_MIN = 0;
         public static final int ANIMATOR_SPEED_MAX = 100;
@@ -353,9 +357,10 @@ public GUI() {
   
   
   initAnimator();   
+  initDisplay();   
   
   print("Initializing GUIBrain...");        
-  guibrain = new GUIBrain(this, animator);
+  guibrain = new GUIBrain(this, animator, display);
   print("Inserting menubar...");        
   insertMenuBar(this);
   disable(GUI.COMPILE_COMMAND);
@@ -377,7 +382,7 @@ public GUI() {
 	
 	
   print("Setting title...");        
-  setTitle("Titokone v1.203");
+  setTitle("Titokone v1.204");
   
   addWindowListener( new WindowAdapter () {
 		public void windowClosing(WindowEvent e) {
@@ -1266,6 +1271,7 @@ public void updateAllTexts() {
   lineByLineToggleButton.setToolTipText(new Message("Enable/disable line by line execution").toString());
   showCommentsToggleButton.setToolTipText(new Message("Enable/disable extra comments while execution").toString());
   showAnimationToggleButton.setToolTipText(new Message("Enable/disable animated execution").toString());
+  showDisplayToggleButton.setToolTipText(new Message("Show/hide video graphics display").toString());
   
   enterNumberButton.setText(new Message("Enter").toString());
   
@@ -1619,6 +1625,18 @@ private void initAnimator() {
    
 }
   
+private void initDisplay() {
+  int scale = 4;
+  
+  display = new Display();
+  displayFrame = new JFrame();
+  displayFrame.setSize(scale * display.X, scale * display.Y);
+  displayFrame.setTitle(display.X + "x" + display.Y + " @" + display.START);
+  displayFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+
+  displayFrame.getContentPane().add(display);
+
+}
 
 /** Inserts the menu into main window.
     @param destFrame The frame the menu bar will be inserted.
@@ -1842,7 +1860,21 @@ private JToolBar makeToolBar() {
   showAnimationToggleButton.setToolTipText("Enable/disable animated execution");
   showAnimationToggleButton.setMargin(new Insets(0,0,0,0));
   toolbar.add(showAnimationToggleButton);
-  
+ 
+  toolbar.addSeparator();
+
+  showDisplayToggleButton = new JToggleButton(); 
+  try {  
+    showDisplayToggleButton = new JToggleButton(
+      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Display.gif"),"Show display")
+    );
+  }
+  catch (Exception e) {
+  }
+  showDisplayToggleButton.setToolTipText("Show/hide video graphics display");
+  showDisplayToggleButton.setMargin(new Insets(0,0,0,0));
+  toolbar.add(showDisplayToggleButton);
+ 
   toolbar.setFloatable(false);
   
   openFileButton.addActionListener(openCommandActionListener);
@@ -1867,6 +1899,12 @@ private JToolBar makeToolBar() {
     public void actionPerformed(ActionEvent e) {
       boolean b = ((JToggleButton)e.getSource()).isSelected();
       guibrain.menuSetRunningOption(GUIBrain.ANIMATED, b);
+    }
+  });
+  showDisplayToggleButton.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent e) {
+      boolean b = ((JToggleButton)e.getSource()).isSelected();
+      displayFrame.setVisible(b);
     }
   });
  

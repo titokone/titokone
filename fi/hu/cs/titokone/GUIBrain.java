@@ -58,6 +58,7 @@ private Settings currentSettings;
 
 
 private Animator animator;
+private Display display;
 
 
 private GUI gui;  
@@ -128,7 +129,7 @@ protected static boolean ENABLE_DATA_AREA_MARKUP = true;
 /** This constructor sets up the GUIBrain instance. It calls private
     initialization functions, including findAvailableLanguages(). 
 */
-public GUIBrain(GUI gui, Animator animator) { 
+public GUIBrain(GUI gui, Animator animator, Display display) { 
   
   this.gui = gui;
 
@@ -148,6 +149,7 @@ public GUIBrain(GUI gui, Animator animator) {
   control = new Control(defStdinFile, defStdoutFile);
   
   this.animator = animator;
+  this.display = display;
   
   try { 
     getCurrentSettings();
@@ -412,6 +414,7 @@ public synchronized void menuRun() {
       
       animator.stopAnimation();
       animator.animate(runinfo);
+      display.quickUpdate(runinfo);
             
       gui.updateStatusBar(runinfo.getComments());
       
@@ -731,7 +734,7 @@ public synchronized void menuEraseMemory() {
   gui.setGUIView(1);
   currentState = NONE;
   setGUICommandsForCurrentState();
-  
+  display.updateScreen();
 }
 
 
@@ -1274,6 +1277,7 @@ private void loadAndUpdateGUI() {
     currentState = B91_NOT_RUNNING;
     setGUICommandsForCurrentState();
     gui.setGUIView(3);
+    display.init(control.getMemory());
   }
 }
 
