@@ -270,6 +270,7 @@ public class Translations extends ListResourceBundle {
       {"Stop current operation", null},
       //{"Open the selected file", null},
       {"Enable/disable animated execution", null},
+      {"Show/hide video graphics display", null},
       {"Enable/disable extra comments during execution", null}, 
       {"Enable/disable line by line execution", null},
       {"Enter", null}, // button used to enter a number to the KBD device.

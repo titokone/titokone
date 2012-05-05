@@ -255,6 +255,7 @@ public class Translations_en extends ListResourceBundle {
       {"Continue current operation without pauses", null},
       {"Stop current operation", null},
       {"Enable/disable animated execution", null},
+      {"Show/hide video graphics display", null},
       {"Enable/disable extra comments while execution", null},
       {"Enable/disable line by line execution", null},
       {"Enter", null}, // button used to enter a number to the KBD device.

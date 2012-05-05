@@ -382,7 +382,7 @@ public GUI() {
 	
 	
   print("Setting title...");        
-  setTitle("Titokone v1.204");
+  setTitle("Titokone v1.205");
   
   addWindowListener( new WindowAdapter () {
 		public void windowClosing(WindowEvent e) {
@@ -1633,8 +1633,17 @@ private void initDisplay() {
   displayFrame.setSize(scale * display.X, scale * display.Y);
   displayFrame.setTitle(display.X + "x" + display.Y + " @" + display.START);
   displayFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+  displayFrame.addWindowListener(new WindowAdapter(){
+      public void windowClosing(WindowEvent we){
+        display.setUpdates(false);
+        showDisplayToggleButton.setSelected(false);
+      }
+  });
+
 
   displayFrame.getContentPane().add(display);
+
+  new Thread(display).start();
 
 }
 
@@ -1904,6 +1913,7 @@ private JToolBar makeToolBar() {
   showDisplayToggleButton.addActionListener(new ActionListener() {
     public void actionPerformed(ActionEvent e) {
       boolean b = ((JToggleButton)e.getSource()).isSelected();
+      display.setUpdates(b);
       displayFrame.setVisible(b);
     }
   });

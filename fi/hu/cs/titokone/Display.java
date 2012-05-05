@@ -8,17 +8,71 @@ import fi.hu.cs.ttk91.TTK91Memory;
 
 // Display class was added by Toni Ruottu 8.4.2012
 
-public class Display extends Canvas {
+public class Display extends Canvas implements Runnable {
 
     static final int X = 160, Y = 120;
     static final int START = 0x100;
     static TTK91Memory mem;
-    static BufferedImage I = new BufferedImage(X, Y, BufferedImage.TYPE_INT_RGB);
+    boolean updates = false;
+    BufferedImage backBuffer;
     
+    /* Display methods */
+
     public Display() {
+
     }
-    
-    private static BufferedImage resizeImage(BufferedImage image, int width, int height)
+
+    public void setMem(TTK91Memory mem) {
+        this.mem = mem;
+    }
+
+    public void setUpdates(boolean updates) {
+        this.updates = updates;
+    }
+
+    /* Runnable methods */
+
+    public void run() {
+        while(true) {
+            if (updates) {
+                updateBuffer();
+            }
+            try {
+                Thread.sleep(10); /* we don't always need a full core */
+            } catch (InterruptedException e) {
+
+            }
+        }
+    }
+ 
+    /* Canvas methods */   
+
+    public void update(Graphics g) {
+        g.drawImage(backBuffer, 0, 0, Color.red, null);
+    }
+
+    public void paint(Graphics g)
+    {
+        update(g);
+    }
+
+    /* private helpers */
+
+    private void updateBuffer() {
+        Canvas canvas = this;
+        int canvasWidth = canvas.getWidth();
+        int canvasHeight = canvas.getHeight();
+        int canvasArea = canvasWidth * canvasHeight;
+        if (canvasArea < 1) {
+            return;
+        }
+        backBuffer = drawScreen(canvasWidth, canvasHeight, mem);
+        repaint();
+    }
+
+    /* static private helpers */
+   
+    static private BufferedImage resizeImage(BufferedImage image, int width, int height)
     {
         BufferedImage resized = new BufferedImage(width, height, image.getType());
         Graphics2D r = resized.createGraphics();
@@ -28,35 +82,21 @@ public class Display extends Canvas {
         return resized;
     }
 
-    private static double maxFit(Canvas canvas, BufferedImage image)
-    {
-        int canvasWidth = canvas.getWidth();
-        int canvasHeight = canvas.getHeight();
-        int pictureWidth = image.getWidth();
-        int pictureHeight = image.getHeight();
-        double horizontalFit = (double) canvasWidth / (double) pictureWidth;
-        double verticalFit = (double) canvasHeight / (double) pictureHeight;
-        double maxfit = Math.min(horizontalFit, verticalFit);
-        return maxfit;
-    }
-
-    private static BufferedImage maxResize(Canvas canvas, BufferedImage picture)
-    {
-        double times = maxFit(canvas, picture);
-        int targetWidth = (int) (times * picture.getWidth());
-        int targetHeight = (int) (times * picture.getHeight());
-        BufferedImage resized = resizeImage(picture, targetWidth, targetHeight);
+    static private BufferedImage resizeImage(BufferedImage image, double times) {
+        int targetWidth = (int) (times * image.getWidth());
+        int targetHeight = (int) (times * image.getHeight());
+        BufferedImage resized = resizeImage(image, targetWidth, targetHeight);
         return resized;
     }
 
-    public void paint(Graphics g)
+    static private double maxFit(int targetWidth, int targetHeight, BufferedImage source)
     {
-        BufferedImage resized = maxResize(this, I);
-        int screenWidth = getWidth();
-        int screenHeight = getHeight();
-        int horizontalOffset = (screenWidth - resized.getWidth()) / 2;
-        int verticalOffset = (screenHeight - resized.getHeight()) / 2;
-        g.drawImage(resized, horizontalOffset, verticalOffset, Color.red, null);
+        int sourceWidth = source.getWidth();
+        int sourceHeight = source.getHeight();
+        double horizontalFit = (double) targetWidth / (double) sourceWidth;
+        double verticalFit = (double) targetHeight / (double) sourceHeight;
+        double maxfit = Math.min(horizontalFit, verticalFit);
+        return maxfit;
     }
 
     static private int torgb8(int rgb4i) {
@@ -72,7 +112,7 @@ public class Display extends Canvas {
         return rgb8i;
     }
 
-    private void updateGfx(int address, int value) {
+    static private void updateGfx(BufferedImage image, int address, int value) {
         if (address < START) {
             return;
         }
@@ -85,43 +125,42 @@ public class Display extends Canvas {
         assert(x < X);
         int rgb4 = value & 0xfff;
         int rgb8 = torgb8(rgb4);
-        I.setRGB(x, y, rgb8);
+        image.setRGB(x, y, rgb8);
     }
 
-    private void updateBuffer() {
+    static private BufferedImage memToImage(TTK91Memory mem) {
+        BufferedImage image = new BufferedImage(X, Y, BufferedImage.TYPE_INT_RGB);
+        if (mem == null) {
+            return image;
+        }
         int memsize = mem.getSize();
         for (int i = 0; i < (X * Y); i++) {
             int address = START + i;
             if (address >= memsize) {
-                return;
+                return image;
             }
             int value = mem.getValue(address);
-            updateGfx(address, value);
+            updateGfx(image, address, value);
         }
+        return image;
+    }
+ 
+    static private  BufferedImage addBorder(BufferedImage source, int width, int height, Color border) {
+        BufferedImage target = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        int horizontalOffset = (width - source.getWidth()) / 2;
+        int verticalOffset = (height - source.getHeight()) / 2;
+        Graphics2D g = target.createGraphics();
+        g.setBackground(border);
+        g.clearRect(0, 0, width, height);
+        g.drawImage(source, horizontalOffset, verticalOffset, Color.red, null);
+        return target;
     }
 
-    public void updateScreen() {
-        updateBuffer();
-        repaint();
+    static private BufferedImage drawScreen(int width, int height, TTK91Memory mem) {
+        BufferedImage userimage = memToImage(mem);
+        double times = maxFit(width, height, userimage);
+        BufferedImage resized = resizeImage(userimage, times);
+        return addBorder(resized, width, height, Color.gray);
     }
 
-    public void quickUpdate(RunInfo info) {
-        LinkedList changedMemoryLines = info.getChangedMemoryLines();
-
-        Iterator changedMemoryLinesListIterator = changedMemoryLines.iterator();
-        while (changedMemoryLinesListIterator.hasNext()) {
-            Object[] listItem = (Object[])changedMemoryLinesListIterator.next();
-            int address = ((Integer)listItem[0]).intValue();
-            MemoryLine line = (MemoryLine)listItem[1];
-            int value = line.getBinary();
-            updateGfx(address, value);
-        }
-        repaint();
-    }
-
-    public void init (TTK91Memory mem) {
-        this.mem = mem;
-        updateScreen();
-    }
-    
 }

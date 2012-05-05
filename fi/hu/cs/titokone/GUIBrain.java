@@ -414,7 +414,6 @@ public synchronized void menuRun() {
       
       animator.stopAnimation();
       animator.animate(runinfo);
-      display.quickUpdate(runinfo);
             
       gui.updateStatusBar(runinfo.getComments());
       
@@ -734,7 +733,7 @@ public synchronized void menuEraseMemory() {
   gui.setGUIView(1);
   currentState = NONE;
   setGUICommandsForCurrentState();
-  display.updateScreen();
+  display.setMem(control.getMemory());
 }
 
 
@@ -1277,7 +1276,7 @@ private void loadAndUpdateGUI() {
     currentState = B91_NOT_RUNNING;
     setGUICommandsForCurrentState();
     gui.setGUIView(3);
-    display.init(control.getMemory());
+    display.setMem(control.getMemory());
   }
 }
 

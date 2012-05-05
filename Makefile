@@ -1,8 +1,8 @@
-VERSION = 1.204
+VERSION = 1.205
 JARFILE = titokone-$(VERSION).jar
 MANIFEST = META-INF/MANIFEST.MF
 JAVAC = javac
-JFLAGS =
+JFLAGS = 
 
 
 all: $(JARFILE)
@@ -10,5 +10,5 @@ all: $(JARFILE)
 %.class: %.java
 	$(JAVAC) $(JFLAGS) $<
 
-$(JARFILE): fi/hu/cs/ttk91/*.class fi/hu/cs/titokone/*.class
+$(JARFILE): fi/hu/cs/ttk91/*.class fi/hu/cs/titokone/*.class fi/hu/cs/titokone/resources/*.class
 	jar -cmf $(MANIFEST) $(JARFILE) * 
