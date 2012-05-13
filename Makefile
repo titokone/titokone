@@ -10,5 +10,12 @@ all: $(JARFILE)
 %.class: %.java
 	$(JAVAC) $(JFLAGS) $<
 
-$(JARFILE): fi/hu/cs/ttk91/*.class fi/hu/cs/titokone/*.class fi/hu/cs/titokone/resources/*.class
-	jar -cmf $(MANIFEST) $(JARFILE) * 
+fi/hu/cs/titokone/Titokone.class:
+	make -C fi/hu/cs/titokone/
+
+$(JARFILE): fi/hu/cs/titokone/Titokone.class
+	jar -cmf $(MANIFEST) $(JARFILE) *
+
+clean:
+	rm -f *.jar
+	make -C fi/hu/cs/titokone/ clean
