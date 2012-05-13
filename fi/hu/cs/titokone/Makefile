@@ -1,7 +1,7 @@
 
 JAVAC = javac
 JFLAGS =
-
+.PHONY: translations
 .SUFFIXES: .java .class
 .java.class:
 	$(JAVAC) -cp ../../../../ $(JFLAGS) $*.java
@@ -48,7 +48,7 @@ SOURCES = \
 
 all: classes translations
 
-translations: resources/Translations_en.class resources/Translations_fi.class
+translations:
 	make -C resources
 
 classes: $(SOURCES:.java=.class)

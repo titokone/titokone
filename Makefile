@@ -1,19 +1,18 @@
 VERSION = 1.205
 JARFILE = titokone-$(VERSION).jar
 MANIFEST = META-INF/MANIFEST.MF
-JAVAC = javac
-JFLAGS = 
 
+.PHONY: ttk91 titokone assari
 
 all: $(JARFILE)
 
-%.class: %.java
-	$(JAVAC) $(JFLAGS) $<
+ttk91:
+	make -C fi/hu/cs/ttk91/
 
-fi/hu/cs/titokone/Titokone.class: fi/hu/cs/ttk91/TTK91Core.class
+titokone: ttk91
 	make -C fi/hu/cs/titokone/
 
-$(JARFILE): fi/hu/cs/titokone/Titokone.class
+$(JARFILE): titokone
 	jar -cmf $(MANIFEST) $(JARFILE) *
 
 assari: fi/hu/cs/titokone/AssariUI.class
