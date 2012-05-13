@@ -158,7 +158,7 @@ private String createOutput() {
                     "\nSTDOUT:\n" + app.readStdOut() +
                     "\n---------------------" +
 		    "\nMemorylines 0-49: ";
-        //muistirivien t‰ytt‰minen output-ikkunaan, oletus: 50 rivi‰
+        //muistirivien t√§ytt√§minen output-ikkunaan, oletus: 50 rivi√§
 	for(int i=0; i < 50; i++) 
                     output += "\n"+i+": " + memory.getValue(i);
 	 return output;

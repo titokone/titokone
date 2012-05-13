@@ -3,7 +3,7 @@ package fi.hu.cs.ttk91;
 import java.text.ParseException;
 
 /**
- * @author Kalle K‰rkk‰inen
+ * @author Kalle K√§rkk√§inen
  * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 public interface TTK91Core {

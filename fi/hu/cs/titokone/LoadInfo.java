@@ -1,5 +1,5 @@
 /* Huomautukset:
-      Lis‰sin metodin public String[][] getSymbolTable()
+      Lis√§sin metodin public String[][] getSymbolTable()
 */
 
 package fi.hu.cs.titokone;

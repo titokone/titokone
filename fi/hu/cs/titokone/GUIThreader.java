@@ -56,4 +56,4 @@ public class GUIThreader implements Runnable {
   }
 }
 
-// Käyttö: GUI:ssa new GUIThreader(GUIThreader.TASK_SHOW_HELP, myGuiBrain).run()
+// KÃ¤yttÃ¶: GUI:ssa new GUIThreader(GUIThreader.TASK_SHOW_HELP, myGuiBrain).run()

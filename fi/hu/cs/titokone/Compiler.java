@@ -27,7 +27,7 @@ public class Compiler {
 	private int nextLine;
 
 	/** This field holds all the valid symbols on a label. */
-	private final String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyzÂ‰ˆ_";
+	private final String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyz√•√§√∂_";
 	private final int NOTVALID = -1;
 	private final int EMPTY = -1;
 
@@ -607,8 +607,8 @@ public class Compiler {
 					newSymbolTableLine[1] = "" + nextMemorySlot;
 					symbolTable.set(i, newSymbolTableLine.clone());
 					
-					// Allaolevat rivit puukotti Jari S. 12.11.2005, sill‰
-					// taulukoiden symboliarvot olivat syv‰lt‰!
+					// Allaolevat rivit puukotti Jari S. 12.11.2005, sill√§
+					// taulukoiden symboliarvot olivat syv√§lt√§!
 					// Ei vakuuttavasti testattu ja muutos arvaus, joka
 					// tehty tuntematta luokan toimintaa juurikaan!
 					//++nextMemorySlot;
@@ -734,7 +734,7 @@ public class Compiler {
 		fieldEnd = symbolicOpcode.indexOf(";");
 		if (fieldEnd != -1) { symbolicOpcode = symbolicOpcode.substring(0, fieldEnd); }
 		symbolicOpcode = symbolicOpcode.replace('\t',' ');
-		symbolicOpcode = symbolicOpcode.replace('†', ' ');	// Not stupid! 
+		symbolicOpcode = symbolicOpcode.replace('¬†', ' ');	// Not stupid! 
 		                                                        // replaces 0xa0 -> 0x20 - Lauri 2004-09-23
 		symbolicOpcode = symbolicOpcode.toLowerCase();
 		symbolicOpcode = symbolicOpcode.trim();
@@ -1145,21 +1145,21 @@ public class Compiler {
 	}
 
 	/** This method tests whether a label name contains at least one 
-	  non-number and consists of 0-9, A-÷ and _. 
+	  non-number and consists of 0-9, A-√ñ and _. 
 	  It does not check whether the label is in use already or if it
 	  is a reserved word.
 	  @param labelName The label name to test.
 	  @return True if the label consists of valid characters, false 
 	  otherwise. */
 	private boolean validLabelName(String labelName) {
-		// It must have one non-number. Valid characters are A-÷, 0-9 and _.
+		// It must have one non-number. Valid characters are A-√ñ, 0-9 and _.
 		// Test 1: the word contains one or more of the following:
-		// a-z, A-Z, _, 0-9, Â‰ˆ, ≈ƒ÷, in any order.
+		// a-z, A-Z, _, 0-9, √•√§√∂, √Ö√Ñ√ñ, in any order.
 		// Test 2: the word also contains one non-number (class \D
 		// means anything but 0-9) surrounded by any number of 
 		// any character. All these 'anything buts' and 'anys' are 
 		// also valid characters, since we check that in Test 1.
-		if(labelName.matches("[Â‰ˆ≈ƒ÷\\w]+") &&
+		if(labelName.matches("[√•√§√∂√Ö√Ñ√ñ\\w]+") &&
 				labelName.matches(".*\\D.*")) {
 			return true;
 		}
