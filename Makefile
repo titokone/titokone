@@ -13,10 +13,9 @@ all: $(JARFILE)
 fi/hu/cs/titokone/Titokone.class: fi/hu/cs/ttk91/TTK91Core.class
 	make -C fi/hu/cs/titokone/
 
-$(JARFILE): titokone
+$(JARFILE): fi/hu/cs/titokone/Titokone.class
 	jar -cmf $(MANIFEST) $(JARFILE) *
 
-titokone: fi/hu/cs/titokone/Titokone.class
 assari: fi/hu/cs/titokone/AssariUI.class
 
 clean:
