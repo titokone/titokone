@@ -44,13 +44,16 @@ SOURCES = \
 	SymbolicInterpreter.java \
 	SymbolTable.java \
 	Titokone.java \
-	Translator.java \
-	#AssariUI.java
+	Translator.java
 
-all: classes
+all: classes translations
+
+translations: resources/Translations_en.class resources/Translations_fi.class
+	make -C resources
 
 classes: $(SOURCES:.java=.class)
 
 clean:
 	rm -f *.class
+	make -C resources clean
 

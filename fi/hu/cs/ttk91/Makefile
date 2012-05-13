@@ -36,5 +36,5 @@ all: classes
 classes: $(SOURCES:.java=.class)
 
 clean:
-	rm *.class
+	rm -f *.class
 
