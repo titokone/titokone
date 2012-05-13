@@ -11,7 +11,7 @@ import fi.hu.cs.ttk91.TTK91Memory;
 public class Display extends Canvas implements Runnable {
 
     static final int X = 160, Y = 120;
-    static final int START = 0x100;
+    static final int START = 0x2000;
     static TTK91Memory mem;
     boolean updates = false;
     BufferedImage backBuffer;

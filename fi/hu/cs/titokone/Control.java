@@ -29,9 +29,9 @@ public class Control implements TTK91Core {
     /** This is the memory size that will be used by default, unless 
 	a higher class (GUIBrain) chooses to change the size later. 
 	The size is expressed as "the power of two which will give the 
-	wanted memory size"; here 9 means that the actual memory will be 
-	2^9 = 512 words long. */
-    public static final int DEFAULT_MEMORY_SIZE = 9;
+	wanted memory size"; here 15 means that the actual memory will be 
+	2^15 = 32768 words long. */
+    public static final int DEFAULT_MEMORY_SIZE = 15;
 
     /** This field set directs handling of an array containing file
 	definitions set in the application. See getApplicationDefinitions(). */
