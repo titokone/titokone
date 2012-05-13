@@ -1,8 +1,8 @@
-Muutosloki v1.205
+Muutosloki v1.206
 =================
 Lisättiin titokoneeseen grafiikkatila.
 
-(Toni Ruottu, 8.4.2012)
+(Toni Ruottu, 14.5.2012)
 
 Muutosloki v1.203
 =================
