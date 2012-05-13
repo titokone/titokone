@@ -1,0 +1,31 @@
+; palette.k91, Toni Ruottu 14.5.2012
+;
+; The following code fills titokone
+; video graphics display with colours.
+;
+; The picture starts at 8192. Colours are
+; presented in the least significant 12 bits
+; as 0xRGB.
+;
+; The image will be drawn more smoothly if
+; you minimize the main window.
+;
+
+	LOAD  R2,=8192	; video address
+
+	LOAD  R3,=160	; width
+	MUL   R3,=120	; * height = pixels_left
+
+	LOAD  R1,=0	; first color
+
+	SUB   R2,=1	; first pixel - 1
+Loop	PUSH  R2,R1	; move to next pixel and set color R1
+
+	SUB   R3,=1	; pixels_left - 1
+	JNPOS  R3,End	; if(pixels_left < 1) end
+
+	ADD   R1,=1	; next color
+	JUMP  Loop
+
+End	SVC   SP,HALT
+
