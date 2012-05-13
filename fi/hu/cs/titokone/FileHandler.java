@@ -178,7 +178,7 @@ public class FileHandler {
 	className = changeExtension(rbFile, "").getName();
  
 	try {
-	    url[0] = rbFile.getParentFile().toURL(); // MalformedURLException, anyone?
+	    url[0] = rbFile.getParentFile().toURI().toURL(); // MalformedURLException, anyone?
 	    URLClassLoader loader = new URLClassLoader(url); // SecurityExcp..
 	    theClass = loader.loadClass(className); // ClassNotFoundExcp..?
 	    // InstantiationException or IllegalAccessException, anyone?

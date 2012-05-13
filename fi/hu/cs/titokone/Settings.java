@@ -14,7 +14,7 @@ import java.util.logging.Logger;
     contain KEY_VALUE_SEPARATOR. Whitespace around KEY_VALUE_SEPARATOR is 
     ignored. */
 public class Settings { 
-    private HashMap settings;
+    private HashMap<String,Object> settings;
     
     /** This string separates keys from values in the settings file. 
 	It cannot be included in the key strings. */
@@ -52,14 +52,14 @@ public class Settings {
 	@throws ParseException If the settings text was not syntactically
 	correct. */
     public Settings(String settingsFileContent) throws ParseException {
-	settings = new HashMap();
+	settings = new HashMap<String,Object>();
 	if(settingsFileContent != null) 
 	    parseSettingsFile(settingsFileContent);
     }
 
     /** This constructor sets up a settings class with no values. */
     public Settings() {
-	settings = new HashMap();
+	settings = new HashMap<String,Object>();
     }
 
     /** This method sets a key to a certain string value. 

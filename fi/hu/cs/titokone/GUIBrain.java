@@ -42,7 +42,7 @@ private final int SLOWDOWN = 0;
     English names like "Finnish" or "English (GB)" as keys and 
     the locales corresponding to the languages as values. 
 */
-private Hashtable availableLanguages;
+private Hashtable<String,Locale> availableLanguages;
 
 private Control control;
   
@@ -217,7 +217,7 @@ public GUIBrain(GUI gui, Animator animator, Display display) {
   }
   
   
-  availableLanguages = new Hashtable();
+  availableLanguages = new Hashtable<String,Locale>();
   findAvailableLanguages();
   
   String language = currentSettings.getStrValue(Settings.UI_LANGUAGE);

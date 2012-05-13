@@ -163,7 +163,7 @@ public class GUI extends JFrame implements ActionListener {
         /** This has symbol name as key and its row in the symbolTable as value. Thus it's easy to find
             out if a symbol is already included in symbolTable and a new row is not needed.
         */
-        HashMap symbolsHashMap; 
+        HashMap<String,Integer> symbolsHashMap; 
         
         
         /** This holds (@link inputPanel) and (@link outputPanel).
@@ -348,7 +348,7 @@ public GUI() {
   });
   
   print("Initializing symbolsHashMap...");        
-  symbolsHashMap = new HashMap();
+  symbolsHashMap = new HashMap<String,Integer>();
   
   print("Initializing GUI...");        
   initGUI();
@@ -1589,7 +1589,7 @@ private void initAnimator() {
   animatorFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
   
   animatorSpeedSlider = new JSlider(JSlider.HORIZONTAL, ANIMATOR_SPEED_MIN, ANIMATOR_SPEED_MAX, 50);
-  Hashtable labelTable = new Hashtable();
+  Hashtable<Integer,JLabel> labelTable = new Hashtable<Integer,JLabel>();
   labelTable.put( new Integer( 0 ), new JLabel("Slow") );
   labelTable.put( new Integer( ANIMATOR_SPEED_MAX ), new JLabel("Fast") );
   animatorSpeedSlider.setLabelTable( labelTable );

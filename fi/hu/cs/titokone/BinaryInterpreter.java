@@ -12,19 +12,19 @@ public class BinaryInterpreter extends Interpreter {
 	
     /** This hashmap contains the symbolic commands as strings, with 
 	Integer forms of their opcodes as keys. */
-    private HashMap commands;
+    private HashMap<Object,Object> commands;
 
     /** This hashmap contains parameters for each command with Integer forms
 	of their opcodes as keys.*/
-    private HashMap parameters;
+    private HashMap<Object,Object> parameters;
 
 
     /** This constructor sets up a binaryinterpreter and initializes the 
 	internal command information data structures. */
     
     public BinaryInterpreter() {
-	commands = new HashMap(38); // 38 was 37, increased to 38 (added NOT-command) - Lauri 2004-12-09
-	parameters = new HashMap(38);
+	commands = new HashMap<Object,Object>(38); // 38 was 37, increased to 38 (added NOT-command) - Lauri 2004-12-09
+	parameters = new HashMap<Object,Object>(38);
 	
 	for (int i = 0; i<38; i++){
 	    commands.put(commandData[i][1], commandData[i][0]);

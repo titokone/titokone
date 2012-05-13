@@ -232,8 +232,8 @@ public class Binary {
 	MemoryLine line;
 	SymbolTable symbolTable = new SymbolTable();
 
-	Vector code = new Vector();
-	Vector data = new Vector();
+	Vector<MemoryLine> code = new Vector<MemoryLine>();
+	Vector<MemoryLine> data = new Vector<MemoryLine>();
 	//String[] b91=contents.split(System.getProperty("line.separator",
 	//"\n"));
 	String[] b91=contents.split("\n");

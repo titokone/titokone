@@ -7,11 +7,11 @@ import java.util.HashMap;
     symbolic commands to binary form.  */
 public class SymbolicInterpreter extends Interpreter {
     /** This hashtable contains the opcode values keyed to the symbolic commands. */
-    private HashMap opcodes;
+    private HashMap<Object,Object> opcodes;
     /** This hashtable contains integer values for given addressingmodes. */
-    private HashMap addressModes;
+    private HashMap<Object,Object> addressModes;
     /** This hashtable  */
-    private HashMap registers;
+    private HashMap<Object,Object> registers;
     
 // constructor
 
@@ -23,15 +23,15 @@ public class SymbolicInterpreter extends Interpreter {
 
     /** This method sets up the HashTables. */
     private void dataSetup() {
-        opcodes = new HashMap(commandData.length);
+        opcodes = new HashMap<Object,Object>(commandData.length);
         for (int i = 0; i < commandData.length; i++) 
 		opcodes.put(commandData[i][0], commandData[i][1]);
 
-	addressModes = new HashMap(addressingData.length);
+	addressModes = new HashMap<Object,Object>(addressingData.length);
 	for (int i = 0; i < addressingData.length; i++) 
 		addressModes.put(addressingData[i][0], addressingData[i][1]);
 
-	registers = new HashMap(registerData.length);
+	registers = new HashMap<Object,Object>(registerData.length);
 	for (int i = 0; i < registerData.length; i++) 
 		registers.put(registerData[i][0], registerData[i][1]);
     }

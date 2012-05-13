@@ -11,9 +11,9 @@ import java.util.Iterator;
     maps. */
 public class SymbolTable {
     /** This field contains the SymbolTable's symbols. */
-    private HashMap symbols = new HashMap();
+    private HashMap<String,Integer> symbols = new HashMap<String,Integer>();
     /** This field contains the SymbolTable's definitions. */
-    private HashMap definitions = new HashMap();
+    private HashMap<String,String> definitions = new HashMap<String,String>();
 
     /** This function returns the integer value that corresponds to a 
     given symbol.

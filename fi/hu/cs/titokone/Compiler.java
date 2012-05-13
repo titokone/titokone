@@ -17,11 +17,11 @@ public class Compiler {
 	/** This field holds the declared variables, labels and other
 	  symbols. It acts as a pointer to the symbolTable Vector where
 	  the actual data is stored. */
-	private HashMap symbols;
+	private HashMap<String,Integer> symbols;
 
 	/** This field holds the invalid values to be introduced
 	  (i.e. already used labels can't be re-used. */
-	private HashMap invalidLabels;
+	private HashMap<String,Integer> invalidLabels;
 
 	/** This field tells the next line to be checked. */
 	private int nextLine;
@@ -61,13 +61,13 @@ public class Compiler {
 	  field holds the clean version of the code (stripped of
 	  compiler commands like def, ds, dc etc.)
 	  */
-	private Vector code;
+	private Vector<String> code;
 
 	/** This field acts as a symboltable, it is a String array vector
 	  where 1:st position holds the name of the symbol and the
 	  second either it's value (label, equ) or the command (ds 10,
 	  dc 10) */
-	private Vector symbolTable;
+	private Vector<String[]> symbolTable;
 
 	/** This array contains the data. */
 	private String[] data;
@@ -130,10 +130,10 @@ public class Compiler {
 		defStdin = "";
 		defStdout = "";
 
-		code = new Vector();
-		symbols = new HashMap();	
-		symbolTable = new Vector();
-		invalidLabels = new HashMap();
+		code = new Vector<String>();
+		symbols = new HashMap<String,Integer>();
+		symbolTable = new Vector<String[]>();
+		invalidLabels = new HashMap<String,Integer>();
 
 		invalidLabels.put("crt", new Integer(0));
 		invalidLabels.put("kbd", new Integer(1));

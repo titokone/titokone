@@ -609,7 +609,7 @@ public class Animator extends JPanel implements Runnable {
         f.setTitle ("Animator");
         f.getContentPane().add (a);
         f.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        f.show();
+        f.setVisible(true);
         
         RunDebugger runDebugger = new RunDebugger();
 	

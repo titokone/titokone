@@ -50,7 +50,7 @@ public class RunDebugger{
     /** Runinfo for each command line of the program */
     private RunInfo info;
     /** List of changed memory lines */
-    private LinkedList changedMemoryLines = new LinkedList();
+    private LinkedList<Object[]> changedMemoryLines = new LinkedList<Object[]>();
     /** Compare bit tells compare status of status register.
         0 - greater, 1 - equal, 2 - less. */
     private int compareBit=-1;
@@ -261,7 +261,7 @@ public class RunDebugger{
         this.setComments();
 	info.setChangedMemoryLines (changedMemoryLines);
         info.setCompareOperation (compareBit);
-        changedMemoryLines = new LinkedList();
+        changedMemoryLines = new LinkedList<Object[]>();
         return info;
     }
 }
