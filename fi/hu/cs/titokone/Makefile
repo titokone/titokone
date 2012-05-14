@@ -49,11 +49,11 @@ SOURCES = \
 all: classes translations
 
 translations:
-	make -C resources
+	make -C translations
 
 classes: $(SOURCES:.java=.class)
 
 clean:
 	rm -f *.class
-	make -C resources clean
+	make -C translations clean
 
