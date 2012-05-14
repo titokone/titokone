@@ -1,4 +1,4 @@
-Muutosloki v1.206
+Muutosloki v1.300
 =================
 Lisättiin titokoneeseen grafiikkatila.
 

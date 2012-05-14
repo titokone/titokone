@@ -383,7 +383,7 @@ public GUI() {
 	
 	
   print("Setting title...");        
-  setTitle("Titokone v1.206");
+  setTitle("Titokone v1.300");
   
   addWindowListener( new WindowAdapter () {
 		public void windowClosing(WindowEvent e) {
