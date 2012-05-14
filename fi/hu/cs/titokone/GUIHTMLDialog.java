@@ -78,7 +78,7 @@ public void updateAllTexts() {
   }
   catch (Exception e) {
     try {
-      htmlURL = new URL(getClass().getClassLoader().getResource(GUI.resourceHomeDir).toString()+"resources/"+newPath);
+      htmlURL = new URL(getClass().getClassLoader().getResource("doc").toString()+"/"+newPath);
     }
     catch (Exception e2) {
       //System.out.println(e);

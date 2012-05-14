@@ -174,7 +174,7 @@ public class Animator extends JPanel implements Runnable {
     public Animator () throws IOException {
         // read the background image
         ClassLoader foo = getClass ().getClassLoader();
-        BufferedImage bi = ImageIO.read (foo.getResourceAsStream ("fi/hu/cs/titokone/resources/animator.gif"));
+        BufferedImage bi = ImageIO.read (foo.getResourceAsStream ("fi/hu/cs/titokone/img/animator.gif"));
 		backgroundImage = new BufferedImage (bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
         doubleBuffer = new BufferedImage (bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_INT_RGB);
 		backgroundImage.createGraphics().drawImage (bi, 0,0, null);

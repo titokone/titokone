@@ -11,7 +11,7 @@
 // as the translations equal the base messages, as they do, this file
 // could contain just about anything.
 
-package fi.hu.cs.titokone.resources; 
+package fi.hu.cs.titokone.translations; 
 
 import java.util.ListResourceBundle;
 
@@ -241,8 +241,8 @@ public class Translations_en extends ListResourceBundle {
       {"Select default stdout file", null},
       {"Set language", null},
       {"Select from a file...", null},
-      {"etc/manual.html", null},
-      {"etc/about.html", null},
+      {"en/manual.html", null},
+      {"en/about.html", null},
 
       {"Line", null},   
       {"Numeric value", null},    
@@ -428,8 +428,8 @@ public class Translations_en extends ListResourceBundle {
       // looping bugs.
       
       
-      {"__ABOUT_FILENAME__", "about.html"},
-      {"__MANUAL_FILENAME__", "manual.html"}
+      {"__ABOUT_FILENAME__", "en/about.html"},
+      {"__MANUAL_FILENAME__", "en/manual.html"}
       // Localizable bit ends. 
   };
 }

@@ -297,6 +297,7 @@ public class GUI extends JFrame implements ActionListener {
         private Logger logger;
 
         public static final String resourceHomeDir = "fi/hu/cs/titokone/";
+        public static final String imgDir = "fi/hu/cs/titokone/img";
 
 /** This is called when ActionEvent of some kind is fired.
 */
@@ -403,8 +404,8 @@ public GUI() {
   }
   enable(GUI.OPEN_FILE_COMMAND);
   
-  manualDialog = new GUIHTMLDialog(this, false, "manual.html");
-  aboutDialog = new GUIHTMLDialog(this, false, "about.html");
+  manualDialog = new GUIHTMLDialog(this, false, "en/manual.html");
+  aboutDialog = new GUIHTMLDialog(this, false, "en/about.html");
  
   print("Updating texts...");        
   updateAllTexts();
@@ -1605,7 +1606,7 @@ private void initAnimator() {
   animatorContinueButton = new JButton();
   try {  
     animatorContinueButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/StepForward24.gif"), "Continue")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/StepForward24.gif"), "Continue")
     );
   }
   catch (Exception e) {
@@ -1758,7 +1759,7 @@ private JToolBar makeToolBar() {
   openFileButton = new JButton();
   try {
     openFileButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Open24.gif"), "Open file")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/Open24.gif"), "Open file")
     );
   }
   catch (Exception e) {
@@ -1774,7 +1775,7 @@ private JToolBar makeToolBar() {
   compileButton = new JButton();
   try {  
     compileButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Compile24.gif"), "Compile")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/Compile24.gif"), "Compile")
     );
   }
   catch (Exception e) {
@@ -1786,7 +1787,7 @@ private JToolBar makeToolBar() {
   runButton = new JButton();
   try {  
     runButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Run24.gif"), "Run")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/Run24.gif"), "Run")
     );
   }
   catch (Exception e) {
@@ -1798,7 +1799,7 @@ private JToolBar makeToolBar() {
   continueButton = new JButton();
   try {  
     continueButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/StepForward24.gif"), "Continue")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/StepForward24.gif"), "Continue")
     );
   }
   catch (Exception e) {
@@ -1810,7 +1811,7 @@ private JToolBar makeToolBar() {
   continueToEndButton = new JButton();
   try {  
     continueToEndButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/FastForward24.gif"), "Continue w/o pauses")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/FastForward24.gif"), "Continue w/o pauses")
     );
   }
   catch (Exception e) {
@@ -1822,7 +1823,7 @@ private JToolBar makeToolBar() {
   stopButton = new JButton();
   try {  
     stopButton.setIcon(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Stop24.gif"), "Stop")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/Stop24.gif"), "Stop")
     );
   }
   catch (Exception e) {
@@ -1837,7 +1838,7 @@ private JToolBar makeToolBar() {
   lineByLineToggleButton = new JToggleButton(); 
   try {  
     lineByLineToggleButton = new JToggleButton(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/RowInsertAfter24.gif"), "Run line by line")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/RowInsertAfter24.gif"), "Run line by line")
     );
   }
   catch (Exception e) {
@@ -1849,7 +1850,7 @@ private JToolBar makeToolBar() {
   showCommentsToggleButton = new JToggleButton(); 
   try {  
     showCommentsToggleButton = new JToggleButton(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/History24.gif"), "Show comments")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/History24.gif"), "Show comments")
     );
   }
   catch (Exception e) {
@@ -1861,7 +1862,7 @@ private JToolBar makeToolBar() {
   showAnimationToggleButton = new JToggleButton(); 
   try {  
     showAnimationToggleButton = new JToggleButton(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Movie24.gif"),"Show comments")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/Movie24.gif"),"Show comments")
     );
   }
   catch (Exception e) {
@@ -1875,7 +1876,7 @@ private JToolBar makeToolBar() {
   showDisplayToggleButton = new JToggleButton(); 
   try {  
     showDisplayToggleButton = new JToggleButton(
-      new ImageIcon(getClass().getClassLoader().getResource(resourceHomeDir+"etc/Display.gif"),"Show display")
+      new ImageIcon(getClass().getClassLoader().getResource(imgDir+"/Display.gif"),"Show display")
     );
   }
   catch (Exception e) {

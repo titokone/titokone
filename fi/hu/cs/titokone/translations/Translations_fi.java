@@ -1,7 +1,7 @@
 /* Copyright 2004 University of Helsinki, Department of Computer
    Science. See license.txt for details. */
     
-package fi.hu.cs.titokone.resources;
+package fi.hu.cs.titokone.translations;
 
 import java.util.ListResourceBundle;
 
@@ -278,10 +278,10 @@ public class Translations_fi extends ListResourceBundle {
       {"Show/hide video graphics display", "Grafiikkatila näytä/piilota"},
       {"Enable/disable extra comments while execution", "Suorituksen ylimääräinen kommentointi päälle/pois"},
       {"Enable/disable line by line execution", "Riveittäin suoritus päälle/pois"},
-      {"about.html", "about_fi.html"},
-      {"manual.html", "manual_fi.html"},
-      {"__ABOUT_FILENAME__", "about_fi.html"},
-      {"__MANUAL_FILENAME__", "manual_fi.html"},
+      {"en/about.html", "fi/about_fi.html"},
+      {"en/manual.html", "fi/manual_fi.html"},
+      {"__ABOUT_FILENAME__", "fi/about_fi.html"},
+      {"__MANUAL_FILENAME__", "fi/manual_fi.html"},
       
       {"Enter", "Syötä"}, // button used to enter a number to the KBD device.
       {"Symbol table", "Symbolitaulu"}, 

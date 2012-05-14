@@ -11,7 +11,7 @@
 // file name (eg. Trandlations_de for a German translation, in file
 // Translations_de.java) before you start translating the nulls to
 // your language. See Translations_fi.java for an example.
-package fi.hu.cs.titokone.resources; 
+package fi.hu.cs.titokone.translations; 
 
 import java.util.ListResourceBundle;
 
@@ -255,8 +255,8 @@ public class Translations extends ListResourceBundle {
       {"Select default stdout file", null},
       {"Set language", null},
       {"Select from a file...", null},
-      {"manual.html", null},
-      {"about.html", null},
+      {"en/manual.html", null},
+      {"en/about.html", null},
 
       {"Line", null},   
       {"Numeric value", null},    
@@ -276,8 +276,8 @@ public class Translations extends ListResourceBundle {
       {"Enter", null}, // button used to enter a number to the KBD device.
       {"Symbol table", null}, 
       {"Registers", null}, 
-      {"__MANUAL_FILENAME__", "manual.html"}, // non-foolproof backup
-      {"__ABOUT_FILENAME__" , "about.html"},  // in case GUI changes lost.
+      {"__MANUAL_FILENAME__", "en/manual.html"}, // non-foolproof backup
+      {"__ABOUT_FILENAME__" , "en/about.html"},  // in case GUI changes lost.
       
       // Class: GUIBrain 
       {"Main path not found! (Trying to locate etc/settings.cfg.) " +
