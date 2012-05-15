@@ -28,4 +28,8 @@ implements IODevice
             rnd=new Random(value);
         throw new RuntimeException("should not be possible "+n);
     }
+    public void reset()
+    {
+        rnd=new SecureRandom();
+    }
 }

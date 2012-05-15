@@ -23,4 +23,6 @@ implements IODevice
         if(n!=0)
             throw new RuntimeException("should not be possible "+n);
     }
+    public void reset()
+    {}
 }

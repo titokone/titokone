@@ -45,9 +45,14 @@ SOURCES = \
 	SymbolTable.java \
 	Titokone.java \
 	Translator.java \
-    RandomAccessMemoryImpl.java
+	RandomAccessMemoryImpl.java \
+	IODevice.java \
+	Device.java 
 
-all: classes translations
+all: classes translations devices
+
+devices:
+	make -C devices
 
 translations:
 	make -C translations
@@ -57,4 +62,5 @@ classes: $(SOURCES:.java=.class)
 clean:
 	rm -f *.class
 	make -C translations clean
+	make -C devices clean
 

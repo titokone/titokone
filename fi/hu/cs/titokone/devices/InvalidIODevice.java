@@ -34,6 +34,8 @@ implements IODevice
             throw new TTK91InvalidDevice(new Message (Processor.INVALID_DEVICE_MESSAGE).toString());
         throw new RuntimeException("should not happen "+n);    
     }
+    public void reset()
+    {}
     
     
 }

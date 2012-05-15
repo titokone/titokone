@@ -11,6 +11,7 @@ ttk91:
 
 titokone: ttk91
 	make -C fi/hu/cs/titokone/
+	make -C fi/hu/cs/titokone/devices
 
 $(JARFILE): titokone
 	jar -cmf $(MANIFEST) $(JARFILE) *
