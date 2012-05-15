@@ -1,6 +1,6 @@
 
 JAVAC = javac
-JFLAGS =
+JFLAGS = -encoding utf-8
 .PHONY: translations
 .SUFFIXES: .java .class
 .java.class:
