@@ -44,7 +44,8 @@ SOURCES = \
 	SymbolicInterpreter.java \
 	SymbolTable.java \
 	Titokone.java \
-	Translator.java
+	Translator.java \
+    RandomAccessMemoryImpl.java
 
 all: classes translations
 

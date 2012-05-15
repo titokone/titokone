@@ -28,7 +28,8 @@ SOURCES = \
 	TTK91NoStdInData.java \
 	TTK91OutOfMemory.java \
 	TTK91SymbolNotDefined.java \
-	TTK91SyntaxError.java
+	TTK91SyntaxError.java \
+    OpCode.java
 
 
 all: classes
