@@ -1,5 +1,5 @@
 package fi.hu.cs.titokone;
-
+import fi.hu.cs.titokone.devices.*;
 import fi.hu.cs.ttk91.*;
 import java.util.*;
 
@@ -11,16 +11,16 @@ public class Processor implements TTK91Cpu {
     /** When SVC call is made PC points to this place. */
     public static final int OS_CODE_AREA = -1;
 
-    private static final String INVALID_OPCODE_MESSAGE = "Invalid operation code {0}";
-    private static final String ADDRESS_OUT_OF_BOUNDS_MESSAGE = "Memory address out of bounds";
-    private static final String BAD_ACCESS_MODE_MESSAGE = "Invalid memory addressing mode";
-    private static final String BRANCH_BAD_ACCESS_MODE_MESSAGE = "Invalid memory access mode in branching command";
-    private static final String STORE_BAD_ACCESS_MODE_MESSAGE = "Invalid memory access mode in STORE";
-    private static final String NO_KDB_DATA_MESSAGE = "No keyboard data available";
-    private static final String NO_STDIN_DATA_MESSAGE = "No standard input data available";
-    private static final String INVALID_DEVICE_MESSAGE = "Invalid device number";
-    private static final String INTEGER_OVERFLOW_MESSAGE = "Integer overflow";
-    private static final String DIVISION_BY_ZERO_MESSAGE = "Division by zero";
+    public static final String INVALID_OPCODE_MESSAGE = "Invalid operation code {0}";
+    public static final String ADDRESS_OUT_OF_BOUNDS_MESSAGE = "Memory address out of bounds";
+    public static final String BAD_ACCESS_MODE_MESSAGE = "Invalid memory addressing mode";
+    public static final String BRANCH_BAD_ACCESS_MODE_MESSAGE = "Invalid memory access mode in branching command";
+    public static final String STORE_BAD_ACCESS_MODE_MESSAGE = "Invalid memory access mode in STORE";
+    public static final String NO_KDB_DATA_MESSAGE = "No keyboard data available";
+    public static final String NO_STDIN_DATA_MESSAGE = "No standard input data available";
+    public static final String INVALID_DEVICE_MESSAGE = "Invalid device number";
+    public static final String INTEGER_OVERFLOW_MESSAGE = "Integer overflow";
+    public static final String DIVISION_BY_ZERO_MESSAGE = "Division by zero";
 
     /** CRT-device */
     public static final int CRT = 0;
@@ -30,9 +30,16 @@ public class Processor implements TTK91Cpu {
     public static final int STDIN = 6;
     /** STDOUT-device */
     public static final int STDOUT = 7;
+    
+    protected ArrayList<IODevice> ioDevices=new ArrayList<IODevice>();
 
-    /** This field represents the memory of computer. */
+    /** This field represents the memory of computer. 
+        this is actually the "virtual" ram*/
     private RandomAccessMemory ram;
+    /**
+     *  this ram is the "physical" ram
+     */
+    private RandomAccessMemory physRam;
 
     /** This field represents the registers of computer. */
     private Registers regs;
@@ -42,6 +49,7 @@ public class Processor implements TTK91Cpu {
     
     /** Rundebugger */
     private RunDebugger runDebugger = new RunDebugger();
+    private int memsize;
     
     /**
     state register array.
@@ -75,13 +83,142 @@ public class Processor implements TTK91Cpu {
     @param memsize creates new computer with given size of memory. 
     Proper values are power of two (from 512 to 64k). */
     public Processor(int memsize){
-        ram = new RandomAccessMemoryImpl (memsize);
+        this.memsize=memsize;
+        reinitMemory(memsize);
         regs = new Registers();
 
-	//Added by HT, 12.10.2004, Koskelo-project
-	this.stack_size = 0;
-	this.stack_max_size = 0;
-	this.commands_executed = 0;
+        //Added by HT, 12.10.2004, Koskelo-project
+        this.stack_size = 0;
+        this.stack_max_size = 0;
+        this.commands_executed = 0;
+        initDevices();
+    }
+    private void reinitMemory(int memsize)
+    {
+        physRam = new RandomAccessMemoryImpl(memsize);
+        resetDevices();
+    }
+    private void initDevices()
+    {
+        //!TBD combine below classes into a sensible stdout inner class
+        // or two
+        IODevice crt=new InvalidIODevice(1)
+            {
+                @Override
+                public void setPort(int n,int value)
+                {
+                    if(n!=0)
+                        throw new RuntimeException("shouldnt happen "+n);
+                    runDebugger.setOUT (CRT, regs.getRegister(value));                
+                }                
+            };
+        IODevice stdout=new InvalidIODevice(1)
+            {
+                @Override
+                public void setPort(int n,int value)
+                {
+                    if(n!=0)
+                        throw new RuntimeException("shouldnt happen "+n);
+                    runDebugger.setOUT (STDOUT, regs.getRegister(value));                
+                }                
+            };
+        registerDevice(crt);
+        registerDevice(new InvalidIODevice(1)
+            {
+                @Override
+                public int getPort(int n)
+                throws TTK91InvalidDevice
+                {
+                    if(n!=0)
+                        throw new RuntimeException("shouldnt happen "+n);
+                        
+                    if (kbdData == null) {
+                        throw new TTK91InvalidDevice(new Message (Processor.NO_KDB_DATA_MESSAGE).toString());
+                    }
+                    runDebugger.setIN (KBD, kbdData.intValue());
+                    int ret=kbdData.intValue();
+                    kbdData = null;           
+                    return ret;
+                }
+            });
+        registerDevice(new InvalidIODevice(4));
+        registerDevice(new InvalidIODevice(1)
+            {
+                @Override
+                public int getPort(int n)
+                throws TTK91InvalidDevice
+                {
+                    if(n!=0)
+                        throw new RuntimeException("shouldnt happen "+n);
+                        
+                    if (stdinData == null) {
+                        throw new TTK91InvalidDevice(new Message (Processor.NO_KDB_DATA_MESSAGE).toString());
+                    }
+                    runDebugger.setIN (STDIN, stdinData.intValue());
+                    int ret=stdinData.intValue();
+                    stdinData = null;           
+                    return ret;
+                }
+            });
+        registerDevice(stdout); //7
+        registerDevice(new InvalidIODevice(3)); //reserve up to 10
+        registerDevice(new ZeroIODevice()); //here you can read zeroes
+        registerDevice(new RandomIODevice()); //random numbers
+        MMU mmu=new MMU()
+                {
+                    protected RandomAccessMemory getMem()
+                    {
+                        return physRam;
+                    }
+                };
+        ram=mmu;
+        registerDevice(mmu);//dont register this if you want a passthrough
+                            //stupid mmu
+    }
+    /**
+     *  register a new device which might either be an
+     *  IODevice, a MMAPDevice or both. It will be allocated the
+     *  next free ioports and memory addresses
+     */
+    public void registerDevice(Device d)
+    {        
+        if(d instanceof IODevice)
+        {  
+            int base=0;
+            for(IODevice iod:ioDevices)
+            {
+                base+=iod.getPortCount();
+            }
+            /*  remap the device so it sees itself starting from 0*/
+            ioDevices.add(new AddressMappingIODevice(base,(IODevice)d));
+        }
+        //handle MMAPDevices
+    }
+    /**
+     *  reset all devices to reboot state
+     */
+    public void resetDevices()
+    {
+        for(IODevice iod:ioDevices)
+        {
+            iod.reset();
+        }
+        //MMAP devices
+    }
+    /**
+     *  get the IODevice which handles this port or 
+     *  InvalidIODevice
+     */
+    protected IODevice getDevice(int port)
+    {
+        int base=0;
+        for(IODevice iod:ioDevices)
+        {
+            base+=iod.getPortCount();
+            if(base>port)
+                return iod;
+        }
+        return new InvalidIODevice(65000);
     }
 
 /** Returns the memory attached to the processor. */
@@ -114,7 +251,7 @@ public class Processor implements TTK91Cpu {
 /** Method erases memorylines from memory. Memory will be filled
     with 0-lines. */
     public void eraseMemory() {
-        ram = new RandomAccessMemoryImpl(ram.getSize());
+        reinitMemory(memsize);
 	regs = new Registers();
     }
 
@@ -274,6 +411,7 @@ public class Processor implements TTK91Cpu {
     throws TTK91BadAccessMode, TTK91AddressOutOfBounds, TTK91NoKbdData, TTK91NoStdInData, TTK91InvalidDevice {
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         OpCode opcode=OpCode.getOpCode(oc);
+        IODevice dev=null;
         switch (opcode) {
             case STORE : // STORE
             if (M == 2) {
@@ -290,41 +428,26 @@ public class Processor implements TTK91Cpu {
             break;
             
             case IN : // IN
-            switch (param) {
-                case KBD : // Keyboard
-                if (kbdData == null) {
+                try{
+                    dev=getDevice(param);
+                    regs.setRegister(Rj,dev.getPort(param));
+                    status = TTK91Cpu.STATUS_STILL_RUNNING;
+                }catch(TTK91InvalidDevice id)
+                {
                     status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                    throw new TTK91NoKbdData(new Message (Processor.NO_KDB_DATA_MESSAGE).toString());
-                }
-                regs.setRegister (Rj, kbdData.intValue());
-                runDebugger.setIN (param, kbdData.intValue());
-                kbdData = null;
-                status = TTK91Cpu.STATUS_STILL_RUNNING;
-                break;
-                
-                case STDIN : // Standard input file
-                if (stdinData == null) {
-                    status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                    throw new TTK91NoStdInData(new Message (Processor.NO_STDIN_DATA_MESSAGE).toString());
-                }
-                regs.setRegister (Rj, stdinData.intValue());
-                runDebugger.setIN (param, stdinData.intValue());
-                stdinData = null;
-                status = TTK91Cpu.STATUS_STILL_RUNNING;
-                break;
-                
-                default : 
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91InvalidDevice(new Message (Processor.INVALID_DEVICE_MESSAGE).toString());
-            }
+                    throw id;
+                }                                
             break;
             
-            case OUT : // OUT
-            if (param != CRT && param != STDOUT) {
-                status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91InvalidDevice(new Message (Processor.INVALID_DEVICE_MESSAGE).toString());
-            }
-            runDebugger.setOUT (param, regs.getRegister(Rj));
+            case OUT : // OUT     
+                try{
+                    dev=getDevice(param);                                
+                    dev.setPort(param,Rj);
+                }catch(TTK91InvalidDevice id)
+                {
+                    status = TTK91Cpu.STATUS_ABNORMAL_EXIT;                    
+                    throw id;
+                }
             break;
         }
     }

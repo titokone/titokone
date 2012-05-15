@@ -11,10 +11,6 @@ import fi.hu.cs.ttk91.TTK91AddressOutOfBounds;
 public interface RandomAccessMemory
 extends TTK91Memory
 {
-
-    /** Returns the size of the memory. Defined in TTK91Memory.
-        @return Size of the memory. */
-    public int getSize();
 	
 			
     /** Returns the size of the code area.
