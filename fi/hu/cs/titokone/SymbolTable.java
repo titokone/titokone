@@ -99,7 +99,8 @@ public class SymbolTable {
     @return A HashMap containing the symbol table, with the symbol
     names as key Strings and the integer values as Integer
     objects. */
-    public HashMap toHashMap() {
-        return (HashMap) symbols.clone();
+    @SuppressWarnings("unchecked")
+    public HashMap<String,Integer> toHashMap() {
+        return (HashMap<String,Integer>) symbols.clone();
     }
 }

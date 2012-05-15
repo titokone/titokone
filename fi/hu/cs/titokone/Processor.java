@@ -75,7 +75,7 @@ public class Processor implements TTK91Cpu {
     @param memsize creates new computer with given size of memory. 
     Proper values are power of two (from 512 to 64k). */
     public Processor(int memsize){
-        ram = new RandomAccessMemory (memsize);
+        ram = new RandomAccessMemoryImpl (memsize);
         regs = new Registers();
 
 	//Added by HT, 12.10.2004, Koskelo-project
@@ -114,7 +114,7 @@ public class Processor implements TTK91Cpu {
 /** Method erases memorylines from memory. Memory will be filled
     with 0-lines. */
     public void eraseMemory() {
-        ram = new RandomAccessMemory (ram.getSize());
+        ram = new RandomAccessMemoryImpl(ram.getSize());
 	regs = new Registers();
     }
 
