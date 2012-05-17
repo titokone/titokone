@@ -119,11 +119,11 @@ implements IODevice,RandomAccessMemory
     {
         return getMem().getMemoryReferences();
     }
-	public int getValue(int memoryslot)
+    public int getValue(int memoryslot)
     {
         return getMemoryLine(memoryslot).getBinary();
     }
-	protected int mapslot(int slot)
+    protected int mapslot(int slot)
     {
         if(from!=0||to!=0||length!=0)
         {
@@ -132,11 +132,11 @@ implements IODevice,RandomAccessMemory
         
         return slot;
     }
-	public HashMap<String,Integer> getSymbolTable()
+    public HashMap<String,Integer> getSymbolTable()
     {
         return getMem().getSymbolTable();
     }
-	public int[] getMemory()
+    public int[] getMemory()
     {
         MemoryLine[] temp=getMemoryLines();
         int[] ret=new int[temp.length];
@@ -144,14 +144,14 @@ implements IODevice,RandomAccessMemory
             ret[i]=temp[i].getBinary();
         return ret;
     }
-	public int[] getCodeArea()
+    public int[] getCodeArea()
     {
         int[] codeArea = new int [getCodeAreaSize()];
         for(int i=0;i<codeArea.length;i++)
             codeArea[i]=getMemoryLine(i).getBinary();
         return codeArea;
     }
-	public int[] getDataArea()
+    public int[] getDataArea()
     {
         int cz=getCodeAreaSize();
         int[] dataArea = new int [getDataAreaSize()];

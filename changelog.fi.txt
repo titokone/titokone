@@ -1,3 +1,30 @@
+itmon branchi
+=================
+devicet
+=================
+-vanhat IN/OUT devicet muunnettiin geneerisemmäksi
+-lisättiin uusia esimerkkidevicejä. 
+
+portti    device
+0           CRT (writeonly, failaa jos lukee)
+1           KBD (readonly, failaa jos lukee eikä ole dataa,tai jos kirjottaa)
+2           RES (varattu, failaa jos kosket)
+3           RES
+4           RES
+5           RES
+6           STDIN (readonly, failaa jos data loppuu tai jos kirjotat)
+7           STDOUT (writeonly, failaa jos luet)
+8           RES
+9           RES
+10          RES
+11          ZERO (write /dev/null, read /dev/zero)
+12          RND  (read to get (secure)random, write to set (PSR)seed)
+13          MMU  (write 3 values to set from,to,length , or 0xffffffff to 
+                  reset. Will map from,from+length of underlying memory to
+                  to,to+length of visible memory)
+14-17       RESMMU reserved for mmu magic
+
+
 Muutosloki v1.300
 =================
 Lisättiin titokoneeseen grafiikkatila.

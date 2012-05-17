@@ -9,15 +9,15 @@ package fi.hu.cs.ttk91;
  * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 public interface TTK91Application {
-	/**
-	 * @return returns the program output in stdout and empties it
-	 */
-	public String readStdOut();
+    /**
+     * @return returns the program output in stdout and empties it
+     */
+    public String readStdOut();
 
-	/**
-	 * @return returns the program output in crt and empties it
-	 */
-	public String readCrt();
+    /**
+     * @return returns the program output in crt and empties it
+     */
+    public String readCrt();
 
 	/**
 	 * sets the keyboard input for the program.
@@ -30,7 +30,7 @@ public interface TTK91Application {
 	 * 
 	 * @throws IllegalArgumentException if input string is invalid.
 	 */
-	public void setKbd(String input);
+    public void setKbd(String input);
 
 	/**
 	 * sets the stdin input for the program
@@ -43,5 +43,5 @@ public interface TTK91Application {
 	 * 
 	 * @throws IllegalArgumentException if input string is invalid.
 	 */
-	public void setStdIn(String fileContent);
+    public void setStdIn(String fileContent);
 }

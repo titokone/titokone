@@ -104,9 +104,9 @@ public class Display extends Canvas implements Runnable {
         long r4 = (rgb4l & 0xf00) >>> 8;
         long g4 = (rgb4l & 0x0f0) >>> 4;
         long b4 = rgb4l & 0x00f;
-	long r8 = (r4 << 4) | r4;
-	long g8 = (g4 << 4) | g4;
-	long b8 = (b4 << 4) | b4;
+        long r8 = (r4 << 4) | r4;
+        long g8 = (g4 << 4) | g4;
+        long b8 = (b4 << 4) | b4;
         long rgb8l = ((r8 << 16) & 0xff0000) | ((g8 << 8) & 0x00ff00) | (b8 & 0x0000ff);
         int rgb8i = (int) rgb8l;
         return rgb8i;
