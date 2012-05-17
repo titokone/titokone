@@ -8,4 +8,8 @@ public interface Device
      *  "reboot" to zero state
      */
     public void reset();
+    /**
+     *  update state of device
+     */
+    public void update();
 }

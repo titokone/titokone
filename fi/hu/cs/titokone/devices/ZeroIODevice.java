@@ -25,4 +25,6 @@ implements IODevice
     }
     public void reset()
     {}
+    public void update()
+    {}
 }

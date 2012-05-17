@@ -31,5 +31,11 @@ implements IODevice
         delegate.setPort(n-base,value);
     }
     public void reset()
-    {}
+    {
+        delegate.reset();
+    }
+    public void update()
+    {
+        delegate.update();
+    }
 }

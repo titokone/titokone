@@ -70,6 +70,8 @@ implements IODevice,RandomAccessMemory
                 break;
         }
     }
+    public void update()
+    {}
     public int getSize()
     {
         return getMem().getSize();

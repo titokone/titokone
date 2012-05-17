@@ -11,7 +11,8 @@ SOURCES = \
     ZeroIODevice.java \
     RandomIODevice.java \
     MMU.java \
-    AddressMappingIODevice.java
+    AddressMappingIODevice.java \
+    Pic.java
 
 all: classes 
 

@@ -5,7 +5,8 @@ import java.util.*;
 
 /** This class represents the processor. It can be told to run for one
     command cycle at a time. */
-public class Processor implements TTK91Cpu {
+public class Processor 
+implements TTK91Cpu,Interruptable {
 
 
     /** When SVC call is made PC points to this place. */
@@ -53,6 +54,10 @@ public class Processor implements TTK91Cpu {
     private RunDebugger runDebugger = new RunDebugger();
     private int memsize;
     
+    /*  a programmable interrupt controller*/
+    protected Pic pic=new Pic();
+    
+    
     /**
     state register array.
     index: 
@@ -69,6 +74,12 @@ public class Processor implements TTK91Cpu {
     10 - interrupts disabled
     */
     private boolean[] sr = new boolean[11];
+    
+    /*  if an interrupt has been flagged
+        this will be automatically cleared 
+        when the processor does the jump to 
+        the interrupt routine*/
+    protected boolean interrupted=false;
 
     //Added by Harri Tuomikoski, 12.10.2004, Koskelo-project.
     private int stack_size = 0;
@@ -95,13 +106,30 @@ public class Processor implements TTK91Cpu {
         this.commands_executed = 0;
         initDevices();
     }
+    /**
+     *  flag that an interrupt has happened. this should only 
+     *  be called on the "rising edge" of the interrupt. so if the
+     *  interrupt line stays high, this will not be retriggered.
+     */
+    public void flagInterrupt(InterruptGenerator ig)
+    {
+        /*  set internal variable to flag interrupt
+            dont know if we could use sr[7] for this*/
+        interrupted=true;
+    }
+    public void clearInterrupt()
+    {
+        interrupted=false;
+    }
     private void reinitMemory(int memsize)
     {
         physRam = new RandomAccessMemoryImpl(memsize);
         resetDevices();
     }
     private void initDevices()
-    {
+    {   
+        /*  link pic to report it's interrupt to processor*/
+        pic.link(this);
         //!TBD combine below classes into a sensible stdout inner class
         // or two
         IODevice crt=new InvalidIODevice(1)
@@ -176,6 +204,7 @@ public class Processor implements TTK91Cpu {
         ram=mmu;
         registerDevice(mmu);//dont register this if you want a passthrough
                             //stupid mmu
+        registerDevice(pic);
     }
     /**
      *  register a new device which might either be an
@@ -194,6 +223,12 @@ public class Processor implements TTK91Cpu {
             /*  remap the device so it sees itself starting from 0*/
             ioDevices.add(new AddressMappingIODevice(base,(IODevice)d));
         }
+        if(d instanceof InterruptGenerator &&
+            ! (d instanceof Pic))
+        {
+            ((InterruptGenerator)d).link(pic);
+            pic.add((InterruptGenerator)d);
+        }
         //handle MMAPDevices
     }
     /**
@@ -206,6 +241,22 @@ public class Processor implements TTK91Cpu {
             iod.reset();
         }
         //MMAP devices
+    }
+    /**
+     *  give all devices a chance to update their state
+     *  with PIC last.
+     */
+    public void updateDevices()
+    {
+        for(IODevice iod:ioDevices)
+        {
+            if(!(iod instanceof Pic))
+            {
+                iod.update();
+            }
+        }
+        //MMAP devices
+        pic.update();
     }
     /**
      *  get the IODevice which handles this port or 
@@ -314,7 +365,10 @@ public class Processor implements TTK91Cpu {
         // if last command set status to ABNORMAL_EXIT repeat that command
         if (status == TTK91Cpu.STATUS_ABNORMAL_EXIT)
             regs.setRegister (TTK91Cpu.CU_PC, regs.getRegister (TTK91Cpu.CU_PC) -1);
-        
+            
+        /*  give peripherals some attention*/
+        updateDevices();
+        checkForInterrupt();
         try {
             // get PC
             int PC = regs.getRegister (TTK91Cpu.CU_PC);
@@ -630,7 +684,6 @@ public class Processor implements TTK91Cpu {
             break;
         }
     }
-
 /** Stack. */
     private void stack(int oc, int Rj, int Ri, int param) 
     throws TTK91AddressOutOfBounds {
@@ -640,23 +693,23 @@ public class Processor implements TTK91Cpu {
             case PUSH : // PUSH
             regs.setRegister (Rj, regs.getRegister(Rj) +1);
             writeToMemory (regs.getRegister(Rj), param);
-	    //Added by HT, 12.10.2004, Koskelo-project, modified by LL, 12.12.2004
-	    addToStack();
+            //Added by HT, 12.10.2004, Koskelo-project, modified by LL, 12.12.2004
+            addToStack();
             break;
             
             case POP : // POP
             regs.setRegister (Ri, ram.getValue (regs.getRegister(Rj)));
             regs.setRegister (Rj, regs.getRegister(Rj) -1);
-	    //Added by HT, 12.10.2004, Koskelo-project
-	    --this.stack_size;
+            //Added by HT, 12.10.2004, Koskelo-project
+            --this.stack_size;
             break;
             
             case PUSHR : // PUSHR
             for (int i=0; i < 7; i++) {
                 regs.setRegister (Rj, regs.getRegister(Rj) +1);
                 writeToMemory (regs.getRegister (Rj), regs.getRegister (TTK91Cpu.REG_R0 +i));
-		//Added by HT, 12.10.2004, Koskelo-project, modified by LL, 12.12.2004
-		addToStack();
+                //Added by HT, 12.10.2004, Koskelo-project, modified by LL, 12.12.2004
+                addToStack();
             }
             break;
             
@@ -664,10 +717,24 @@ public class Processor implements TTK91Cpu {
             for (int i=0; i < 7; i++) {
                 regs.setRegister (TTK91Cpu.REG_R6 -i, ram.getValue (regs.getRegister (Rj)));
                 regs.setRegister (Rj, regs.getRegister(Rj) -1);
-		//Added by HT, 12.10.2004, Koskelo-project
-		--this.stack_size;
+                //Added by HT, 12.10.2004, Koskelo-project
+                --this.stack_size;
             }
             break;
+        }
+    }
+    /**
+     *  see if we have been interrupted and execute a jump
+     *  if so.
+     */
+    protected void checkForInterrupt()
+    throws TTK91AddressOutOfBounds
+    {
+        if(interrupted)
+        {
+            /*  fake a CALL*/
+            clearInterrupt();
+            subr(OpCode.CALL.code(),TTK91Cpu.REG_R0,ram.getValue(0),0);
         }
     }
     

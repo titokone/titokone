@@ -47,7 +47,9 @@ SOURCES = \
 	Translator.java \
 	RandomAccessMemoryImpl.java \
 	IODevice.java \
-	Device.java 
+	Device.java \
+	InterruptGenerator.java \
+	Interruptable.java
 
 all: classes translations devices
 

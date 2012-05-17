@@ -32,4 +32,6 @@ implements IODevice
     {
         rnd=new SecureRandom();
     }
+    public void update()
+    {}
 }
