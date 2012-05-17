@@ -12,7 +12,8 @@ SOURCES = \
     RandomIODevice.java \
     MMU.java \
     AddressMappingIODevice.java \
-    Pic.java
+    Pic.java \
+    UART.java
 
 all: classes 
 

@@ -1,5 +1,21 @@
 itmon branchi
 =================
+keskeytykset
+=================
+-Pitää enabloida laitteesta ja picistä. 
+-hyppää aina osoitteessa 0 olevaan osoitteeseen
+-tekee käytännössä parametrittoman CALLin eli palaaminen tapahtuu
+ EXITillä. 
+-keskeytys tapahtuu jos tulee "ennenäkemätön" 
+ keskeytyksen nouseva reuna ja se keskeytys on 
+ enabloidu ja kaikki keskeytykset ei ole disabloitu
+-keskeytyskäsittelyrutiinista kannattaa tehdä 
+ re-entrant ja disabloida keskeytykset heti 
+ rutiiniin mentäessä. 
+-kun keskeytykset re-enabloidaan, "muistaa" pic 
+ disabloinnin aikana tulleet keskeytykset ja 
+ aiheuttaa keskeytyksen. 
+
 devicet
 =================
 -vanhat IN/OUT devicet muunnettiin geneerisemmäksi
@@ -23,7 +39,14 @@ portti    device
                   reset. Will map from,from+length of underlying memory to
                   to,to+length of visible memory)
 14-17       RESMMU reserved for mmu magic
-
+18-19       PIC  0 command port , 1 interrupt enable
+                 0 read to get high interrupts
+                 0 write 0->clear interrupts
+                         1->disable all
+                         2->re-enable
+                 1 read to see enabled interrupts
+                 1 write to set enabled , if you disable an interrupt it
+                        will be cleared
 
 Muutosloki v1.300
 =================
