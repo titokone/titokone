@@ -206,6 +206,7 @@ implements TTK91Cpu,Interruptable {
                             //stupid mmu
         registerDevice(pic);
         registerDevice(new UART(10)); //10 clocks per bit (fast!)
+        registerDevice(new UART(10)); //another..
     }
     /**
      *  register a new device which might either be an

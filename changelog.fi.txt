@@ -47,6 +47,8 @@ portti    device
                  1 read to see enabled interrupts
                  1 write to set enabled , if you disable an interrupt it
                         will be cleared
+20-22       UART1   0 data port 1 state port 2 control
+23-25       UART2   see source code..
 
 Muutosloki v1.300
 =================
