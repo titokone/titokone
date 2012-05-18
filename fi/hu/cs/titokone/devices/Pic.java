@@ -53,14 +53,15 @@ implements IODevice,
         {
             switch(value)
             {
-                case 0:flagged=0; break; //clear
-                case 1:disabled=true; break; //disable
-                case 2:disabled=false;break; //re-enable
+                case 0:flagged=0; return; //clear
+                case 1:disabled=true; return; //disable
+                case 2:disabled=false;return; //re-enable
             }
         }else if(n==1)
         {
             flagged=flagged&value;
             enabled=value; //set enabled interrupts            
+            return;
         }
         throw new RuntimeException("should not be possible "+n);
     }

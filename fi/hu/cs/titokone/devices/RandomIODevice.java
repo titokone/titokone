@@ -25,7 +25,10 @@ implements IODevice
     public void setPort(int n,int value)
     {
         if(n==0)
+        {
             rnd=new Random(value);
+            return;
+        }
         throw new RuntimeException("should not be possible "+n);
     }
     public void reset()
