@@ -1,5 +1,8 @@
 itmon branchi
 =================
+-testattu zero,rnd
+-mmu vois testata ettei se riko mitään
+-pic ja uartit testattaneen kerralla
 keskeytykset
 =================
 -Pitää enabloida laitteesta ja picistä. 
