@@ -733,7 +733,7 @@ public synchronized void menuEraseMemory() {
   gui.setGUIView(1);
   currentState = NONE;
   setGUICommandsForCurrentState();
-  display.setMem(control.getMemory());
+  display.setMem(control.getPhysicalMemory());
 }
 
 
@@ -1276,7 +1276,7 @@ private void loadAndUpdateGUI() {
     currentState = B91_NOT_RUNNING;
     setGUICommandsForCurrentState();
     gui.setGUIView(3);
-    display.setMem(control.getMemory());
+    display.setMem(control.getPhysicalMemory());
   }
 }
 

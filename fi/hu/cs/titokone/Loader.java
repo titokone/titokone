@@ -79,7 +79,7 @@ public LoadInfo loadApplication() throws TTK91AddressOutOfBounds {
   messageParameters[0] = "" + FP;
   messageParameters[1] = "" + SP;
   
-  MemoryLine[] wholeMemoryDump = ((RandomAccessMemory)processor.getMemory()).getMemoryLines();
+  MemoryLine[] wholeMemoryDump = ((RandomAccessMemory)processor.getPhysicalMemory()).getMemoryLines();
   int wholeDataAreaLength = wholeMemoryDump.length - code.length;
   MemoryLine[] wholeDataArea = new MemoryLine[wholeDataAreaLength];
   

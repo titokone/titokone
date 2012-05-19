@@ -307,7 +307,10 @@ public class Control implements TTK91Core {
     public TTK91Memory getMemory() { 
         return processor.getMemory();
     }
- 
+    public TTK91Memory getPhysicalMemory()
+    {
+        return processor.getPhysicalMemory();
+    }
     /** Returns a reference to the Processor object. Defined by TTK91Core.
         @return The reference to the Processor object.
     */

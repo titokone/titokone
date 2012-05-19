@@ -278,9 +278,18 @@ implements TTK91Cpu,Interruptable {
         return new InvalidIODevice(65000);
     }
 
-/** Returns the memory attached to the processor. */
+    /** Returns the memory attached to the processor. 
+        will actually return the virtual ram how it is viewed by
+        the processor*/
     public TTK91Memory getMemory() {
-       return ram;
+        return ram;
+    }
+    /**
+     *  will return the underlying physical view of the ram
+     */
+    public TTK91Memory getPhysicalMemory()
+    {
+        return physRam;
     }
     
 /** Returns the value of given registerID. The index numbers
