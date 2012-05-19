@@ -1,5 +1,5 @@
 package fi.hu.cs.titokone;
-import fi.hu.cs.ttk91.TTK91InvalidDevice;
+import fi.hu.cs.ttk91.TTK91RuntimeException;
 /**
  *  interface for devices which do INput/OUTput ie. expose
  *  io ports
@@ -24,7 +24,7 @@ extends Device
      *  @throws TTK91InvalidDevice if reading is forbidden for this device
      */
     public int getPort(int n)
-            throws TTK91InvalidDevice;
+            throws TTK91RuntimeException;
     /**
      *  write port number n, if writing is not implemented
      *  should do nothing. 
@@ -34,5 +34,5 @@ extends Device
      *  @throws TTK91InvalidDevice if writing is forbidden for this device
      */
     public void setPort(int n,int value)
-            throws TTK91InvalidDevice;
+            throws TTK91RuntimeException;
 }

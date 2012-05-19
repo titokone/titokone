@@ -1632,7 +1632,7 @@ private void initDisplay() {
   display = new Display();
   displayFrame = new JFrame();
   displayFrame.setSize(scale * display.X, scale * display.Y);
-  displayFrame.setTitle(display.X + "x" + display.Y + " @" + display.START);
+  displayFrame.setTitle(display.X + "x" + display.Y + " @" + display.DEFAULT_START);
   displayFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
   displayFrame.addWindowListener(new WindowAdapter(){
       public void windowClosing(WindowEvent we){

@@ -11,15 +11,15 @@ import fi.hu.cs.ttk91.TTK91Memory;
 public class Display extends Canvas implements Runnable {
 
     static final int X = 160, Y = 120;
-    static final int START = 0x2000;
+    static final int DEFAULT_START = 0x2000;
     static TTK91Memory mem;
     boolean updates = false;
     BufferedImage backBuffer;
+    protected int baseAddress=DEFAULT_START;
     
     /* Display methods */
 
     public Display() {
-
     }
 
     public void setMem(TTK91Memory mem) {
@@ -28,6 +28,11 @@ public class Display extends Canvas implements Runnable {
 
     public void setUpdates(boolean updates) {
         this.updates = updates;
+    }
+    public void setBaseAddress(int base)
+    {
+        if(base>0)
+            this.baseAddress=base;
     }
 
     /* Runnable methods */
@@ -72,7 +77,7 @@ public class Display extends Canvas implements Runnable {
 
     /* static private helpers */
    
-    static private BufferedImage resizeImage(BufferedImage image, int width, int height)
+    private BufferedImage resizeImage(BufferedImage image, int width, int height)
     {
         BufferedImage resized = new BufferedImage(width, height, image.getType());
         Graphics2D r = resized.createGraphics();
@@ -82,14 +87,14 @@ public class Display extends Canvas implements Runnable {
         return resized;
     }
 
-    static private BufferedImage resizeImage(BufferedImage image, double times) {
+    private BufferedImage resizeImage(BufferedImage image, double times) {
         int targetWidth = (int) (times * image.getWidth());
         int targetHeight = (int) (times * image.getHeight());
         BufferedImage resized = resizeImage(image, targetWidth, targetHeight);
         return resized;
     }
 
-    static private double maxFit(int targetWidth, int targetHeight, BufferedImage source)
+    private double maxFit(int targetWidth, int targetHeight, BufferedImage source)
     {
         int sourceWidth = source.getWidth();
         int sourceHeight = source.getHeight();
@@ -112,11 +117,11 @@ public class Display extends Canvas implements Runnable {
         return rgb8i;
     }
 
-    static private void updateGfx(BufferedImage image, int address, int value) {
-        if (address < START) {
+    private void updateGfx(BufferedImage image, int address, int value) {
+        if (address < baseAddress) {
             return;
         }
-        int pixelno = address - START;
+        int pixelno = address - baseAddress;
         int y = pixelno / X;
         int x = pixelno - (y*X);
         if (y >= Y) {
@@ -128,14 +133,14 @@ public class Display extends Canvas implements Runnable {
         image.setRGB(x, y, rgb8);
     }
 
-    static private BufferedImage memToImage(TTK91Memory mem) {
+    private BufferedImage memToImage(TTK91Memory mem) {
         BufferedImage image = new BufferedImage(X, Y, BufferedImage.TYPE_INT_RGB);
         if (mem == null) {
             return image;
         }
         int memsize = mem.getSize();
         for (int i = 0; i < (X * Y); i++) {
-            int address = START + i;
+            int address = baseAddress + i;
             if (address >= memsize) {
                 return image;
             }
@@ -145,7 +150,7 @@ public class Display extends Canvas implements Runnable {
         return image;
     }
  
-    static private  BufferedImage addBorder(BufferedImage source, int width, int height, Color border) {
+    private  BufferedImage addBorder(BufferedImage source, int width, int height, Color border) {
         BufferedImage target = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         int horizontalOffset = (width - source.getWidth()) / 2;
         int verticalOffset = (height - source.getHeight()) / 2;
@@ -156,7 +161,7 @@ public class Display extends Canvas implements Runnable {
         return target;
     }
 
-    static private BufferedImage drawScreen(int width, int height, TTK91Memory mem) {
+    private BufferedImage drawScreen(int width, int height, TTK91Memory mem) {
         BufferedImage userimage = memToImage(mem);
         double times = maxFit(width, height, userimage);
         BufferedImage resized = resizeImage(userimage, times);

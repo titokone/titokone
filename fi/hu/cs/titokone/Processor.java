@@ -57,6 +57,9 @@ implements TTK91Cpu,Interruptable {
     /*  a programmable interrupt controller*/
     protected Pic pic=new Pic();
     
+    /*  reference to the Display so we can control it*/
+    protected Display display=null;
+    
     
     /**
     state register array.
@@ -126,6 +129,17 @@ implements TTK91Cpu,Interruptable {
         physRam = new RandomAccessMemoryImpl(memsize);
         resetDevices();
     }
+    /**
+     *  this is used to set external devices which are somehow difficult
+     *  and global. like the Display
+     */
+    public void setExternalDevice(Device d)
+    {
+        if(d instanceof Display)
+        {
+            display=(Display)display;
+        }
+    }
     private void initDevices()
     {   
         /*  link pic to report it's interrupt to processor*/
@@ -157,13 +171,13 @@ implements TTK91Cpu,Interruptable {
             {
                 @Override
                 public int getPort(int n)
-                throws TTK91InvalidDevice
+                throws TTK91RuntimeException
                 {
                     if(n!=0)
                         throw new RuntimeException("shouldnt happen "+n);
                         
                     if (kbdData == null) {
-                        throw new TTK91InvalidDevice(new Message (Processor.NO_KDB_DATA_MESSAGE).toString());
+                        throw new TTK91NoKbdData(new Message (Processor.NO_KDB_DATA_MESSAGE).toString());
                     }
                     runDebugger.setIN (KBD, kbdData.intValue());
                     int ret=kbdData.intValue();
@@ -176,13 +190,13 @@ implements TTK91Cpu,Interruptable {
             {
                 @Override
                 public int getPort(int n)
-                throws TTK91InvalidDevice
+                throws TTK91RuntimeException
                 {
                     if(n!=0)
                         throw new RuntimeException("shouldnt happen "+n);
                         
                     if (stdinData == null) {
-                        throw new TTK91InvalidDevice(new Message (Processor.NO_KDB_DATA_MESSAGE).toString());
+                        throw new TTK91NoStdInData(new Message (Processor.NO_KDB_DATA_MESSAGE).toString());
                     }
                     runDebugger.setIN (STDIN, stdinData.intValue());
                     int ret=stdinData.intValue();
@@ -207,7 +221,13 @@ implements TTK91Cpu,Interruptable {
         registerDevice(pic);
         registerDevice(new UART(10)); //10 clocks per bit (fast!)
         registerDevice(new UART(10)); //another..
-        registerDevice(new InvalidIODevice(5)); //VIC reservation
+        registerDevice(new VIC()
+                {
+                    public Display getDisplay()
+                    {
+                        return Processor.this.display;
+                    }
+                }); //video
         registerDevice(new RTC());
     }
     /**
@@ -477,7 +497,7 @@ implements TTK91Cpu,Interruptable {
 
 /** Transfer-operations. */
     private void transfer(int oc, int Rj, int M, int ADDR, int param) 
-    throws TTK91BadAccessMode, TTK91AddressOutOfBounds, TTK91NoKbdData, TTK91NoStdInData, TTK91InvalidDevice {
+    throws TTK91RuntimeException {
         runDebugger.setOperationType (RunDebugger.DATA_TRANSFER_OPERATION);
         OpCode opcode=OpCode.getOpCode(oc);
         IODevice dev=null;
@@ -501,7 +521,7 @@ implements TTK91Cpu,Interruptable {
                     dev=getDevice(param);
                     regs.setRegister(Rj,dev.getPort(param));
                     status = TTK91Cpu.STATUS_STILL_RUNNING;
-                }catch(TTK91InvalidDevice id)
+                }catch(TTK91RuntimeException id)
                 {
                     status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
                     throw id;
@@ -512,7 +532,7 @@ implements TTK91Cpu,Interruptable {
                 try{
                     dev=getDevice(param);                                
                     dev.setPort(param,Rj);
-                }catch(TTK91InvalidDevice id)
+                }catch(TTK91RuntimeException id)
                 {
                     status = TTK91Cpu.STATUS_ABNORMAL_EXIT;                    
                     throw id;

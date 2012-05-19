@@ -1,6 +1,6 @@
 package fi.hu.cs.titokone.devices;
 import fi.hu.cs.titokone.IODevice;
-import fi.hu.cs.ttk91.TTK91InvalidDevice;
+import fi.hu.cs.ttk91.TTK91RuntimeException;
 /**
  *  a dummy device which maps underlying device to a new address
  */
@@ -21,12 +21,12 @@ implements IODevice
         return delegate.getPortCount();
     }
     public int getPort(int n)
-    throws TTK91InvalidDevice
+    throws TTK91RuntimeException
     {
         return delegate.getPort(n-base);
     }
     public void setPort(int n,int value)
-    throws TTK91InvalidDevice
+    throws TTK91RuntimeException
     {
         delegate.setPort(n-base,value);
     }

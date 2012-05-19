@@ -2,6 +2,7 @@ package fi.hu.cs.titokone.devices;
 import fi.hu.cs.titokone.IODevice;
 import fi.hu.cs.titokone.Processor;
 import fi.hu.cs.ttk91.TTK91InvalidDevice;
+import fi.hu.cs.ttk91.TTK91RuntimeException;
 import fi.hu.cs.titokone.Message;
 /**
  *  dummy device to actually do nothing and signify and invalid device
@@ -20,7 +21,7 @@ implements IODevice
     }    
     @Override
     public int getPort(int n)
-    throws TTK91InvalidDevice
+    throws TTK91RuntimeException
     {
         if(n>=0||n<size)        
             throw new TTK91InvalidDevice(new Message (Processor.INVALID_DEVICE_MESSAGE).toString());
@@ -28,7 +29,7 @@ implements IODevice
     }
     @Override
     public void setPort(int n,int value)
-    throws TTK91InvalidDevice
+    throws TTK91RuntimeException
     {
         if(n>=0||n<size)
             throw new TTK91InvalidDevice(new Message (Processor.INVALID_DEVICE_MESSAGE).toString());

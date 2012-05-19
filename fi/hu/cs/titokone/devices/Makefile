@@ -13,7 +13,9 @@ SOURCES = \
     MMU.java \
     AddressMappingIODevice.java \
     Pic.java \
-    UART.java
+    UART.java \
+    RTC.java \
+    VIC.java
 
 all: classes 
 
