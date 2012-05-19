@@ -19,12 +19,18 @@ import java.util.*;
  *          to move memory to a more convenient place
  */
 public abstract class MMU
-implements IODevice,RandomAccessMemory
+implements IODevice,
+            RandomAccessMemory,
+            InterruptGenerator
 {
     int from=0,to=0,length=0;
     int count=0;
     public MMU()  
     {
+    }
+    public void link(Interruptable il)
+    {
+        //just a reservation
     }
     public void reset()
     {

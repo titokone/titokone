@@ -208,6 +208,7 @@ implements TTK91Cpu,Interruptable {
         registerDevice(new UART(10)); //10 clocks per bit (fast!)
         registerDevice(new UART(10)); //another..
         registerDevice(new InvalidIODevice(5)); //VIC reservation
+        registerDevice(new RTC());
     }
     /**
      *  register a new device which might either be an

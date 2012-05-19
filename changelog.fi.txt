@@ -18,6 +18,14 @@ keskeytykset
 -kun keskeytykset re-enabloidaan, "muistaa" pic 
  disabloinnin aikana tulleet keskeytykset ja 
  aiheuttaa keskeytyksen. 
+ 
+ 
+irq         device
+0           MMU reserved
+1           UART1
+2           UART2
+3           VIC
+4           RTC
 
 devicet
 =================
@@ -53,6 +61,10 @@ portti    device
 20-22       UART1   0 data port 1 state port 2 control
 23-25       UART2   see source code..
 26-30       VIC     reserved for video interface
+31          RTC     watchdog/RTC counting processor clocks
+                    write the number of clocks , it will count down
+                    and then interrupt unless you rewrite. 0 will 
+                    disable. reading will return clocks since reset.
 
 Muutosloki v1.300
 =================
