@@ -15,7 +15,8 @@ SOURCES = \
     Pic.java \
     UART.java \
     RTC.java \
-    VIC.java
+    VIC.java \
+    SID.java
 
 all: classes 
 

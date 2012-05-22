@@ -229,6 +229,7 @@ implements TTK91Cpu,Interruptable {
                     }
                 }); //video
         registerDevice(new RTC());
+        registerDevice(new SID());
     }
     /**
      *  register a new device which might either be an

@@ -26,6 +26,7 @@ irq         device
 2           UART2
 3           VIC
 4           RTC
+5           SID
 
 devicet
 =================
@@ -65,6 +66,7 @@ portti    device
                     write the number of clocks , it will count down
                     and then interrupt unless you rewrite. 0 will 
                     disable. reading will return clocks since reset.
+32-33       SID     sound device , write 0 to port 0 for beep
 
 Muutosloki v1.300
 =================
