@@ -15,12 +15,30 @@ public class Display extends JPanel implements Runnable {
     static final int DEFAULT_START = 0x2000;
     static TTK91Memory mem;
     boolean updates = false;
-    BufferedImage backBuffer;
+    //BufferedImage backBuffer;
+    BufferedImage compatible;
     protected int baseAddress=DEFAULT_START;
-    
+    protected int lastX=0;
+    protected int lastY=0;    
     /* Display methods */
 
     public Display() {
+    }
+    protected void checkBuffers()
+    {
+        if(lastX!=getWidth()||lastY!=getHeight())
+        {
+            Graphics2D g=(Graphics2D)getGraphics();
+            GraphicsConfiguration gc=g.getDeviceConfiguration();
+            lastX=getWidth();
+            lastY=getHeight();
+            /*backBuffer=new BufferedImage(
+                            lastX, 
+                            lastY, 
+                            BufferedImage.TYPE_INT_RGB);*/
+            compatible=gc.createCompatibleImage(lastX,lastY);
+            clearBuffer();
+        }
     }
 
     public void setMem(TTK91Memory mem) {
@@ -54,7 +72,7 @@ public class Display extends JPanel implements Runnable {
     /* Canvas methods */   
 
     public void update(Graphics g) {
-        g.drawImage(backBuffer, 0, 0, Color.red, null);
+        g.drawImage(compatible, 0, 0, Color.red, null);
     }
 
     public void paint(Graphics g)
@@ -65,44 +83,65 @@ public class Display extends JPanel implements Runnable {
     /* private helpers */
 
     private void updateBuffer() {
-        JPanel canvas = this;
+        JPanel canvas = this;        
         int canvasWidth = canvas.getWidth();
         int canvasHeight = canvas.getHeight();
         int canvasArea = canvasWidth * canvasHeight;
         if (canvasArea < 1) {
             return;
         }
-        backBuffer = drawScreen(canvasWidth, canvasHeight, mem);
+        /*  make sure we have something valid to draw on*/
+        checkBuffers();        
+        drawMode();//draw using current mode..            
+        
         repaint();
     }
-
-    /* static private helpers */
-   
-    private BufferedImage resizeImage(BufferedImage image, int width, int height)
+    /**
+     *  see which mode we are in and use it to draw 
+     */
+    protected void drawMode()
     {
-        BufferedImage resized = new BufferedImage(width, height, image.getType());
-        Graphics2D r = resized.createGraphics();
-        r.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
-        r.drawImage(image, 0, 0, width, height, 0, 0, image.getWidth(), image.getHeight(), null);
-        r.dispose();
-        return resized;
+        Graphics2D g=(Graphics2D)compatible.getGraphics();
+        if(mem!=null)
+        {
+            draw12bit(g);
+        }
     }
-
-    private BufferedImage resizeImage(BufferedImage image, double times) {
-        int targetWidth = (int) (times * image.getWidth());
-        int targetHeight = (int) (times * image.getHeight());
-        BufferedImage resized = resizeImage(image, targetWidth, targetHeight);
-        return resized;
-    }
-
-    private double maxFit(int targetWidth, int targetHeight, BufferedImage source)
+    /**
+     *  gray screen out
+     */
+    protected void clearBuffer()
     {
-        int sourceWidth = source.getWidth();
-        int sourceHeight = source.getHeight();
-        double horizontalFit = (double) targetWidth / (double) sourceWidth;
-        double verticalFit = (double) targetHeight / (double) sourceHeight;
-        double maxfit = Math.min(horizontalFit, verticalFit);
-        return maxfit;
+        Graphics2D g=(Graphics2D)compatible.getGraphics();
+        g.setColor(Color.GRAY);
+        g.fillRect(0,0,getWidth(),getHeight());
+    }
+    /**
+     *  12bit color mode
+     */
+    protected void draw12bit(Graphics2D g)
+    {
+        //xscale,yscale set so that we always hit full pixels
+        int xscale=roundUp(((double)lastY)/Y);
+        int yscale=roundUp(((double)lastX)/X);
+        for(int i=0;i<lastY;i++)
+        {
+            for(int j=0;j<lastX;j++)
+            {
+                int x=j/xscale;
+                int y=i/yscale;
+                
+                if(x<X&&y<Y)
+                {
+                    int color=mem.getValue(baseAddress+(y*X+x));
+                    compatible.setRGB(j,i,0xff000000|torgb8(color&0xfff));
+                }
+            }
+        }
+    }
+    protected int roundUp(double d)
+    {
+        return (int)(d+0.5);
     }
 
     static private int torgb8(int rgb4i) {
@@ -117,56 +156,4 @@ public class Display extends JPanel implements Runnable {
         int rgb8i = (int) rgb8l;
         return rgb8i;
     }
-
-    private void updateGfx(BufferedImage image, int address, int value) {
-        if (address < baseAddress) {
-            return;
-        }
-        int pixelno = address - baseAddress;
-        int y = pixelno / X;
-        int x = pixelno - (y*X);
-        if (y >= Y) {
-            return;
-        }
-        assert(x < X);
-        int rgb4 = value & 0xfff;
-        int rgb8 = torgb8(rgb4);
-        image.setRGB(x, y, rgb8);
-    }
-
-    private BufferedImage memToImage(TTK91Memory mem) {
-        BufferedImage image = new BufferedImage(X, Y, BufferedImage.TYPE_INT_RGB);
-        if (mem == null) {
-            return image;
-        }
-        int memsize = mem.getSize();
-        for (int i = 0; i < (X * Y); i++) {
-            int address = baseAddress + i;
-            if (address >= memsize) {
-                return image;
-            }
-            int value = mem.getValue(address);
-            updateGfx(image, address, value);
-        }
-        return image;
-    }
- 
-    private  BufferedImage addBorder(BufferedImage source, int width, int height, Color border) {
-        BufferedImage target = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        int horizontalOffset = (width - source.getWidth()) / 2;
-        int verticalOffset = (height - source.getHeight()) / 2;
-        Graphics2D g = target.createGraphics();
-        g.setBackground(border);
-        g.clearRect(0, 0, width, height);
-        g.drawImage(source, horizontalOffset, verticalOffset, Color.red, null);
-        return target;
-    }
-
-    private BufferedImage drawScreen(int width, int height, TTK91Memory mem) {
-        BufferedImage userimage = memToImage(mem);
-        double times = maxFit(width, height, userimage);
-        BufferedImage resized = resizeImage(userimage, times);
-        return addBorder(resized, width, height, Color.gray);
-    }
-
 }
