@@ -380,22 +380,22 @@ public GUI() {
 
   print("Setting visible...");        
   this.setVisible(true);
-	
-	
+
+
   print("Setting title...");        
   setTitle("Titokone v1.300");
   
   addWindowListener( new WindowAdapter () {
-		public void windowClosing(WindowEvent e) {
-			System.exit(0);
-		}
-	}
-	);
-	
-	
+        public void windowClosing(WindowEvent e) {
+            System.exit(0);
+        }
+    }
+    );
+
+
   try {
     generalFileDialog = new JFileChooser();
-	
+    generalFileDialog.setCurrentDirectory(new File("."));
   }
   catch (NullPointerException e) {
     System.out.println("Exiting due to a bug in a recent Java version.\n"+
@@ -1231,37 +1231,37 @@ public void changeTextInEnterNumberLabel(String newText) {
 public void updateAllTexts() {
   fileMenu.setText( new Message("File").toString() );
   openFile.setText( new Message("Open").toString() );
-	compileMenuItem.setText( new Message("Compile").toString() );
+    compileMenuItem.setText( new Message("Compile").toString() );
   runMenuItem.setText( new Message("Run").toString() );
-	continueMenuItem.setText( new Message("Continue").toString() );
-	continueToEndMenuItem.setText( new Message("Continue without pauses").toString() );
-	stopMenuItem.setText( new Message("Stop").toString() );
-	eraseMem.setText( new Message("Erase memory").toString() );
-	quit.setText( new Message("Exit").toString() );
-	optionsMenu.setText( new Message("Options").toString() );
+    continueMenuItem.setText( new Message("Continue").toString() );
+    continueToEndMenuItem.setText( new Message("Continue without pauses").toString() );
+    stopMenuItem.setText( new Message("Stop").toString() );
+    eraseMem.setText( new Message("Erase memory").toString() );
+    quit.setText( new Message("Exit").toString() );
+    optionsMenu.setText( new Message("Options").toString() );
   setMemSize.setText( new Message("Set memory size").toString() );
   helpMenu.setText( new Message("Help").toString() );
   manual.setText( new Message("Manual").toString() );
-	about.setText( new Message("About").toString() );
-	setCompilingOptions.setText( new Message("Set compiling options").toString() );
+    about.setText( new Message("About").toString() );
+    setCompilingOptions.setText( new Message("Set compiling options").toString() );
   setRunningOptions.setText( new Message("Set running options").toString() );
   configureFileSystem.setText( new Message("Configure file system").toString() );
   selectDefaultStdinFile.setText( new Message("Select default stdin file").toString() );
   selectDefaultStdoutFile.setText( new Message("Select default stdout file").toString() );
   setLanguage.setText( new Message("Set language").toString() );
   selectLanguageFromFile.setText( new Message("Select from a file...").toString() );
-	
-	instructionsTable.setToolTipTextForColumns(new String[] { 
-	  new Message("Line").toString(), 
-	  new Message("Numeric value").toString(), 
-	  new Message("Symbolic content").toString()
-	});
+
+    instructionsTable.setToolTipTextForColumns(new String[] { 
+        new Message("Line").toString(), 
+        new Message("Numeric value").toString(), 
+        new Message("Symbolic content").toString()
+        });
   
-	dataTable.setToolTipTextForColumns(new String[] { 
-	  new Message("Line").toString(), 
-	  new Message("Numeric value").toString(), 
-	  new Message("Symbolic content").toString()
-	});
+    dataTable.setToolTipTextForColumns(new String[] { 
+        new Message("Line").toString(), 
+        new Message("Numeric value").toString(), 
+        new Message("Symbolic content").toString()
+        });
   
   openFileButton.setToolTipText(new Message("Open a new file").toString());
   compileButton.setToolTipText(new Message("Compile the opened file").toString());
