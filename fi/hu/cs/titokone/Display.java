@@ -44,7 +44,7 @@ public class Display extends JPanel implements Runnable {
                 updateBuffer();
             }
             try {
-                Thread.sleep(10); /* we don't always need a full core */
+                Thread.sleep(40); /* limit to max 25fps*/
             } catch (InterruptedException e) {
 
             }
