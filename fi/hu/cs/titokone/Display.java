@@ -1,5 +1,6 @@
 package fi.hu.cs.titokone;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Iterator;
@@ -8,7 +9,7 @@ import fi.hu.cs.ttk91.TTK91Memory;
 
 // Display class was added by Toni Ruottu 8.4.2012
 
-public class Display extends Canvas implements Runnable {
+public class Display extends JPanel implements Runnable {
 
     static final int X = 160, Y = 120;
     static final int DEFAULT_START = 0x2000;
@@ -64,7 +65,7 @@ public class Display extends Canvas implements Runnable {
     /* private helpers */
 
     private void updateBuffer() {
-        Canvas canvas = this;
+        JPanel canvas = this;
         int canvasWidth = canvas.getWidth();
         int canvasHeight = canvas.getHeight();
         int canvasArea = canvasWidth * canvasHeight;
