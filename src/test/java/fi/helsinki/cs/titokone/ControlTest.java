@@ -5,19 +5,20 @@ import java.text.ParseException;
 import fi.helsinki.cs.titokone.Sinitestistubit.__LoguserTestCase;
 import fi.helsinki.cs.ttk91.*;
 import java.io.*;
+import java.util.Locale;
 
 public class ControlTest extends __LoguserTestCase {
     Control control;
     Application application;
-
     protected void setUp() {
-	control = new Control(new File("/root/teststdin"),
+        control = new Control(new File("/root/teststdin"),
 			      new File("/root/teststdout"));
+        Translator.setLocale(new Locale("en"));
     }
     
     public void testConstructorAndChangeMemorySize() {
 	// setUp has been called by now.
-	assertEquals(control.getMemory().getSize(), 512);
+	assertEquals(control.getMemory().getSize(), 32768);
     }
 
     // Testaa samalla compileLinen.

@@ -104,9 +104,12 @@ public class SettingsTest extends __LoguserTestCase {
 	assertEquals(setup.toString(), "");
 	setup.setValue("key1", "foo");
 	setup.setValue("key2", 3);
-	assertEquals(setup.toString(),
-		     "key1 = foo" + 
-		     System.getProperty("line.separator", "\n") +
-		     "key2 = 3" + System.getProperty("line.separator", "\n"));
+
+    String str = setup.toString();
+    String nl = System.getProperty("line.separator", "\n");
+
+    assertEquals(2, str.split(nl).length);
+    assertTrue(str.contains("key1 = foo" + nl));
+    assertTrue(str.contains("key2 = 3" + nl));
     }
 }
