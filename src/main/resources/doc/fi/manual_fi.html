@@ -241,9 +241,9 @@ Käynnistääksesi muokatun ohjelman vaihda paketin juurihakemistoon
 (jossa 'fi'-alihakemisto on) ja aja seuraava komento:
 </p>
 <pre>
-  Windowsissa: java.exe fi.hu.cs.titokone.Titokone
+  Windowsissa: java.exe fi.helsinki.cs.titokone.Titokone
   
-  Linuxissa: java fi.hu.cs.titokone.Titokone
+  Linuxissa: java fi.helsinki.cs.titokone.Titokone
 </pre>
 <p>
 Luokkien javadocit ovat hakemistossa javadoc/. Jotta voit kääntää
@@ -1354,7 +1354,7 @@ joka asetusmuutoksen jälkeen.
 </p>
 <p>
 Mikäli Titokone on avattu jar-paketistaan, järjestelmän oletusasetukset
-löytyvät tiedostosta fi/hu/cs/titokone/etc/settings.cfg. Tämän tiedoston
+löytyvät tiedostosta fi/helsinki/cs/titokone/etc/settings.cfg. Tämän tiedoston
 sisältö on seuraavanlainen:
 </p>
 <pre>
@@ -1384,13 +1384,13 @@ työhakemistoon, näin voidaan tehdä asettamalla kohdan "Stdin path" tai
 "Stdout path" arvoksi 'relative', kuten yllä.
 </p>
 <p>
-Lisäksi, samoin jar-paketin sisällä fi/hu/cs/titokone/etc/-hakemistossa,
+Lisäksi, samoin jar-paketin sisällä fi/helsinki/cs/titokone/etc/-hakemistossa,
 sijaitsee kieliasetustiedosto languages.cfg. Tästä tiedostosta Titokone
 hakee luettelon järjestelmän osiksi lisätyistä kielitiedostoista, jotka
 luetellaan kielenvaihtovalikossa kielen nimen perusteella. Tällaiset
-kielitiedostot on sijoitettu fi/hu/cs/titokone/resources/-hakemistoon, 
+kielitiedostot on sijoitettu fi/helsinki/cs/titokone/resources/-hakemistoon,
 niiden nimi on muotoa Translations_xx.class ja ne kuuluvat pakettiin
-fi.hu.cs.titokone.resources. Kielitiedosto muodostuu pareista muotoa
+fi.helsinki.cs.titokone.resources. Kielitiedosto muodostuu pareista muotoa
 "kielen nimi valikossa" = "xx". Arvon "xx" tulee olla kieltä kuvaava
 kaksikirjaiminen tunnus (tämä syötetään java.util.Localen
 konstruktorille). Oletuskielitiedoston sisältö on seuraavanlainen:
@@ -1413,7 +1413,7 @@ avataan Titokoneen käyttöliittymän kautta. Uuden kielitiedoston
 kirjoittaminen käy helpoiten ottamalla mallia olemassaolevasta
 kielitiedostosta. Avaa koneeltasi ensin tekstieditori, johon haet
 titokone.jar -paketin mukana tulleen tiedoston Translations_fi.java
--tiedoston hakemistosta fi/hu/cs/titokone/resources. Tekstieditoriin
+-tiedoston hakemistosta fi/helsinki/cs/titokone/resources. Tekstieditoriin
 aukeaa Javan ResourceBundle-kalustoa hyväksikäyttävä luokka, joka
 muodostuu 2-ulotteisesta Object-taulukosta ja sen palauttavasta
 metodista. Taulukon alkiot näyttävät seuraavilta:</p>
@@ -1450,7 +1450,7 @@ ei olekaan rivin lopussa, esimerkiksi:
 .java-päätteisenä.</li>
 <li> Anna käännösvastineet suomenkielisten tekstien kohdalle. </li>
 <li> Sijoita muuttujat {0}...{n} mielekkäille paikoille lauseessa </li>
-<li> Poista tiedostosta rivi 4: 'package fi.hu.cs.titokone.resources;'.</li>
+<li> Poista tiedostosta rivi 4: 'package fi.helsinki.cs.titokone.resources;'.</li>
 <li> Vaihda luokan nimi vastaamaan antamaasi tiedoston nimeä.</li>
 <li> Käännä tiedosto esimerkiksi javac-komennolla</li>
 <li> Käynnistä Titokone </li>
@@ -1459,7 +1459,7 @@ ei olekaan rivin lopussa, esimerkiksi:
 <p>
 Voit myös lisätä uuden kielen pysyväksi osaksi järjestelmää, jolloin
 käännöstiedostoa ei enää tarvitse etsiä joka kerta uudelleen. Tallenna
-kohdassa 2 tiedosto hakemistoon fi/hu/cs/titokone/resources/ muiden
+kohdassa 2 tiedosto hakemistoon fi/helsinki/cs/titokone/resources/ muiden
 käännöstiedostojen kanssa. Muuta luokan nimeksi rivillä 
 </p>
 <pre>
@@ -1471,7 +1471,7 @@ mukaan) pakettimääreriviä</b>, sillä nyt sitä tarvitaan.
 </p>
 <p>
 Kun käännöksesi on valmis ja sille on käännetty .class-tiedosto, asenna
-se lisäämällä kieliasetustiedostoon fi/hu/cs/titokone/etc/languages.cfg
+se lisäämällä kieliasetustiedostoon fi/helsinki/cs/titokone/etc/languages.cfg
 rivi "kielen nimi valikossa" = "xx", jossa korvaat taas xx:n
 kielikoodillasi. Esimerkiksi "Deutsch = de". Ks. myös <a
 href="#asetustiedostot">5.1, asetustiedostot</a>.

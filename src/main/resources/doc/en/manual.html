@@ -242,9 +242,9 @@ To start the modified program, change to the package root directory (where
 the 'fi' subdirectory is located) and run the command:
 </p>
 <pre>
-  in Windows: java.exe fi.hu.cs.titokone.Titokone 
+  in Windows: java.exe fi.helsinki.cs.titokone.Titokone
   
-  in Linux: java fi.hu.cs.titokone.Titokone
+  in Linux: java fi.helsinki.cs.titokone.Titokone
 </pre>
 <p>
 Javadoc of the classes is included in javadoc/. To compile files
@@ -1431,7 +1431,7 @@ file is overwritten after every change in the settings.
 <p>
 If Titokone has been opened from its jar package, the system default
 settings can be found in the file 
-fi/hu/cs/titokone/etc/settings.cfg. The file contents are as follows:
+fi/helsinki/cs/titokone/etc/settings.cfg. The file contents are as follows:
 </p>
 <pre>
    # Default settings. Running mode: commented (+1), one row at a time (+2),
@@ -1460,14 +1460,14 @@ working directory, you can do so by setting "Stdin path" or "Stdout
 path" values to 'relative', like they are above.
 </p>
 <p>
-In addition, also inside the jar package in fi/hu/cs/titokone/etc/, 
+In addition, also inside the jar package in fi/helsinki/cs/titokone/etc/,
 there is the language settings file languages.cfg. This file contains
 a list of the language files which have been added to be a part of the
 system. They are listed in the language choosing file based on the
 language's name given here. The language files themselves are located
-in the fi/hu/cs/titokone/resources/ directory. They are called
+in the fi/helsinki/cs/titokone/resources/ directory. They are called
 Translations_xx.class and are part of the package
-fi.hu.cs.titokone.resources. The language file consists of pairs of
+fi.helsinki.cs.titokone.resources. The language file consists of pairs of
 the form "the name of the language in the menu" = "xx". The value "xx"
 should be a two-letter identifier for the language (it is passed to
 the constructor of java.util.Locale). The contents of the default
@@ -1490,7 +1490,7 @@ for the new language, and it is opened via the Titokone user
 interface. Writing a new language file is simplest done by using an
 existing translation file as an example. First open a text editor on
 your machine and fetch eg. the file Translations_fi.java from the
-directory fi/hu/cs/titokone/resources (included in the titokone.jar
+directory fi/helsinki/cs/titokone/resources (included in the titokone.jar
 package). You will see a class which uses the Java ResourceBundle
 utilities and consists of a two-dimensional Object array and a method
 which returns it. The lines in the array look as follows:</p>
@@ -1534,7 +1534,7 @@ sentence. For example:
 ending.</li>
 <li> Write the translation equivalents over the Finnish texts.</li>
 <li> Place the variables {0}...{n} in sensible positions in the sentence</li>
-<li> Remove line 4 from the file, which says 'package fi.hu.cs.titokone.resources;'.</li>
+<li> Remove line 4 from the file, which says 'package fi.helsinki.cs.titokone.resources;'.</li>
 <li> Change the class name to correspond with the filename you stored
 the file as.</li>
 <li> Compile the file, eg. by using the javac command</li>
@@ -1545,7 +1545,7 @@ the file as.</li>
 You can also add the new language as a permanent part of the system,
 which relieves you from needing to find the translation file again
 every time. In point 2, store the file in the directory
-fi/hu/cs/titokone/resources with the other translation files. Change
+fi/helsinki/cs/titokone/resources with the other translation files. Change
 the class's name, on the line
 </p>
 <pre>
@@ -1562,7 +1562,7 @@ the package definition line</b>; it is needed for this.
 <p>
 When your translation is finished and it has a compiled .class file,
 install it by editing the language setup file
-fi/hu/cs/titokone/etc/languages.cfg and add a line containing "what
+fi/helsinki/cs/titokone/etc/languages.cfg and add a line containing "what
 the language should be called in the menu" = "xx", where you again
 replace xx with your language code. For example, "Deutsch = de". See
 also <a href="#settings_files">5.1, Settings files</a>. Now, once you

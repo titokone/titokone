@@ -79,7 +79,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fi.hu.cs.titokone.Titokone</mainClass>
+                            <mainClass>fi.helsinki.cs.titokone.Titokone</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -143,10 +143,10 @@
                         <configuration>
                             <threads>4</threads>
                             <targetClasses>
-                                <pattern>fi.hu.cs.*</pattern>
+                                <pattern>fi.helsinki.cs.*</pattern>
                             </targetClasses>
                             <targetTests>
-                                <pattern>fi.hu.cs.*</pattern>
+                                <pattern>fi.helsinki.cs.*</pattern>
                             </targetTests>
                             <mutators>
                                 <mutator>ALL</mutator>
