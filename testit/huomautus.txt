@@ -1,2 +1,2 @@
-Muutama testiluokka puuttuu; esimerkiksi Animatorin siksi, ett‰ sit‰ 
+Muutama testiluokka puuttuu; esimerkiksi Animatorin siksi, ett√§ sit√§ 
 testattiin ronkkimalla.

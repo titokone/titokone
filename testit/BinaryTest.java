@@ -20,7 +20,7 @@ public class BinaryTest extends TestCase {
 	try{
 	    bin = new Binary(contents);
 	}catch (ParseException e){
-	    Assert.fail("virheellinen syöte");
+	    Assert.fail("virheellinen syÃ¶te");
 	    //Assert.assertEquals(e.toString(),");
 	}	    
 	Assert.assertEquals(bin.toString(), contents); 

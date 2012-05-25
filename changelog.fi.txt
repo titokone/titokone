@@ -1,20 +1,20 @@
 itmon branchi
 =================
 -testattu zero,rnd
--mmu vois testata ettei se riko mit‰‰n
+-mmu vois testata ettei se riko mit√§√§n
 -pic ja uartit testattaneen kerralla
 keskeytykset
 =================
--Pit‰‰ enabloida laitteesta ja picist‰. 
--hypp‰‰ aina osoitteessa 0 olevaan osoitteeseen
--tekee k‰yt‰nnˆss‰ parametrittoman CALLin eli palaaminen tapahtuu
- EXITill‰. 
--keskeytys tapahtuu jos tulee "ennen‰kem‰tˆn" 
+-Pit√§√§ enabloida laitteesta ja picist√§. 
+-hypp√§√§ aina osoitteessa 0 olevaan osoitteeseen
+-tekee k√§yt√§nn√∂ss√§ parametrittoman CALLin eli palaaminen tapahtuu
+ EXITill√§. 
+-keskeytys tapahtuu jos tulee "ennen√§kem√§t√∂n" 
  keskeytyksen nouseva reuna ja se keskeytys on 
  enabloidu ja kaikki keskeytykset ei ole disabloitu
--keskeytysk‰sittelyrutiinista kannattaa tehd‰ 
+-keskeytysk√§sittelyrutiinista kannattaa tehd√§ 
  re-entrant ja disabloida keskeytykset heti 
- rutiiniin ment‰ess‰. 
+ rutiiniin ment√§ess√§. 
 -kun keskeytykset re-enabloidaan, "muistaa" pic 
  disabloinnin aikana tulleet keskeytykset ja 
  aiheuttaa keskeytyksen. 
@@ -30,12 +30,12 @@ irq         device
 
 devicet
 =================
--vanhat IN/OUT devicet muunnettiin geneerisemm‰ksi
--lis‰ttiin uusia esimerkkidevicej‰. 
+-vanhat IN/OUT devicet muunnettiin geneerisemm√§ksi
+-lis√§ttiin uusia esimerkkidevicej√§. 
 
 portti    device
 0           CRT (writeonly, failaa jos lukee)
-1           KBD (readonly, failaa jos lukee eik‰ ole dataa,tai jos kirjottaa)
+1           KBD (readonly, failaa jos lukee eik√§ ole dataa,tai jos kirjottaa)
 2           RES (varattu, failaa jos kosket)
 3           RES
 4           RES
@@ -70,7 +70,7 @@ portti    device
 
 Muutosloki v1.300
 =================
-Lis‰ttiin titokoneeseen grafiikkatila.
+Lis√§ttiin titokoneeseen grafiikkatila.
 
 (Toni Ruottu, 14.5.2012)
 
@@ -79,18 +79,18 @@ Muutosloki v1.203
 Kohahdus projekti teki titokoneeseen seuraavat muutokset
 
 - RandomAccessMemory.setMemoryLine(..)
-  Lis‰tty "memory_references++;"
+  Lis√§tty "memory_references++;"
 
 - RandomAccessMemory.getMemoryReferences()
-  Lis‰tty "- getCodeAreaSize() - getDataAreaSize()". N‰m‰ v‰hent‰v‰t
+  Lis√§tty "- getCodeAreaSize() - getDataAreaSize()". N√§m√§ v√§hent√§v√§t
   muistiviitelaskurista ohjelman latauksen aiheuttamat viitteet.
 
 - Processor.subr(..)
-  Lis‰tty 2x "addToStack();" sek‰ "stack_size--;"
-  Lis‰tty "stack_size = stack_size - param;"
+  Lis√§tty 2x "addToStack();" sek√§ "stack_size--;"
+  Lis√§tty "stack_size = stack_size - param;"
 
 - Control.run(..)
-  Lis‰tty "Throw new TTK91ExecutionOverrun(..)" jos steps liian iso
+  Lis√§tty "Throw new TTK91ExecutionOverrun(..)" jos steps liian iso
 
 - Uusi luokka TTK91ExecutionOverrun
 
@@ -101,8 +101,8 @@ Kohahdus projekti teki titokoneeseen seuraavat muutokset
 Muutosloki v1.202
 =================
 
-Poistettu graafisesta k‰yttˆliittym‰st‰ turhaksi todettu k‰‰nnˆs- ja
-ajoaikainen hidaste, joka teki pitkien ohjelmien k‰‰nt‰misest‰ turhan 
+Poistettu graafisesta k√§ytt√∂liittym√§st√§ turhaksi todettu k√§√§nn√∂s- ja
+ajoaikainen hidaste, joka teki pitkien ohjelmien k√§√§nt√§misest√§ turhan 
 tuskallista ("wait(70)"). 
 
 Muutetut luokat: fi/hu/cs/titokone/GUIBrain.java
@@ -112,8 +112,8 @@ Muutetut luokat: fi/hu/cs/titokone/GUIBrain.java
 Muutosloki v1.201
 ================
 
-Korjattu taulukoiden alustukseen (DS) liittyv‰ bugi, jossa
-symbolitauluun vietiin virheellisi‰ muistiosotteita. Muutettiin
+Korjattu taulukoiden alustukseen (DS) liittyv√§ bugi, jossa
+symbolitauluun vietiin virheellisi√§ muistiosotteita. Muutettiin
 luokkaa Compiler. Virheen kuvaus oli:
 
 	DS ei toimi oikein eli esim.
@@ -127,92 +127,92 @@ luokkaa Compiler. Virheen kuvaus oli:
 Muutosloki v1.2
 ===============
 
-Alkuper‰isen Koksi-ohjelman tuntema k‰sky 'NOT' puuttui
-Titokoneesta. Not k‰sky lis‰ttiin k‰skykoodilla 27.
+Alkuper√§isen Koksi-ohjelman tuntema k√§sky 'NOT' puuttui
+Titokoneesta. Not k√§sky lis√§ttiin k√§skykoodilla 27.
 
-Titokoneen yhteydess‰ esitelty uusi k‰sky SHRA siirrettiin, koska
-se k‰ytti NOT-k‰skylle varattua k‰skykoodia. SHRA-k‰skyn uusi koodi
+Titokoneen yhteydess√§ esitelty uusi k√§sky SHRA siirrettiin, koska
+se k√§ytti NOT-k√§skylle varattua k√§skykoodia. SHRA-k√§skyn uusi koodi
 on 28.
 
-Nyt k‰skyt LOAD/STORE R1, (R2) toimivat. Korjaus tapahtui lis‰‰m‰‰ll‰ 0 ennen 
+Nyt k√§skyt LOAD/STORE R1, (R2) toimivat. Korjaus tapahtui lis√§√§m√§√§ll√§ 0 ennen 
 alkavaa sulkua. STORE R1, @R2 toimii, korjaaminen tapahtui sallimalla 
-@-osoitusmoodin k‰yttˆ STORE k‰skyn yhteydess‰.
+@-osoitusmoodin k√§ytt√∂ STORE k√§skyn yhteydess√§.
 
-Lis‰tty Titokoneeseen k‰skylaskuri, jolla saadaan tieto suoritettujen
-konek‰skyjen m‰‰r‰st‰. Lis‰tty metodi on nimelt‰‰n GiveCommAmount().
+Lis√§tty Titokoneeseen k√§skylaskuri, jolla saadaan tieto suoritettujen
+konek√§skyjen m√§√§r√§st√§. Lis√§tty metodi on nimelt√§√§n GiveCommAmount().
 
-Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto pinon 
-lopullisesta koosta. Lis‰tty metodi on nimelt‰‰n GiveStackSize().
+Lis√§tty Titokoneeseen toiminto, jolla saadaan tieto pinon 
+lopullisesta koosta. Lis√§tty metodi on nimelt√§√§n GiveStackSize().
 
-Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto ajettavana olevan
-ohjelman lopullistesta koodisegmentin koosta. Lis‰tty metodi on nimelt‰‰n 
+Lis√§tty Titokoneeseen toiminto, jolla saadaan tieto ajettavana olevan
+ohjelman lopullistesta koodisegmentin koosta. Lis√§tty metodi on nimelt√§√§n 
 getCodeAreaSize().
 
-Lis‰tty Titokoneeseen toiminto, jolla saadaan tieto ajettavana olevan
-ohjelman lopullistesta datasegmentin koosta. Lis‰tty metodi on nimelt‰‰n
+Lis√§tty Titokoneeseen toiminto, jolla saadaan tieto ajettavana olevan
+ohjelman lopullistesta datasegmentin koosta. Lis√§tty metodi on nimelt√§√§n
 getDataAreaSize().
 
-(Koskelo-ryhm‰ 2004)
+(Koskelo-ryhm√§ 2004)
 
 
 Muutosloki v1.1
 ===============
 
 Titokoneesta on uusi versio 1.1. 
-N‰ytt‰‰ silt‰, ett‰ t‰m‰ Titokone pysyy pystyss‰ Javan uusimmassa
-buildissa (1.4.2_05) ja lis‰ksi myˆs ainakin Macin Java 1.4.1:ll‰, jossa
+N√§ytt√§√§ silt√§, ett√§ t√§m√§ Titokone pysyy pystyss√§ Javan uusimmassa
+buildissa (1.4.2_05) ja lis√§ksi my√∂s ainakin Macin Java 1.4.1:ll√§, jossa
 oli aiemmin tiedostodialogia avatessa kaatumisen ongelma. Kaikkiaan noin
-nelj‰n rivin muutos, yksi Translator.javassa ja kolme GUI.javassa. 
+nelj√§n rivin muutos, yksi Translator.javassa ja kolme GUI.javassa. 
 
 Uusi versio on jo jakelussa. 
 (Sini Ruohomaa, 23.8.2004)
 
 
-Titokoneen piirteit‰/ongelmia
+Titokoneen piirteit√§/ongelmia
 =============================
 
 Titokone 1.1b vaatii ainakin toistaisesti JRE 1.5:n, eli vanhemmat
-versiot eiv‰t toimi.
+versiot eiv√§t toimi.
 ---
-Nimettˆm‰t DC:t eiv‰t toimi kuten ehk‰ joku odottaisi. Esim.
+Nimett√∂m√§t DC:t eiv√§t toimi kuten ehk√§ joku odottaisi. Esim.
     Pekka DC 0
           DC 2
           DC 4
 antaa virheilmoituksia.
 
-Koodin seassa pit‰isi DC:t eiv‰t toimi oikein. Ohjelman alussa 
-olevat DC:t varataan lopusta ja keskell‰ olevat siit‰, miss‰ ovat.
+Koodin seassa pit√§isi DC:t eiv√§t toimi oikein. Ohjelman alussa 
+olevat DC:t varataan lopusta ja keskell√§ olevat siit√§, miss√§ ovat.
 (Heikki Lindholm, 20.8.2004)
 ---
 Animoinnissa ainakin joillakin koneilla suurin animointinopeus
-on niin nopea, ett‰ sit‰ ei n‰e!
+on niin nopea, ett√§ sit√§ ei n√§e!
 (Teemu Kerola, 18.8.2004)
 ---
-Exactumin luokalle B221 p‰tee: lˆysin Sunin arkistoista version vanhemman 
-javan (1.4.2_04). Testasin Titokonetta sill‰ ja se n‰ytti toimivan. 
+Exactumin luokalle B221 p√§tee: l√∂ysin Sunin arkistoista version vanhemman 
+javan (1.4.2_04). Testasin Titokonetta sill√§ ja se n√§ytti toimivan. 
 Nyt vanha java on paketoitu ja pistetty asennukseen eli kun koneen 
 boottaa se poistaa java 1.4.2_05:n ja asentaa 1.4.2_04:n.  
 
-Kotikoneessa vanhempi java (sek‰ sdk ett‰ jre) lˆytyy osoitteesta
+Kotikoneessa vanhempi java (sek√§ sdk ett√§ jre) l√∂ytyy osoitteesta
 http://java.sun.com/products/archive/j2se/1.4.2_04/index.html
-Kumpikaan paketti ei asenna javaa polkuun, joten se on teht‰v‰ k‰sin, 
+Kumpikaan paketti ei asenna javaa polkuun, joten se on teht√§v√§ k√§sin, 
 jotta titokone.bat skripti toimii.
 
 Polku asetetaan seuraavasti:
 
 Windows NT/2000/XP
 
-Napsautetaan hiiren oikealla n‰pp‰imell‰ My Computer-ikonia jolloin 
-aukeaa harmaa laatikko josta valitaan vaihtoehto Properties. Nyt pit‰isi 
-olla auki System Properties-ikkuna. Valitaan sielt‰ v‰lilehti Advanced 
+Napsautetaan hiiren oikealla n√§pp√§imell√§ My Computer-ikonia jolloin 
+aukeaa harmaa laatikko josta valitaan vaihtoehto Properties. Nyt pit√§isi 
+olla auki System Properties-ikkuna. Valitaan sielt√§ v√§lilehti Advanced 
 ja painetaan alhaalla olevaa Enviroment Variables nappia. Valitaan 
 System variables listasta Path-muuttuja ja editoidaan siihen javan 
-asennus hakemisto\bin, ja sen j‰lkeen ;-merkki.
+asennus hakemisto\bin, ja sen j√§lkeen ;-merkki.
 
-;-merkin teht‰v‰ on erottaa hakemistot toisistaan.
+;-merkin teht√§v√§ on erottaa hakemistot toisistaan.
 
 esim.
-Alkuper‰inen polku:
+Alkuper√§inen polku:
 %SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;
 
 Uusi polku:
@@ -220,21 +220,21 @@ Uusi polku:
 
 DOS tai Windows 95/98/ME
 
-Avataan c:\autoexec.bat tekstieditoriin (esim. notepad). Etsit‰‰n rivi
-set PATH=<t‰ss‰ on systeemin polku> ja editoidaan javan asennus 
-hakemisto polun per‰‰n kuten yll‰. T‰m‰n j‰lkeen tallennetaan tiedosto 
-ja k‰ynnistet‰‰n kone uudelleen.
+Avataan c:\autoexec.bat tekstieditoriin (esim. notepad). Etsit√§√§n rivi
+set PATH=<t√§ss√§ on systeemin polku> ja editoidaan javan asennus 
+hakemisto polun per√§√§n kuten yll√§. T√§m√§n j√§lkeen tallennetaan tiedosto 
+ja k√§ynnistet√§√§n kone uudelleen.
 
-Windows NT/2000/XP:ss‰ polku tulee voimaan seuraavaan k‰ynnistettyyn 
-komentorivitulkkiin, kun taas DOS tai Windows 95/98/ME on syyt‰ k‰ynnist‰‰ 
+Windows NT/2000/XP:ss√§ polku tulee voimaan seuraavaan k√§ynnistettyyn 
+komentorivitulkkiin, kun taas DOS tai Windows 95/98/ME on syyt√§ k√§ynnist√§√§ 
 uudelleen.
 
 (Pasi Vettenranta, 17.8.2004)
 ---
 Muisti ilmeisesti alustetaan aina suorituksen alussa.
-DC-valek‰skyill‰ m‰‰ritellyt alustetaan arvonsa mukaisesti
-ja DS-valek‰skyill‰ m‰‰ritellyt alueet nollataan.
-Suorituksen alussa n‰kyv‰ data-alue ei n‰yt‰ n‰it‰ alustuksia.
+DC-valek√§skyill√§ m√§√§ritellyt alustetaan arvonsa mukaisesti
+ja DS-valek√§skyill√§ m√§√§ritellyt alueet nollataan.
+Suorituksen alussa n√§kyv√§ data-alue ei n√§yt√§ n√§it√§ alustuksia.
 (Teemu Kerola, 4.8.2004)
 
 Raportoikaa muut uudet piirteet/ongelmat minulle, kiitos.

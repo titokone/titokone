@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <title>The Titokone user's manual</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <style type="text/css">
    .virhekuvaus { font-weight: bold; }
    .virhetoipuminen { padding-bottom: 1em; }
@@ -23,10 +23,10 @@
   <li><a href="#machinelanguage">The TTK-91 machine language</a></li>
   <li><a href="#extension">Fine-tuning and extending the system</a></li>
   <li><a href="#troubleshooting">Troubleshooting</a></li>
-  <!-- <li><a href="hakemisto">Glossary</a></li> --> <!-- jos jaksaa kerätä-->
+  <!-- <li><a href="hakemisto">Glossary</a></li> --> <!-- jos jaksaa kerÃ¤tÃ¤-->
 </ol>
 
-<h2><a name="general">1. Overview</a></h2> <!-- niinku täh? mikätääon? -->
+<h2><a name="general">1. Overview</a></h2> <!-- niinku tÃ¤h? mikÃ¤tÃ¤Ã¤on? -->
 
 <p>
 Titokone is an assembler simulator, which is intended to show how symbolic assembly language is executed
@@ -71,8 +71,8 @@ in a simple processor.
 <br>
 
 
-<!-- Kuvaillaan käyttöliittymän osat numeroittain: 1. valikot: höpöhöpö jne. -->
-<!-- Kunkin selityksestä viitteitä kohtiin, joissa sitä käytetään. -->
+<!-- Kuvaillaan kÃ¤yttÃ¶liittymÃ¤n osat numeroittain: 1. valikot: hÃ¶pÃ¶hÃ¶pÃ¶ jne. -->
+<!-- Kunkin selityksestÃ¤ viitteitÃ¤ kohtiin, joissa sitÃ¤ kÃ¤ytetÃ¤Ã¤n. -->
 
 
 
@@ -255,7 +255,7 @@ is not sufficient.
 
 
 
-<!-- JÄRJESTELMÄN TOIMINNOT -->
+<!-- JÃ„RJESTELMÃ„N TOIMINNOT -->
 
 
 
@@ -346,7 +346,7 @@ The binary file is already in machine language format, so it can be
 <br>
 
 
-<!-- LÄHDEKOODIN MUOKKAUS -->
+<!-- LÃ„HDEKOODIN MUOKKAUS -->
 
 
 
@@ -396,7 +396,7 @@ which point a cursor will appear on the line.</li>
 
 
 
-<!-- OHJELMAN KÄÄNTÄMINEN-->
+<!-- OHJELMAN KÃ„Ã„NTÃ„MINEN-->
 
 
 
@@ -535,7 +535,7 @@ which point a cursor will appear on the line.</li>
   
   
   
-  <!-- KÄÄNNÖSASETUKSET-->
+  <!-- KÃ„Ã„NNÃ–SASETUKSET-->
   
   
   
@@ -905,7 +905,7 @@ which point a cursor will appear on the line.</li>
   
   
   
-  <!-- MUISTIN TYHJENTÄMINEN -->
+  <!-- MUISTIN TYHJENTÃ„MINEN -->
   
   
   
@@ -1052,8 +1052,8 @@ which point a cursor will appear on the line.</li>
 
 <pre>
 +--------------------------------------------------------------------+
-|  Operation code  ¦  Rj ¦ M ¦  Ri ¦      address part ADDR          |
-|  8 bits          ¦  3  ¦ 2 ¦  3  ¦         16 bits                 |
+|  Operation code  Â¦  Rj Â¦ M Â¦  Ri Â¦      address part ADDR          |
+|  8 bits          Â¦  3  Â¦ 2 Â¦  3  Â¦         16 bits                 |
 +--------------------------------------------------------------------+
 31               24 23           16 15                               0
 </pre>
@@ -1076,7 +1076,7 @@ where  OPER    the symbolic name of the command
 <p>
 If some part of a command has no meaning, it can be left out. It is 
 possible to add a label (symbolic address) in front of a command. The 
-label should consist of the letters A-Ö, 0-9 and _, and contain at 
+label should consist of the letters A-Ã–, 0-9 and _, and contain at 
 least one non-numerical character. Only the first 8 characters are
 considered.
 </p>
@@ -1496,8 +1496,8 @@ utilities and consists of a two-dimensional Object array and a method
 which returns it. The lines in the array look as follows:</p>
 
 <pre>
-   { "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
-   { "Indirect memory addressing mode.", "Epäsuora muistiosoitus."},
+   { "Fetch second operand from memory slot {0}.", "Nouda jÃ¤lkimmÃ¤inen operandi muistipaikasta {0}."},
+   { "Indirect memory addressing mode.", "EpÃ¤suora muistiosoitus."},
    { "1: Fetch indexing value from memory slot {0}.", "1: Nouda indeksointiarvo muistipaikasta {0}."}, 
 </pre>
 <p> 
@@ -1522,10 +1522,10 @@ place as the original string; you can move the '{0}' around in the
 sentence. For example:
 <pre>
 //Animator
-{ "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
+{ "Fetch second operand from memory slot {0}.", "Nouda jÃ¤lkimmÃ¤inen operandi muistipaikasta {0}."},
 -->
 //Animator
-{ "Fetch second operand from memory slot {0}.", "Muistipaikasta {0} noudetaan jälkimmäinen operandi."},
+{ "Fetch second operand from memory slot {0}.", "Muistipaikasta {0} noudetaan jÃ¤lkimmÃ¤inen operandi."},
 </pre>
 <p>A new language file is created as follows:</p>
 <ol>

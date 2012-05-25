@@ -1,5 +1,5 @@
 /*
-Sampo Yrjänäinen, 7.4. 2004
+Sampo YrjÃ¤nÃ¤inen, 7.4. 2004
 Program name: DmpEqualsB91
 
 Compares Koksi dump file (.dmp) and compiled binary file (.b91). Returns 1, 
@@ -61,7 +61,7 @@ public class DmpEqualsB91 {
         
         boolean equals = true;
         int operationNumber = 0;
-        // vertaillaan koodialueiden sisältöjä
+        // vertaillaan koodialueiden sisÃ¤ltÃ¶jÃ¤
         for (;codeAreaSize > 0; codeAreaSize--) {
             dmpLine = dmpReader.readLine();
             if (dmpLine == null) {
@@ -104,7 +104,7 @@ public class DmpEqualsB91 {
             System.exit(0);
         }
         
-        // vertaillaan data-alueiden sisältöjä
+        // vertaillaan data-alueiden sisÃ¤ltÃ¶jÃ¤
         for (;dataAreaSize > 0; dataAreaSize--) {
             dmpLine = dmpReader.readLine();
             if (dmpLine == null) {
