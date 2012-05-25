@@ -93,7 +93,7 @@ public int getMaxTextLengthInColumn(int column) {
       maxLength = lngth;
     }*/
   }
-  return getTextLength(rowForMaxLength, column);
+  return getRowCount() != 0 ? getTextLength(rowForMaxLength, column) : 0;
 }
 
 
