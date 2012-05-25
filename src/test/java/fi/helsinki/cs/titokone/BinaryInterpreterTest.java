@@ -1,3 +1,8 @@
+// Copyright © 2004-2006 University of Helsinki, Department of Computer Science
+// Copyright © 2012 various contributors
+// This software is released under GNU Lesser General Public License 2.1.
+// The license text is at http://www.gnu.org/licenses/lgpl-2.1.html
+
 //Tämä on tärkeä, sillä muuten JUnitin luokat (tässä TestCase, Assert ja TestSuite) eivät tule käyttöön.
 
 package fi.helsinki.cs.titokone;

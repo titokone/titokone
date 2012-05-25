@@ -1,5 +1,7 @@
-/* Copyright 2004 University of Helsinki, Department of Computer
-   Science. See license.txt for details. */
+// Copyright © 2004-2006 University of Helsinki, Department of Computer Science
+// Copyright © 2012 various contributors
+// This software is released under GNU Lesser General Public License 2.1.
+// The license text is at http://www.gnu.org/licenses/lgpl-2.1.html
 
 // NOTE: This file is merely a copy of Translations.java. Do your 
 // modifications there and, if you like, copy the file over here (and 

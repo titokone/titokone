@@ -1,6 +1,6 @@
 <component name="CopyrightManager">
   <copyright>
-    <option name="notice" value="Copyright © 2004-&amp;#36;today.year University of Helsinki &amp;amp; Contributors&#10;This software is released under GNU Lesser General Public License 2.1.&#10;The license text is at http://www.gnu.org/licenses/lgpl-2.1.html" />
+    <option name="notice" value="Copyright © 2004-2006 University of Helsinki, Department of Computer Science&#10;Copyright © &amp;#36;today.year various contributors&#10;This software is released under GNU Lesser General Public License 2.1.&#10;The license text is at http://www.gnu.org/licenses/lgpl-2.1.html" />
     <option name="keyword" value="Copyright" />
     <option name="allowReplaceKeyword" value="" />
     <option name="myName" value="LGPL 2.1" />
