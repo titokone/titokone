@@ -1,2 +1,0 @@
-Muutama testiluokka puuttuu; esimerkiksi Animatorin siksi, että sitä 
-testattiin ronkkimalla.
