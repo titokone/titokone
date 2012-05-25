@@ -1,15 +1,16 @@
 package fi.helsinki.cs.titokone;
+
 /**
- *  common interface for all devices (IODevices and MMAPDevices)
+ * common interface for all devices (IODevices and MMAPDevices)
  */
-public interface Device
-{
+public interface Device {
     /**
-     *  "reboot" to zero state
+     * "reboot" to zero state
      */
     public void reset();
+
     /**
-     *  update state of device
+     * update state of device
      */
     public void update();
 }

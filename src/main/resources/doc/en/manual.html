@@ -1,13 +1,18 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
-      "http://www.w3.org/TR/REC-html40/loose.dtd">
+        "http://www.w3.org/TR/REC-html40/loose.dtd">
 <html lang="en">
 <head>
-  <title>The Titokone user's manual</title>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <style type="text/css">
-   .virhekuvaus { font-weight: bold; }
-   .virhetoipuminen { padding-bottom: 1em; }
-  </style>
+    <title>The Titokone user's manual</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <style type="text/css">
+        .virhekuvaus {
+            font-weight: bold;
+        }
+
+        .virhetoipuminen {
+            padding-bottom: 1em;
+        }
+    </style>
 </head>
 <body>
 <h1>The Titokone user's manual</h1>
@@ -17,56 +22,56 @@
 <h2>Contents</h2>
 
 <ol>
-  <li><a href="#general">Overview</a></li>
-  <li><a href="#install"> Installing Titokone</a></li>
-  <li><a href="#doables">What you can do with the Titokone</a></li>
-  <li><a href="#machinelanguage">The TTK-91 machine language</a></li>
-  <li><a href="#extension">Fine-tuning and extending the system</a></li>
-  <li><a href="#troubleshooting">Troubleshooting</a></li>
-  <!-- <li><a href="hakemisto">Glossary</a></li> --> <!-- jos jaksaa kerätä-->
+    <li><a href="#general">Overview</a></li>
+    <li><a href="#install"> Installing Titokone</a></li>
+    <li><a href="#doables">What you can do with the Titokone</a></li>
+    <li><a href="#machinelanguage">The TTK-91 machine language</a></li>
+    <li><a href="#extension">Fine-tuning and extending the system</a></li>
+    <li><a href="#troubleshooting">Troubleshooting</a></li>
+    <!-- <li><a href="hakemisto">Glossary</a></li> --> <!-- jos jaksaa kerätä-->
 </ol>
 
 <h2><a name="general">1. Overview</a></h2> <!-- niinku täh? mikätääon? -->
 
 <p>
-Titokone is an assembler simulator, which is intended to show how symbolic assembly language is executed
-in a simple processor.
+    Titokone is an assembler simulator, which is intended to show how symbolic assembly language is executed
+    in a simple processor.
 
 </p>
 
 <table>
-<tr>
+    <tr>
 
-<td>
-<a href="Openview.html" name="gui">
-<img src="img/screenEnglish0.jpg" title="Basic view" 
-  alt="Basic view of the system">
-</a>
-</td>
+        <td>
+            <a href="Openview.html" name="gui">
+                <img src="img/screenEnglish0.jpg" title="Basic view"
+                     alt="Basic view of the system">
+            </a>
+        </td>
 
-<td>
-<ol>
-     <li> Menus </li>
-     <br>
-     <li> Code window </li>
-     <br>
-     <li> Status </li>
-     <br>
-     <li> Display </li>
-     <br>
-     <li> Keyboard input </li>
-     <br>
-     <li> Symbol table </li>
-     <br>
-     <li> Registers </li>
-     <br>
-     <li> Comments </li>
-</ol>
+        <td>
+            <ol>
+                <li> Menus</li>
+                <br>
+                <li> Code window</li>
+                <br>
+                <li> Status</li>
+                <br>
+                <li> Display</li>
+                <br>
+                <li> Keyboard input</li>
+                <br>
+                <li> Symbol table</li>
+                <br>
+                <li> Registers</li>
+                <br>
+                <li> Comments</li>
+            </ol>
 
 
-</td>
+        </td>
 
-</tr>
+    </tr>
 </table>
 <br>
 
@@ -75,155 +80,155 @@ in a simple processor.
 <!-- Kunkin selityksestä viitteitä kohtiin, joissa sitä käytetään. -->
 
 
-
-
 <!-- TITOKONEEN ASENNUS -->
-
-
-
 
 
 <h2><a name="install">2 Installing Titokone</a></h3>
 <br>
-<p> 
-First part is about installing the Titokone. If you've already done that, then
-you can move directly to the <a href="#doables">Titokone functions</a>.
+
+<p>
+    First part is about installing the Titokone. If you've already done that, then
+    you can move directly to the <a href="#doables">Titokone functions</a>.
 </p>
 
 <table cellspacing="10">
-<tr>
-<td>  
-<img src="img/0.jpg" title="" alt="">
-</td>
-<td>
-<h3> 2.1 Getting and installing Java</h3>
-</td>
-</tr>
+    <tr>
+        <td>
+            <img src="img/0.jpg" title="" alt="">
+        </td>
+        <td>
+            <h3> 2.1 Getting and installing Java</h3>
+        </td>
+    </tr>
 </table>
 
 <p>
-Titokone is a TTK-91 machine language simulator written in Java. To
-run Titokone, you need a Java virtual machine (minimum version 1.4.2)
-installed. You can download an implementation of the Java virtual
-machine at <a href="http://java.sun.com">http://java.sun.com</a>. Follow their installation instructions.
-</p>
-<p>
-It may be slightly difficult to find what you want at Sun's Java
-pages. To install just the virtual machine, look for "JRE", to install
-the development environment as well for making your own Java programs
-or for creating new translations for Titokone, look for "SDK". At the
-time of writing this, J2SE version 1.4.2, both SDK and JRE (the 2 is
-the platform number, version number is different) could be downloaded
-from
-<a href="http://java.sun.com/j2se/1.4.2/download.html">http://java.sun.com/j2se/1.4.2/download.html</a>. 
-</p>
-<p>
-Note that on the University of Helsinki, CS department, Java SDK 1.4.2
-or newer has been installed already, so you only need to install Java
-if you want to use Titokone at eg. your home machine.
+    Titokone is a TTK-91 machine language simulator written in Java. To
+    run Titokone, you need a Java virtual machine (minimum version 1.4.2)
+    installed. You can download an implementation of the Java virtual
+    machine at <a href="http://java.sun.com">http://java.sun.com</a>. Follow their installation instructions.
 </p>
 
+<p>
+    It may be slightly difficult to find what you want at Sun's Java
+    pages. To install just the virtual machine, look for "JRE", to install
+    the development environment as well for making your own Java programs
+    or for creating new translations for Titokone, look for "SDK". At the
+    time of writing this, J2SE version 1.4.2, both SDK and JRE (the 2 is
+    the platform number, version number is different) could be downloaded
+    from
+    <a href="http://java.sun.com/j2se/1.4.2/download.html">http://java.sun.com/j2se/1.4.2/download.html</a>.
+</p>
+
+<p>
+    Note that on the University of Helsinki, CS department, Java SDK 1.4.2
+    or newer has been installed already, so you only need to install Java
+    if you want to use Titokone at eg. your home machine.
+</p>
 
 
 <table cellspacing="10">
-<tr>
-<td>  
-<img src="img/0.jpg" title="" alt="">
-</td>
-<td>
-<h3> 2.2 Getting Titokone </h3>
-</td>
-</tr>
+    <tr>
+        <td>
+            <img src="img/0.jpg" title="" alt="">
+        </td>
+        <td>
+            <h3> 2.2 Getting Titokone </h3>
+        </td>
+    </tr>
 </table>
 
 
-
 <p>
-You can get Titokone via the Tietokoneen toiminta (Computer Organization) 
-course homepage, currently at
-<a  h ref="http://www.cs.helsinki.fi/teemu.kerola/tito/">
-http://www.cs.helsinki.fi/teemu.kerola/tito/</a>. You can choose between downloading the JAR 
-package containing Titokone(titokone.jar) directly or downloading a ZIP file which contains the
-JAR file itself along with some instructions and helper programs. 
+    You can get Titokone via the Tietokoneen toiminta (Computer Organization)
+    course homepage, currently at
+    <a h ref="http://www.cs.helsinki.fi/teemu.kerola/tito/">
+        http://www.cs.helsinki.fi/teemu.kerola/tito/</a>. You can choose between downloading the JAR
+    package containing Titokone(titokone.jar) directly or downloading a ZIP file which contains the
+    JAR file itself along with some instructions and helper programs.
 </p>
 
 
 <table cellspacing="10">
-<tr>
-<td>  
-<img src="img/0.jpg" title="" alt="">
-</td>
-<td>
-<h3> 2.3 Installing Titokone </h3>
-</td>
-</tr>
+    <tr>
+        <td>
+            <img src="img/0.jpg" title="" alt="">
+        </td>
+        <td>
+            <h3> 2.3 Installing Titokone </h3>
+        </td>
+    </tr>
 </table>
 
 <p>
 <h4>
-Quick installation (Windows, Linux, etc)
+    Quick installation (Windows, Linux, etc)
 </h4>
 </p>
 
 <p>
-For those who know how to manage JAR packages directly, fetching
-titokone.jar is sufficient. (JAR is a package format; if you have an
-up-to-date version of WinZip, you should be able to open them; in Linux,
-use the command 'jar' - see below.) No installation is required; you can
-run the jar file directly. For example, in Windows you must execute the
-command
+    For those who know how to manage JAR packages directly, fetching
+    titokone.jar is sufficient. (JAR is a package format; if you have an
+    up-to-date version of WinZip, you should be able to open them; in Linux,
+    use the command 'jar' - see below.) No installation is required; you can
+    run the jar file directly. For example, in Windows you must execute the
+    command
 <pre>java.exe -jar titokone.jar</pre>
 
-in the directory where you stored the titokone.jar package. 
+in the directory where you stored the titokone.jar package.
 In Linux, you must execute the command
 </p>
 
 <pre> java -jar titokone.jar </pre>
 <p>
-to run the program. You must have Java installed and on your execution
-path. 
+    to run the program. You must have Java installed and on your execution
+    path.
 </p>
 
 
 <h4>Almost-as-quick installation in Windows</h4>
+
 <p>
-Download titokone.zip and unpack it to the target directory of your
-choosing. (The package creates a subdirectory called 'titokone'.) To
-run Titokone, go to the subdirectory and double-click on the titokone
-BAT (MS-DOS Batch) file. You can tell titokone.bat apart from the
-titokone.jar file by its icon; titokone.jar usually looks like
-something yellow in a screw bench, titokone.bat resembles a cog wheel
-inside a window frame. Titokone.sh, a script which starts the program
-in Linux, is probably an unknown filetype in Windows.
+    Download titokone.zip and unpack it to the target directory of your
+    choosing. (The package creates a subdirectory called 'titokone'.) To
+    run Titokone, go to the subdirectory and double-click on the titokone
+    BAT (MS-DOS Batch) file. You can tell titokone.bat apart from the
+    titokone.jar file by its icon; titokone.jar usually looks like
+    something yellow in a screw bench, titokone.bat resembles a cog wheel
+    inside a window frame. Titokone.sh, a script which starts the program
+    in Linux, is probably an unknown filetype in Windows.
 </p>
+
 <p>
-If BAT files have stopped working in Windows MEGAMILLIONSUPER (we have
-tested them up to Windows XP), you can probably still somehow run the
-command 'java.exe -jar C:\my\path\to\titokone\titokone.jar' via the
-Start menu. Replace C:\my\path\to\titokone with the actual path to the
-file.
+    If BAT files have stopped working in Windows MEGAMILLIONSUPER (we have
+    tested them up to Windows XP), you can probably still somehow run the
+    command 'java.exe -jar C:\my\path\to\titokone\titokone.jar' via the
+    Start menu. Replace C:\my\path\to\titokone with the actual path to the
+    file.
 </p>
 
 <h4> Almost-as-quick installation in Linux</h4>
+
 <p>
-Download titokone.zip and unpack it (eg. gunzip titokone.zip) to the
-target directory of your choosing. (The package creates a subdirectory
-called 'titokone'.)  To run Titokone, open a terminal, change to the
-directory the zip file opened, and then the 'titokone' subdirectory, 
-and run
+    Download titokone.zip and unpack it (eg. gunzip titokone.zip) to the
+    target directory of your choosing. (The package creates a subdirectory
+    called 'titokone'.) To run Titokone, open a terminal, change to the
+    directory the zip file opened, and then the 'titokone' subdirectory,
+    and run
 </p>
 <pre>java -jar titokone.jar</pre>
 <p>
-If typing is tiresome, the zip contains a titokone.sh startup script
-for your convenience. You can rename the file to something shorter, 
-like tk. Then you just need to run ./tk (or ./titokone.sh if you have 
-not renamed it). The script does not change directories, so you must 
-either keep it in the same directory as titokone.jar or edit it.
+    If typing is tiresome, the zip contains a titokone.sh startup script
+    for your convenience. You can rename the file to something shorter,
+    like tk. Then you just need to run ./tk (or ./titokone.sh if you have
+    not renamed it). The script does not change directories, so you must
+    either keep it in the same directory as titokone.jar or edit it.
 </p>
 
 <h4>Opening the jar (mostly interesting for developers only)</h4>
+
 <p>
-If you wish, you can open the jar by running the following command:
+    If you wish, you can open the jar by running the following command:
 </p>
 <pre>
   in Windows: It is probably easiest to open the file using WinZip or
@@ -232,14 +237,15 @@ If you wish, you can open the jar by running the following command:
   in Linux: jar -xvf titokone.jar
 </pre>
 <p>
-The jar package contains the source code and class files, among other
-things. If you modify the files, eg. to add a new language file (see the
-included manual on how to do this), you should note that the class files
-are a part of a Java package (three packages, to be exact).
+    The jar package contains the source code and class files, among other
+    things. If you modify the files, eg. to add a new language file (see the
+    included manual on how to do this), you should note that the class files
+    are a part of a Java package (three packages, to be exact).
 </p>
+
 <p>
-To start the modified program, change to the package root directory (where
-the 'fi' subdirectory is located) and run the command:
+    To start the modified program, change to the package root directory (where
+    the 'fi' subdirectory is located) and run the command:
 </p>
 <pre>
   in Windows: java.exe fi.helsinki.cs.titokone.Titokone
@@ -247,100 +253,96 @@ the 'fi' subdirectory is located) and run the command:
   in Linux: java fi.helsinki.cs.titokone.Titokone
 </pre>
 <p>
-Javadoc of the classes is included in javadoc/. To compile files
-(needed for eg. adding new language support), you need Java SDK, JRE
-is not sufficient.
+    Javadoc of the classes is included in javadoc/. To compile files
+    (needed for eg. adding new language support), you need Java SDK, JRE
+    is not sufficient.
 </p>
 <br>
-
 
 
 <!-- JÄRJESTELMÄN TOIMINNOT -->
 
 
-
-
-
-<h2><a name="doables">3. What you can do with the Titokone</a></h2> 
+<h2><a name="doables">3. What you can do with the Titokone</a></h2>
 
 <br>
 
 <!-- OHJELMAN AVAAMINEN -->
 
 
-
 <table cellspacing="10">
-<tr>
-  <td align="center">
-  <a name="open">
-  <img src="img/1.jpg" title="Open button" 
-  alt="Picture of the Open button">
-  </a>
-  </td>
+    <tr>
+        <td align="center">
+            <a name="open">
+                <img src="img/1.jpg" title="Open button"
+                     alt="Picture of the Open button">
+            </a>
+        </td>
 
-<td>
-  <h3>3.1 Opening a TTK-91 program</h3> 
-</td>
+        <td>
+            <h3>3.1 Opening a TTK-91 program</h3>
+        </td>
 
-</tr>
+    </tr>
 </table>
-  
+
 <br>
 
 <table cellspacing="10">
-<tr>
-  
-<td valign="top">
+    <tr>
 
-<img src="img/Fileopen.jpg" title="Open file" 
-alt="Picture illustrating how to select File --> Open from the menu.">
+        <td valign="top">
 
-</td>
-      
-<td valign="top">
-<p> 
-  Opening a new file is done by pressing the <a href="1en.html">Open toolbutton</a>
-  or by choosing File --> Open from the menu. You will then see a <a
-  href="#file">file dialog</a>. New file can be also opened using the shortcut key CTRL+O.
+            <img src="img/Fileopen.jpg" title="Open file"
+                 alt="Picture illustrating how to select File --> Open from the menu.">
 
-</p>
-</td>
+        </td>
 
-</tr>
+        <td valign="top">
+            <p>
+                Opening a new file is done by pressing the <a href="1en.html">Open toolbutton</a>
+                or by choosing File --> Open from the menu. You will then see a <a
+                    href="#file">file dialog</a>. New file can be also opened using the shortcut key CTRL+O.
+
+            </p>
+        </td>
+
+    </tr>
 </table>
 
 <table cellspacing="10">
-<tr>
-  
-<td valign="top">
-<a name="file">
-<img src="img/File.jpg" title="A file dialog" 
-alt="Picture of the file dialog for illustration">
-</a>
-</td>
-<td valign="top">
-<p>
-The file dialog shows the files in the currently chosen directory,
-according to the chosen type. The file types to show are determined
-according to their file extensions: k91 stands for a source file, b91
-for a binary file.
-</p>
-<ul><li>
-When opening a file with a k91 extension, you will see the 
-<a href="Sourcecode.html">source code view</a> on the screen.
-The source code myst be <a href="#compile">compiled</a> before it can
-be <a href="#run">run</a>.
-</li>
-<br>
-<li>
-When opening a file with a b91 extension, you will see the
-<a href="Running.html">running view</a> on the screen.
-The binary file is already in machine language format, so it can be 
-<a href="#run">run</a> immediately without recompilation.
-</li>
-</ul>
-</td>
-</tr>
+    <tr>
+
+        <td valign="top">
+            <a name="file">
+                <img src="img/File.jpg" title="A file dialog"
+                     alt="Picture of the file dialog for illustration">
+            </a>
+        </td>
+        <td valign="top">
+            <p>
+                The file dialog shows the files in the currently chosen directory,
+                according to the chosen type. The file types to show are determined
+                according to their file extensions: k91 stands for a source file, b91
+                for a binary file.
+            </p>
+            <ul>
+                <li>
+                    When opening a file with a k91 extension, you will see the
+                    <a href="Sourcecode.html">source code view</a> on the screen.
+                    The source code myst be <a href="#compile">compiled</a> before it can
+                    be <a href="#run">run</a>.
+                </li>
+                <br>
+                <li>
+                    When opening a file with a b91 extension, you will see the
+                    <a href="Running.html">running view</a> on the screen.
+                    The binary file is already in machine language format, so it can be
+                    <a href="#run">run</a> immediately without recompilation.
+                </li>
+            </ul>
+        </td>
+    </tr>
 </table>
 
 <br>
@@ -349,705 +351,703 @@ The binary file is already in machine language format, so it can be
 <!-- LÄHDEKOODIN MUOKKAUS -->
 
 
-
-
 <table cellspacing="3">
-<tr>
-<td>  
-<img src="img/0.jpg" title="" 
-alt="">
-</td>
-<td>
-<a name="code-editing">
-<h3> 3.2 Editing the source code</h3>
-</a>
-</td>
-</tr>
+    <tr>
+        <td>
+            <img src="img/0.jpg" title=""
+                 alt="">
+        </td>
+        <td>
+            <a name="code-editing">
+                <h3> 3.2 Editing the source code</h3>
+            </a>
+        </td>
+    </tr>
 </table>
 
 
 <p>The source code can be edited in Titokone as follows:</p>
 <ul>
-<li> Open a file with k91 as its file extension. </li>
-<p>Either</p>
-<li> Click on the source code line with the left mouse button, at
-which point there will be no cursor visible, but the line can be
-written on.</li>
-<p><img src="img/this.jpg"></p>
-<p>or</p>
-<li> Double-click on the source code line with the left mouse, at
-which point a cursor will appear on the line.</li>
-<p><img src="img/orthis.jpg"></p>
-<li> Make the necessary changes on the line. </li>
-<li> Confirm the changes by pressing enter. </li>
-<li> The changes are stored in the original file. </li>
+    <li> Open a file with k91 as its file extension.</li>
+    <p>Either</p>
+    <li> Click on the source code line with the left mouse button, at
+        which point there will be no cursor visible, but the line can be
+        written on.
+    </li>
+    <p><img src="img/this.jpg"></p>
+
+    <p>or</p>
+    <li> Double-click on the source code line with the left mouse, at
+        which point a cursor will appear on the line.
+    </li>
+    <p><img src="img/orthis.jpg"></p>
+    <li> Make the necessary changes on the line.</li>
+    <li> Confirm the changes by pressing enter.</li>
+    <li> The changes are stored in the original file.</li>
 </ul>
 
- <p>We recommend editing the source code in a separate program,
- however. There have been problems with the result getting stored in
- some other, recently opened k91 file. See <a href="#paranoid">our
- troubleshooting section on this</a>.
+<p>We recommend editing the source code in a separate program,
+    however. There have been problems with the result getting stored in
+    some other, recently opened k91 file. See <a href="#paranoid">our
+        troubleshooting section on this</a>.
 
 
-  <!-- Voi olla k91 tai b91, viittaa vastaaviin 2.x-lukuihin -->
+    <!-- Voi olla k91 tai b91, viittaa vastaaviin 2.x-lukuihin -->
+
+    <br>
+
+
+    <!-- OHJELMAN KÄÄNTÄMINEN-->
+
+
+<table cellspacing="10">
+    <tr>
+
+        <td>
+            <img src="img/2.jpg" title="Compile"
+                 alt="Picture of the compile button">
+        </td>
+
+        <td>
+            <a name="compile">
+                <h3>3.3 Compiling a TTK-91 program</h3>
+            </a>
+        </td>
+
+    </tr>
+</table>
+
+<table cellspacing="10">
+    <tr>
+
+        <td valign="top">
+            <img src="img/Filecompile.jpg" title="Compiling from menu"
+                 alt="Picture illustrating how to select File --> Compile from the menu">
+        </td>
+
+        <td valign="top">
+            <p>Compilation happens in two phases in Titokone: first a syntax
+                check is done and the symbol table is created. On the second round,
+                the object code is formed. Compilation is started by clicking on the
+                <a href="2en.html">Compile button</a> or by choosing File -->
+                Compile from the menu.
+                Compilation is done according to the <a
+                        href="#compilesettings">compilation settings</a>, either stopping
+                every time a comment appears or all through without pauses. Compiling can be started also using shortcut
+                key CTRL-K.
+
+            </p>
+        </td>
+    </tr>
+</table>
+
+<br>
+<a name="compilingfunctions">
+    <b>
+        Functions during compilation
+    </b>
+</a>
+
+<table cellspacing="10">
+    <tr>
+
+        <td>
+            <img src="img/4.jpg" title="Forward"
+                 alt="Picture of forward-button">
+        </td>
+        <td><p>Continue a step onwards: the compilation progressing a row at
+            a time can be continued by pressing this button or the enter key
+            after each step, which advances until the next
+            <a href="#compcases">event occurs</a>. </p>
+        </td>
+    </tr>
+
+    <tr>
+        <td><img src="img/5.jpg" title="Fast forward"
+                 alt="Picture of Fast forward button">
+        </td>
+
+        <td><p>Continue to the end: The compilation can be run through
+            without pauses. This will not change the row-wise compilation
+            setting, it only overrides it for this compilation.</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td><img src="img/6.jpg" title="Stop"
+                 alt="Picture of stop-button">
+        </td>
+        <td>
+            <p>Stop: The compilation can be aborted by pressing the stop
+                button. The view will remain as it was until the Continue button is
+                also pressed.</p>
+        </td>
+    </tr>
+</table>
+<br>
+<a name="compcases">
+    <b>Compilation event types</b>
+</a>
+
+<p> Compilation event types refer to the compiler's reactions to the
+    contents of the source code. A line is commented and/or stopped on
+    according to the <a href="#compilesettings">compiling options</a>.</p>
+
+<p> First round:</p>
+<ul>
+    <li> No event: if the line begins with a comment sign (;), is empty
+        or contains no references to symbols or labels.
+    <li> Defining a variable: If there is a new variable defined on the
+        line, it is added to the symbol table.
+    </li>
+    <li> Using a variable: If a symbol (or a label) is used in the
+        command on the line and the symbol is not in the symbol table yet,
+        it is added.
+    </li>
+    <li> Finding a label: If there is a label in the start of a line,
+        the label and the line number are added to the symbol table.
+    </li>
+    <li> A compilation error: The compilation is aborted, the error is
+        reported to the user and, once the user clicks the "Continue"
+        button, the source code view is restored.
+    </li>
+    <li> Finishing first round: After a successful first round of
+        compilation, the declared variables (DC and DS) get space reserved
+        for them, the symbol table is updated and the <a
+                href="Compile.html">object code view</a> is
+        shown. Now the second round can begin.
+    </li>
+</ul>
+<p> Second round: </p>
+<ul>
+    <li> Creating the object code: The machine language interpretation
+        of the code line is generated and the command is shown in the status
+        bar near the bottom of the window.
+    </li>
+</ul>
+<p> Finishing the compilation: </p>
+<ul>
+    <li>The program is <a href="#loading">loaded to memory</a> and the
+        <a href="Suoritusnakyma.html">running view</a> is shown.
+    </li>
+    <li> A compilation error: the compilation is aborted, the user
+        is notified of the error and the "Continue"-button can be used to
+        return to the source code view.
+    </li>
+
+    <li>A binary of the file is <a href="#binaari">saved</a>
+        automatically in the same directory, with the same name but
+        different file extension; the binary will have b91 as its extension.
+    </li>
+    </ol>
+</ul>
+<br>
+
+
+<!-- KÄÄNNÖSASETUKSET-->
+
+
+<table cellspacing="10">
+    <tr>
+        <td>
+            <img src="img/0.jpg" title=""
+                 alt="">
+        </td>
+        <td>
+            <a name="compilesettings">
+                <h3>3.4 Compiling options </h3>
+            </a>
+        </td>
+    </tr>
+</table>
+
+
+<table cellspacing="10">
+    <tr>
+        <td>
+            <img src="img/Filesetcompile.jpg" title="Compiling options from the menu"
+                 alt="An illustration on how to select Options --> Set compiling
+  options from the menu">
+        </td>
+        <td valign="top">
+            <p>
+                The compiling options cam be changed by choosing Options --> Set
+                compiling options from the menu.
+            </p>
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+
+            <img src="img/Compilingoptions.jpg" title="The compiling options dialog"
+                 alt="The compiling options dialog">
+
+        </td>
+        <td valign="top">
+            <p>
+                The compiling options affect how the compilation behaves and how it
+                is commented.
+            </p>
+            <ul>
+                <li>If 'Pause whenever a comment occurs' is selected, the compilation
+                    will proceed stepwise. The compiler will stop to wait for the user
+                    to eg. press the "Continue" button.
+                </li>
+                <li>If 'Show extra comments while compiling' is selected, there will
+                    be comments shown of the progress of the compilation in the comment window.
+                </li>
+                <li>The option changes will become effective once the Apply button
+                    is pressed. You can cancel the changes by pressing Close instead, or
+                    just close the window after pressing Apply first and Close then.
+                </li>
+            </ul>
+
+        </td>
+
+    </tr>
+</table>
 
 <br>
 
 
+<!-- OHJELMAN LATAAMINEN-->
 
 
-<!-- OHJELMAN KÄÄNTÄMINEN-->
+<table cellspacing="10">
+    <tr>
+        <td>
+            <img src="img/0.jpg" title=""
+                 alt="">
+        </td>
+        <td>
+            <h3><a name="loading">3.5 Loading a TTK-91 program</a></h3>
+        </td>
+    </tr>
+</table>
 
 
+<p>A TTK-91 program is loaded automatically when</p>
+<ul>
+    <li><a href="#compile">The compilation</a> of a k91
+        file is completed.
+    </li>
+    <li>A b91 file is <a href="#open">opened</a></li>
+    <li>After a program has been run; if the program has modified its
+        code area, the changes will be erased.
+    </li>
+</ul>
+<br>
 
 
-    
-  <table cellspacing="10">
-  <tr>
-  
-  <td>
-  <img src="img/2.jpg" title="Compile" 
-  alt="Picture of the compile button">
-  </td>
-  
-  <td>
-  <a name="compile">
-  <h3>3.3 Compiling a TTK-91 program</h3> 
-  </a>
-  </td>
-  
-  </tr>
-  </table>
-      
-  <table cellspacing="10">
-  <tr>
+<!-- SUORITUS-->
 
-  <td valign="top">
-  <img src="img/Filecompile.jpg" title="Compiling from menu" 
-  alt="Picture illustrating how to select File --> Compile from the menu">
-  </td>
-  
-  <td valign="top">
-  <p>Compilation happens in two phases in Titokone: first a syntax
-  check is done and the symbol table is created. On the second round,
-  the object code is formed. Compilation is started by clicking on the 
-  <a href="2en.html">Compile button</a> or by choosing File -->
-  Compile from the menu.
-  Compilation is done according to the <a
-  href="#compilesettings">compilation settings</a>, either stopping
-  every time a comment appears or all through without pauses. Compiling can be started also using shortcut key CTRL-K.
-  
-  </p>
-  </td>
-  </tr>
-  </table>
-  
-  <br>
-  <a name="compilingfunctions">
-  <b>
-  Functions during compilation
-  </b>
-  </a>
-  
-  <table cellspacing="10">
-  <tr>
-   
-  <td>
-  <img src="img/4.jpg" title="Forward" 
-  alt="Picture of forward-button">
-  </td>
-  <td><p>Continue a step onwards: the compilation progressing a row at
-  a time can be continued by pressing this button or the enter key
-  after each step, which advances until the next
-  <a href="#compcases">event occurs</a>. </p>
-  </td>
-  </tr>
-  
-  <tr>
-  <td><img src="img/5.jpg" title="Fast forward" 
-  alt="Picture of Fast forward button">
-  </td>
-  
-  <td><p>Continue to the end: The compilation can be run through
-  without pauses. This will not change the row-wise compilation
-  setting, it only overrides it for this compilation.</p> 
-  </td>
-  </tr>
-  
-  <tr>
-  <td><img src="img/6.jpg" title="Stop" 
-  alt="Picture of stop-button">
-  </td>
-  <td>
-  <p>Stop: The compilation can be aborted by pressing the stop
-  button. The view will remain as it was until the Continue button is
-  also pressed.</p>
-  </td>
-  </tr>
-  </table>
-  <br>
-  <a name="compcases">
-  <b>Compilation event types</b>
-  </a>
-  <p> Compilation event types refer to the compiler's reactions to the
-  contents of the source code. A line is commented and/or stopped on
-  according to the <a href="#compilesettings">compiling options</a>.</p>
-  <p> First round:</p>
-  <ul>
-  <li> No event: if the line begins with a comment sign (;), is empty
-  or contains no references to symbols or labels.
-  <li> Defining a variable: If there is a new variable defined on the
-  line, it is added to the symbol table.</li>
-  <li> Using a variable: If a symbol (or a label) is used in the
-  command on the line and the symbol is not in the symbol table yet,
-  it is added.</li>
-  <li> Finding a label: If there is a label in the start of a line,
-  the label and the line number are added to the symbol table.</li>
-  <li> A compilation error: The compilation is aborted, the error is
-  reported to the user and, once the user clicks the "Continue"
-  button, the source code view is restored.</li>
-  <li> Finishing first round: After a successful first round of
-  compilation, the declared variables (DC and DS) get space reserved
-  for them, the symbol table is updated and the <a
-  href="Compile.html">object code view</a> is 
-  shown. Now the second round can begin. </li> 
-  </ul>
-  <p> Second round: </p>
-  <ul> 
-  <li> Creating the object code: The machine language interpretation
-  of the code line is generated and the command is shown in the status
-  bar near the bottom of the window.</li>
-  </ul>
-  <p> Finishing the compilation: </p>
-  <ul>
- 	<li>The program is <a href="#loading">loaded to memory</a> and the
-  <a href="Suoritusnakyma.html">running view</a> is shown.</li>
-  	<li> A compilation error: the compilation is aborted, the user
-  is notified of the error and the "Continue"-button can be used to
-  return to the source code view.</li>
 
-	<li>A binary of the file is <a href="#binaari">saved</a>
-  automatically in the same directory, with the same name but
-  different file extension; the binary will have b91 as its extension.</li>
-  </ol>
-  </ul>
-  <br>
-  
-  
-  
-  <!-- KÄÄNNÖSASETUKSET-->
-  
-  
-  
-  <table cellspacing="10">
-  <tr>
-  <td>  
-  <img src="img/0.jpg" title="" 
-  alt="">
-  </td>
-  <td>
-  <a name="compilesettings">
-  <h3>3.4 Compiling options </h3>
-  </a>
-  </td>
-  </tr>
-  </table>
-  
-  
-  
-  
-  <table cellspacing="10">
-  <tr>
-  <td>
-  <img src="img/Filesetcompile.jpg" title="Compiling options from the menu" 
-  alt="An illustration on how to select Options --> Set compiling
+<table cellspacing="10">
+    <tr>
+
+        <td>
+            <a name="run">
+                <img src="img/3.jpg" title="Run"
+                     alt="Picture of the Run button">
+        </td>
+        </a>
+
+        <td>
+            <h3> 3.6 Running a TTK-91 program</h3>
+        </td>
+
+    </tr>
+</table>
+
+
+<table cellspacing="10">
+    <tr>
+        <td>
+            <img src="img/Filerun.jpg" title="File --> run"
+                 alt="An illustration on how to select File --> Run from the menu">
+        </td>
+        <td valign="top"> After compiling a k91 file or opening a b91 file,
+            the program is loaded into memory and is ready for running. <a
+                    href="Running.html">In the running view,</a> the code window is
+            divided in two, the code and data area. You should note that in
+            reality, the memory of the Titokone is one large area; dividing it
+            to two parts visually is a usability choice. To start running the
+            program, press the <a href="3en.html">Run toolbutton</a> or choose
+            File --> Run from the menu. The running will follow according to
+            the <a href="#runsettings">running options</a>, either pausing or
+            running all the way through, with or without animation. Running can be also started
+            using the shortcut key CTRL-B.
+        </td>
+
+    </tr>
+</table>
+<br>
+
+<b> Actions during running </b>
+
+<table cellspacing="10">
+    <tr>
+
+        <td>
+            <img src="img/4.jpg" title="Continue"
+                 alt="Picture of the Continue button">
+        </td>
+        <td><p>Continue a step onwards: if the run is progressing a row at a
+            time, it can be continued by pressing the Continue button or the
+            enter key after each step, which advances to the next row (command).</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td><img src="img/5.jpg" title="Continue to the end"
+                 alt="Picture of the Continue to the end button">
+        </td>
+
+        <td><p> Continue to the end: The run can be finished without
+            pauses. This will not affect the row-wise running setting, it only
+            overrides it for this run.</p>
+        </td>
+    </tr>
+
+    <tr>
+        <td><img src="img/6.jpg" title="Stop"
+                 alt="Picture of the stop-button">
+        </td>
+        <td>
+            <p>Stop: the run can be aborted by pressing the stop button. The
+                view will remain as it was until the Continue button is also pressed.</p>
+        </td>
+    </tr>
+</table>
+<ul>
+    <li> If the run is aborted due to an error, the final view is
+        shown until the user presses the Continue button. At that point, the
+        program is reloaded automatically.
+    </li>
+</ul>
+<br>
+
+
+<!-- SUORITUSASETUSTEN MUUTTAMINEN -->
+
+
+<table cellspacing="10">
+    <tr>
+
+        <td>
+            <a name="runsettings">
+                <img src="img/0.jpg" title=""
+                     alt="">
+            </a>
+        </td>
+        <td>
+            <h3>3.7 Running options</h3>
+        </td>
+    </tr>
+</table>
+
+
+<table cellspacing="10">
+    <tr>
+        <td>
+            <img src="img/Runningdialog.jpg" title="Set running options"
+                 alt="An illustration on how to select Options --> Set running
   options from the menu">
-  </td>
-  <td valign="top">
-  <p>
-  The compiling options cam be changed by choosing Options --> Set
-  compiling options from the menu.
-  </p>
-  </td>
-  
-  </tr>
-  <tr>
-  <td>
-  
-  <img src="img/Compilingoptions.jpg" title="The compiling options dialog" 
-  alt="The compiling options dialog">
-  
-  </td>
-  <td valign="top"> 
-  <p>
-  The compiling options affect how the compilation behaves and how it
-  is commented.
-  </p>
-  <ul>
-  <li>If 'Pause whenever a comment occurs' is selected, the compilation
-  will proceed stepwise. The compiler will stop to wait for the user
-  to eg. press the "Continue" button.
-  </li>
-  <li>If 'Show extra comments while compiling' is selected, there will
-  be comments shown of the progress of the compilation in the comment window.
-  </li>
-  <li>The option changes will become effective once the Apply button
-  is pressed. You can cancel the changes by pressing Close instead, or
-  just close the window after pressing Apply first and Close then.</li>
-  </ul>
-    
-  </td>
-  
-  </tr>
-  </table>
-  
-  <br>
-   
-  
-  
-  
-  
-  <!-- OHJELMAN LATAAMINEN-->
-  
-  
-  
-  
-  <table cellspacing="10">
-  <tr>
-  <td>  
-  <img src="img/0.jpg" title="" 
-  alt="">
-  </td>
-  <td>
-  <h3><a name="loading">3.5 Loading a TTK-91 program</a></h3>
-  </td>
-  </tr>
-  </table>
-  
-  
-  <p>A TTK-91 program is loaded automatically when</p>
-  <ul>
-  <li><a href="#compile">The compilation</a> of a k91
-  file is completed.</li>
-  <li>A b91 file is <a href="#open">opened</a></li>
-  <li>After a program has been run; if the program has modified its
-  code area, the changes will be erased.</li>
-  </ul>
-  <br>
-  
-  
-   <!-- SUORITUS-->
-  
-  
-    
-  <table cellspacing="10">
-  <tr>
-  
-  <td>  
-  <a name="run">
-  <img src="img/3.jpg" title="Run" 
-  alt="Picture of the Run button">
-  </td>
-  </a>    
-  
-  <td>
-  <h3> 3.6 Running a TTK-91 program</h3> 
-  </td>
-  
-  </tr>
-  </table>
-     
-  
-  <table cellspacing="10">
-  <tr>
-  <td>  
-  <img src="img/Filerun.jpg" title="File --> run" 
-  alt="An illustration on how to select File --> Run from the menu">
-  </td>
-  <td valign="top"> After compiling a k91 file or opening a b91 file,
-  the program is loaded into memory and is ready for running. <a
-  href="Running.html">In the running view,</a> the code window is
-  divided in two, the code and data area. You should note that in
-  reality, the memory of the Titokone is one large area; dividing it
-  to two parts visually is a usability choice. To start running the
-  program, press the <a href="3en.html">Run toolbutton</a> or choose
-  File --> Run from the menu. The running will follow according to 
-  the <a href="#runsettings">running options</a>, either pausing or
-  running all the way through, with or without animation. Running can be also started
-  using the shortcut key CTRL-B.</td> 
-  
-  </tr>
-  </table>
-  <br>
-  
-  <b> Actions during running </b>
-  
-  <table cellspacing="10">
-  <tr>
-   
-  <td>
-  <img src="img/4.jpg" title="Continue" 
-  alt="Picture of the Continue button">
-  </td>
-  <td><p>Continue a step onwards: if the run is progressing a row at a
-  time, it can be continued by pressing the Continue button or the
-  enter key after each step, which advances to the next row (command).</p>
-  </td>
-  </tr>
-  
-  <tr>
-  <td><img src="img/5.jpg" title="Continue to the end" 
-  alt="Picture of the Continue to the end button">
-  </td>
-  
-  <td><p> Continue to the end: The run can be finished without
-  pauses. This will not affect the row-wise running setting, it only
-  overrides it for this run.</p>
-  </td>
-  </tr>
-  
-  <tr>
-  <td><img src="img/6.jpg" title="Stop" 
-  alt="Picture of the stop-button">
-  </td>
-  <td>
-  <p>Stop: the run can be aborted by pressing the stop button. The
- view will remain as it was until the Continue button is also pressed.</p>
-  </td>
-  </tr>
-  </table>
-  <ul><li> If the run is aborted due to an error, the final view is
- shown until the user presses the Continue button. At that point, the
- program is reloaded automatically.</li></ul>
-  <br>
-  
-  
-  
-  
-  
-  <!-- SUORITUSASETUSTEN MUUTTAMINEN -->
-  
-  
-  
-  
-  <table cellspacing="10">
-  <tr>
-  
-  <td>  
-  <a name="runsettings">
-  <img src="img/0.jpg" title="" 
-  alt="">
-  </a>
-  </td>
-  <td>
-  <h3>3.7 Running options</h3>
-  </td>
-  </tr>
-  </table>
-  
-  
-  <table cellspacing="10">
-  <tr>
-  <td>
-  <img src="img/Runningdialog.jpg" title="Set running options" 
-  alt="An illustration on how to select Options --> Set running
-  options from the menu">
-  </td>
-  <td valign="top">
-  <p> The running options can be modified by selecting Options --> Set
-  running options from the menu.</p>
-  
-  </td>
-  </tr>
-  <tr>  
-  <td rowspan=3>
-  <img src="img/Runningoptions.jpg" title="The running options dialog" 
-  alt="The running options dialog">
-  </td>
-  <td>
-  <p> The running options are almost the same as the 
- <a href="#compilesettings">compiling options</a>; an option to
- animate the command is added.
-  <ul>
-  <li> The program code is run a row at a time if "Execute code line
- by line" is selected </li>
-  <li> Additional comments are shown in the <a
- href="Running.html">comment window(8)</a> if "Show extra comments
- while executing" is selected</li>
-  <li> The animation window will be opened for the run if "Show
- animation while executing" is selected</li>
-  <li> When the animation is turned on, line by line execution is
- automatically turned on.</li>
+        </td>
+        <td valign="top">
+            <p> The running options can be modified by selecting Options --> Set
+                running options from the menu.</p>
 
-  <li> The changes will come to effect once the "apply" button is pressed.</li>  
-  </ul>
-  </td>
-  </tr>
-  </table>
-  
-  <p> You can also change the running options directly from toolbuttons:</p>
-  <table cellspacing="10">
-  <tr>
-  <td>
-  <img src="img/7.jpg" title="Line-by-line on / off" 
-  alt="Executing line-by-line on / off">
-  </td>
-  <td>
-  <p> Turning the line by line execution on or off. </p>
-  </td> 
-  </tr>
-  <tr>
-  <td>
-  <img src="img/8.jpg" title="Extra comments on / off" 
-  alt="Extra comments on / off">
-  </td>
-  <td>
-  <p> Turning the extra comments on or off.</p>
-  </td>
-  
-  </tr>
-  <tr>
-  <td>
-  <img src="img/9.jpg" title="Animating" 
-  alt="Animating on / off">
-  </td>
-  <td>
-  <p>Turning the animation window show on or off.</p>
-  </td>
-  </tr>
-  </table>
-  <br>
-  
-  
-  
-  
-  <!-- Animointi -->
-    
-  
-  
-  <table cellspacing="10">
-  <tr>
-  
-  <td>  
-  <img src="img/0.jpg" title="" 
-  alt="">
-  </td>
-  <td>
-  <h3>3.8 Animation</h3> 
-  </td>
-  </tr>
-  </table>
-  
-  
-  <table>
-  <tr>
-  <td>
-  <img src="img/Animate.jpg" title="The animation window" 
-  alt="Picture of the animation window">
-  </td>
-  
-  <td valign=top> 
-    <ul>
-  		<li> Animator shows how machine language is executed in the processor. </li>
-  		<li> At the top of the screen is the symbolic form of the command shown after machine language form of the command has been processed in the IR.</li>
-  		<li> At the bottom are shown comments concerning the current phase of execution.. </li>
-  		<li> Red ball on the bus animates both the control and data flow. </li>
-  		<li> SVC-commands are not animated. </li>
-  	        <li> When reading from the device, MAR shows the whole command, not the memory address; this differs little bit from real machines. </li>
-    </ul>
-  </td>
-  
-  </tr>
-  </table>
-  <br>
-  
-  
-  
-  <!-- STDIN, STDOUT -->
-  
-    
-  
-  
-  
-  <table>     
-  <tr>
-  <td>  
-  <img src="img/0.jpg" title="" 
-  alt="">
-  </td>
-  <td> 
-  <h3>3.9 Selecting the STDIN and STDOUT files</h3>
-  </td>
-  </tr>
-  </table>
-  
-  
-  <table>     
-  <tr>
-  <td>  
-  <img src="img/Setstd.jpg" title="Selecting the STDIN and STDOUT files" 
-  alt="Selecting the STDIN and STDOUT files">
-  </td>
-  <td valign=top> 
-  <ul>
-  		<li> Default STDIN and STDOUT are files 'stdin' ja 'stdout' in the user's working directory.</li>
-  		<li> Default files can be defined from the menu <b>Options --> Configure file system</b>.</li>
-  		<li> It is possible to define files in the source code using <a href=#stdindef>fake command def</a>.</li>
-   		<li> More information about defining default files you can found from <a href="#settings_files">settings files</a>.</li>  
-  
-  </ul>
-  
-  </td>
-  </tr>
-  </table>
-  <br>
-  
-  
-  
-  
-  <!-- MUISTIN TYHJENTÄMINEN -->
-  
-  
-  
-  
-  
-  <table cellspacing="10">
-  <tr>
-  <td>  
-  <img src="img/0.jpg" title="" 
-  alt="">
-  </td>
-  <td>
-  <h3> 3.10 Erasing the memory</h3> 
-  </td>
-  </tr>
-  </table>
-   
-  <table>
-  <tr>
-  
-  <td>
-  <img src="img/Erasememory.jpg" title="Erase memory" 
-  alt="An illustration on how to select File --> Erase memory from the
+        </td>
+    </tr>
+    <tr>
+        <td rowspan=3>
+            <img src="img/Runningoptions.jpg" title="The running options dialog"
+                 alt="The running options dialog">
+        </td>
+        <td>
+            <p> The running options are almost the same as the
+                <a href="#compilesettings">compiling options</a>; an option to
+                animate the command is added.
+            <ul>
+                <li> The program code is run a row at a time if "Execute code line
+                    by line" is selected
+                </li>
+                <li> Additional comments are shown in the <a
+                        href="Running.html">comment window(8)</a> if "Show extra comments
+                    while executing" is selected
+                </li>
+                <li> The animation window will be opened for the run if "Show
+                    animation while executing" is selected
+                </li>
+                <li> When the animation is turned on, line by line execution is
+                    automatically turned on.
+                </li>
+
+                <li> The changes will come to effect once the "apply" button is pressed.</li>
+            </ul>
+        </td>
+    </tr>
+</table>
+
+<p> You can also change the running options directly from toolbuttons:</p>
+<table cellspacing="10">
+    <tr>
+        <td>
+            <img src="img/7.jpg" title="Line-by-line on / off"
+                 alt="Executing line-by-line on / off">
+        </td>
+        <td>
+            <p> Turning the line by line execution on or off. </p>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <img src="img/8.jpg" title="Extra comments on / off"
+                 alt="Extra comments on / off">
+        </td>
+        <td>
+            <p> Turning the extra comments on or off.</p>
+        </td>
+
+    </tr>
+    <tr>
+        <td>
+            <img src="img/9.jpg" title="Animating"
+                 alt="Animating on / off">
+        </td>
+        <td>
+            <p>Turning the animation window show on or off.</p>
+        </td>
+    </tr>
+</table>
+<br>
+
+
+<!-- Animointi -->
+
+
+<table cellspacing="10">
+    <tr>
+
+        <td>
+            <img src="img/0.jpg" title=""
+                 alt="">
+        </td>
+        <td>
+            <h3>3.8 Animation</h3>
+        </td>
+    </tr>
+</table>
+
+
+<table>
+    <tr>
+        <td>
+            <img src="img/Animate.jpg" title="The animation window"
+                 alt="Picture of the animation window">
+        </td>
+
+        <td valign=top>
+            <ul>
+                <li> Animator shows how machine language is executed in the processor.</li>
+                <li> At the top of the screen is the symbolic form of the command shown after machine language form of
+                    the command has been processed in the IR.
+                </li>
+                <li> At the bottom are shown comments concerning the current phase of execution..</li>
+                <li> Red ball on the bus animates both the control and data flow.</li>
+                <li> SVC-commands are not animated.</li>
+                <li> When reading from the device, MAR shows the whole command, not the memory address; this differs
+                    little bit from real machines.
+                </li>
+            </ul>
+        </td>
+
+    </tr>
+</table>
+<br>
+
+
+<!-- STDIN, STDOUT -->
+
+
+<table>
+    <tr>
+        <td>
+            <img src="img/0.jpg" title=""
+                 alt="">
+        </td>
+        <td>
+            <h3>3.9 Selecting the STDIN and STDOUT files</h3>
+        </td>
+    </tr>
+</table>
+
+
+<table>
+    <tr>
+        <td>
+            <img src="img/Setstd.jpg" title="Selecting the STDIN and STDOUT files"
+                 alt="Selecting the STDIN and STDOUT files">
+        </td>
+        <td valign=top>
+            <ul>
+                <li> Default STDIN and STDOUT are files 'stdin' ja 'stdout' in the user's working directory.</li>
+                <li> Default files can be defined from the menu <b>Options --> Configure file system</b>.</li>
+                <li> It is possible to define files in the source code using <a href=#stdindef>fake command def</a>.
+                </li>
+                <li> More information about defining default files you can found from <a href="#settings_files">settings
+                    files</a>.
+                </li>
+
+            </ul>
+
+        </td>
+    </tr>
+</table>
+<br>
+
+
+<!-- MUISTIN TYHJENTÄMINEN -->
+
+
+<table cellspacing="10">
+    <tr>
+        <td>
+            <img src="img/0.jpg" title=""
+                 alt="">
+        </td>
+        <td>
+            <h3> 3.10 Erasing the memory</h3>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+
+        <td>
+            <img src="img/Erasememory.jpg" title="Erase memory"
+                 alt="An illustration on how to select File --> Erase memory from the
   menu">
-  </td>
-  <td valign="top">
-  <p> The titokone memory can be emptied by selecting File --> Erase
-  memory from the menu. Besides erasing the memory, it can in practice
-  be used to empty the source code view. If the memory is emptied
-  during compilation or running, the action will be aborted and the 
-  <a href="Openview.html">opening view</a>, with registers, symbol
-  table and code view have been emptied. Memory can be erased using the shortcut key CTRL-E.</p>
-  <p>Unless the memory is erased or its size is changed, the remnants
-  of old programs can be seen in the memory. The symbolic
-  representations of those lines are hidden for clarity. If a program does not
-  store something in a register or a memory slot before reading from
-  there, the result may well be something different from 0.</p>
+        </td>
+        <td valign="top">
+            <p> The titokone memory can be emptied by selecting File --> Erase
+                memory from the menu. Besides erasing the memory, it can in practice
+                be used to empty the source code view. If the memory is emptied
+                during compilation or running, the action will be aborted and the
+                <a href="Openview.html">opening view</a>, with registers, symbol
+                table and code view have been emptied. Memory can be erased using the shortcut key CTRL-E.</p>
 
-  </td>
-  
-  </tr>
-  </table>
-  <br>
-  
-  <table>     
-  <tr>
-  <td>  
-  <img src="img/0.jpg" title="" 
-  alt="">
-  </td>
-  <td> 
-  <h3>3.11 Changing the memory size</h3>
-  </td>
-  </tr>
-  </table>
-   
-  
-  <table>
-  <tr>
-  <td>
-  <img src="img/Memory.jpg" title="Change memory size" 
-  alt="Change memory size -menu">
-  </td>
-  <td valign="top">
-  <p> You can change the Titokone memory size by selecting <b>Options
-  --> Set memory size</b> from the menu. There are 8 different memory
-  sizes, from 512 to 65536 rows. When the new memory size is set, the
-  code view is emptied and the and the 
-  <a href="Openview.html">opening view</a> is shown.</p>
-  </p>
-  <p>For a memory size larger than 32768 lines, the end lines have
-  addresses larger than the constant part of a command can hold (its
-  maximum value is 32768). This means that the lines cannot be
-  referenced directly from a single line of code, but you can use
-  other methods, like the following bit addressing 32768+500 illustrates:</p>
+            <p>Unless the memory is erased or its size is changed, the remnants
+                of old programs can be seen in the memory. The symbolic
+                representations of those lines are hidden for clarity. If a program does not
+                store something in a register or a memory slot before reading from
+                there, the result may well be something different from 0.</p>
+
+        </td>
+
+    </tr>
+</table>
+<br>
+
+<table>
+    <tr>
+        <td>
+            <img src="img/0.jpg" title=""
+                 alt="">
+        </td>
+        <td>
+            <h3>3.11 Changing the memory size</h3>
+        </td>
+    </tr>
+</table>
+
+
+<table>
+    <tr>
+        <td>
+            <img src="img/Memory.jpg" title="Change memory size"
+                 alt="Change memory size -menu">
+        </td>
+        <td valign="top">
+            <p> You can change the Titokone memory size by selecting <b>Options
+                --> Set memory size</b> from the menu. There are 8 different memory
+                sizes, from 512 to 65536 rows. When the new memory size is set, the
+                code view is emptied and the and the
+                <a href="Openview.html">opening view</a> is shown.</p>
+            </p>
+            <p>For a memory size larger than 32768 lines, the end lines have
+                addresses larger than the constant part of a command can hold (its
+                maximum value is 32768). This means that the lines cannot be
+                referenced directly from a single line of code, but you can use
+                other methods, like the following bit addressing 32768+500 illustrates:</p>
 <pre>
    LOAD R1, =32768 ; Load the maximum constant into a register
    LOAD R2, 500(R1) ; Load the contents of the line 32768+500 to R2.
-</pre> 
-  <p>You can also give the value in an EQU or a DC, as they have a
-  higher maximum value. The registers are all 32-bit, like the memory
-  slots, even if the
-  constant (or address) part of a command only fits 16 bits.</p>
-</td></tr>
-  </table>
-  <br>
-  
-  
-  
-  <!-- KIELEN VAIHTAMINEN -->
-  
-  
-  
-  
-  
-  <table>
-  <tr>
-  <td>  
-  <a name="changelanguage">
-  <img src="img/0.jpg" title="" 
-  alt="">
-  </a>
-  </td>
-  <td>
-  <h3>3.12 Changing the user interface language</h3>
-  </td>
-  </tr>
-  </table>
-  
-  <table>
-  <tr>
-  
-  <td>
-  <img src="img/Setlanguage.jpg" title="Setting the language" 
-  alt="Language settings -menu">
-  </td>
-  <td valign="top">
-  <p>You can change the language settings from the Titokone user
-  interface. Select the language from the menu <b>Options --> Set
-  language</b>. The languages included by default are Finnish and
-  English. You can change the language on the run, nearly independent
-  of other things going on in the user interface. If the user has
-  defined her own language file, she can either choose it from the
-  list or locate it in a separate file. Languages correctly added to
-  the language settings file are shown in the 'Set language' menu. You
-  can choose another language file by clicking on 'Select from a
-  file...'. If the language file is of the correct form, the language
-  is immediately changed. If a certain text's translation equivalent
-  is missing from the language file, the default language (English) is
-  used at its stead. For more information on adding a new language,
-  see <a href="#addlanguage">Adding support for a new language</a>
+</pre>
+            <p>You can also give the value in an EQU or a DC, as they have a
+                higher maximum value. The registers are all 32-bit, like the memory
+                slots, even if the
+                constant (or address) part of a command only fits 16 bits.</p>
+        </td>
+    </tr>
+</table>
+<br>
 
-  </p>
-  </td>
-  </tr>
-  </table>
-  <br>
+
+<!-- KIELEN VAIHTAMINEN -->
+
+
+<table>
+    <tr>
+        <td>
+            <a name="changelanguage">
+                <img src="img/0.jpg" title=""
+                     alt="">
+            </a>
+        </td>
+        <td>
+            <h3>3.12 Changing the user interface language</h3>
+        </td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+
+        <td>
+            <img src="img/Setlanguage.jpg" title="Setting the language"
+                 alt="Language settings -menu">
+        </td>
+        <td valign="top">
+            <p>You can change the language settings from the Titokone user
+                interface. Select the language from the menu <b>Options --> Set
+                    language</b>. The languages included by default are Finnish and
+                English. You can change the language on the run, nearly independent
+                of other things going on in the user interface. If the user has
+                defined her own language file, she can either choose it from the
+                list or locate it in a separate file. Languages correctly added to
+                the language settings file are shown in the 'Set language' menu. You
+                can choose another language file by clicking on 'Select from a
+                file...'. If the language file is of the correct form, the language
+                is immediately changed. If a certain text's translation equivalent
+                is missing from the language file, the default language (English) is
+                used at its stead. For more information on adding a new language,
+                see <a href="#addlanguage">Adding support for a new language</a>
+
+            </p>
+        </td>
+    </tr>
+</table>
+<br>
 
 
 <h2><a name="machinelanguage">4. The TTK-91 machine language</a></h2>
 <br>
-<h3>4.1  A summary of the TTK-91 commands</h3>
+
+<h3>4.1 A summary of the TTK-91 commands</h3>
 <br>
 
 <pre>
@@ -1059,7 +1059,7 @@ which point a cursor will appear on the line.</li>
 </pre>
 
 <p>
-In the symbolic machine language, the commands are of the form
+    In the symbolic machine language, the commands are of the form
 </p>
 
 <pre>LABEL OPER Rj,M ADDR(Ri)
@@ -1074,14 +1074,15 @@ where  OPER    the symbolic name of the command
        Ri      possible index register (register R0..R7)        
 </pre>
 <p>
-If some part of a command has no meaning, it can be left out. It is 
-possible to add a label (symbolic address) in front of a command. The 
-label should consist of the letters A-Ö, 0-9 and _, and contain at 
-least one non-numerical character. Only the first 8 characters are
-considered.
+    If some part of a command has no meaning, it can be left out. It is
+    possible to add a label (symbolic address) in front of a command. The
+    label should consist of the letters A-Ö, 0-9 and _, and contain at
+    least one non-numerical character. Only the first 8 characters are
+    considered.
 </p>
+
 <p>
-Almost all commands have the following forms available:
+    Almost all commands have the following forms available:
 </p>
 <pre>
    OPER Rj,ADDR        direct memory addressing
@@ -1093,7 +1094,7 @@ Almost all commands have the following forms available:
    OPER Rj,Ri          direct register addressing
 </pre>
 <p>
-There are exceptions:
+    There are exceptions:
 </p>
 <pre>
     STORE           The latter operand is always the target address;
@@ -1105,15 +1106,16 @@ There are exceptions:
                     ignored.               
     NOP             The operands are ignored.  
 </pre>
-    
+
 
 <br>
+
 <h3>
-		4.2 The symbolic commands of the TTK-91 machine language
+    4.2 The symbolic commands of the TTK-91 machine language
 </h3>
 
 <p>
-Data transfer commands:
+    Data transfer commands:
 </p>
 
 <pre>
@@ -1125,7 +1127,7 @@ OUT    Outputs the integer in the register Rj to the device given as
        the latter operand (eg. OUT R1,=CRT to print to screen).
 </pre>
 <p>
-Arithmetic and logical commands:
+    Arithmetic and logical commands:
 </p>
 
 <pre>
@@ -1158,7 +1160,7 @@ COMP   Compares the first operand with the second operand and stores
        G=greater. See eg. JLES.
 </pre>
 <p>
-Forking commands:
+    Forking commands:
 </p>
 
 <pre>
@@ -1185,13 +1187,13 @@ JNGRE  Jump if not greater     if L or E bit is set in SR
 </pre>
 
 <p>
-Stack commands:
+    Stack commands:
 </p>
 
 <p>
-The first operand of the command, the register Rj, points to the top
-of the stack, ie. the topmost item in it. Usually, the register SP
-(which is also R6) is used as the stack pointer.
+    The first operand of the command, the register Rj, points to the top
+    of the stack, ie. the topmost item in it. Usually, the register SP
+    (which is also R6) is used as the stack pointer.
 </p>
 
 <pre>
@@ -1213,7 +1215,7 @@ POPR   Pops values to the registers R6 (SP), R5, R4, R3, R2, R1 and
 </pre>
 
 <p>
-Subroutine commands:
+    Subroutine commands:
 </p>
 
 <pre>
@@ -1225,9 +1227,9 @@ EXIT   Returns from a procedure to the command following its call. The
        points to. The latter operand indicates the number of parameters
        passed to the subroutine in the call.
 </pre>
-      
-<p> 
-System calls:  
+
+<p>
+    System calls:
 </p>
 
 <pre>
@@ -1253,15 +1255,16 @@ SVC    Supervisor call. Calls a service routine in the operating system.
 </pre>
 
 <p>
-Other:
+    Other:
 </p>
 
 <pre>
 NOP    No operation. This command does nothing.
 </pre>
 <br>
+
 <h3>
-		4.3 The operation codes of the TTK-91 commands
+    4.3 The operation codes of the TTK-91 commands
 </h3>
 
 <pre>
@@ -1314,13 +1317,14 @@ NOP    No operation. This command does nothing.
    SVC       0111 0000   112        70
 </pre>
 <br>
+
 <h3>
-		4.4 Predefined symbols of the TTK-91 machine   
+    4.4 Predefined symbols of the TTK-91 machine
 </h3>
-		
+
 <p>
-These symbols can be used without explicitly defining them in a 
-TTK-91 program.
+    These symbols can be used without explicitly defining them in a
+    TTK-91 program.
 </p>
 
 <pre>
@@ -1338,65 +1342,66 @@ DATE            15
 </pre>
 
 <br>
+
 <h3>
-		4.5 Instructions to the compiler (fake commands)
+    4.5 Instructions to the compiler (fake commands)
 </h3>
 
 <p>
-The compiler instructions direct the program translating the symbolic
-machine language to binary. They are NOT actual symbolic commands.
+    The compiler instructions direct the program translating the symbolic
+    machine language to binary. They are NOT actual symbolic commands.
 </p>
 <pre>
 name EQU value
 </pre>
 <p>
-The alias command EQU defines a symbolic name for an integer
-value. The symbol name can be used in the ADDR field of a command, in
-which case it will be handled as 'value' written in its stead
-would be.
+    The alias command EQU defines a symbolic name for an integer
+    value. The symbol name can be used in the ADDR field of a command, in
+    which case it will be handled as 'value' written in its stead
+    would be.
 </p>
 <pre>
 name DC value
 </pre>
 <p>
-The memory allocation command DC (data constant) allocates one word of
-memory for a constant, aliases 'name' with the constant's memory
-address and stores 'value' in the allocated address in the
-memory. 'Name' can then be used in a command's ADDR field as a
-memory address.
+    The memory allocation command DC (data constant) allocates one word of
+    memory for a constant, aliases 'name' with the constant's memory
+    address and stores 'value' in the allocated address in the
+    memory. 'Name' can then be used in a command's ADDR field as a
+    memory address.
 </p>
 
 <pre>
 name DS size
 </pre>
 <p>
-The memory allocation command DS (data segment) allocates an area of
-memory, sized 'size' words. It aliases 'name' with the start address
-of the memory area. 'Name' can then be used in a command's ADDR field
-as a memory address. This instruction is used for allocating space for
-global variables.
+    The memory allocation command DS (data segment) allocates an area of
+    memory, sized 'size' words. It aliases 'name' with the start address
+    of the memory area. 'Name' can then be used in a command's ADDR field
+    as a memory address. This instruction is used for allocating space for
+    global variables.
 </p>
 
 <pre>
 option DEF string
 </pre>
 <a name="stdindef">
-<p>
-This special instruction changes options for simulating the file
-system of a TTK-91 machine. 'String' should be an absolute directory 
-path.
-</p>
+    <p>
+        This special instruction changes options for simulating the file
+        system of a TTK-91 machine. 'String' should be an absolute directory
+        path.
+    </p>
 </a>
 
 <p>
-Examples: 
+    Examples:
 </p>
 <pre>
   STDIN DEF /home/myuser/ttk91/stdin
   STDOUT DEF C:\mydir\stdout
 </pre>
 <p>
-Available options are:
+    Available options are:
 </p>
 
 <pre>
@@ -1408,30 +1413,32 @@ Available options are:
 </pre>
 
 <p>
-The default files for the two first options are stdin and stdout in
-the user's current working directory.
+    The default files for the two first options are stdin and stdout in
+    the user's current working directory.
 </p>
+
 <p>
-If this summary of the Titokone commands was not sufficient for your
-thirst of knowledge, you can find more information about the subject 
-from the course homepage of <a
-href="http://www.cs.helsinki.fi/u/kerola/tito/">Computer organization</a>.
+    If this summary of the Titokone commands was not sufficient for your
+    thirst of knowledge, you can find more information about the subject
+    from the course homepage of <a
+        href="http://www.cs.helsinki.fi/u/kerola/tito/">Computer organization</a>.
 </p>
 <br>
 
 <h2><a name="extension">5. Fine-tuning and extending the system</a></h2>
 
-  <h3><a name="settings_files">5.1 Settings files</a></h3>
+<h3><a name="settings_files">5.1 Settings files</a></h3>
 
 <p>
-When the user changes the settings, Titokone stores the changes in the
-user's home directory, in a file called titokone.cfg. The settings
-file is overwritten after every change in the settings.
+    When the user changes the settings, Titokone stores the changes in the
+    user's home directory, in a file called titokone.cfg. The settings
+    file is overwritten after every change in the settings.
 </p>
+
 <p>
-If Titokone has been opened from its jar package, the system default
-settings can be found in the file 
-fi/helsinki/cs/titokone/etc/settings.cfg. The file contents are as follows:
+    If Titokone has been opened from its jar package, the system default
+    settings can be found in the file
+    fi/helsinki/cs/titokone/etc/settings.cfg. The file contents are as follows:
 </p>
 <pre>
    # Default settings. Running mode: commented (+1), one row at a time (+2),
@@ -1452,74 +1459,74 @@ fi/helsinki/cs/titokone/etc/settings.cfg. The file contents are as follows:
    Memory size = 9
 </pre>
 <p>
-Changing the settings file by hand is not usually necessary. On the
-other hand, the STDIN and STDOUT file paths are always stored in the
-file as absolute paths, when they have been selected from the Titokone
-user interface. If you wish to express the path in relation to the
-working directory, you can do so by setting "Stdin path" or "Stdout
-path" values to 'relative', like they are above.
+    Changing the settings file by hand is not usually necessary. On the
+    other hand, the STDIN and STDOUT file paths are always stored in the
+    file as absolute paths, when they have been selected from the Titokone
+    user interface. If you wish to express the path in relation to the
+    working directory, you can do so by setting "Stdin path" or "Stdout
+    path" values to 'relative', like they are above.
 </p>
+
 <p>
-In addition, also inside the jar package in fi/helsinki/cs/titokone/etc/,
-there is the language settings file languages.cfg. This file contains
-a list of the language files which have been added to be a part of the
-system. They are listed in the language choosing file based on the
-language's name given here. The language files themselves are located
-in the fi/helsinki/cs/titokone/resources/ directory. They are called
-Translations_xx.class and are part of the package
-fi.helsinki.cs.titokone.resources. The language file consists of pairs of
-the form "the name of the language in the menu" = "xx". The value "xx"
-should be a two-letter identifier for the language (it is passed to
-the constructor of java.util.Locale). The contents of the default
-language settings file are:
+    In addition, also inside the jar package in fi/helsinki/cs/titokone/etc/,
+    there is the language settings file languages.cfg. This file contains
+    a list of the language files which have been added to be a part of the
+    system. They are listed in the language choosing file based on the
+    language's name given here. The language files themselves are located
+    in the fi/helsinki/cs/titokone/resources/ directory. They are called
+    Translations_xx.class and are part of the package
+    fi.helsinki.cs.titokone.resources. The language file consists of pairs of
+    the form "the name of the language in the menu" = "xx". The value "xx"
+    should be a two-letter identifier for the language (it is passed to
+    the constructor of java.util.Locale). The contents of the default
+    language settings file are:
 </p>
 <pre>
    Suomi = fi
    English = en
 </pre>
 
- 
-  
-  
-  
-  <h3><a name="addlanguage">5.2 Adding support for a new language</a></h3>
+
+<h3><a name="addlanguage">5.2 Adding support for a new language</a></h3>
+
 <p> Adding a new natural language support to Titokone is done by
-giving translated equivalents to the words and phrases in the default
-language, which is English. A new Java file is written and compiled
-for the new language, and it is opened via the Titokone user
-interface. Writing a new language file is simplest done by using an
-existing translation file as an example. First open a text editor on
-your machine and fetch eg. the file Translations_fi.java from the
-directory fi/helsinki/cs/titokone/resources (included in the titokone.jar
-package). You will see a class which uses the Java ResourceBundle
-utilities and consists of a two-dimensional Object array and a method
-which returns it. The lines in the array look as follows:</p>
+    giving translated equivalents to the words and phrases in the default
+    language, which is English. A new Java file is written and compiled
+    for the new language, and it is opened via the Titokone user
+    interface. Writing a new language file is simplest done by using an
+    existing translation file as an example. First open a text editor on
+    your machine and fetch eg. the file Translations_fi.java from the
+    directory fi/helsinki/cs/titokone/resources (included in the titokone.jar
+    package). You will see a class which uses the Java ResourceBundle
+    utilities and consists of a two-dimensional Object array and a method
+    which returns it. The lines in the array look as follows:</p>
 
 <pre>
    { "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
    { "Indirect memory addressing mode.", "Epäsuora muistiosoitus."},
    { "1: Fetch indexing value from memory slot {0}.", "1: Nouda indeksointiarvo muistipaikasta {0}."}, 
 </pre>
-<p> 
-Each line consists of a pair of quote-delimited strings inside
-{}-brackets; the first string is the default language's key value and the
-second its translation equivalent. You translate the original string
-by replacing the latter (here Finnish) text. Usually you can determine
-the meaning of the sentence somehow from itself. To help translators
-with the more vague phrases, we have pointed out in comments which
-class file the translation refers to. If it turns out to be difficult
-to determine the meaning of a translateable string, you can find the
-context from the source code of the class, which may eg. help
-determine the meaning of the variable ({i}) placed in the translation.
-</p>
 <p>
-In the example translations below, there is a special sequence of
-characters, '{0}'. It will be replaced with a variable, which is
-attached to the message passing up to the user interface. In the
-example, the {0} will be replaced with the number of the memory
-slot. The translation does not have to place the variable in the same
-place as the original string; you can move the '{0}' around in the
-sentence. For example:
+    Each line consists of a pair of quote-delimited strings inside
+    {}-brackets; the first string is the default language's key value and the
+    second its translation equivalent. You translate the original string
+    by replacing the latter (here Finnish) text. Usually you can determine
+    the meaning of the sentence somehow from itself. To help translators
+    with the more vague phrases, we have pointed out in comments which
+    class file the translation refers to. If it turns out to be difficult
+    to determine the meaning of a translateable string, you can find the
+    context from the source code of the class, which may eg. help
+    determine the meaning of the variable ({i}) placed in the translation.
+</p>
+
+<p>
+    In the example translations below, there is a special sequence of
+    characters, '{0}'. It will be replaced with a variable, which is
+    attached to the message passing up to the user interface. In the
+    example, the {0} will be replaced with the number of the memory
+    slot. The translation does not have to place the variable in the same
+    place as the original string; you can move the '{0}' around in the
+    sentence. For example:
 <pre>
 //Animator
 { "Fetch second operand from memory slot {0}.", "Nouda jälkimmäinen operandi muistipaikasta {0}."},
@@ -1529,185 +1536,206 @@ sentence. For example:
 </pre>
 <p>A new language file is created as follows:</p>
 <ol>
-<li> Open Translations_fi.java.</li>
-<li> Save the file by a name you most prefer, but keep the .java
-ending.</li>
-<li> Write the translation equivalents over the Finnish texts.</li>
-<li> Place the variables {0}...{n} in sensible positions in the sentence</li>
-<li> Remove line 4 from the file, which says 'package fi.helsinki.cs.titokone.resources;'.</li>
-<li> Change the class name to correspond with the filename you stored
-the file as.</li>
-<li> Compile the file, eg. by using the javac command</li>
-<li> Start Titokone </li>
-<li><a href="#changelanguage">Change the language</a> </li>
+    <li> Open Translations_fi.java.</li>
+    <li> Save the file by a name you most prefer, but keep the .java
+        ending.
+    </li>
+    <li> Write the translation equivalents over the Finnish texts.</li>
+    <li> Place the variables {0}...{n} in sensible positions in the sentence</li>
+    <li> Remove line 4 from the file, which says 'package fi.helsinki.cs.titokone.resources;'.</li>
+    <li> Change the class name to correspond with the filename you stored
+        the file as.
+    </li>
+    <li> Compile the file, eg. by using the javac command</li>
+    <li> Start Titokone</li>
+    <li><a href="#changelanguage">Change the language</a></li>
 </ol>
 <p>
-You can also add the new language as a permanent part of the system,
-which relieves you from needing to find the translation file again
-every time. In point 2, store the file in the directory
-fi/helsinki/cs/titokone/resources with the other translation files. Change
-the class's name, on the line
+    You can also add the new language as a permanent part of the system,
+    which relieves you from needing to find the translation file again
+    every time. In point 2, store the file in the directory
+    fi/helsinki/cs/titokone/resources with the other translation files. Change
+    the class's name, on the line
 </p>
 <pre>
 public class Translations_fi {
 </pre>
 <p>to be Translations_xx according to your translated language ('xx'),
-and store it in a file called Translations_xx.java. Replace 
-'xx' with the ISO-code of your target language (those versions of ISO
-639 that Java's Locale supports). For example, if you translated the
-program into Norwegian, the code would be 'no', and the corresponding
-code for German would be 'de'. <b>Do not remove (like point 4 advices)
-the package definition line</b>; it is needed for this.
+    and store it in a file called Translations_xx.java. Replace
+    'xx' with the ISO-code of your target language (those versions of ISO
+    639 that Java's Locale supports). For example, if you translated the
+    program into Norwegian, the code would be 'no', and the corresponding
+    code for German would be 'de'. <b>Do not remove (like point 4 advices)
+        the package definition line</b>; it is needed for this.
 </p>
+
 <p>
-When your translation is finished and it has a compiled .class file,
-install it by editing the language setup file
-fi/helsinki/cs/titokone/etc/languages.cfg and add a line containing "what
-the language should be called in the menu" = "xx", where you again
-replace xx with your language code. For example, "Deutsch = de". See
-also <a href="#settings_files">5.1, Settings files</a>. Now, once you
-start Titokone the next time, the new language will be included as an
-option in the menu.
+    When your translation is finished and it has a compiled .class file,
+    install it by editing the language setup file
+    fi/helsinki/cs/titokone/etc/languages.cfg and add a line containing "what
+    the language should be called in the menu" = "xx", where you again
+    replace xx with your language code. For example, "Deutsch = de". See
+    also <a href="#settings_files">5.1, Settings files</a>. Now, once you
+    start Titokone the next time, the new language will be included as an
+    option in the menu.
 </p>
 
 <br>
 
 <h2><a name="troubleshooting">6. Troubleshooting</a></h2>
 
-  <ol>
-  <li><a href="#thread">The terminal window shows weird error messages</a></li>
-  <li><a href="#stdinerror">STDIN file cannot be read, but I didn't
-  even try</a></li>
-  <li><a href="#comptwo">The compiler won't emphasize the faulty line</a></li>
-  <li><a href="#selfcode">Self-changing code doesn't work?</a></li>
-  <li><a href="#chosen">How can I change my source after a failed compilation?</a></li>
-  <li><a href="#paranoid">An overwritten source code file?</a></li>
-  <li><a href="#variable">Invalid opcode equ?</a></li>
-  <li><a href="#animazion">Animation and row-wise execution oddity</a></li>
-  <li><a href="#spfp">Where are SP and FP in the animator?</a></li>
-  <li><a href="#R0"> The register R0 is giving just 0 </a></li>
-  <li><a href="#help">I have another problem...</a></li>
-  </ol>
+<ol>
+    <li><a href="#thread">The terminal window shows weird error messages</a></li>
+    <li><a href="#stdinerror">STDIN file cannot be read, but I didn't
+        even try</a></li>
+    <li><a href="#comptwo">The compiler won't emphasize the faulty line</a></li>
+    <li><a href="#selfcode">Self-changing code doesn't work?</a></li>
+    <li><a href="#chosen">How can I change my source after a failed compilation?</a></li>
+    <li><a href="#paranoid">An overwritten source code file?</a></li>
+    <li><a href="#variable">Invalid opcode equ?</a></li>
+    <li><a href="#animazion">Animation and row-wise execution oddity</a></li>
+    <li><a href="#spfp">Where are SP and FP in the animator?</a></li>
+    <li><a href="#R0"> The register R0 is giving just 0 </a></li>
+    <li><a href="#help">I have another problem...</a></li>
+</ol>
 
-  <br>
-  <a name="thread"><b>I see odd Java error messages in the terminal I
-  started Titokone from. The program itself does not seem to mind,
-  though. What is going on?</b></a>
-   <div>
-   The programs are mainly caused by the wrong positioning of the
-  Moon. A partial reason are problems with synchronization, which we
-  might have avoided if we had paid more attention on the Concurrent
-  systems course. Some of the errors are caused by probable bugs (or
-  very odd features) of Swing, a graphics library in Java, which we
-  cannot fix. Sorry about those, just ignore the messages for now.</div>
+<br>
+<a name="thread"><b>I see odd Java error messages in the terminal I
+    started Titokone from. The program itself does not seem to mind,
+    though. What is going on?</b></a>
 
-  <br>
-  <a name="stdinerror"><b>I get an error message about not being able
-  to read the STDIN file, even though the program I just loaded
-  doesn't even try to read it. What's wrong?</b></a>
-  <div>
-  Titokone is just notifying you in advance, that if you try to read
-  the STDIN device with a TTK-91 program, the read will fail unless
-  something is done about this. There is a specification of the error
-  message given by the Java I/O system in the end of the error
-  message. If your application should need the STDIN device, fix what
-  is wrong with reading the file and reload the application. See also
-  <a href="#loading">3.5, Loading a TTK-91 program</a>.</div>
+<div>
+    The programs are mainly caused by the wrong positioning of the
+    Moon. A partial reason are problems with synchronization, which we
+    might have avoided if we had paid more attention on the Concurrent
+    systems course. Some of the errors are caused by probable bugs (or
+    very odd features) of Swing, a graphics library in Java, which we
+    cannot fix. Sorry about those, just ignore the messages for now.
+</div>
 
-  <br>  
-   <a name="comptwo"><b>My program had an incorrect line
-   of code; I tried to use a variable which was undefined. The error
-   message showed up right, but the line is not emphasised
-   correctly. What's up?</b></a>
-  
-  <div>In the second phase, when object code is generated, the
-  line containing the error is not emphasized if it is the first
-  line. Sorry about the bug.
-  </div>
- 
-  <br>
-  <a name="selfcode"><b>I made a wonderful program, which contains
-  self-modifying code. The first time I ran the program, the changed
-  code remains on the code area. This isn't how the real machines
-  work, is it?</b></a>
- <div>Unfortunately Titokone 1.0 has a bug, which causes the code area
-  to not be redrawn during the reload of the application after a
-  finished run. This means that self-changed code is shown wrong,
-  even though it is loaded correctly on the processor.</div>
- 
- 
- <br>
-  <a name="chosen"><b>The compilation ended in an error on the first
-  round, but I cannot edit the code! The row that caused the error
-  remains selected.</b></a>
+<br>
+<a name="stdinerror"><b>I get an error message about not being able
+    to read the STDIN file, even though the program I just loaded
+    doesn't even try to read it. What's wrong?</b></a>
 
-  <div>After an error, Titokone shows the situation which lead into
-  the error. When you press the 'continue' button or the enter key,
-  you will move from compilation mode back to the source code view, in
-  which you can edit the code.</div>
+<div>
+    Titokone is just notifying you in advance, that if you try to read
+    the STDIN device with a TTK-91 program, the read will fail unless
+    something is done about this. There is a specification of the error
+    message given by the Java I/O system in the end of the error
+    message. If your application should need the STDIN device, fix what
+    is wrong with reading the file and reload the application. See also
+    <a href="#loading">3.5, Loading a TTK-91 program</a>.
+</div>
 
-  <br>
+<br>
+<a name="comptwo"><b>My program had an incorrect line
+    of code; I tried to use a variable which was undefined. The error
+    message showed up right, but the line is not emphasised
+    correctly. What's up?</b></a>
 
-  <a name="paranoid"><b>I opened several source code files in
-  Titokone, modified a few of them and now one of the files is
-  overwritten by another! Am I just paranoid?</b></a>
-   <div>No, you are not imagining it. It is caused by a nasty bug,
-   which we did not manage to locate in Titokone version 1.0. You can
-   avoid the problem by editing the files in other programs (larger
-   edits must be done elsewhere in any case), or by not opening
-   multiple files with Titokone. We are very sorry about the
-   problem. You can show this part of the manual to your excercise
-   checker if he will not believe you when you tell him that "Titokone
-   ate my homework!" (This explanation, however, probably only works once.)
-   </div>
+<div>In the second phase, when object code is generated, the
+    line containing the error is not emphasized if it is the first
+    line. Sorry about the bug.
+</div>
+
+<br>
+<a name="selfcode"><b>I made a wonderful program, which contains
+    self-modifying code. The first time I ran the program, the changed
+    code remains on the code area. This isn't how the real machines
+    work, is it?</b></a>
+
+<div>Unfortunately Titokone 1.0 has a bug, which causes the code area
+    to not be redrawn during the reload of the application after a
+    finished run. This means that self-changed code is shown wrong,
+    even though it is loaded correctly on the processor.
+</div>
+
+
+<br>
+<a name="chosen"><b>The compilation ended in an error on the first
+    round, but I cannot edit the code! The row that caused the error
+    remains selected.</b></a>
+
+<div>After an error, Titokone shows the situation which lead into
+    the error. When you press the 'continue' button or the enter key,
+    you will move from compilation mode back to the source code view, in
+    which you can edit the code.
+</div>
+
+<br>
+
+<a name="paranoid"><b>I opened several source code files in
+    Titokone, modified a few of them and now one of the files is
+    overwritten by another! Am I just paranoid?</b></a>
+
+<div>No, you are not imagining it. It is caused by a nasty bug,
+    which we did not manage to locate in Titokone version 1.0. You can
+    avoid the problem by editing the files in other programs (larger
+    edits must be done elsewhere in any case), or by not opening
+    multiple files with Titokone. We are very sorry about the
+    problem. You can show this part of the manual to your excercise
+    checker if he will not believe you when you tell him that "Titokone
+    ate my homework!" (This explanation, however, probably only works once.)
+</div>
 
 
 <br>
 
 <a name="variable"><b>I am getting the compilation error "invalid
-opcode dc" (or ds or equ) when I use - correctly, as far as I see - 
-"variable dc 333333333333333".</b></a>
+    opcode dc" (or ds or equ) when I use - correctly, as far as I see -
+    "variable dc 333333333333333".</b></a>
+
 <div>When the latter number is large enough, the compiler fails to
-notice a valid dc command with a too large number (the maximum number
-for DC is 2^31-1, or 2147483647), but it tries to interpret the
-command in the form "label command parameters", which causes the odd
-error message. Clarifying the message is on the list of improvements
-to make for the second version of Titokone.</div>
+    notice a valid dc command with a too large number (the maximum number
+    for DC is 2^31-1, or 2147483647), but it tries to interpret the
+    command in the form "label command parameters", which causes the odd
+    error message. Clarifying the message is on the list of improvements
+    to make for the second version of Titokone.
+</div>
 
 <br><a name="animazion"><b> When I turn on the animation setting, the
-row-wise execution setting is turned on too. I can't turn off row-wise
-execution without stopping the animation as well. What's wrong?</b></a>
+    row-wise execution setting is turned on too. I can't turn off row-wise
+    execution without stopping the animation as well. What's wrong?</b></a>
+
 <div>To make following the animation easier and to ease
-synchronization problems, we decided to conduct the animation one
-command ("row") at a time. This means that row-wise execution is
-always required to be on together with animation.</div>
+    synchronization problems, we decided to conduct the animation one
+    command ("row") at a time. This means that row-wise execution is
+    always required to be on together with animation.
+</div>
 
 <br>
 
 <b><a name="R0">The register R0 doesn't work? I loaded 14 into R0, now
-I am trying to read it, but all I get is zero. Is this caused by the
-2's complement?</a></b>
+    I am trying to read it, but all I get is zero. Is this caused by the
+    2's complement?</a></b>
+
 <div>According to the TTK-91 specification, the register R0 has a
-special meaning. When it occurs as a second parameter, 0 is always
-returned, even if the register itself contains something else. We are
-sorry for the possible confusion.</div>
+    special meaning. When it occurs as a second parameter, 0 is always
+    returned, even if the register itself contains something else. We are
+    sorry for the possible confusion.
+</div>
 <br>
 
 <a name="spfp"><b>The animation window has no SP or FP!</b></a>
+
 <div>The SP register is also known as R6, and FP as R7. They are
     included the animation window by this name; this can be adjusted
-    from the translation if necessary.</div>
+    from the translation if necessary.
+</div>
 <br>
 
 <b><a name="help">Further problems or ideas?</a></b>
+
 <div>If the problem you have observed was not described here, please
-notify eg. a lecturer of the Computer organization (Tietokoneen
-toiminta) course, and ask them to pass the message on. 
-Bug reports are also welcome.</div>
+    notify eg. a lecturer of the Computer organization (Tietokoneen
+    toiminta) course, and ask them to pass the message on.
+    Bug reports are also welcome.
+</div>
 
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
 
-  
+
 </body>
 </html>

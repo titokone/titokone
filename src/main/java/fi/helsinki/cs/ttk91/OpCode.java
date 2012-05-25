@@ -1,10 +1,9 @@
 package fi.helsinki.cs.ttk91;
 
 /**
- *  enum containing the opcodes. 
+ * enum containing the opcodes.
  */
-public enum OpCode
-{
+public enum OpCode {
     Invalid(-1),
     NOP(0),
     STORE(1),
@@ -47,22 +46,22 @@ public enum OpCode
     POPR(54),
     //--
     SVC(112);
-    
+
     private final int code;
-    private OpCode(int code)
-    {
-        this.code=code;        
+
+    private OpCode(int code) {
+        this.code = code;
     }
-    public int code()
-    {
+
+    public int code() {
         return code;
     }
-    public static OpCode getOpCode(int code)
-    {
-        for(OpCode o:OpCode.values())
-        {
-            if(code==o.code())
+
+    public static OpCode getOpCode(int code) {
+        for (OpCode o : OpCode.values()) {
+            if (code == o.code()) {
                 return o;
+            }
         }
         return OpCode.Invalid;
     }

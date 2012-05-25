@@ -7,18 +7,20 @@ public class __LokiHandler extends Handler {
     private boolean hushed = false;
 
     public __LokiHandler(__LoguserTestCase listener) {
-	this.listener = listener;
+        this.listener = listener;
     }
 
-    public void flush() {}
+    public void flush() {
+    }
 
-    public void close() {}
+    public void close() {
+    }
 
     public void publish(LogRecord record) {
-	listener.logged(record);
+        listener.logged(record);
     }
 
     public void hush() {
-	hushed = true;
+        hushed = true;
     }
 }

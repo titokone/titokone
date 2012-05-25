@@ -1,10 +1,10 @@
 package fi.helsinki.cs.titokone;
 
+import fi.helsinki.cs.ttk91.TTK91Memory;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-
-import fi.helsinki.cs.ttk91.TTK91Memory;
 
 // Display class was added by Toni Ruottu 8.4.2012
 
@@ -16,26 +16,25 @@ public class Display extends JPanel implements Runnable {
     boolean updates = false;
     //BufferedImage backBuffer;
     BufferedImage compatible;
-    protected int baseAddress=DEFAULT_START;
-    protected int lastX=0;
-    protected int lastY=0;    
+    protected int baseAddress = DEFAULT_START;
+    protected int lastX = 0;
+    protected int lastY = 0;
     /* Display methods */
 
     public Display() {
     }
-    protected void checkBuffers()
-    {
-        if(lastX!=getWidth()||lastY!=getHeight())
-        {
-            Graphics2D g=(Graphics2D)getGraphics();
-            GraphicsConfiguration gc=g.getDeviceConfiguration();
-            lastX=getWidth();
-            lastY=getHeight();
+
+    protected void checkBuffers() {
+        if (lastX != getWidth() || lastY != getHeight()) {
+            Graphics2D g = (Graphics2D) getGraphics();
+            GraphicsConfiguration gc = g.getDeviceConfiguration();
+            lastX = getWidth();
+            lastY = getHeight();
             /*backBuffer=new BufferedImage(
                             lastX, 
                             lastY, 
                             BufferedImage.TYPE_INT_RGB);*/
-            compatible=gc.createCompatibleImage(lastX,lastY);
+            compatible = gc.createCompatibleImage(lastX, lastY);
             clearBuffer();
         }
     }
@@ -47,16 +46,17 @@ public class Display extends JPanel implements Runnable {
     public void setUpdates(boolean updates) {
         this.updates = updates;
     }
-    public void setBaseAddress(int base)
-    {
-        if(base>0)
-            this.baseAddress=base;
+
+    public void setBaseAddress(int base) {
+        if (base > 0) {
+            this.baseAddress = base;
+        }
     }
 
     /* Runnable methods */
 
     public void run() {
-        while(true) {
+        while (true) {
             if (updates) {
                 updateBuffer();
             }
@@ -67,22 +67,21 @@ public class Display extends JPanel implements Runnable {
             }
         }
     }
- 
-    /* Canvas methods */   
+
+    /* Canvas methods */
 
     public void update(Graphics g) {
         g.drawImage(compatible, 0, 0, Color.red, null);
     }
 
-    public void paint(Graphics g)
-    {
+    public void paint(Graphics g) {
         update(g);
     }
 
     /* private helpers */
 
     private void updateBuffer() {
-        JPanel canvas = this;        
+        JPanel canvas = this;
         int canvasWidth = canvas.getWidth();
         int canvasHeight = canvas.getHeight();
         int canvasArea = canvasWidth * canvasHeight;
@@ -90,57 +89,53 @@ public class Display extends JPanel implements Runnable {
             return;
         }
         /*  make sure we have something valid to draw on*/
-        checkBuffers();        
+        checkBuffers();
         drawMode();//draw using current mode..            
-        
+
         repaint();
     }
+
     /**
-     *  see which mode we are in and use it to draw 
+     * see which mode we are in and use it to draw
      */
-    protected void drawMode()
-    {
-        Graphics2D g=(Graphics2D)compatible.getGraphics();
-        if(mem!=null)
-        {
+    protected void drawMode() {
+        Graphics2D g = (Graphics2D) compatible.getGraphics();
+        if (mem != null) {
             draw12bit(g);
         }
     }
+
     /**
-     *  gray screen out
+     * gray screen out
      */
-    protected void clearBuffer()
-    {
-        Graphics2D g=(Graphics2D)compatible.getGraphics();
+    protected void clearBuffer() {
+        Graphics2D g = (Graphics2D) compatible.getGraphics();
         g.setColor(Color.GRAY);
-        g.fillRect(0,0,getWidth(),getHeight());
+        g.fillRect(0, 0, getWidth(), getHeight());
     }
+
     /**
-     *  12bit color mode
+     * 12bit color mode
      */
-    protected void draw12bit(Graphics2D g)
-    {
+    protected void draw12bit(Graphics2D g) {
         //xscale,yscale set so that we always hit full pixels
-        int xscale=roundUp(((double)lastY)/Y);
-        int yscale=roundUp(((double)lastX)/X);
-        for(int i=0;i<lastY;i++)
-        {
-            for(int j=0;j<lastX;j++)
-            {
-                int x=j/xscale;
-                int y=i/yscale;
-                
-                if(x<X&&y<Y)
-                {
-                    int color=mem.getValue(baseAddress+(y*X+x));
-                    compatible.setRGB(j,i,0xff000000|torgb8(color&0xfff));
+        int xscale = roundUp(((double) lastY) / Y);
+        int yscale = roundUp(((double) lastX) / X);
+        for (int i = 0; i < lastY; i++) {
+            for (int j = 0; j < lastX; j++) {
+                int x = j / xscale;
+                int y = i / yscale;
+
+                if (x < X && y < Y) {
+                    int color = mem.getValue(baseAddress + (y * X + x));
+                    compatible.setRGB(j, i, 0xff000000 | torgb8(color & 0xfff));
                 }
             }
         }
     }
-    protected int roundUp(double d)
-    {
-        return (int)(d+0.5);
+
+    protected int roundUp(double d) {
+        return (int) (d + 0.5);
     }
 
     static private int torgb8(int rgb4i) {
