@@ -1,5 +1,6 @@
 package fi.helsinki.cs.titokone;
 
+import fi.helsinki.cs.titokone.devices.DeviceNames;
 import java.util.HashMap;
 
 /** This class contains the information to translate a command in 
@@ -122,30 +123,18 @@ public class BinaryInterpreter extends Interpreter {
 
 	 
 	case 7:{//Register and device
-	    s+=" "+getFirstRegisterFromBinary(command);
-	    
-	    Integer device = new Integer(getAddressFromBinary(command));
-	    if(!getMemoryModeFromBinary(command).equals("=")) {
+        // FIXME: this should really allow any addressing mode and no restrictions on the constant value
+        s += " " + getFirstRegisterFromBinary(command);
+
+        int device = Integer.parseInt(getAddressFromBinary(command));
+        if(!getMemoryModeFromBinary(command).equals("=")) {
 	       return GARBLE;
 	    }
-	    if (device.intValue()==0){
-		s+=", =CRT";
-		return s;
-	    }
-	    if (device.intValue()==1){
-		s+=", =KBD";
-		return s;
-	    }
-	    if (device.intValue()==6){
-		s+=", =STDIN";
-		return s;
-	    }
-	    if (device.intValue()==7){
-		s+=", =STDOUT";
-		return s;
-	    }
 
-	    return GARBLE;
+        String devName = DeviceNames.lookupByValue(device);
+        if(devName != null)
+            return s + ", =" + devName.toUpperCase();
+        return GARBLE;
 	}
 	case 8:{ //Address with less fetches
 	    String mem = getMemoryModeFromBinary(command);
@@ -161,31 +150,16 @@ public class BinaryInterpreter extends Interpreter {
 	    return s;
 	}
 	case 9:{//SVC SP and operation
-	    s+=" "+getFirstRegisterFromBinary(command);
-	    s+=", =";
-	    Integer service = new Integer(getAddressFromBinary(command));
-	    if (service.intValue()==11){
-		s+="HALT";
-		return s;
-	    }
-	    if (service.intValue()==12){
-		s+="READ";
-		return s;
-	    }
-	    if (service.intValue()==13){
-		s+="WRITE";
-		return s;
-	    }
-	    if (service.intValue()==14){
-		s+="TIME";
-		return s;
-	    }
-	    if (service.intValue()==15){
-		s+="DATE";
-		return s;
-	    }
+        // FIXME: this should really allow any addressing mode and no restrictions on the constant value
+        s += " " + getFirstRegisterFromBinary(command);
+        s += ", =";
+        int service = Integer.parseInt(getAddressFromBinary(command));
 
-	    return GARBLE;
+        String servName = SvcNames.lookupByValue(service);
+        if(servName != null)
+            return s + servName.toUpperCase();
+
+        return GARBLE;
 	}
 	}
     

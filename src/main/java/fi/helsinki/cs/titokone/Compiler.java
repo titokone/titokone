@@ -1,6 +1,8 @@
 package fi.helsinki.cs.titokone;
 
+import fi.helsinki.cs.titokone.devices.DeviceNames;
 import fi.helsinki.cs.ttk91.TTK91CompileException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -133,17 +135,10 @@ public class Compiler {
 		code = new Vector<String>();
 		symbols = new HashMap<String,Integer>();
 		symbolTable = new Vector<String[]>();
-		invalidLabels = new HashMap<String,Integer>();
 
-		invalidLabels.put("crt", new Integer(0));
-		invalidLabels.put("kbd", new Integer(1));
-		invalidLabels.put("stdin", new Integer(6));
-		invalidLabels.put("stdout", new Integer(7));
-		invalidLabels.put("halt", new Integer(11));
-		invalidLabels.put("read", new Integer(12));
-		invalidLabels.put("write", new Integer(13));
-		invalidLabels.put("time", new Integer(14));
-		invalidLabels.put("date", new Integer(15));
+        invalidLabels = new HashMap<String,Integer>();
+        invalidLabels.putAll(DeviceNames.DEVICES);
+        invalidLabels.putAll(SvcNames.SVCS);
 	}
 
 	/** This function goes through one line of the code. On the first

@@ -1,5 +1,7 @@
 package fi.helsinki.cs.titokone;
 
+import fi.helsinki.cs.titokone.devices.DeviceNames;
+
 /** This class is used by compiler when it compiles code. For each line 
     compiled compiler asks CompileDebugger to create a CompileInfo object and 
     passes it to the GUIBrain. */
@@ -59,68 +61,14 @@ public class CompileDebugger {
 	@param name String containing name of the symbol.
     */
     public void foundSymbol(String name) {
+        info.setSymbolFound();
+        Integer value;
 
-	boolean wasReservedWord = false;
-
-	if (name.equalsIgnoreCase("CRT")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 0);
-		wasReservedWord = true;
-	} 
-
-	if (name.equalsIgnoreCase("KBD")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 1);
-		wasReservedWord = true;
-	} 
-
-	if (name.equalsIgnoreCase("STDIN")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 6);
-		wasReservedWord = true;
-	} 
-
-	if (name.equalsIgnoreCase("STDOUT")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 7);
-		wasReservedWord = true;
-	} 
-
-	if (name.equalsIgnoreCase("HALT")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 11);
-		wasReservedWord = true;
-	} 
-
-	if (name.equalsIgnoreCase("READ")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 12);
-		wasReservedWord = true;
-	} 
-
-	if (name.equalsIgnoreCase("WRITE")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 13);
-		wasReservedWord = true;
-	} 
-
-	if (name.equalsIgnoreCase("TIME")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 14);
-		wasReservedWord = true;
-	} 
-
-	if (name.equalsIgnoreCase("DATE")) {  	
-		info.setSymbolFound();
-		info.setSymbolName(name, 15);
-		wasReservedWord = true;
-	} 
-
-	if (!wasReservedWord) {
-		info.setSymbolFound();
-		info.setSymbolName(name);
-	}
-
+        if((value = SvcNames.lookupIgnoringCase(name)) != null ||
+                (value = DeviceNames.lookupIgnoringCase(name)) != null)
+            info.setSymbolName(name, value);
+        else
+            info.setSymbolName(name);
     }
 
     /** This method tells that for given label points to given line.
