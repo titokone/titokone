@@ -61,7 +61,8 @@ portti    device
                         will be cleared
 20-22       UART1   0 data port 1 state port 2 control
 23-25       UART2   see source code..
-26-30       VIC     write new baseaddress to port 0
+26-30       VIC     write 0 and new baseaddress to port 0
+                    write 1 and new margincolor to port 0
 31          RTC     watchdog/RTC counting processor clocks
                     write the number of clocks , it will count down
                     and then interrupt unless you rewrite. 0 will 

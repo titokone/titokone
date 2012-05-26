@@ -13,6 +13,7 @@ import fi.helsinki.cs.titokone.*;
 public abstract class VIC
         implements IODevice, InterruptGenerator {
     protected Interruptable pic;
+    protected State state=State.Normal;
 
     public int getPortCount() {
         return 5;
@@ -30,8 +31,22 @@ public abstract class VIC
     public void setPort(int n, int value) {
         Display d = getDisplay();
         if (n == 0) {
-            d.setBaseAddress(value);
-            return;
+            if(state==State.Normal)
+            {
+                switch(value)
+                {
+                    case 0: state=State.SetBase;return;
+                    case 1: state=State.SetMargin;return;
+                }
+            }else{
+                switch(state)
+                {
+                    case SetBase:d.setBaseAddress(value);
+                    case SetMargin:d.setMarginColor(value);
+                }
+                state=State.Normal;
+                return;
+            }
         }
         if (n < 0 || n > 4) {
             throw new RuntimeException("should not be possible " + n);
@@ -39,6 +54,7 @@ public abstract class VIC
     }
 
     public void reset() {
+        state=State.Normal;
     }
 
     public void update() {
@@ -49,5 +65,12 @@ public abstract class VIC
     }
 
     public abstract Display getDisplay();
+    
+    enum State
+    {
+        Normal,
+        SetBase,
+        SetMargin; //set margin color
+    }
 
 }

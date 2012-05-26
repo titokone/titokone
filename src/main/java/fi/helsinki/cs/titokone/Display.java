@@ -29,6 +29,7 @@ public class Display extends JPanel implements Runnable {
     protected int left=0; //screen corner in real pixels
     protected int top=0;
     protected int xscale,yscale; //integer scaling factors
+    protected Color margin=Color.GRAY;
     /* Display methods */
 
     public Display() {
@@ -62,6 +63,10 @@ public class Display extends JPanel implements Runnable {
         if (base > 0) {
             this.baseAddress = base;
         }
+    }
+    public void setMarginColor(int i)
+    {
+        margin=new Color(i&0xff000000);
     }
 
     /* Runnable methods */
@@ -121,7 +126,7 @@ public class Display extends JPanel implements Runnable {
      */
     protected void clearBuffer() {
         Graphics2D g = (Graphics2D) compatible.getGraphics();
-        g.setColor(Color.GRAY);
+        g.setColor(margin);
         g.fillRect(0, 0, getWidth(), getHeight());
     }
 
