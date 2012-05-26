@@ -16,6 +16,8 @@ import java.awt.image.BufferedImage;
 public class Display extends JPanel implements Runnable {
 
     static final int X = 160, Y = 120;
+    static final int MARGIN=50; //30 minimum real pixel margin 
+                                //on every side
     static final int DEFAULT_START = 0x2000;
     static TTK91Memory mem;
     boolean updates = false;
@@ -24,6 +26,9 @@ public class Display extends JPanel implements Runnable {
     protected int baseAddress = DEFAULT_START;
     protected int lastX = 0;
     protected int lastY = 0;
+    protected int left=0; //screen corner in real pixels
+    protected int top=0;
+    protected int xscale,yscale; //integer scaling factors
     /* Display methods */
 
     public Display() {
@@ -35,11 +40,12 @@ public class Display extends JPanel implements Runnable {
             GraphicsConfiguration gc = g.getDeviceConfiguration();
             lastX = getWidth();
             lastY = getHeight();
-            /*backBuffer=new BufferedImage(
-                            lastX, 
-                            lastY, 
-                            BufferedImage.TYPE_INT_RGB);*/
             compatible = gc.createCompatibleImage(lastX, lastY);
+            xscale = roundUp(((double) (lastX-2*MARGIN)) / X);
+            yscale = roundUp(((double) (lastY-2*MARGIN)) / Y);
+            left=(lastX-xscale*X)/2;
+            top=(lastY-yscale*Y)/2;
+            
             clearBuffer();
         }
     }
@@ -124,8 +130,6 @@ public class Display extends JPanel implements Runnable {
      */
     protected void draw12bit(Graphics2D g) {
         //xscale,yscale set so that we always hit full pixels
-        int xscale = roundUp(((double) lastY) / Y);
-        int yscale = roundUp(((double) lastX) / X);
         for (int i = 0; i < lastY; i++) {
             for (int j = 0; j < lastX; j++) {
                 int x = j / xscale;
@@ -133,7 +137,7 @@ public class Display extends JPanel implements Runnable {
 
                 if (x < X && y < Y) {
                     int color = mem.getValue(baseAddress + (y * X + x));
-                    compatible.setRGB(j, i, 0xff000000 | torgb8(color & 0xfff));
+                    compatible.setRGB(left+j, top+i, 0xff000000 | torgb8(color & 0xfff));
                 }
             }
         }
