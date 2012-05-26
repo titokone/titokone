@@ -1,0 +1,32 @@
+Ajoittain kälin näprääminen hitaahkolla koneella jumiuttaa suorituksen mm. seuraavanlaisiin poikkeuksiin.
+Syynä JScrollPanejen scrollaus ei-GUI-säikeestä, mikä luultavasti aiheuttaa muut tunnetut graffabugit.
+
+Exception in thread "Thread-3" java.lang.NullPointerException
+	at java.awt.Component$BltBufferStrategy.revalidate(Component.java:4428)
+	at java.awt.Component$BltBufferStrategy.revalidate(Component.java:4406)
+	at java.awt.Component$BltBufferStrategy.getDrawGraphics(Component.java:4326)
+	at javax.swing.BufferStrategyPaintManager.prepare(BufferStrategyPaintManager.java:525)
+	at javax.swing.BufferStrategyPaintManager.copyArea(BufferStrategyPaintManager.java:322)
+	at javax.swing.RepaintManager.copyArea(RepaintManager.java:1221)
+	at javax.swing.JViewport.blitDoubleBuffered(JViewport.java:1580)
+	at javax.swing.JViewport.windowBlitPaint(JViewport.java:1549)
+	at javax.swing.JViewport.setViewPosition(JViewport.java:1092)
+	at fi.hu.cs.titokone.GUI.centerToLine(GUI.java:1144)
+	at fi.hu.cs.titokone.GUI.selectLine(GUI.java:1182)
+	at fi.hu.cs.titokone.GUIBrain.menuRun(GUIBrain.java:374)
+	at fi.hu.cs.titokone.GUIThreader.run(GUIThreader.java:40)
+	at java.lang.Thread.run(Thread.java:722)
+
+Exception in thread "Thread-3" java.lang.NullPointerException
+	at javax.swing.BufferStrategyPaintManager.prepare(BufferStrategyPaintManager.java:526)
+	at javax.swing.BufferStrategyPaintManager.copyArea(BufferStrategyPaintManager.java:322)
+	at javax.swing.RepaintManager.copyArea(RepaintManager.java:1221)
+	at javax.swing.JViewport.blitDoubleBuffered(JViewport.java:1580)
+	at javax.swing.JViewport.windowBlitPaint(JViewport.java:1549)
+	at javax.swing.JViewport.setViewPosition(JViewport.java:1092)
+	at fi.helsinki.cs.titokone.GUI.centerToLine(GUI.java:1150)
+	at fi.helsinki.cs.titokone.GUI.selectLine(GUI.java:1189)
+	at fi.helsinki.cs.titokone.GUIBrain.menuRun(GUIBrain.java:369)
+	at fi.helsinki.cs.titokone.GUIThreader.run(GUIThreader.java:45)
+	at java.lang.Thread.run(Thread.java:722)
+
