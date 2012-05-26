@@ -1147,7 +1147,15 @@ public class GUI extends JFrame implements ActionListener {
 doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :) */
             }
         }
-        activeScrollPane.getViewport().setViewPosition(new Point(0, y));
+        try {
+            activeScrollPane.getViewport().setViewPosition(new Point(0, y));
+        } catch (NullPointerException npe) {
+            // XXX: something causes this pretty randomly, stopping execution and leaving the GUI confused
+            // Googling "bufferstrategypaintmanager nullpointerexception" suggests there's a threading violation.
+            // At least this seems to happen more often on a slower machine...
+            System.err.println("KLUDGE: Unexpected NPE when doing scroll pane stuff.");
+            npe.printStackTrace();
+        }
 
         return true;
 
