@@ -452,7 +452,8 @@ public class GUIBrain {
 
             } else {
                 try {
-                    wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
+                    if(SLOWDOWN>0)
+                        wait(SLOWDOWN); 
                 } catch (InterruptedException e) {
                     System.out.println("InterruptedException in menuRun()");
                 }
