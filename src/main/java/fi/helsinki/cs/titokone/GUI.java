@@ -1090,66 +1090,74 @@ public class GUI extends JFrame implements ActionListener {
      *         False if the line number was not valid - ie there's no such line
      *         in the table or there's no such table.
      */
-    public boolean centerToLine(int line, short table) {
-        JScrollPane activeScrollPane = null;
-        JTableX activeTable = null;
+    protected void centerToLine(final int ln, final short table) {
+        SwingUtilities.invokeLater(
+            new Runnable()
+            {
+                int line=ln;
+                public void run()
+                {
+                    JScrollPane activeScrollPane = null;
+                    JTableX activeTable = null;
 
-        switch (table) {
-            case CODE_TABLE:
+                    switch (table) {
+                        case CODE_TABLE:
 
-                /* Check if there's no such line */
-                if (line >= codeTable.getRowCount() || line < 0) {
-                    return false;
+                            /* Check if there's no such line */
+                            if (line >= codeTable.getRowCount() || line < 0) {
+                                return;
+                            }
+                            activeScrollPane = codeTableScrollPane;
+                            activeTable = codeTable;
+                            break;
+
+
+                        case INSTRUCTIONS_AND_DATA_TABLE:
+
+                            /* Check if there's no such line */
+                            if (line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) || line < 0) {
+                                return;
+                            }
+
+
+                            if (line < instructionsTable.getRowCount()) {
+                                activeScrollPane = instructionsTableScrollPane;
+                                activeTable = instructionsTable;
+                            } else {
+                                activeScrollPane = dataTableScrollPane;
+                                activeTable = dataTable;
+                                line -= instructionsTable.getRowCount();
+                            }
+                            break;
+
+
+                        default:
+                            break;
+                    }
+
+                    if (activeScrollPane == null || activeTable == null) {
+                        return;
+                    }
+
+                    int tableViewHeight = activeScrollPane.getHeight() - activeTable.getTableHeader().getHeight();
+                    int y;
+
+                    if (tableViewHeight > activeTable.getHeight()) {
+                        y = 0;
+                    } else {
+                        y = line * activeTable.getRowHeight() - tableViewHeight / 2 + activeTable.getRowHeight() / 2;
+                        y = (y < 0) ? 0 : y;
+                        if (y + tableViewHeight > activeTable.getHeight()) {
+                            y = activeTable.getHeight() - tableViewHeight + activeTable.getRowMargin() + 2;
+                            /* I don't know where that number 2 comes from, but I included it there, because the viewport
+            doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :) */
+                        }
+                    }
+                    activeScrollPane.getViewport().setViewPosition(new Point(0, y));
+
+                    return;
                 }
-                activeScrollPane = codeTableScrollPane;
-                activeTable = codeTable;
-                break;
-
-
-            case INSTRUCTIONS_AND_DATA_TABLE:
-
-                /* Check if there's no such line */
-                if (line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) || line < 0) {
-                    return false;
-                }
-
-
-                if (line < instructionsTable.getRowCount()) {
-                    activeScrollPane = instructionsTableScrollPane;
-                    activeTable = instructionsTable;
-                } else {
-                    activeScrollPane = dataTableScrollPane;
-                    activeTable = dataTable;
-                    line -= instructionsTable.getRowCount();
-                }
-                break;
-
-
-            default:
-                break;
-        }
-
-        if (activeScrollPane == null || activeTable == null) {
-            return false;
-        }
-
-        int tableViewHeight = activeScrollPane.getHeight() - activeTable.getTableHeader().getHeight();
-        int y;
-
-        if (tableViewHeight > activeTable.getHeight()) {
-            y = 0;
-        } else {
-            y = line * activeTable.getRowHeight() - tableViewHeight / 2 + activeTable.getRowHeight() / 2;
-            y = (y < 0) ? 0 : y;
-            if (y + tableViewHeight > activeTable.getHeight()) {
-                y = activeTable.getHeight() - tableViewHeight + activeTable.getRowMargin() + 2;
-                /* I don't know where that number 2 comes from, but I included it there, because the viewport
-doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :) */
-            }
-        }
-        activeScrollPane.getViewport().setViewPosition(new Point(0, y));
-
-        return true;
+            });//runnable,invoke
 
     }
 
