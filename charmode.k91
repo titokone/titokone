@@ -1,0 +1,8 @@
+LOAD R1,=1
+OUT R1,=26
+LOAD R1,=0
+OUT R1,=26; set margincolor
+LOAD R1,=2
+OUT R1,=26
+LOAD R1,=1
+OUT R1,=26

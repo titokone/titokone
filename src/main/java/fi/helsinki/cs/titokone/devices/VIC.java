@@ -30,23 +30,23 @@ public abstract class VIC
     @Override
     public void setPort(int n, int value) {
         Display d = getDisplay();
-        if (n == 0) {
-            if(state==State.Normal)
+        if(state==State.Normal)
+        {
+            switch(value)
             {
-                switch(value)
-                {
-                    case 0: state=State.SetBase;return;
-                    case 1: state=State.SetMargin;return;
-                }
-            }else{
-                switch(state)
-                {
-                    case SetBase:d.setBaseAddress(value);
-                    case SetMargin:d.setMarginColor(value);
-                }
-                state=State.Normal;
-                return;
+                case 0: state=State.SetBase;return;
+                case 1: state=State.SetMargin;return;
+                case 2: state=State.SetMode;return;
             }
+        }else{
+            switch(state)
+            {
+                case SetBase:d.setBaseAddress(value);break;
+                case SetMargin:d.setMarginColor(value);break;
+                case SetMode:d.setMode(value);break;
+            }
+            state=State.Normal;
+            return;
         }
         if (n < 0 || n > 4) {
             throw new RuntimeException("should not be possible " + n);
@@ -70,7 +70,8 @@ public abstract class VIC
     {
         Normal,
         SetBase,
-        SetMargin; //set margin color
+        SetMargin, //set margin color
+        SetMode;
     }
 
 }

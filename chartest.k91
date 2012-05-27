@@ -1,0 +1,67 @@
+;program to test char display
+;write colors to 8192+640+256
+LOAD R1,=9088 ; start of palette
+LOAD R2,=256
+ColorLoop   SUB  R2,=1 ; color counter
+            LOAD R3,R2 ; create address for this iteration
+            ADD  R3,R1   
+            LOAD R4,=256 ; color to draw
+            SUB  R4,R3   
+            MUL  R4,=256
+            ADD  R4,R3  ; color with green and blue
+            STORE R4,0(R3) ; store color to indexed point
+            JNNEG R2,ColorLoop
+;write chardescriptions
+LOAD R1,=8832; start of char descriptions
+LOAD R2,=4
+MUL  R2,=32
+ADD  R2,=4
+MUL  R2,=32
+LOAD R2,=4
+MUL  R2,=32
+ADD  R2,=4
+MUL  R2,=32 ; construct I
+
+STORE R2,0(R1); store to desc
+;ADD  R1,=1; increment address
+;LOAD R2,=4330464; T
+;STORE R2,R1 ; store to desc
+;ADD  R1,=1 ; increment address
+;LOAD R2,=18542112 ; M
+;STORE R2,R1 ; store to desc
+;ADD  R1,=1 ; increment address
+
+;write chars with blink
+LOAD R1,=8192 ; charmem start
+LOAD R2,=640 ; number of chars
+LOAD R3,=0 ; char to write
+LOAD R5,=0 ; color index
+CharLoop LOAD R4,=0 ; temp register for char
+ADD  R4,=1  ; effect
+MUL  R4,=256 ;shift
+ADD  R4,=256 
+SUB  R4,R5  ;color
+MUL  R4,=256; shift
+ADD  R4,R5 ; another color
+MUL R4,=256 ; shift
+ADD  R4,R3; char 
+STORE R4,0(R1)
+ADD R5,=1
+MOD R5,=256
+ADD R1,=1
+ADD R3,=1
+MOD R3,=3
+SUB R2,=1
+JNNEG R2,CharLoop
+
+
+;set display to charmode
+LOAD R1,=2
+OUT R1,=26
+LOAD R1,=1
+OUT R1,=26
+;keep running to keep blinking
+EndLoop LOAD R1,=8892
+NOP
+NOP
+JUMP EndLoop

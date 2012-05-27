@@ -166,9 +166,9 @@ public class Processor
      * this is used to set external devices which are somehow difficult
      * and global. like the Display
      */
-    public void setExternalDevice(Device d) {
+    public void setExternalDevice(Object d) {
         if (d instanceof Display) {
-            display = (Display) display;
+            display = (Display) d;
         }
     }
 
@@ -596,7 +596,7 @@ public class Processor
             case OUT: // OUT
                 try {
                     dev = getDevice(param);
-                    dev.setPort(param, Rj);
+                    dev.setPort(param, regs.getRegister(Rj));
                 } catch (TTK91RuntimeException id) {
                     status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
                     throw id;

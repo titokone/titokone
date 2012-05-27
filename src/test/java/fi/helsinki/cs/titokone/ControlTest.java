@@ -17,7 +17,7 @@ public class ControlTest extends __LoguserTestCase {
 
     protected void setUp() {
         control = new Control(new File("/root/teststdin"),
-                new File("/root/teststdout"));
+                new File("/root/teststdout"),null);
     }
 
     public void testConstructorAndChangeMemorySize() {
@@ -161,7 +161,7 @@ public class ControlTest extends __LoguserTestCase {
         testCompile(); // Ensure right state.
         // No exception.
         control.saveBinary(new File("testdata/examplebinary"));
-        control = new Control(new File("/root/test"), new File("/root/test"));
+        control = new Control(new File("/root/test"), new File("/root/test"),null);
         // Exception: no application loaded yet.
         try {
             control.saveBinary(new File("testdata/examplebinary"));

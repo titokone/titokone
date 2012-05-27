@@ -14,7 +14,7 @@ import java.awt.image.BufferedImage;
 // Display class was added by Toni Ruottu 8.4.2012
 
 public class Display extends JPanel implements Runnable {
-
+    static final int fontWidth=5,fontHeight=6;
     static final int X = 160, Y = 120;
     static final int MARGIN=50; //30 minimum real pixel margin 
                                 //on every side
@@ -30,6 +30,8 @@ public class Display extends JPanel implements Runnable {
     protected int top=0;
     protected int xscale,yscale; //integer scaling factors
     protected Color margin=Color.GRAY;
+    
+    protected int mode=0;
     /* Display methods */
 
     public Display() {
@@ -66,7 +68,14 @@ public class Display extends JPanel implements Runnable {
     }
     public void setMarginColor(int i)
     {
-        margin=new Color(i&0xff000000);
+        margin=new Color(i);
+    }
+    public void setMode(int i)
+    {        
+        mode=i;
+        if(mode<0||mode>2)
+            mode=0;
+        System.out.println("mode set:"+i);
     }
 
     /* Runnable methods */
@@ -117,7 +126,12 @@ public class Display extends JPanel implements Runnable {
     protected void drawMode() {
         Graphics2D g = (Graphics2D) compatible.getGraphics();
         if (mem != null) {
-            draw12bit(g);
+            switch(mode)
+            {
+                case 0:draw12bit(g);return;
+                case 1:drawText(g);return;
+                case 2:drawIndexed(g);return;
+            }
         }
     }
 
@@ -135,14 +149,72 @@ public class Display extends JPanel implements Runnable {
      */
     protected void draw12bit(Graphics2D g) {
         //xscale,yscale set so that we always hit full pixels
-        for (int i = 0; i < lastY; i++) {
-            for (int j = 0; j < lastX; j++) {
+        for (int i = 0; i < (yscale*Y); i++) {
+            for (int j = 0; j < (xscale*X); j++) {
                 int x = j / xscale;
                 int y = i / yscale;
 
                 if (x < X && y < Y) {
                     int color = mem.getValue(baseAddress + (y * X + x));
                     compatible.setRGB(left+j, top+i, 0xff000000 | torgb8(color & 0xfff));
+                }
+            }
+        }
+    }
+    /**
+     * text mode
+     */
+    protected void drawText(Graphics2D g) {
+        int charsX=X/fontWidth;
+        int charsY=Y/fontHeight;
+        int charMemStart=baseAddress+charsX*charsY;
+        int paletteStart=charMemStart+256;
+        boolean svits=(System.currentTimeMillis()/1000%2)==0;
+        for (int i=0;i<(yscale*Y);i+=(fontHeight*yscale))
+        {
+            for(int j=0;j<(xscale*X);j+=(fontWidth*xscale))
+            {
+                int x=j/(xscale*fontWidth); //which char..
+                int y=i/(yscale*fontHeight);
+                int ch=mem.getValue(baseAddress+(y*charsX+x));
+                int chDescr=mem.getValue(charMemStart+(ch&0xff));
+                int bColor=mem.getValue(((ch>>16)&0xff)+paletteStart);
+                int fColor=mem.getValue(((ch>>8)&0xff)+paletteStart);
+                int effect=((ch>>24)&0xff);
+                boolean blink=svits&&((effect&0x1)!=0);
+                for(int k=0;k<(fontHeight*yscale);k++)
+                {
+                    for(int l=0;l<(fontWidth*xscale);l++)
+                    {
+                        boolean fg=((1<<((k/yscale)*fontWidth+(l/xscale)))&chDescr)>0;
+                        if(blink)
+                            fg=!fg;
+                        compatible.setRGB(
+                                left+j+l,
+                                top+i+k,
+                                0xff000000 | (fg?fColor:bColor));
+                    }
+                }
+                
+                
+            }
+        }
+    }
+    /**
+     * 256 color indexed mode
+     */
+    protected void drawIndexed(Graphics2D g) {
+        //xscale,yscale set so that we always hit full pixels
+        for (int i = 0; i < lastY; i++) {
+            for (int j = 0; j < lastX; j++) {
+                int x = j / xscale;
+                int y = i / yscale;
+
+                if (x < X && y < Y) {
+                    int color = mem.getValue(
+                            mem.getValue(baseAddress + (y * X + x)) % 
+                                    256 + baseAddress + X * Y);
+                    compatible.setRGB(left+j, top+i, 0xff000000 | color);
                 }
             }
         }

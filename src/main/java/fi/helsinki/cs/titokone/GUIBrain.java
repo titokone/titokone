@@ -152,7 +152,7 @@ public class GUIBrain {
         } catch (IOException e) {
             logger.info(e.getMessage());
         }
-        control = new Control(defStdinFile, defStdoutFile);
+        control = new Control(defStdinFile, defStdoutFile,display);
 
         this.animator = animator;
         this.display = display;
@@ -1263,6 +1263,7 @@ public class GUIBrain {
             setGUICommandsForCurrentState();
             gui.setGUIView(3);
             display.setMem(control.getPhysicalMemory());
+            
         }
     }
 
