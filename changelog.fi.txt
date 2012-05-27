@@ -271,18 +271,6 @@ Teemu Kerola
 -----------------bugeja.. 
 -display pitais piilottaa jos alle x muistia tai sitten pistää se raa-asti
  toleroimaan muistin puutetta
-Exception in thread "Thread-6" java.lang.NullPointerException
-	at javax.swing.BufferStrategyPaintManager.prepare(BufferStrategyPaintManager.java:533)
-	at javax.swing.BufferStrategyPaintManager.copyArea(BufferStrategyPaintManager.java:329)
-	at javax.swing.RepaintManager.copyArea(RepaintManager.java:1160)
-	at javax.swing.JViewport.blitDoubleBuffered(JViewport.java:1621)
-	at javax.swing.JViewport.windowBlitPaint(JViewport.java:1590)
-	at javax.swing.JViewport.setViewPosition(JViewport.java:1135)
-	at fi.helsinki.cs.titokone.GUI.centerToLine(GUI.java:1150)
-	at fi.helsinki.cs.titokone.GUI.selectLine(GUI.java:1179)
-	at fi.helsinki.cs.titokone.GUIBrain.menuCompile(GUIBrain.java:604)
-	at fi.helsinki.cs.titokone.GUIThreader.run(GUIThreader.java:41)
-	at java.lang.Thread.run(Thread.java:636)
 
 Exception in thread "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: 2 >= 2
 	at java.util.Vector.elementAt(Vector.java:447)
