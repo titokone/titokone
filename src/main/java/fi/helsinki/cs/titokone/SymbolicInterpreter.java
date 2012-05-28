@@ -172,94 +172,12 @@ public class SymbolicInterpreter extends Interpreter {
                 }
             }
 
-            String binary = intToBinary(opcodeAsInt, 8) + intToBinary(firstRegisterAsInt, 3) +
-                    intToBinary(addressingModeAsInt, 2) +
-                    intToBinary(secondRegisterIdAsInt, 3) + intToBinary(addressAsInt, 16);
-            return binaryToInt(binary, true);
+            String binary = StringUtils.intToBinary(opcodeAsInt, 8) + StringUtils.intToBinary(firstRegisterAsInt, 3) +
+                    StringUtils.intToBinary(addressingModeAsInt, 2) +
+                    StringUtils.intToBinary(secondRegisterIdAsInt, 3) + StringUtils.intToBinary(addressAsInt, 16);
+            return StringUtils.binaryToInt(binary, true);
         }
-
 
         return -1;
-    }
-
-    /**
-     * This method converts int values to binary-string. intToBinary(1,2) --> "01"
-     *
-     * @param value Int value to be converted.
-     * @param bits  How many bits can be used .
-     * @return String representation of a said Int.
-     */
-    public String intToBinary(long value, int bits) {
-/* if bits too few, i.e. 10,2 then result is "11" */
-        char[] returnValue = new char[bits];
-        boolean wasNegative = false;
-
-        if (value < 0) {
-            wasNegative = true;
-            ++value;
-            value = (value * -1);
-        }
-
-
-        for (int i = 0; i < bits; ++i) {
-            returnValue[i] = '0';
-        }
-
-        for (int i = returnValue.length - 1; i > -1; --i) {
-            if (value >= (int) Math.pow(2.0, i * 1.0)) {
-                returnValue[returnValue.length - 1 - i] = '1';
-                value = value - (int) Math.pow(2.0, i * 1.0);
-            }
-        }
-
-        if (wasNegative) {
-            for (int i = 0; i < returnValue.length; ++i) {
-                if (returnValue[i] == '0') {
-                    returnValue[i] = '1';
-                } else {
-                    returnValue[i] = '0';
-                }
-            }
-        }
-
-        return new String(returnValue);
-    }
-
-    /**
-     * This method converts String that contains a binary to int. binaryToInt("01") --> 1
-     *
-     * @param binaryValue  String representing the binary, if other than {0,1} then null.
-     * @param signIncluded Boolean value telling whether 11 is -1 or 3 i.e. will the leading
-     *                     one be interpreted as sign-bit.
-     * @return Int value of a Binary.
-     */
-    public int binaryToInt(String binaryValue, boolean signIncluded) {
-/*  returns 0 when error! exception perhaps? */
-        boolean isNegative = false;
-        int value = 0;
-
-        if (signIncluded) {
-            if (binaryValue.charAt(0) == '1') {
-                isNegative = true;
-                binaryValue = binaryValue.replace('1', '2');
-                binaryValue = binaryValue.replace('0', '1');
-                binaryValue = binaryValue.replace('2', '0');
-            }
-        }
-
-        for (int i = 0; i < binaryValue.length(); ++i) {
-            if (binaryValue.charAt(binaryValue.length() - 1 - i) == '1') {
-                value = value + (int) Math.pow(2.0, i * 1.0);
-            } else {
-                if (binaryValue.charAt(binaryValue.length() - 1 - i) != '0') {
-                    return 0;
-                }
-            }
-        }
-
-        if (isNegative) {
-            value = (value + 1) * -1;
-        }
-        return value;
     }
 }

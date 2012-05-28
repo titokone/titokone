@@ -761,17 +761,17 @@ public class Compiler {
         codeMemoryLines[nextLine] = new MemoryLine(lineAsBinary, line);
 
         // comment
-        String lineAsZerosAndOnes = symbolicInterpreter.intToBinary(lineAsBinary, 32);
+        String lineAsZerosAndOnes = StringUtils.intToBinary(lineAsBinary, 32);
         String binaryByPositions =
-                symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(0, 8),
+                StringUtils.binaryToInt(lineAsZerosAndOnes.substring(0, 8),
                         true) + ":" +
-                        symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(8, 11),
+                        StringUtils.binaryToInt(lineAsZerosAndOnes.substring(8, 11),
                                 false) + ":" +
-                        symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(11, 13),
+                        StringUtils.binaryToInt(lineAsZerosAndOnes.substring(11, 13),
                                 false) + ":" +
-                        symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(13, 16),
+                        StringUtils.binaryToInt(lineAsZerosAndOnes.substring(13, 16),
                                 false) + ":" +
-                        symbolicInterpreter.binaryToInt(lineAsZerosAndOnes.substring(16),
+                        StringUtils.binaryToInt(lineAsZerosAndOnes.substring(16),
                                 true);
         String[] commentParameters = {line, "" + lineAsBinary, binaryByPositions};
         comment = new Message("{0} --> {1} ({2}) ", commentParameters).toString();
