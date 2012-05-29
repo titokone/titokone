@@ -463,11 +463,12 @@ public class Processor
             regs.setRegister(TTK91Cpu.CU_PC, PC + 1);
 
             // cut up the command in IR
-            int opcode = IR.getBinary() >>> 24;                             // operation code
-            int Rj = ((IR.getBinary() & 0xE00000) >>> 21) + TTK91Cpu.REG_R0;  // first operand (register 0..7)
-            int M = (IR.getBinary() & 0x180000) >>> 19;                      // memory addressing mode
-            int Ri = ((IR.getBinary() & 0x070000) >>> 16) + TTK91Cpu.REG_R0;  // index register
-            int ADDR = (short) (IR.getBinary() & 0xFFFF);                     // address
+            Instruction insn = new Instruction(IR.getBinary());
+            int opcode = insn.getOpcode();                          // operation code
+            int Rj = insn.getRj() + TTK91Cpu.REG_R0;  // first operand (register 0..7)
+            int M = insn.getM();                      // memory addressing mode
+            int Ri = insn.getRi() + TTK91Cpu.REG_R0;  // index register
+            int ADDR = insn.getAddr();                     // address
 
             runDebugger.runCommand(IR.getBinary());
 

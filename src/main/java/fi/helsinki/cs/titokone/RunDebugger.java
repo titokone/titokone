@@ -137,20 +137,16 @@ public class RunDebugger {
      */
     public void runCommand(int command) {
         // cut up the command
-        int opcode = command >>> 24;
-        int Rj = (command & 0xE00000) >>> 21;
-        int M = (command & 0x180000) >>> 19;
-        int Ri = (command & 0x070000) >>> 16;
-        int ADDR = (short) (command & 0xFFFF);
+        Instruction insn = new Instruction(command);
 
         info.setBinary(command);
-        info.setFirstOperand(Rj);
-        info.setIndexRegister(Ri);
-        info.setADDR(ADDR);
-        info.setNumberOfFetches(M);
-        info.setColonString(opcode + ":" + Rj + ":" + M + ":" + Ri + ":" + ADDR);
+        info.setFirstOperand(insn.getRj());
+        info.setIndexRegister(insn.getRi());
+        info.setADDR(insn.getAddr());
+        info.setNumberOfFetches(insn.getM());
+        info.setColonString(insn.toColonString());
 
-        switch (M) {
+        switch (insn.getM()) {
             case 0:
                 memoryComment = DIRECT;
                 break;
@@ -165,8 +161,8 @@ public class RunDebugger {
 
         }
 
-        this.parameters[0] = opcode + ":" + Rj + ":" + M + ":" + Ri + ":" + ADDR + " ";
-        this.parameters[2] = "R" + Ri;
+        this.parameters[0] = insn.toColonString() + " ";
+        this.parameters[2] = "R" + insn.getRi();
 
     }
 
