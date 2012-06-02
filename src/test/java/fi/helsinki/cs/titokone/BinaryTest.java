@@ -12,10 +12,16 @@ import java.text.ParseException;
 
 public class BinaryTest extends TestCase {
 
-
+    private String originalLineSeparator;
     private Binary bin;
 
     protected void setUp() {
+        originalLineSeparator = System.getProperty("line.separator");
+        System.setProperty("line.separator", "\n");
+    }
+
+    protected void tearDown() throws Exception {
+        System.setProperty("line.separator", originalLineSeparator);
     }
 
     public void testBinary() {
