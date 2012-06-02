@@ -16,54 +16,52 @@ import java.util.logging.LogRecord;
  * true.
  */
 public class TranslatorTest extends __LoguserTestCase {
-    // Translator is a static class, no setup needed.
-    protected void setUp() {
+
+    private String originalResourceFamilyName;
+
+    protected void setUp() throws Exception {
+        originalResourceFamilyName = Translator.resourceFamilyName;
+        Translator.resourceFamilyName = __stub_translations.class.getName();
+        Translator.setLocale(Locale.ENGLISH);
     }
 
-    // Since this is the first test class to use logging, we run a few 
+    protected void tearDown() throws Exception {
+        Translator.resourceFamilyName = originalResourceFamilyName;
+    }
+
+    // Since this is the first test class to use logging, we run a few
     // logging tests to start with.
     public void testBasicLogging() {
         logger.fine("This is a log message.");
-        assertEquals(lastRecord.getMessage(),
-                "This is a log message.");
+        assertEquals("This is a log message.", lastRecord.getMessage());
         hushLogger(); // Make it stop making noise to stdout.
         logger.fine("This is a quiet log message.");
-        assertEquals(lastRecord.getMessage(), "This is a quiet log message.");
+        assertEquals("This is a quiet log message.", lastRecord.getMessage());
         // And then look at the first message again...
-        assertEquals(((LogRecord)
-                allRecords.get(allRecords.size() - 2)).getMessage(),
-                "This is a log message.");
+        assertEquals("This is a log message.", ((LogRecord) allRecords.get(allRecords.size() - 2)).getMessage());
     }
 
     public void testBasicTranslate() {
         String translateString;
+
         translateString = Translator.translate("UnknownString");
-        assertEquals("Unknown message",
-                translateString, "UnknownString");
+        assertEquals("Unknown message", "UnknownString", translateString);
         // Log will show where the translation failed.
-        assertEquals(lastRecord.getMessage(),
-                "Translation for UnknownString not found in default " +
-                        "set either.");
+        assertEquals("Translation for UnknownString not found in default set either.", lastRecord.getMessage());
+
         translateString = Translator.translate("OnlyKnownTranslation");
-        assertEquals("Known message",
-                translateString,
-                "Translation {0} - {1} - {2}!");
+        assertEquals("Known message", "Translation {0} - {1} - {2}!", translateString);
         translateString = Translator.translate("SecondKnownTranslation");
-        assertEquals("Another known message",
-                translateString,
-                "Translated {0} - {1} - {2}!");
+        assertEquals("Another known message", "Translated {0} - {1} - {2}!", translateString);
+
         // Change the current translation turns out to be.
-        Translator.setLocale(Locale.ENGLISH, new __stub_translations(true));
+        Translator.setLocale(Locale.ENGLISH, new __stub_translations(__stub_translations.OTHER_TRANSLATION));
         // Then change it again so that it will only show up in the
         // default translations, not the current ones.
         // Now it should be translated, but not from the first try.
         translateString = Translator.translate("SecondKnownTranslation");
-        assertEquals("Now only default-known message",
-                translateString,
-                "Translated {0} - {1} - {2}!");
-        assertEquals(lastRecord.getMessage(),
-                "Translation for SecondKnownTranslation not found in " +
-                        "current set.");
+        assertEquals("Now only default-known message", "Translated {0} - {1} - {2}!", translateString);
+        assertEquals("Translation for SecondKnownTranslation not found in current set.", lastRecord.getMessage());
     }
 
     // This method is used twice in the test below. It generates a string
@@ -87,54 +85,32 @@ public class TranslatorTest extends __LoguserTestCase {
         String[] replace4 = {"fiba", getManyLetters(),
                 "fdasf", "fob"};
         // Use the basic translations.
-        Translator.setLocale(Locale.ENGLISH, new __stub_translations());
+        Translator.setLocale(Locale.ENGLISH, new __stub_translations(__stub_translations.DEFAULT_TRANSLATION));
         // Nothing to replace: 0 replacements (unnecessary).
         translateString = Translator.translate("UnknownString", replace0);
-        assertEquals("Unknown message with 0 vs. 0",
-                translateString, "UnknownString");
-        assertEquals(lastRecord.getMessage(),
-                "Translation for UnknownString not found in default " +
-                        "set either.");
+        assertEquals("Unknown message with 0 vs. 0", "UnknownString", translateString);
+        assertEquals("Translation for UnknownString not found in default set either.", lastRecord.getMessage());
         // Nothing to replace: 2 replacements (too many).
         translateString = Translator.translate("UnknownString", replace2);
-        assertEquals("Unknown message with 0 vs. 2",
-                translateString, "UnknownString");
-        assertEquals(lastRecord.getMessage(),
-                "Translation for UnknownString not found in default " +
-                        "set either.");
+        assertEquals("Unknown message with 0 vs. 2", "UnknownString", translateString);
+        assertEquals("Translation for UnknownString not found in default set either.", lastRecord.getMessage());
         // 3 to replace, null replacement.
-        translateString = Translator.translate("OnlyKnownTranslation",
-                null);
-        assertEquals("3 to replace, 0 replacements",
-                translateString,
-                "Translation {0} - {1} - {2}!");
+        translateString = Translator.translate("OnlyKnownTranslation", null);
+        assertEquals("3 to replace, 0 replacements", "Translation {0} - {1} - {2}!", translateString);
         // 3 to replace: 0 replacements (none).
-        translateString = Translator.translate("OnlyKnownTranslation",
-                replace0);
-        assertEquals("3 to replace, 0 replacements",
-                translateString,
-                "Translation {0} - {1} - {2}!");
+        translateString = Translator.translate("OnlyKnownTranslation", replace0);
+        assertEquals("3 to replace, 0 replacements", "Translation {0} - {1} - {2}!", translateString);
         // 3 to replace: 2 replacements (too few).
-        translateString = Translator.translate("OnlyKnownTranslation",
-                replace2);
-        assertEquals("3 to replace, 2 replacements",
-                translateString,
-                "Translation foo - bar - {2}!");
+        translateString = Translator.translate("OnlyKnownTranslation", replace2);
+        assertEquals("3 to replace, 2 replacements", "Translation foo - bar - {2}!", translateString);
         // 3 to replace: 3 replacements (just right). Including empty
         // string replacement.
-        translateString = Translator.translate("OnlyKnownTranslation",
-                replace3);
-        assertEquals("3 to replace, 3 replacements",
-                translateString,
-                "Translation  - bing - bong!");
+        translateString = Translator.translate("OnlyKnownTranslation", replace3);
+        assertEquals("3 to replace, 3 replacements", "Translation  - bing - bong!", translateString);
         // 3 to replace: 4 replacements (too many). Including within
         // the usable replacements one longer string.
-        translateString = Translator.translate("OnlyKnownTranslation",
-                replace4);
-        assertEquals("3 to replace, 4 replacements",
-                translateString,
-                "Translation fiba - " + getManyLetters() +
-                        " - fdasf!");
+        translateString = Translator.translate("OnlyKnownTranslation", replace4);
+        assertEquals("3 to replace, 4 replacements", "Translation fiba - " + getManyLetters() + " - fdasf!", translateString);
     }
 
     // The setLocale(Locale, ResourceBundle) has been tested before.
@@ -143,8 +119,6 @@ public class TranslatorTest extends __LoguserTestCase {
         Translator.setLocale(new Locale("fi", "FI", "MAC"));
         // The __stub_translations_fi should be in use now.
         translateString = Translator.translate("NewKnownTranslation");
-        assertEquals("New translateable",
-                translateString, "New translation {0} - {1} - {2}!");
+        assertEquals("New translateable", "New translation {0} - {1} - {2}!", translateString);
     }
-
 }

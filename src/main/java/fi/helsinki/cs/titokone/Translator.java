@@ -2,6 +2,7 @@
 // Copyright © 2012 various contributors
 // This software is released under GNU Lesser General Public License 2.1.
 // The license text is at http://www.gnu.org/licenses/lgpl-2.1.html
+
 package fi.helsinki.cs.titokone;
 
 import java.text.MessageFormat;
@@ -14,17 +15,15 @@ import java.util.logging.Logger;
  * languages are currently available.
  */
 public class Translator {
-    /**
-     * This field should be false during normal operation. It can be
-     * set to true to enable some testability quirks.
-     */
-    private static final boolean TESTING = false;
+
+    // TODO: get rid of this class, replace it with standard use of resource bundles and keep all translations in properties files
 
     /**
      * This name identifies the resource files containing translations
      * for this software.
      */
-    public static final String resourceFamilyName = "fi.helsinki.cs.titokone.translations.Translations";
+    // XXX: non-final for testing purposes
+    public static String resourceFamilyName = "fi.helsinki.cs.titokone.translations.Translations";
 
     /**
      * This field contains the default locale.
@@ -36,16 +35,17 @@ public class Translator {
      * defaultLocale.
      */
     private static Locale currentLocale = defaultLocale;
-    /**
-     * This field stores the default ResourceBundle.
-     */
-    private static ResourceBundle defaultTranslations = ResourceBundle.getBundle(resourceFamilyName, defaultLocale);
-    /*(TESTING ? new __stub_translations() :
-         ResourceBundle.getBundle(resourceFamilyName, defaultLocale));*/
+
+    // XXX: for testing purposes, resourceFamilyName can change after this class is initialized, so we can't save it in a field
+    private static ResourceBundle defaultTranslations() {
+        return ResourceBundle.getBundle(resourceFamilyName, defaultLocale);
+    }
+
     /**
      * This field stores the current ResourceBundle in use.
      */
-    private static ResourceBundle translations = defaultTranslations;
+    private static ResourceBundle translations = defaultTranslations();
+
 
     /**
      * This function translates a fixed string to the currently used
@@ -77,7 +77,7 @@ public class Translator {
         }
         if (result == null) { // If there was no luck, try the untranslated.
             try {
-                result = defaultTranslations.getString(keyString);
+                result = defaultTranslations().getString(keyString);
             } catch (MissingResourceException totallyUnknownKey) {
                 logger.fine("Translation for " + keyString + " not found " +
                         "in default set either.");
@@ -140,14 +140,11 @@ public class Translator {
         Logger logger =
                 Logger.getLogger(Translator.class.getPackage().getName());
         if (newLocale == null) {
-            throw new IllegalArgumentException("Trying to set locale to " +
-                    "null.");
+            throw new IllegalArgumentException("Trying to set locale to null.");
         }
         currentLocale = newLocale;
-        translations = ResourceBundle.getBundle(resourceFamilyName,
-                newLocale);
-        logger.fine("Locale changed, new locale " + newLocale.toString() +
-                ", translations from class " +
+        translations = ResourceBundle.getBundle(resourceFamilyName, newLocale);
+        logger.fine("Locale changed, new locale " + newLocale.toString() + ", translations from class " +
                 translations.getClass().getName() + ".");
     }
 

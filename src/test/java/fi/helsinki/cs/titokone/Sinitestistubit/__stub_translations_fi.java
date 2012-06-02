@@ -10,14 +10,14 @@ import java.util.ListResourceBundle;
 /**
  * This class is the stub tester for the Translator class.
  */
-public class __stub_translations_FI extends ListResourceBundle {
-    String[][] result = {{"NewKnownTranslation",
-            "New translation {0} - {1} - {2}!"}};
+@SuppressWarnings("UnusedDeclaration")
+public class __stub_translations_fi extends ListResourceBundle {
 
-    public __stub_translations_FI() {
-    }
+    private final String[][] contents = {
+            {"NewKnownTranslation", "New translation {0} - {1} - {2}!"}
+    };
 
     public Object[][] getContents() {
-        return result;
+        return contents;
     }
 }
