@@ -10,7 +10,7 @@ import junit.framework.TestCase;
 import java.util.Vector;
 import java.util.logging.*;
 
-public class __LoguserTestCase extends TestCase {
+public abstract class __LoguserTestCase extends TestCase {
     protected LogRecord lastRecord;
     protected Vector allRecords = new Vector();
     protected Logger logger = getDebugLogger();
