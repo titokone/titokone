@@ -1,0 +1,6 @@
+*.txt   eol=lf
+*.java  eol=lf
+*.k91   eol=lf
+*.xml   eol=lf
+*.html  eol=lf
+*.iml   eol=lf
