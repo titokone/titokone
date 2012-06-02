@@ -1,101 +1,101 @@
 ======================================================================
-                     YHTEENVETO TTK-91 KƒSKYISTƒ
+                     YHTEENVETO TTK-91 K√ÑSKYIST√Ñ
                           versio 2004-10-06
 ======================================================================
 
 +--------------------------------------------------------------------+
-|    K‰skykoodi    |  J  | M |  I  |      osoiteosa ADDR             |
-|    8 bitti‰      |  3  | 2 |  3  |         16 bitti‰               |
+|    K√§skykoodi    |  J  | M |  I  |      osoiteosa ADDR             |
+|    8 bitti√§      |  3  | 2 |  3  |         16 bitti√§               |
 +--------------------------------------------------------------------+
 31               24 23           16 15                               0
 
-Symbolisessa konekieless‰ k‰skyt esitet‰‰n muodossa
+Symbolisessa konekieless√§ k√§skyt esitet√§√§n muodossa
 
 VIITE  OPER Rj,M ADDR(Ri)
 
-miss‰  OPER    k‰skyn symbolinen nimi
-       Rj      ensimm‰inen operandi (rekisteri R0..R7)
+miss√§  OPER    k√§skyn symbolinen nimi
+       Rj      ensimm√§inen operandi (rekisteri R0..R7)
        M       osoitusmoodi:
-               =   v‰litˆn operandi
-                   suora osoitus (tyhj‰, ei siis merkit‰)
-               @   ep‰suora osoitus
+               =   v√§lit√∂n operandi
+                   suora osoitus (tyhj√§, ei siis merkit√§)
+               @   ep√§suora osoitus
        ADDR    osoiteosa (muistiosoite tai vakio)
        Ri      mahdollinen indeksirekisteri (rekisteri R0..R7)
 
-Jos jollakin k‰skyn osalla ei ole merkityst‰, sen voi j‰tt‰‰ merkitse-
-m‰tt‰. K‰skyn eteen voi laittaa viitteeksi symbolisen osoitteen, jonka
-tulee sis‰lt‰‰ v‰hint‰‰n yksi muu kuin numeromerkki. Kelvollisia merkkej‰
-A-÷, 0-9 ja _. Vain 8 ensimm‰ist‰ merkki‰ on merkitsevi‰.
+Jos jollakin k√§skyn osalla ei ole merkityst√§, sen voi j√§tt√§√§ merkitse-
+m√§tt√§. K√§skyn eteen voi laittaa viitteeksi symbolisen osoitteen, jonka
+tulee sis√§lt√§√§ v√§hint√§√§n yksi muu kuin numeromerkki. Kelvollisia merkkej√§
+A-√ñ, 0-9 ja _. Vain 8 ensimm√§ist√§ merkki√§ on merkitsevi√§.
 
-L‰hes kaikille k‰skyille on k‰ytett‰viss‰ seuraavat muodot:
+L√§hes kaikille k√§skyille on k√§ytett√§viss√§ seuraavat muodot:
 
    OPER Rj,ADDR        suora muistiosoitus
    OPER Rj,Ri          suora rekisteriosoitus
-   OPER Rj,=ADDR       v‰litˆn operandi 
-   OPER Rj,@ADDR       ep‰suora muistiosoitus
+   OPER Rj,=ADDR       v√§lit√∂n operandi 
+   OPER Rj,@ADDR       ep√§suora muistiosoitus
    OPER Rj,ADDR(Ri)    indeksoitu  osoitus
-   OPER Rj,=ADDR(Ri)   indeksoitu v‰litˆn osoitus
-   OPER Rj,@ADDR(Ri)   indeksoitu ep‰suora muistiosoitus
+   OPER Rj,=ADDR(Ri)   indeksoitu v√§lit√∂n osoitus
+   OPER Rj,@ADDR(Ri)   indeksoitu ep√§suora muistiosoitus
 
 Poikkeuksia ovat:
 
-    STORE           j‰lkimm‰inen operandi on aina kohdeosoite,
+    STORE           j√§lkimm√§inen operandi on aina kohdeosoite,
                     ei voi olla rekisteri, tai vakio
-    POP             j‰lkimm‰isen operandin tulee aina olla rekisteri
-    HYPPYKƒSKYT     j‰lkimm‰inen operandi on aina kohdeosoite,
+    POP             j√§lkimm√§isen operandin tulee aina olla rekisteri
+    HYPPYK√ÑSKYT     j√§lkimm√§inen operandi on aina kohdeosoite,
                     ei voi olla vakio
-                    tilarekisteri‰ tutkivissa k‰skyiss‰ on ensimm‰inen
-                    operandi merkityksetˆn
-    NOT             ensimm‰inen operandi aina rekisteri, j‰lkimm‰isell‰
-                    ei merkityst‰ 
-    NOP             operandeilla ei merkityst‰
+                    tilarekisteri√§ tutkivissa k√§skyiss√§ on ensimm√§inen
+                    operandi merkitykset√∂n
+    NOT             ensimm√§inen operandi aina rekisteri, j√§lkimm√§isell√§
+                    ei merkityst√§ 
+    NOP             operandeilla ei merkityst√§
 
 ======================================================================
-                 TTK-91 symbolisen konekielen k‰skyt
+                 TTK-91 symbolisen konekielen k√§skyt
 ======================================================================
 
-Tiedonsiirtok‰skyt:
+Tiedonsiirtok√§skyt:
 
-LOAD   vie j‰lkimm‰isen operandin arvon rekisterin Rj arvoksi.
-STORE  talleta rekisteriss‰ Rj oleva  kokonaisluku j‰lkimm‰isen operan-
+LOAD   vie j√§lkimm√§isen operandin arvon rekisterin Rj arvoksi.
+STORE  talleta rekisteriss√§ Rj oleva  kokonaisluku j√§lkimm√§isen operan-
        din arvoksi.
-IN     lukee j‰lkimm‰isen‰ operandina kerrotulta laitteelta kokonaislu-
-       vun rekisteriin Rj (n‰pp‰imistˆlt‰ esim IN R1,=KBD)
-OUT    tulostaa rekisteriss‰ Rj olevan kokonaisluvun j‰lkimm‰isen‰
-       operandina kerrotulle laitteelle (n‰ytˆlle esim. OUT R1,=CRT)
+IN     lukee j√§lkimm√§isen√§ operandina kerrotulta laitteelta kokonaislu-
+       vun rekisteriin Rj (n√§pp√§imist√∂lt√§ esim IN R1,=KBD)
+OUT    tulostaa rekisteriss√§ Rj olevan kokonaisluvun j√§lkimm√§isen√§
+       operandina kerrotulle laitteelle (n√§yt√∂lle esim. OUT R1,=CRT)
 
-Aritmeettiset ja loogiset k‰skyt:
+Aritmeettiset ja loogiset k√§skyt:
 
-ADD    (add) lis‰‰ rekisteriss‰ Rj olevaan lukuun  j‰lkimm‰isen operan-
+ADD    (add) lis√§√§ rekisteriss√§ Rj olevaan lukuun  j√§lkimm√§isen operan-
        din arvon.
-SUB    (subtract) v‰henn‰ rekisteriss‰ Rj olevasta luvusta  j‰lkimm‰isen
+SUB    (subtract) v√§henn√§ rekisteriss√§ Rj olevasta luvusta  j√§lkimm√§isen
        operandin arvon.
-MUL    (multiply) kerro rekisteriss‰ Rj oleva luku  j‰lkimm‰isen operan-
+MUL    (multiply) kerro rekisteriss√§ Rj oleva luku  j√§lkimm√§isen operan-
        din arvolla.
-DIV    (divide) jaa rekisteriss‰ Rj oleva luku j‰lkimm‰isen operandin
-       arvolla. Jakolaskussa vain kokonaisosalla on merkityst‰.
-MOD    (modulo) jaa rekisteriss‰ Rj oleva luku  j‰lkimm‰isen operandin
-       arvolla. Jakolaskussa vain jakoj‰‰nnˆsosalla on merkityst‰.
+DIV    (divide) jaa rekisteriss√§ Rj oleva luku j√§lkimm√§isen operandin
+       arvolla. Jakolaskussa vain kokonaisosalla on merkityst√§.
+MOD    (modulo) jaa rekisteriss√§ Rj oleva luku  j√§lkimm√§isen operandin
+       arvolla. Jakolaskussa vain jakoj√§√§nn√∂sosalla on merkityst√§.
 
 AND    (boolean AND) looginen JA-operaatio.
 OR     (boolean OR) looginen TAI-operaatio.
 XOR    (boolean XOR) looginen poissulkeva TAI-operaatio.
-SHL    (shift left) siirr‰ rekisterin Rj bittej‰ vasemmalle toisen
-       operandin ilmoittama m‰‰r‰. T‰yt‰ oikeaa p‰‰t‰ 0-biteill‰.
-SHR    (shift right) kuten SHL, mutta siirr‰ oikealle.
-NOT    K‰‰nt‰‰ kaikki rekisterin Rj bitit. 
-SHRA   Aritmeettinen siirto oikealle, s‰ilytt‰‰ etumerkin. 
-COMP   (compare) vertaa ensimm‰isen operandin arvoa toisen operandin
+SHL    (shift left) siirr√§ rekisterin Rj bittej√§ vasemmalle toisen
+       operandin ilmoittama m√§√§r√§. T√§yt√§ oikeaa p√§√§t√§ 0-biteill√§.
+SHR    (shift right) kuten SHL, mutta siirr√§ oikealle.
+NOT    K√§√§nt√§√§ kaikki rekisterin Rj bitit. 
+SHRA   Aritmeettinen siirto oikealle, s√§ilytt√§√§ etumerkin. 
+COMP   (compare) vertaa ensimm√§isen operandin arvoa toisen operandin
        arvoon ja aseta vertailun tulos tilarekisterin bitteihin SR
-       L=pienempi, E=yht‰suuri, G=suurempi.
+       L=pienempi, E=yht√§suuri, G=suurempi.
 
-Haarautumisk‰skyt:
+Haarautumisk√§skyt:
 
 JUMP   (unconditional jump) ehdoton hyppy toisen operandin ilmaisemaan
        kohdeosoitteeseen.
 
-JNEG   (jump if negative) jos Rj < 0, niin hypp‰‰ j‰lkimm‰isen‰ operan-
-       dina olevaan osoitteeseen, muuten jatka seuraavasta k‰skyst‰.
+JNEG   (jump if negative) jos Rj < 0, niin hypp√§√§ j√§lkimm√§isen√§ operan-
+       dina olevaan osoitteeseen, muuten jatka seuraavasta k√§skyst√§.
 JZER   (jump if zero)         jos Rj = 0
 JPOS   (jump if positive)     jos Rj > 0
 JNNEG  (jump if not negative) jos Rj >= 0
@@ -103,51 +103,51 @@ JNZER  (jump if not zero)     jos Rj <> 0
 JNPOS  (jump if not positive) jos Rj <= 0
 
 JLES   (jump if less) jos tilarekisterin SR bitti L asetettu, niin
-       hypp‰‰ j‰lkimm‰isen‰ operandina olevaan osoitteeseen, muuten
-       jatka seuraavasta k‰skyst‰ (k‰yttˆ COMP-k‰skyn yhteydess‰).
+       hypp√§√§ j√§lkimm√§isen√§ operandina olevaan osoitteeseen, muuten
+       jatka seuraavasta k√§skyst√§ (k√§ytt√∂ COMP-k√§skyn yhteydess√§).
 JEQU   (jump if equal)         jos bitti E asetettu
 JGRE   (jump if greater)       jos bitti G asetettu
 JNLES  (jump if not less)      jos bitti E tai G asetettu
 JNEQU  (jump if not equal)     jos bitti L tai G asetettu
 JNGRE  (jump if not greater)   jos bitti L tai E asetettu
 
-Pinok‰skyt:
+Pinok√§skyt:
 
-K‰skyn ensimm‰inen operandi rekisteri Rj osoittaa pinon huipulle pinon
-p‰‰llimm‰iseen alkioon. Pino-osoittimena k‰ytet‰‰n tavallisesti rekiste-
-ri‰ SP (eli R6).
+K√§skyn ensimm√§inen operandi rekisteri Rj osoittaa pinon huipulle pinon
+p√§√§llimm√§iseen alkioon. Pino-osoittimena k√§ytet√§√§n tavallisesti rekiste-
+ri√§ SP (eli R6).
 
-PUSH   Kasvata pino-osoittimen Rj arvoa yhdell‰ ja vie j‰lkimm‰inen
-       operandi pinon p‰‰llimm‰iseksi alkioksi.
-POP    poista pinosta p‰‰llimm‰inen alkio ja vie se j‰lkimm‰isen‰
+PUSH   Kasvata pino-osoittimen Rj arvoa yhdell√§ ja vie j√§lkimm√§inen
+       operandi pinon p√§√§llimm√§iseksi alkioksi.
+POP    poista pinosta p√§√§llimm√§inen alkio ja vie se j√§lkimm√§isen√§
        operandina kerrottuun rekisteriin (HUOM: aina rekisteri).
-       V‰henn‰ pino-osoittimen Rj arvoa yhdell‰.
+       V√§henn√§ pino-osoittimen Rj arvoa yhdell√§.
 
-Aliohjelmak‰skyt:
+Aliohjelmak√§skyt:
 
 CALL   (call procedure) aliohjelmakutsu, eli kontrollin siirto toisen
        operandin ilmoittamaan osoitteeseen. Tallettaa paluuosoitteen
        pinoon, jonka huipulle osoittaa Rj.
-EXIT   palaa aliohjelmasta kutsua seuraavaan k‰skyyn. Paluuosoite lˆytyy
-       pinosta, jonka huipulle osoittaa Rj. J‰lkimm‰isen‰ operandina
-       pinossa v‰litettyjen parametrien lukum‰‰r‰.
+EXIT   palaa aliohjelmasta kutsua seuraavaan k√§skyyn. Paluuosoite l√∂ytyy
+       pinosta, jonka huipulle osoittaa Rj. J√§lkimm√§isen√§ operandina
+       pinossa v√§litettyjen parametrien lukum√§√§r√§.
 
 Systeemikutsut:
 
-SVC    (supervisor call) k‰yttˆj‰rjestelm‰n palvelurutiinin kutsu.
-       (systeemikutsu). Ensimm‰isen‰ operandi pinon huippu Rj ja toisena
+SVC    (supervisor call) k√§ytt√∂j√§rjestelm√§n palvelurutiinin kutsu.
+       (systeemikutsu). Ensimm√§isen√§ operandi pinon huippu Rj ja toisena
        operandina palvelun numero.
 
        Palvelunumeroita:
 
        HALT : Lopettaa ohjelman suorituksen.
-       TIME : Antaa kellonajan. Pinossa v‰litett‰v‰ osoitteet, jonne
-              halutaan tunnit, minuutit, sekunnit (HUOM: j‰rjestys!).
-       DATE : Antaa p‰iv‰yksen. Pinossa v‰litett‰v‰ osoitteet, jonne
-              halutaan vuosi, kuukausi ja p‰iv‰. (HUOM: j‰rjestys!).
-       READ : Lukee kokonaisluvun. Pinossa v‰litett‰v‰ osoite, jonne
+       TIME : Antaa kellonajan. Pinossa v√§litett√§v√§ osoitteet, jonne
+              halutaan tunnit, minuutit, sekunnit (HUOM: j√§rjestys!).
+       DATE : Antaa p√§iv√§yksen. Pinossa v√§litett√§v√§ osoitteet, jonne
+              halutaan vuosi, kuukausi ja p√§iv√§. (HUOM: j√§rjestys!).
+       READ : Lukee kokonaisluvun. Pinossa v√§litett√§v√§ osoite, jonne
               luku halutaan luettavan.
-       WRITE: Kirjoittaa kokonaisluvun. Pinossa v‰litett‰v‰ tulostettava
+       WRITE: Kirjoittaa kokonaisluvun. Pinossa v√§litett√§v√§ tulostettava
               arvo.
 
 Muita:
@@ -155,10 +155,10 @@ Muita:
 NOP    (no operation) ei toimintaa
 
 ======================================================================
-                    TTK-91 konekielen k‰skykoodit
+                    TTK-91 konekielen k√§skykoodit
 ======================================================================
 
-   K‰sky     Koodi    Desimaali  Heksadesim.
+   K√§sky     Koodi    Desimaali  Heksadesim.
 
    NOP       0000 0000     0        00
 
@@ -206,30 +206,30 @@ NOP    (no operation) ei toimintaa
    SVC       0111 0000   112        70
 
 ======================================================================
-                 K‰‰nt‰j‰n ohjausk‰skyt (valek‰skyt)
+                 K√§√§nt√§j√§n ohjausk√§skyt (valek√§skyt)
 ======================================================================
 
-K‰‰nt‰j‰n ohjausk‰skyt antavat ohjeita symbolisen konekielen k‰‰nt‰j‰l-
-le. Ne EIVƒT ole varsinaisia symbolisen konekielen k‰skyj‰.
+K√§√§nt√§j√§n ohjausk√§skyt antavat ohjeita symbolisen konekielen k√§√§nt√§j√§l-
+le. Ne EIV√ÑT ole varsinaisia symbolisen konekielen k√§skyj√§.
 
 tunnus EQU arvo
 
-Samaistusk‰sky EQU m‰‰rittelee symboliselle tunnukselle kokonaislukuar-
-von. Tunnusta voi k‰ytt‰‰  k‰skyn ADDR -kent‰ss‰, jolloin se k‰sitell‰‰n
+Samaistusk√§sky EQU m√§√§rittelee symboliselle tunnukselle kokonaislukuar-
+von. Tunnusta voi k√§ytt√§√§  k√§skyn ADDR -kent√§ss√§, jolloin se k√§sitell√§√§n
 kuten vastaavaan paikkaan kirjoitettu "arvo".
 
 tunnus DC arvo
 
-Muistinvarausk‰sky DC (data constant) varaa yhden muistisanan vakiota
+Muistinvarausk√§sky DC (data constant) varaa yhden muistisanan vakiota
 varten, samaistaa varatun muistipaikan osoitteen ja symbolisen osoitteen
-"tunnus" sek‰ asettaa varatun muistipaikan sis‰llˆksi luvun "arvo".
-Tunnusta voi k‰ytt‰‰ k‰skyn ADDR-kent‰ss‰ kuten muistiosoitetta.
+"tunnus" sek√§ asettaa varatun muistipaikan sis√§ll√∂ksi luvun "arvo".
+Tunnusta voi k√§ytt√§√§ k√§skyn ADDR-kent√§ss√§ kuten muistiosoitetta.
 
 tunnus DS koko
 
-Muistinvarausk‰sky DS (data segment) varaa muistialueen, jonka koko on
+Muistinvarausk√§sky DS (data segment) varaa muistialueen, jonka koko on
 "koko" (sanoina) ja samaistaa varatun muistialueen alkuosoitteen ja
-symbolisen osoitteen "tunnus". K‰ytet‰‰n globaalien muuttujien tilanva-
-raukseen. Tunnusta voi k‰ytt‰‰ k‰skyn ADDR -kent‰ss‰ kuten muistiosoi-
+symbolisen osoitteen "tunnus". K√§ytet√§√§n globaalien muuttujien tilanva-
+raukseen. Tunnusta voi k√§ytt√§√§ k√§skyn ADDR -kent√§ss√§ kuten muistiosoi-
 tetta.
 
