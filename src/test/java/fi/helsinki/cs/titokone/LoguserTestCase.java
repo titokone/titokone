@@ -3,18 +3,18 @@
 // This software is released under GNU Lesser General Public License 2.1.
 // The license text is at http://www.gnu.org/licenses/lgpl-2.1.html
 
-package fi.helsinki.cs.titokone.Sinitestistubit;
+package fi.helsinki.cs.titokone;
 
 import junit.framework.TestCase;
 
 import java.util.Vector;
 import java.util.logging.*;
 
-public abstract class __LoguserTestCase extends TestCase {
+public abstract class LoguserTestCase extends TestCase {
     protected LogRecord lastRecord;
     protected Vector allRecords = new Vector();
     protected Logger logger = getDebugLogger();
-    private __LokiHandler handler;
+    private LokiHandler handler;
 
     public void logged(LogRecord record) {
         lastRecord = record;
@@ -33,7 +33,7 @@ public abstract class __LoguserTestCase extends TestCase {
         oldHandlers = foo.getHandlers();
         //	for(int i = 0; i < oldHandlers.length; i++)
         //    foo.removeHandler(oldHandlers[i]);
-        handler = new __LokiHandler(this);
+        handler = new LokiHandler(this);
         foo.addHandler(handler);
         foo.setLevel(Level.FINEST);
         return foo;

@@ -3,15 +3,14 @@
 // This software is released under GNU Lesser General Public License 2.1.
 // The license text is at http://www.gnu.org/licenses/lgpl-2.1.html
 
-package fi.helsinki.cs.titokone.Sinitestistubit;
+package fi.helsinki.cs.titokone;
 
 import java.util.logging.*;
 
-public class __LokiHandler extends Handler {
-    private __LoguserTestCase listener;
-    private boolean hushed = false;
+public class LokiHandler extends Handler {
+    private LoguserTestCase listener;
 
-    public __LokiHandler(__LoguserTestCase listener) {
+    public LokiHandler(LoguserTestCase listener) {
         this.listener = listener;
     }
 
@@ -26,6 +25,5 @@ public class __LokiHandler extends Handler {
     }
 
     public void hush() {
-        hushed = true;
     }
 }

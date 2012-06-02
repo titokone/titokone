@@ -5,8 +5,6 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.titokone.Sinitestistubit.*;
-
 import java.util.Locale;
 import java.util.logging.LogRecord;
 
@@ -15,13 +13,13 @@ import java.util.logging.LogRecord;
  * the private static final boolean TESTING variable must be set to
  * true.
  */
-public class TranslatorTest extends __LoguserTestCase {
+public class TranslatorTest extends LoguserTestCase {
 
     private String originalResourceFamilyName;
 
     protected void setUp() throws Exception {
         originalResourceFamilyName = Translator.resourceFamilyName;
-        Translator.resourceFamilyName = __stub_translations.class.getName();
+        Translator.resourceFamilyName = StubTranslations.class.getName();
         Translator.setLocale(Locale.ENGLISH);
     }
 
@@ -55,7 +53,7 @@ public class TranslatorTest extends __LoguserTestCase {
         assertEquals("Another known message", "Translated {0} - {1} - {2}!", translateString);
 
         // Change the current translation turns out to be.
-        Translator.setLocale(Locale.ENGLISH, new __stub_translations(__stub_translations.OTHER_TRANSLATION));
+        Translator.setLocale(Locale.ENGLISH, new StubTranslations(StubTranslations.OTHER_TRANSLATION));
         // Then change it again so that it will only show up in the
         // default translations, not the current ones.
         // Now it should be translated, but not from the first try.
@@ -85,7 +83,7 @@ public class TranslatorTest extends __LoguserTestCase {
         String[] replace4 = {"fiba", getManyLetters(),
                 "fdasf", "fob"};
         // Use the basic translations.
-        Translator.setLocale(Locale.ENGLISH, new __stub_translations(__stub_translations.DEFAULT_TRANSLATION));
+        Translator.setLocale(Locale.ENGLISH, new StubTranslations(StubTranslations.DEFAULT_TRANSLATION));
         // Nothing to replace: 0 replacements (unnecessary).
         translateString = Translator.translate("UnknownString", replace0);
         assertEquals("Unknown message with 0 vs. 0", "UnknownString", translateString);
@@ -117,7 +115,7 @@ public class TranslatorTest extends __LoguserTestCase {
     public void testResourceLocating() {
         String translateString;
         Translator.setLocale(new Locale("fi", "FI", "MAC"));
-        // The __stub_translations_fi should be in use now.
+        // The StubTranslations_fi should be in use now.
         translateString = Translator.translate("NewKnownTranslation");
         assertEquals("New translateable", "New translation {0} - {1} - {2}!", translateString);
     }

@@ -5,11 +5,9 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.titokone.Sinitestistubit.__LoguserTestCase;
-
 import java.text.ParseException;
 
-public class SettingsTest extends __LoguserTestCase {
+public class SettingsTest extends LoguserTestCase {
     protected void setUp() {
     }
 

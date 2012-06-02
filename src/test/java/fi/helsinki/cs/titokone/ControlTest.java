@@ -6,7 +6,6 @@
 package fi.helsinki.cs.titokone;
 
 import com.google.common.io.Files;
-import fi.helsinki.cs.titokone.Sinitestistubit.__LoguserTestCase;
 import fi.helsinki.cs.ttk91.*;
 import org.junit.rules.TemporaryFolder;
 
@@ -15,7 +14,7 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.util.Locale;
 
-public class ControlTest extends __LoguserTestCase {
+public class ControlTest extends LoguserTestCase {
 
     private String originalLineSeparator;
     private final TemporaryFolder tempDir = new TemporaryFolder();

@@ -3,14 +3,14 @@
 // This software is released under GNU Lesser General Public License 2.1.
 // The license text is at http://www.gnu.org/licenses/lgpl-2.1.html
 
-package fi.helsinki.cs.titokone.Sinitestistubit;
+package fi.helsinki.cs.titokone;
 
 import java.util.ListResourceBundle;
 
 /**
  * This class is the stub tester for the Translator class.
  */
-public class __stub_translations extends ListResourceBundle {
+public class StubTranslations extends ListResourceBundle {
 
     public static final String[][] DEFAULT_TRANSLATION = {
             {"SecondKnownTranslation", "Translated {0} - {1} - {2}!"},
@@ -24,11 +24,11 @@ public class __stub_translations extends ListResourceBundle {
     private final String[][] contents;
 
     @SuppressWarnings("UnusedDeclaration")
-    public __stub_translations() {
+    public StubTranslations() {
         this(DEFAULT_TRANSLATION);
     }
 
-    public __stub_translations(String[][] contents) {
+    public StubTranslations(String[][] contents) {
         this.contents = contents;
     }
 

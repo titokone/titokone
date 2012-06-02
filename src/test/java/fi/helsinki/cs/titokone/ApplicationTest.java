@@ -5,15 +5,24 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.titokone.Sinitestistubit.*;
 import fi.helsinki.cs.ttk91.*;
 
-public class ApplicationTest extends __LoguserTestCase {
+public class ApplicationTest extends LoguserTestCase {
 
     protected void setUp() {
     }
 
     public void testConstructor() {
+        class __stub_memoryline extends MemoryLine {
+            public __stub_memoryline() {
+                super(1, "foo");
+            }
+
+            public int getBinary() {
+                return 60;
+            }
+        }
+
         Application app;
         // The stub_memorylines always return 60 for their getBinary().
         __stub_memoryline[] foo = {new __stub_memoryline()};
@@ -24,7 +33,7 @@ public class ApplicationTest extends __LoguserTestCase {
         assertEquals(app.getInitialData().length, 0);
         assertTrue(app.getSymbolTable() != null);
         // Then try one which has content.
-        app = new Application(foo, foo, new __stub_symboltable());
+        app = new Application(foo, foo, new SymbolTable());
         assertEquals("One-length code area", app.getCode().length, 1);
         assertEquals(app.getCode()[0].getBinary(), 60);
         assertEquals("One-length data area", app.getInitialData().length, 1);
