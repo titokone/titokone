@@ -155,6 +155,12 @@
                             <targetTests>
                                 <pattern>fi.helsinki.cs.*</pattern>
                             </targetTests>
+                            <excludedClasses>
+                                <!-- The translation classes contain long static initializer blocks
+                                     which are not covered by tests, so they take too long to mutate.
+                                     And they should anyways be replaced with plain properties files. -->
+                                <pattern>fi.helsinki.cs.titokone.translations.*</pattern>
+                            </excludedClasses>
                             <mutators>
                                 <mutator>ALL</mutator>
                             </mutators>
