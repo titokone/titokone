@@ -1,17 +1,13 @@
-Building Titokone requires Maven 2+ and is done with the command:
+Building Titokone requires Maven 2 or greater. The resulting
+executable JAR can be found from the /target directory.
 
   mvn clean verify
 
-The resulting executable JAR can be found from the /target directory.
-
-Right now the tests have not yet been updated (they haven't been updated
-since 2004), so the build is failing. Running the tests can be skipped with:
-
-  mvn clean verify -DskipTests
-
-Producing a test coverage report (line coverage & mutation coverage) can be
-done with the command:
+This project is configured to use PIT (pitest.org) to produce a test
+coverage report (line coverage & mutation coverage). The reports will
+be written in the /target/pit-reports directory.
 
   mvn clean verify -Pcoverage-report
 
-Releasing new versions can be done with Maven Release Plugin (not yet configured).
+Releasing new versions can be done with Maven Release Plugin (not yet
+configured).
