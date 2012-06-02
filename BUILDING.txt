@@ -9,5 +9,8 @@ be written in the /target/pit-reports directory.
 
   mvn clean verify -Pcoverage-report
 
-Releasing new versions can be done with Maven Release Plugin (not yet
-configured).
+Releasing new versions can be done with the Maven Release Plugin.
+
+  mvn release:prepare
+  git push origin master
+  git push origin --tags
