@@ -11,6 +11,6 @@ be written in the /target/pit-reports directory.
 
 Releasing new versions can be done with the Maven Release Plugin.
 
-  mvn release:prepare
+  mvn release:prepare release:clean
   git push origin master
   git push origin --tags
