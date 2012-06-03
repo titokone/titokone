@@ -6,10 +6,10 @@
 package fi.helsinki.cs.titokone;
 
 /**
- *  Represents a compiled instruction. Basically just a wrapper to conveniently
- *  extract the instruction fields from the binary representation.
- * 
- *  TODO: At least RunInfo and MemoryInfo might have something in common with this class.
+ * Represents a compiled instruction. Basically just a wrapper to conveniently
+ * extract the instruction fields from the binary representation.
+ * <p/>
+ * TODO: At least RunInfo and MemoryInfo might have something in common with this class.
  */
 public class Instruction {
 
@@ -42,7 +42,7 @@ public class Instruction {
     public int getAddr() {
         return (short) (binaryValue & 0xFFFF);
     }
-    
+
     public String toColonString() {
         return getOpcode() + ":" + getRj() + ":" + getM() + ":" + getRi() + ":" + getAddr();
     }

@@ -1153,8 +1153,7 @@ doesn't go to exactly right place without it. Otherwise it'd be misplaced by two
         final int finalY = y;
         SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 finalActiveScrollPane.getViewport().setViewPosition(new Point(0, finalY));
             }
         });

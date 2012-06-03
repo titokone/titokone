@@ -7,7 +7,6 @@ package fi.helsinki.cs.titokone;
 
 import fi.helsinki.cs.titokone.devices.DeviceNames;
 import fi.helsinki.cs.ttk91.TTK91CompileException;
-import java.util.Collections;
 
 import java.util.*;
 
@@ -185,7 +184,7 @@ public class Compiler {
         symbols = new HashMap<String, Integer>();
         symbolTable = new Vector<String[]>();
 
-        invalidLabels = new HashMap<String,Integer>();
+        invalidLabels = new HashMap<String, Integer>();
         invalidLabels.putAll(DeviceNames.DEVICES);
         invalidLabels.putAll(SvcNames.SVCS);
     }

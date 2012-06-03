@@ -2,6 +2,7 @@
 // Copyright © 2012 various contributors
 // This software is released under GNU Lesser General Public License 2.1.
 // The license text is at http://www.gnu.org/licenses/lgpl-2.1.html
+
 package fi.helsinki.cs.titokone;
 
 import fi.helsinki.cs.ttk91.*;
@@ -59,13 +60,12 @@ public class Control implements TTK91Core {
             sourceFile;
 
     private LoadInfo pendingLoadInfo = null;
-    private Display display; //reference to display so we can give it to
-                             //processor for access
+    private Display display; //reference to display so we can give it to processor for access
 
     /**
      * This constructor sets up the Control instance.
      */
-    public Control(File defaultStdInFile, File defaultStdOutFile,Display d) {
+    public Control(File defaultStdInFile, File defaultStdOutFile, Display d) {
         Logger logger = Logger.getLogger(getClass().getPackage().getName());
 
         if (defaultStdInFile == null) {
@@ -74,7 +74,7 @@ public class Control implements TTK91Core {
         if (defaultStdOutFile == null) {
             logger.info(new Message("No default STDOUT file set.").toString());
         }
-        this.display=d;
+        this.display = d;
         fileHandler = new FileHandler();
         compiler = new Compiler();
         // Create a new processor with a memory size of 2^9.
@@ -83,6 +83,7 @@ public class Control implements TTK91Core {
         this.defaultStdOutFile = defaultStdOutFile;
         currentStdOutFile = defaultStdOutFile;
     }
+
     /**
      * Compiles a symbolic TTK91-assembly language to binary executable
      * application. Defined by TTK91Core. It throws exceptions if the
@@ -404,7 +405,7 @@ public class Control implements TTK91Core {
                     "" + powerOfTwo).toString();
             throw new IllegalArgumentException(errorMessage);
         }
-        processor = new Processor((int) Math.pow(2, powerOfTwo));        
+        processor = new Processor((int) Math.pow(2, powerOfTwo));
         processor.setExternalDevice(display);
     }
 

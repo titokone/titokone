@@ -13,7 +13,7 @@ import fi.helsinki.cs.titokone.*;
 public abstract class VIC
         implements IODevice, InterruptGenerator {
     protected Interruptable pic;
-    protected State state=State.Normal;
+    protected State state = State.Normal;
 
     public int getPortCount() {
         return 5;
@@ -30,22 +30,31 @@ public abstract class VIC
     @Override
     public void setPort(int n, int value) {
         Display d = getDisplay();
-        if(state==State.Normal)
-        {
-            switch(value)
-            {
-                case 0: state=State.SetBase;return;
-                case 1: state=State.SetMargin;return;
-                case 2: state=State.SetMode;return;
+        if (state == State.Normal) {
+            switch (value) {
+                case 0:
+                    state = State.SetBase;
+                    return;
+                case 1:
+                    state = State.SetMargin;
+                    return;
+                case 2:
+                    state = State.SetMode;
+                    return;
             }
-        }else{
-            switch(state)
-            {
-                case SetBase:d.setBaseAddress(value);break;
-                case SetMargin:d.setMarginColor(value);break;
-                case SetMode:d.setMode(value);break;
+        } else {
+            switch (state) {
+                case SetBase:
+                    d.setBaseAddress(value);
+                    break;
+                case SetMargin:
+                    d.setMarginColor(value);
+                    break;
+                case SetMode:
+                    d.setMode(value);
+                    break;
             }
-            state=State.Normal;
+            state = State.Normal;
             return;
         }
         if (n < 0 || n > 4) {
@@ -54,7 +63,7 @@ public abstract class VIC
     }
 
     public void reset() {
-        state=State.Normal;
+        state = State.Normal;
     }
 
     public void update() {
@@ -65,9 +74,8 @@ public abstract class VIC
     }
 
     public abstract Display getDisplay();
-    
-    enum State
-    {
+
+    enum State {
         Normal,
         SetBase,
         SetMargin, //set margin color

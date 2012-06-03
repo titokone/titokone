@@ -90,11 +90,12 @@ public class CompileDebugger {
         info.setSymbolFound();
         Integer value;
 
-        if((value = SvcNames.lookupIgnoringCase(name)) != null ||
-                (value = DeviceNames.lookupIgnoringCase(name)) != null)
+        if ((value = SvcNames.lookupIgnoringCase(name)) != null ||
+                (value = DeviceNames.lookupIgnoringCase(name)) != null) {
             info.setSymbolName(name, value);
-        else
+        } else {
             info.setSymbolName(name);
+        }
     }
 
     /**

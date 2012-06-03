@@ -6,6 +6,7 @@
 package fi.helsinki.cs.titokone;
 
 import fi.helsinki.cs.titokone.devices.DeviceNames;
+
 import java.util.HashMap;
 
 /**
@@ -142,13 +143,14 @@ public class BinaryInterpreter extends Interpreter {
                 s += " " + getFirstRegisterFromBinary(command);
 
                 int device = Integer.parseInt(getAddressFromBinary(command));
-                if(!getMemoryModeFromBinary(command).equals("=")) {
+                if (!getMemoryModeFromBinary(command).equals("=")) {
                     return GARBLE;
                 }
 
                 String devName = DeviceNames.lookupByValue(device);
-                if(devName != null)
+                if (devName != null) {
                     return s + ", =" + devName.toUpperCase();
+                }
                 return GARBLE;
             }
             case 8: { //Address with less fetches
@@ -165,14 +167,15 @@ public class BinaryInterpreter extends Interpreter {
                 return s;
             }
             case 9: {//SVC SP and operation
-        // FIXME: this should really allow any addressing mode and no restrictions on the constant value
+                // FIXME: this should really allow any addressing mode and no restrictions on the constant value
                 s += " " + getFirstRegisterFromBinary(command);
                 s += ", =";
-        int service = Integer.parseInt(getAddressFromBinary(command));
+                int service = Integer.parseInt(getAddressFromBinary(command));
 
-        String servName = SvcNames.lookupByValue(service);
-        if(servName != null)
-            return s + servName.toUpperCase();
+                String servName = SvcNames.lookupByValue(service);
+                if (servName != null) {
+                    return s + servName.toUpperCase();
+                }
 
                 return GARBLE;
             }

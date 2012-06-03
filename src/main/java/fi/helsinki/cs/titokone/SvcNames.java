@@ -5,9 +5,7 @@
 
 package fi.helsinki.cs.titokone;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class SvcNames {
     public static final Map<String, Integer> SVCS;
@@ -27,9 +25,11 @@ public class SvcNames {
     }
 
     public static String lookupByValue(int value) {
-        for(Map.Entry<String, Integer> entries : SVCS.entrySet())
-            if(entries.getValue() == value)
+        for (Map.Entry<String, Integer> entries : SVCS.entrySet()) {
+            if (entries.getValue() == value) {
                 return entries.getKey();
+            }
+        }
         return null;
     }
 }

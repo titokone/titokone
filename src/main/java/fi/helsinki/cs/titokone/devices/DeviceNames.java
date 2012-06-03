@@ -5,9 +5,7 @@
 
 package fi.helsinki.cs.titokone.devices;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DeviceNames {
     public static final Map<String, Integer> DEVICES;
@@ -28,9 +26,11 @@ public class DeviceNames {
     }
 
     public static String lookupByValue(int value) {
-        for(Map.Entry<String, Integer> entries : DEVICES.entrySet())
-            if(entries.getValue() == value)
+        for (Map.Entry<String, Integer> entries : DEVICES.entrySet()) {
+            if (entries.getValue() == value) {
                 return entries.getKey();
+            }
+        }
         return null;
     }
 }

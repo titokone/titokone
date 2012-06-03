@@ -26,7 +26,7 @@ import java.util.logging.Logger;
 public class GUIBrain {
 
     //lock object to avoid locking externally
-    protected Object lock=new Object();
+    protected Object lock = new Object();
     /**
      * This variable can be set to e.g. 70 to slow down the GUI on
      * compilation and runtime for overly fast machines. It should
@@ -153,7 +153,7 @@ public class GUIBrain {
         } catch (IOException e) {
             logger.info(e.getMessage());
         }
-        control = new Control(defStdinFile, defStdoutFile,display);
+        control = new Control(defStdinFile, defStdoutFile, display);
 
         this.animator = animator;
         this.display = display;
@@ -325,165 +325,165 @@ public class GUIBrain {
      * This method corresponds to the menu option File -> Run. It does
      * its work by calling runInstruction().
      */
-    public  void menuRun() {
-        synchronized(lock)
-        {
+    public void menuRun() {
+        synchronized (lock) {
 
-        threadRunning = true;
+            threadRunning = true;
 
-        interruptSent = false;
-        noPauses = false;
+            interruptSent = false;
+            noPauses = false;
 
-        /* If stdout file is set to be overwritten, then it must be emptied first.
-           It's done here by deleting it first and then creating it again.
-        */
-        File stdoutFile = getCurrentDefaultStdoutFile();
-        if (currentSettings.getStrValue(Settings.STDOUT_USE).equals("overwrite")) {
-            try {
-                if (stdoutFile.exists()) {
-                    stdoutFile.delete();
+            /* If stdout file is set to be overwritten, then it must be emptied first.
+               It's done here by deleting it first and then creating it again.
+            */
+            File stdoutFile = getCurrentDefaultStdoutFile();
+            if (currentSettings.getStrValue(Settings.STDOUT_USE).equals("overwrite")) {
+                try {
+                    if (stdoutFile.exists()) {
+                        stdoutFile.delete();
+                    }
+                    stdoutFile.createNewFile();
+                } catch (IOException e) {
+                    String[] filename = {stdoutFile.getName()};
+                    gui.showError(new Message("Error while emptying {0}", filename).toString());
+                    logger.warning(e.getMessage());
+                    //return; // Allow emptying to fail, since it may not mean anything.
                 }
-                stdoutFile.createNewFile();
-            } catch (IOException e) {
-                String[] filename = {stdoutFile.getName()};
-                gui.showError(new Message("Error while emptying {0}", filename).toString());
-                logger.warning(e.getMessage());
-                //return; // Allow emptying to fail, since it may not mean anything.
             }
-        }
 
-        RunInfo runinfo;
-        int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
+            RunInfo runinfo;
+            int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
 
-        int base = 0; //Register base is always 0
-        int limit = currentSettings.getIntValue(Settings.MEMORY_SIZE); //Register limit is equal to memsize
+            int base = 0; //Register base is always 0
+            int limit = currentSettings.getIntValue(Settings.MEMORY_SIZE); //Register limit is equal to memsize
 
-        animator.init(control.getCpu(), base, limit);
+            animator.init(control.getCpu(), base, limit);
 
-        if ((runmode & ANIMATED) != 0) {
-            gui.showAnimator();
-        }
+            if ((runmode & ANIMATED) != 0) {
+                gui.showAnimator();
+            }
 
-        do {
-            currentState = B91_RUNNING;
-            setGUICommandsForCurrentState();
+            do {
+                currentState = B91_RUNNING;
+                setGUICommandsForCurrentState();
 
-            int nextLine = ((Processor) control.getCpu()).getValueOf(TTK91Cpu.CU_PC_CURRENT);
-            gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
+                int nextLine = ((Processor) control.getCpu()).getValueOf(TTK91Cpu.CU_PC_CURRENT);
+                gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
 
-            runmode = currentSettings.getIntValue(Settings.RUN_MODE);
+                runmode = currentSettings.getIntValue(Settings.RUN_MODE);
 
-            try {
-                runinfo = control.runLine();
-                if (runinfo == null) {
+                try {
+                    runinfo = control.runLine();
+                    if (runinfo == null) {
+                        break;
+                    }
+                } catch (TTK91NoKbdData needMoreData) {
+                    /* GUI's KBD-frame is enabled and exectution cannot go on before user has entered
+                       a number value there. GUI calls GUIBrain's enterInput()-method to send the number
+                       ahead to Control.
+                    */
+                    gui.addComment(new Message("Enter a number in the text field above.").toString());
+                    gui.updateStatusBar(new Message("Waiting for KBD input...").toString());
+                    currentState = B91_WAIT_FOR_KBD;
+                    setGUICommandsForCurrentState();
+                    gui.enable(GUI.INPUT_FIELD);
+                    /* Wait until continueTask() is run. In this case it's done by pressing
+                       enter-button below the text field where user enter kbd-data.
+                    */
+                    waitForContinueTask();
+                    gui.disable(GUI.INPUT_FIELD);
+                    continue; // And then go to beginning of the do-while-loop.
+
+                } catch (TTK91RuntimeException e) {
+                    gui.updateStatusBar(new Message("Execution aborted due to an error").toString());
+                    gui.addComment(e.getMessage());
+                    currentState = INTERRUPTED_WITH_PAUSE;
+                    setGUICommandsForCurrentState();
                     break;
                 }
-            } catch (TTK91NoKbdData needMoreData) {
-                /* GUI's KBD-frame is enabled and exectution cannot go on before user has entered
-                   a number value there. GUI calls GUIBrain's enterInput()-method to send the number
-                   ahead to Control.
-                */
-                gui.addComment(new Message("Enter a number in the text field above.").toString());
-                gui.updateStatusBar(new Message("Waiting for KBD input...").toString());
-                currentState = B91_WAIT_FOR_KBD;
-                setGUICommandsForCurrentState();
-                gui.enable(GUI.INPUT_FIELD);
-                /* Wait until continueTask() is run. In this case it's done by pressing
-                   enter-button below the text field where user enter kbd-data.
-                */
-                waitForContinueTask();
-                gui.disable(GUI.INPUT_FIELD);
-                continue; // And then go to beginning of the do-while-loop.
 
-            } catch (TTK91RuntimeException e) {
-                gui.updateStatusBar(new Message("Execution aborted due to an error").toString());
-                gui.addComment(e.getMessage());
-                currentState = INTERRUPTED_WITH_PAUSE;
-                setGUICommandsForCurrentState();
-                break;
-            }
-
-            if ((runmode & COMMENTED) != 0) {
-                if (runinfo.getComments() != null) {
-                    gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
+                if ((runmode & COMMENTED) != 0) {
+                    if (runinfo.getComments() != null) {
+                        gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
+                    }
                 }
-            }
 
-            animator.stopAnimation();
-            animator.animate(runinfo);
+                animator.stopAnimation();
+                animator.animate(runinfo);
 
-            gui.updateStatusBar(runinfo.getComments());
+                gui.updateStatusBar(runinfo.getComments());
 
-            // If the command wrote something to screen, we'll deal with
-            // the actual writing. STDOUT writes are dealt with in Control.
-            if (runinfo.isExternalOp() && runinfo.whatOUT() != null) {
-                // We use a Processor constant to check what device we are
-                // writing to. CRT happens to be 0 now, but it might not be
-                // "in the future".
-                if (runinfo.whatOUT()[0] == Processor.CRT) {
-                    gui.addOutputData(runinfo.whatOUT()[1]);
+                // If the command wrote something to screen, we'll deal with
+                // the actual writing. STDOUT writes are dealt with in Control.
+                if (runinfo.isExternalOp() && runinfo.whatOUT() != null) {
+                    // We use a Processor constant to check what device we are
+                    // writing to. CRT happens to be 0 now, but it might not be
+                    // "in the future".
+                    if (runinfo.whatOUT()[0] == Processor.CRT) {
+                        gui.addOutputData(runinfo.whatOUT()[1]);
+                    }
                 }
-            }
 
-            int[] newRegisterValues = runinfo.getRegisters();
-            gui.updateReg(GUI.R0, newRegisterValues[0]);
-            gui.updateReg(GUI.R1, newRegisterValues[1]);
-            gui.updateReg(GUI.R2, newRegisterValues[2]);
-            gui.updateReg(GUI.R3, newRegisterValues[3]);
-            gui.updateReg(GUI.R4, newRegisterValues[4]);
-            gui.updateReg(GUI.R5, newRegisterValues[5]);
-            gui.updateReg(GUI.R6, newRegisterValues[6]);
-            gui.updateReg(GUI.R7, newRegisterValues[7]);
-            gui.updateReg(GUI.PC, runinfo.getNewPC());
+                int[] newRegisterValues = runinfo.getRegisters();
+                gui.updateReg(GUI.R0, newRegisterValues[0]);
+                gui.updateReg(GUI.R1, newRegisterValues[1]);
+                gui.updateReg(GUI.R2, newRegisterValues[2]);
+                gui.updateReg(GUI.R3, newRegisterValues[3]);
+                gui.updateReg(GUI.R4, newRegisterValues[4]);
+                gui.updateReg(GUI.R5, newRegisterValues[5]);
+                gui.updateReg(GUI.R6, newRegisterValues[6]);
+                gui.updateReg(GUI.R7, newRegisterValues[7]);
+                gui.updateReg(GUI.PC, runinfo.getNewPC());
 
-            LinkedList changedMemoryLines = runinfo.getChangedMemoryLines();
-            Iterator changedMemoryLinesListIterator = changedMemoryLines.iterator();
+                LinkedList changedMemoryLines = runinfo.getChangedMemoryLines();
+                Iterator changedMemoryLinesListIterator = changedMemoryLines.iterator();
 
-            while (changedMemoryLinesListIterator.hasNext()) {
-                Object[] listItem = (Object[]) changedMemoryLinesListIterator.next();
-                int line = ((Integer) listItem[0]).intValue();
-                MemoryLine contents = (MemoryLine) listItem[1];
-                gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
-            }
+                while (changedMemoryLinesListIterator.hasNext()) {
+                    Object[] listItem = (Object[]) changedMemoryLinesListIterator.next();
+                    int line = ((Integer) listItem[0]).intValue();
+                    MemoryLine contents = (MemoryLine) listItem[1];
+                    gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
+                }
 
-            gui.repaint();
+                gui.repaint();
 
-            if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
-                currentState = B91_PAUSED;
+                if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
+                    currentState = B91_PAUSED;
+                    setGUICommandsForCurrentState();
+                    waitForContinueTask();
+
+                } else {
+                    try {
+                        if (SLOWDOWN > 0) {
+                            lock.wait(SLOWDOWN);
+                        }
+                    } catch (InterruptedException e) {
+                        System.out.println("InterruptedException in menuRun()");
+                    }
+
+                }
+
+            } while (interruptSent == false); // End of do-while -loop
+
+            if (currentState == INTERRUPTED_WITH_PAUSE) {
                 setGUICommandsForCurrentState();
                 waitForContinueTask();
-
-            } else {
-                try {
-                    if(SLOWDOWN>0)
-                        lock.wait(SLOWDOWN); 
-                } catch (InterruptedException e) {
-                    System.out.println("InterruptedException in menuRun()");
-                }
-
             }
 
-        } while (interruptSent == false); // End of do-while -loop
-
-        if (currentState == INTERRUPTED_WITH_PAUSE) {
+            load();
+            currentState = B91_NOT_RUNNING;
             setGUICommandsForCurrentState();
-            waitForContinueTask();
-        }
 
-        load();
-        currentState = B91_NOT_RUNNING;
-        setGUICommandsForCurrentState();
+            gui.unselectAll();
 
-        gui.unselectAll();
+            gui.addComment(" ");
+            gui.addComment(new Message("Execution finished").toString());
+            gui.addComment(" ");
 
-        gui.addComment(" ");
-        gui.addComment(new Message("Execution finished").toString());
-        gui.addComment(" ");
+            continueTask();
 
-        continueTask();
-
-        threadRunning = false;
-        continueTask();
+            threadRunning = false;
+            continueTask();
         }
     }
 
@@ -505,232 +505,227 @@ public class GUIBrain {
      * does its work by calling compileLine().
      */
     public void menuCompile() {
-        synchronized(lock)
-        {
+        synchronized (lock) {
 
-        threadRunning = true;
+            threadRunning = true;
 
-        interruptSent = false;
-        noPauses = false;
-
-        currentState = K91_COMPILING;
-        setGUICommandsForCurrentState();
-
-        /* compileinfo is set to null now. Null as CompileInfo object means also that
-           compilation has finished successfully. We may think that if no line was
-           compiled then it would mean a successful compilation as well, so this isn't
-           in contradiction to that anyway.
-           Really this is set to null because we need compileinfo to be initialized somehow
-           in compileLine() methods try-catch clause a few lines below.
-        */
-        CompileInfo compileinfo = null;
-
-        int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
-        int phase;
-
-        /* This will be set to true once the compilation succeeds. The value
-           of this variable will be used in case of an interrupted compilation
-           or if an error occurs, when menuCompile() has to decide whether to
-           change back to pre-compilation-started state or not.
-        */
-        boolean compilingCompleted = false;
-
-        do {
+            interruptSent = false;
+            noPauses = false;
 
             currentState = K91_COMPILING;
             setGUICommandsForCurrentState();
 
-            try {
-                compileinfo = control.compileLine();
-            } catch (TTK91CompileException e) {
-                /* This section is executed if an error occured during compilation. First
-                   we preset errorLine and phase to what they would be, if there hasn't
-                   been any compileinfo before.
-                */
-                int errorLine = 0;
-                phase = CompileInfo.FIRST_ROUND;
+            /* compileinfo is set to null now. Null as CompileInfo object means also that
+               compilation has finished successfully. We may think that if no line was
+               compiled then it would mean a successful compilation as well, so this isn't
+               in contradiction to that anyway.
+               Really this is set to null because we need compileinfo to be initialized somehow
+               in compileLine() methods try-catch clause a few lines below.
+            */
+            CompileInfo compileinfo = null;
 
-                /* Then we check if there has been some compileinfos before and set errorLine
-                   and phase accordingly if positive.
-                */
-                if (compileinfo != null) {
-                    errorLine = compileinfo.getLineNumber() + 1;
-                    phase = compileinfo.getPhase();
-                }
+            int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
+            int phase;
 
-                gui.addComment(errorLine + ": " + e.getMessage());
-                gui.updateStatusBar(new Message("Compilation aborted due to an error").toString());
+            /* This will be set to true once the compilation succeeds. The value
+               of this variable will be used in case of an interrupted compilation
+               or if an error occurs, when menuCompile() has to decide whether to
+               change back to pre-compilation-started state or not.
+            */
+            boolean compilingCompleted = false;
 
-                if (phase == CompileInfo.FIRST_ROUND) {
-                    gui.selectLine(errorLine, GUI.CODE_TABLE);
-                } else if (phase == CompileInfo.SECOND_ROUND) {
-                    gui.selectLine(errorLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
-                }
+            do {
 
-                currentState = K91_PAUSED;
+                currentState = K91_COMPILING;
                 setGUICommandsForCurrentState();
-                waitForContinueTask();
-                break;
-            }
 
-            /* Compilation is finished once compileLine() returns null */
-            if (compileinfo == null) {
-                compilingCompleted = true;
-                break;
-            } else {
-                String comments = compileinfo.getComments();
-                if (comments == null) {
-                    comments = "";
-                }
+                try {
+                    compileinfo = control.compileLine();
+                } catch (TTK91CompileException e) {
+                    /* This section is executed if an error occured during compilation. First
+                       we preset errorLine and phase to what they would be, if there hasn't
+                       been any compileinfo before.
+                    */
+                    int errorLine = 0;
+                    phase = CompileInfo.FIRST_ROUND;
 
-                if ((compilemode & COMMENTED) != 0 && !comments.equals("")) {
-                    gui.addComment(compileinfo.getLineNumber() + ": " + comments);
-                }
-
-                gui.updateStatusBar(comments);
-
-                compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
-                phase = compileinfo.getPhase();
-
-                if (phase == CompileInfo.FIRST_ROUND) {
-                    if (compileinfo.getSymbolFound()) {
-                        String symbolName = compileinfo.getSymbolName();
-                        Integer symbolValue = null;
-                        if (compileinfo.getSymbolDefined()) {
-                            symbolValue = new Integer(compileinfo.getSymbolValue());
-                        }
-                        gui.updateRowInSymbolTable(symbolName, symbolValue);
-                    }
-                    if (compileinfo.getLabelFound()) {
-                        String symbolName = compileinfo.getLabelName();
-                        Integer symbolValue = new Integer(compileinfo.getLabelValue());
-                        gui.updateRowInSymbolTable(symbolName, symbolValue);
+                    /* Then we check if there has been some compileinfos before and set errorLine
+                       and phase accordingly if positive.
+                    */
+                    if (compileinfo != null) {
+                        errorLine = compileinfo.getLineNumber() + 1;
+                        phase = compileinfo.getPhase();
                     }
 
-                    gui.selectLine(compileinfo.getLineNumber(), GUI.CODE_TABLE);
-                } else if (phase == CompileInfo.FINALIZING_FIRST_ROUND) {
-                    String[][] symbolTable = compileinfo.getSymbolTable();
-                    if (symbolTable != null) {
-                        for (int i = 0; i < symbolTable.length; i++) {
-                            String symbolName = symbolTable[i][0];
-                            Integer symbolValue = null;
-                            try {
-                                symbolValue = new Integer(symbolTable[i][1]);
-                            } catch (NumberFormatException e) {
-                            }
-                            gui.updateRowInSymbolTable(symbolName, symbolValue);
-                        }
+                    gui.addComment(errorLine + ": " + e.getMessage());
+                    gui.updateStatusBar(new Message("Compilation aborted due to an error").toString());
+
+                    if (phase == CompileInfo.FIRST_ROUND) {
+                        gui.selectLine(errorLine, GUI.CODE_TABLE);
+                    } else if (phase == CompileInfo.SECOND_ROUND) {
+                        gui.selectLine(errorLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
                     }
 
-                    String[] newInstructionsContents = compileinfo.getInstructions();
-                    String[] newDataContents = compileinfo.getData();
-                    gui.insertToInstructionsTable(newInstructionsContents);
-                    gui.insertToDataTable(newDataContents);
-                    gui.setGUIView(3);
-
-                } else if (phase == CompileInfo.SECOND_ROUND) {
-                    int line = compileinfo.getLineNumber();
-                    int binary = compileinfo.getLineBinary();
-                    gui.updateInstructionsAndDataTableLine(line, binary);
-                    gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
-                }
-
-                gui.repaint();
-
-                if (((compilemode & PAUSED) != 0) && !comments.equals("") && noPauses == false) {
                     currentState = K91_PAUSED;
                     setGUICommandsForCurrentState();
                     waitForContinueTask();
+                    break;
+                }
+
+                /* Compilation is finished once compileLine() returns null */
+                if (compileinfo == null) {
+                    compilingCompleted = true;
+                    break;
                 } else {
-                    try {
-                        lock.wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
-                    } catch (InterruptedException e) {
-                        System.out.println("InterruptedException in menuRun()");
+                    String comments = compileinfo.getComments();
+                    if (comments == null) {
+                        comments = "";
                     }
 
+                    if ((compilemode & COMMENTED) != 0 && !comments.equals("")) {
+                        gui.addComment(compileinfo.getLineNumber() + ": " + comments);
+                    }
+
+                    gui.updateStatusBar(comments);
+
+                    compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
+                    phase = compileinfo.getPhase();
+
+                    if (phase == CompileInfo.FIRST_ROUND) {
+                        if (compileinfo.getSymbolFound()) {
+                            String symbolName = compileinfo.getSymbolName();
+                            Integer symbolValue = null;
+                            if (compileinfo.getSymbolDefined()) {
+                                symbolValue = new Integer(compileinfo.getSymbolValue());
+                            }
+                            gui.updateRowInSymbolTable(symbolName, symbolValue);
+                        }
+                        if (compileinfo.getLabelFound()) {
+                            String symbolName = compileinfo.getLabelName();
+                            Integer symbolValue = new Integer(compileinfo.getLabelValue());
+                            gui.updateRowInSymbolTable(symbolName, symbolValue);
+                        }
+
+                        gui.selectLine(compileinfo.getLineNumber(), GUI.CODE_TABLE);
+                    } else if (phase == CompileInfo.FINALIZING_FIRST_ROUND) {
+                        String[][] symbolTable = compileinfo.getSymbolTable();
+                        if (symbolTable != null) {
+                            for (int i = 0; i < symbolTable.length; i++) {
+                                String symbolName = symbolTable[i][0];
+                                Integer symbolValue = null;
+                                try {
+                                    symbolValue = new Integer(symbolTable[i][1]);
+                                } catch (NumberFormatException e) {
+                                }
+                                gui.updateRowInSymbolTable(symbolName, symbolValue);
+                            }
+                        }
+
+                        String[] newInstructionsContents = compileinfo.getInstructions();
+                        String[] newDataContents = compileinfo.getData();
+                        gui.insertToInstructionsTable(newInstructionsContents);
+                        gui.insertToDataTable(newDataContents);
+                        gui.setGUIView(3);
+
+                    } else if (phase == CompileInfo.SECOND_ROUND) {
+                        int line = compileinfo.getLineNumber();
+                        int binary = compileinfo.getLineBinary();
+                        gui.updateInstructionsAndDataTableLine(line, binary);
+                        gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
+                    }
+
+                    gui.repaint();
+
+                    if (((compilemode & PAUSED) != 0) && !comments.equals("") && noPauses == false) {
+                        currentState = K91_PAUSED;
+                        setGUICommandsForCurrentState();
+                        waitForContinueTask();
+                    } else {
+                        try {
+                            lock.wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
+                        } catch (InterruptedException e) {
+                            System.out.println("InterruptedException in menuRun()");
+                        }
+                    }
                 }
-            }
 
-        } while (interruptSent == false); // End of do-loop
+            } while (interruptSent == false); // End of do-loop
 
-        if (currentState == INTERRUPTED_WITH_PAUSE) {
-            setGUICommandsForCurrentState();
-            waitForContinueTask();
-        }
-
-        if (compilingCompleted == true) {
-            try {
-                control.saveBinary();
-                System.out.println(new Message("Program saved to binary file!").toString());
-            } catch (IOException e) {
-                System.out.println(e);
-            }
-            gui.resetAll();
-            gui.addComment(" ");
-            gui.addComment(new Message("Compilation finished").toString());
-            gui.addComment(" ");
-            loadAndUpdateGUI();
-        } else {
-            /* Reload the source so that the compiling starts again from the beginning. */
-            try {
-                control.openSource(currentlyOpenedFile);
-            } catch (IOException e) {
-                gui.showError(e.getMessage());
-                currentState = NONE;
+            if (currentState == INTERRUPTED_WITH_PAUSE) {
                 setGUICommandsForCurrentState();
-                return;
+                waitForContinueTask();
             }
-            currentState = K91_NOT_COMPILING;
-            setGUICommandsForCurrentState();
-            gui.setGUIView(2);
-            gui.resetAll();
-            gui.addComment(" ");
-            gui.addComment(new Message("Compilation aborted.").toString());
-            gui.addComment(" ");
+
+            if (compilingCompleted == true) {
+                try {
+                    control.saveBinary();
+                    System.out.println(new Message("Program saved to binary file!").toString());
+                } catch (IOException e) {
+                    System.out.println(e);
+                }
+                gui.resetAll();
+                gui.addComment(" ");
+                gui.addComment(new Message("Compilation finished").toString());
+                gui.addComment(" ");
+                loadAndUpdateGUI();
+            } else {
+                /* Reload the source so that the compiling starts again from the beginning. */
+                try {
+                    control.openSource(currentlyOpenedFile);
+                } catch (IOException e) {
+                    gui.showError(e.getMessage());
+                    currentState = NONE;
+                    setGUICommandsForCurrentState();
+                    return;
+                }
+                currentState = K91_NOT_COMPILING;
+                setGUICommandsForCurrentState();
+                gui.setGUIView(2);
+                gui.resetAll();
+                gui.addComment(" ");
+                gui.addComment(new Message("Compilation aborted.").toString());
+                gui.addComment(" ");
+                continueTask();
+            }
+            threadRunning = false;
             continueTask();
-        }
-        threadRunning = false;
-        continueTask();
         }//lock
     }
-
 
     /**
      * This method corresponds to the menu option File -> Erase memory.
      */
     public void menuEraseMemory() {
-        
         interruptCurrentTasks(true);
-        synchronized(lock)
-        {
+        synchronized (lock) {
 
-        /* If there's no other thread running, then waiting for continueTask would
-           be futile, since no one will ever notify this method to continue exectution.
-           Actually, running waitForContinueTask() would mean dead lock then.
-        */
-        if (threadRunning == true) {
-            waitForContinueTask();
-        }
+            /* If there's no other thread running, then waiting for continueTask would
+               be futile, since no one will ever notify this method to continue exectution.
+               Actually, running waitForContinueTask() would mean dead lock then.
+            */
+            if (threadRunning == true) {
+                waitForContinueTask();
+            }
 
-        control.eraseMemory();
-        // The registers should be zeros now;
-        gui.updateReg(GUI.R0, 0);
-        gui.updateReg(GUI.R1, 0);
-        gui.updateReg(GUI.R2, 0);
-        gui.updateReg(GUI.R3, 0);
-        gui.updateReg(GUI.R4, 0);
-        gui.updateReg(GUI.R5, 0);
-        gui.updateReg(GUI.R6, 0);
-        gui.updateReg(GUI.R7, 0);
-        gui.updateReg(GUI.PC, 0);
-        gui.resetAll();
+            control.eraseMemory();
+            // The registers should be zeros now;
+            gui.updateReg(GUI.R0, 0);
+            gui.updateReg(GUI.R1, 0);
+            gui.updateReg(GUI.R2, 0);
+            gui.updateReg(GUI.R3, 0);
+            gui.updateReg(GUI.R4, 0);
+            gui.updateReg(GUI.R5, 0);
+            gui.updateReg(GUI.R6, 0);
+            gui.updateReg(GUI.R7, 0);
+            gui.updateReg(GUI.PC, 0);
+            gui.resetAll();
 
-        gui.updateStatusBar(new Message("Memory contents erased").toString());
+            gui.updateStatusBar(new Message("Memory contents erased").toString());
 
-        gui.setGUIView(1);
-        currentState = NONE;
-        setGUICommandsForCurrentState();
-        display.setMem(control.getPhysicalMemory());
+            gui.setGUIView(1);
+            currentState = NONE;
+            setGUICommandsForCurrentState();
+            display.setMem(control.getPhysicalMemory());
         }//lock
     }
 
@@ -1274,7 +1269,6 @@ public class GUIBrain {
             setGUICommandsForCurrentState();
             gui.setGUIView(3);
             display.setMem(control.getPhysicalMemory());
-            
         }
     }
 
@@ -1497,7 +1491,6 @@ public class GUIBrain {
                 gui.enable(GUI.CONTINUE_WITHOUT_PAUSES_COMMAND);
                 gui.disable(GUI.STOP_COMMAND);
                 break;
-
         }
     }
 }
