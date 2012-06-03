@@ -1,4 +1,25 @@
-itmon branchi
+================
+charmap
+20 high 32 wide chardisplay
+
+|32x20 bytes of chardisplay|256 char descrptions|256 bytes of palette|
+
+640 ints in memory, after which 256 bytes of char data in memory.
+    after which 256 bytes of palette
+    each char in chardata is described by one int, lower 30 bits describe a 
+    5 wide 6 high character.
+    30 bits tsrqponmlkjihgfedcba9876543210 -> 
+    01234
+    56789
+    abcde   if bit is set, pixel is foreground, unset -> background
+    fghij
+    klmno
+    pqrst 
+in chardisplay each int corresponds to 
+8 lowest bits are the character
+next 8 are foreground color index
+next 8 are background color index
+next 8 are effect (bit 0 = blink , rest are reserved)
 =================
 -testattu zero,rnd
 -mmu vois testata ettei se riko mit채채n
@@ -61,7 +82,15 @@ portti    device
                         will be cleared
 20-22       UART1   0 data port 1 state port 2 control
 23-25       UART2   see source code..
-26-30       VIC     write new baseaddress to port 0
+26-30       VIC     write 0 and new baseaddress to port 0
+                    write 1 and new margincolor to port 0
+                    write 2 and new mode to port 0 
+                        (0=default 12 bit
+                         1=text,with 256-char charmap just after the 
+                           text data(640 ints),6 high 5 wide font
+                           followed by a 256-color palette
+                         2=8bit indexed,with 256-color palette in memory 
+                           just after the image data)
 31          RTC     watchdog/RTC counting processor clocks
                     write the number of clocks , it will count down
                     and then interrupt unless you rewrite. 0 will 
@@ -239,3 +268,64 @@ Suorituksen alussa n채kyv채 data-alue ei n채yt채 n채it채 alustuksia.
 
 Raportoikaa muut uudet piirteet/ongelmat minulle, kiitos.
 Teemu Kerola
+-----------------bugeja.. 
+-display pitais piilottaa jos alle x muistia tai sitten pist狎 se raa-asti
+ toleroimaan muistin puutetta
+
+Exception in thread "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: 2 >= 2
+	at java.util.Vector.elementAt(Vector.java:447)
+	at javax.swing.table.DefaultTableColumnModel.getColumn(DefaultTableColumnModel.java:294)
+	at javax.swing.plaf.basic.BasicTableUI.paintCells(BasicTableUI.java:2006)
+	at javax.swing.plaf.basic.BasicTableUI.paint(BasicTableUI.java:1806)
+	at javax.swing.plaf.ComponentUI.update(ComponentUI.java:161)
+	at javax.swing.JComponent.paintComponent(JComponent.java:765)
+	at javax.swing.JComponent.paint(JComponent.java:1029)
+	at javax.swing.JComponent.paintChildren(JComponent.java:866)
+	at javax.swing.JComponent.paint(JComponent.java:1038)
+	at javax.swing.JViewport.paint(JViewport.java:764)
+	at javax.swing.JComponent.paintChildren(JComponent.java:866)
+	at javax.swing.JComponent.paint(JComponent.java:1038)
+	at javax.swing.JComponent.paintChildren(JComponent.java:866)
+	at javax.swing.JSplitPane.paintChildren(JSplitPane.java:1042)
+	at javax.swing.JComponent.paint(JComponent.java:1038)
+	at javax.swing.JComponent.paintChildren(JComponent.java:866)
+	at javax.swing.JComponent.paint(JComponent.java:1038)
+	at javax.swing.JComponent.paintChildren(JComponent.java:866)
+	at javax.swing.JSplitPane.paintChildren(JSplitPane.java:1042)
+	at javax.swing.JComponent.paint(JComponent.java:1038)
+	at javax.swing.JComponent.paintChildren(JComponent.java:866)
+	at javax.swing.JComponent.paint(JComponent.java:1038)
+	at javax.swing.JComponent.paintChildren(JComponent.java:866)
+	at javax.swing.JComponent.paint(JComponent.java:1038)
+	at javax.swing.JLayeredPane.paint(JLayeredPane.java:581)
+	at javax.swing.JComponent.paintChildren(JComponent.java:866)
+	at javax.swing.JComponent.paintToOffscreen(JComponent.java:5145)
+	at javax.swing.RepaintManager$PaintManager.paintDoubleBuffered(RepaintManager.java:1411)
+	at javax.swing.RepaintManager$PaintManager.paint(RepaintManager.java:1342)
+	at javax.swing.BufferStrategyPaintManager.paint(BufferStrategyPaintManager.java:318)
+	at javax.swing.RepaintManager.paint(RepaintManager.java:1145)
+	at javax.swing.JComponent.paint(JComponent.java:1015)
+	at java.awt.GraphicsCallback$PaintCallback.run(GraphicsCallback.java:39)
+	at sun.awt.SunGraphicsCallback.runOneComponent(SunGraphicsCallback.java:78)
+	at sun.awt.SunGraphicsCallback.runComponents(SunGraphicsCallback.java:115)
+	at java.awt.Container.paint(Container.java:1844)
+	at javax.swing.RepaintManager.paintDirtyRegions(RepaintManager.java:751)
+	at javax.swing.RepaintManager.paintDirtyRegions(RepaintManager.java:696)
+	at javax.swing.RepaintManager.prePaintDirtyRegions(RepaintManager.java:676)
+	at javax.swing.RepaintManager.access$700(RepaintManager.java:57)
+	at javax.swing.RepaintManager$ProcessingRunnable.run(RepaintManager.java:1550)
+	at java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:226)
+	at java.awt.EventQueue.dispatchEventImpl(EventQueue.java:647)
+	at java.awt.EventQueue.access$000(EventQueue.java:96)
+	at java.awt.EventQueue$1.run(EventQueue.java:608)
+	at java.awt.EventQueue$1.run(EventQueue.java:606)
+	at java.security.AccessController.doPrivileged(Native Method)
+	at java.security.AccessControlContext$1.doIntersectionPrivilege(AccessControlContext.java:105)
+	at java.awt.EventQueue.dispatchEvent(EventQueue.java:617)
+	at java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:275)
+	at java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:200)
+	at java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:190)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:185)
+	at java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:177)
+	at java.awt.EventDispatchThread.run(EventDispatchThread.java:138)
+

@@ -55,7 +55,7 @@ public class ControlTest extends LoguserTestCase {
         foo1 = tempDir.newFile("foo1");
         withNoPermissions(foo1);
 
-        control = new Control(teststdin, teststdout);
+        control = new Control(teststdin, teststdout, null);
         Translator.setLocale(new Locale("en"));
     }
 
@@ -216,7 +216,7 @@ public class ControlTest extends LoguserTestCase {
         testCompile(); // Ensure right state.
         // No exception.
         control.saveBinary(examplebinary);
-        control = new Control(new File("/root/test"), new File("/root/test"));
+        control = new Control(new File("/root/test"), new File("/root/test"), null);
         // Exception: no application loaded yet.
         try {
             control.saveBinary(examplebinary);

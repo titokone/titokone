@@ -25,7 +25,8 @@ import java.util.logging.Logger;
  */
 public class GUIBrain {
 
-
+    //lock object to avoid locking externally
+    protected Object lock=new Object();
     /**
      * This variable can be set to e.g. 70 to slow down the GUI on
      * compilation and runtime for overly fast machines. It should
@@ -152,7 +153,7 @@ public class GUIBrain {
         } catch (IOException e) {
             logger.info(e.getMessage());
         }
-        control = new Control(defStdinFile, defStdoutFile);
+        control = new Control(defStdinFile, defStdoutFile,display);
 
         this.animator = animator;
         this.display = display;
@@ -324,7 +325,9 @@ public class GUIBrain {
      * This method corresponds to the menu option File -> Run. It does
      * its work by calling runInstruction().
      */
-    public synchronized void menuRun() {
+    public  void menuRun() {
+        synchronized(lock)
+        {
 
         threadRunning = true;
 
@@ -452,7 +455,8 @@ public class GUIBrain {
 
             } else {
                 try {
-                    wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
+                    if(SLOWDOWN>0)
+                        lock.wait(SLOWDOWN); 
                 } catch (InterruptedException e) {
                     System.out.println("InterruptedException in menuRun()");
                 }
@@ -480,7 +484,7 @@ public class GUIBrain {
 
         threadRunning = false;
         continueTask();
-
+        }
     }
 
     /**
@@ -500,7 +504,9 @@ public class GUIBrain {
      * This method corresponds to the menu option File -> Compile. It
      * does its work by calling compileLine().
      */
-    public synchronized void menuCompile() {
+    public void menuCompile() {
+        synchronized(lock)
+        {
 
         threadRunning = true;
 
@@ -637,7 +643,7 @@ public class GUIBrain {
                     waitForContinueTask();
                 } else {
                     try {
-                        wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
+                        lock.wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
                     } catch (InterruptedException e) {
                         System.out.println("InterruptedException in menuRun()");
                     }
@@ -685,14 +691,18 @@ public class GUIBrain {
         }
         threadRunning = false;
         continueTask();
+        }//lock
     }
 
 
     /**
      * This method corresponds to the menu option File -> Erase memory.
      */
-    public synchronized void menuEraseMemory() {
+    public void menuEraseMemory() {
+        
         interruptCurrentTasks(true);
+        synchronized(lock)
+        {
 
         /* If there's no other thread running, then waiting for continueTask would
            be futile, since no one will ever notify this method to continue exectution.
@@ -721,6 +731,7 @@ public class GUIBrain {
         currentState = NONE;
         setGUICommandsForCurrentState();
         display.setMem(control.getPhysicalMemory());
+        }//lock
     }
 
 
@@ -988,8 +999,8 @@ public class GUIBrain {
         }
 
         interruptSent = true;
-        synchronized (this) {
-            notifyAll();
+        synchronized (lock) {
+            lock.notifyAll();
         }
     }
 
@@ -999,8 +1010,8 @@ public class GUIBrain {
      * their operation.
      */
     public void continueTask() {
-        synchronized (this) {
-            notify();
+        synchronized (lock) {
+            lock.notify();
         }
         return;
     }
@@ -1013,8 +1024,8 @@ public class GUIBrain {
      */
     public void continueTaskWithoutPauses() {
         noPauses = true;
-        synchronized (this) {
-            notify();
+        synchronized (lock) {
+            lock.notify();
         }
         return;
     }
@@ -1028,9 +1039,9 @@ public class GUIBrain {
      */
     public void waitForContinueTask() {
 
-        synchronized (this) {
+        synchronized (lock) {
             try {
-                wait();
+                lock.wait();
             } catch (InterruptedException e) {
                 System.out.println("InterruptedException");
             }
@@ -1263,6 +1274,7 @@ public class GUIBrain {
             setGUICommandsForCurrentState();
             gui.setGUIView(3);
             display.setMem(control.getPhysicalMemory());
+            
         }
     }
 
