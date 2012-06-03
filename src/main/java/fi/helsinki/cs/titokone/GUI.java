@@ -1086,11 +1086,18 @@ public class GUI extends JFrame implements ActionListener {
      * @param line  Number of the line, that is wanted to be visible.
      * @param table The table. Valid values for this parameter are CODE_TABLE
      *              and INSTRUCTIONS_AND_DATA_TABLE
-     * @return True if the operation was successful.
-     *         False if the line number was not valid - ie there's no such line
-     *         in the table or there's no such table.
      */
-    public boolean centerToLine(int line, short table) {
+    public void centerToLine(final int line, final short table) {
+        // XXX: GuiThreader seems to call this from a non-EDT thread.
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                centerToLineImpl(line, table);
+            }
+        });
+    }
+
+    private void centerToLineImpl(int line, short table) {
         JScrollPane activeScrollPane = null;
         JTableX activeTable = null;
 
@@ -1099,7 +1106,7 @@ public class GUI extends JFrame implements ActionListener {
 
                 /* Check if there's no such line */
                 if (line >= codeTable.getRowCount() || line < 0) {
-                    return false;
+                    return;
                 }
                 activeScrollPane = codeTableScrollPane;
                 activeTable = codeTable;
@@ -1110,9 +1117,8 @@ public class GUI extends JFrame implements ActionListener {
 
                 /* Check if there's no such line */
                 if (line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) || line < 0) {
-                    return false;
+                    return;
                 }
-
 
                 if (line < instructionsTable.getRowCount()) {
                     activeScrollPane = instructionsTableScrollPane;
@@ -1130,7 +1136,7 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         if (activeScrollPane == null || activeTable == null) {
-            return false;
+            return;
         }
 
         int tableViewHeight = activeScrollPane.getHeight() - activeTable.getTableHeader().getHeight();
@@ -1143,24 +1149,13 @@ public class GUI extends JFrame implements ActionListener {
             y = (y < 0) ? 0 : y;
             if (y + tableViewHeight > activeTable.getHeight()) {
                 y = activeTable.getHeight() - tableViewHeight + activeTable.getRowMargin() + 2;
-                /* I don't know where that number 2 comes from, but I included it there, because the viewport
-doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :) */
+                // XXX: I don't know where that number 2 comes from, but I included it there, because the viewport
+                // doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :)
             }
         }
 
-        // GuiThreader seems to call this from a non-EDT thread.
-        final JScrollPane finalActiveScrollPane = activeScrollPane;
-        final int finalY = y;
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                finalActiveScrollPane.getViewport().setViewPosition(new Point(0, finalY));
-            }
-        });
-        return true;
-
+        activeScrollPane.getViewport().setViewPosition(new Point(0, y));
     }
-
 
     /**
      * Selects a row from code table or from instructions and data table. Instructions
