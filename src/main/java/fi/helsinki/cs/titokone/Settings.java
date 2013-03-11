@@ -205,7 +205,7 @@ public class Settings {
         String keyString, valueString;
         StringBuffer result;
         Object value;
-        Iterator keyIterator = settings.keySet().iterator();
+        Iterator<String> keyIterator = settings.keySet().iterator();
         result = new StringBuffer("");
         while (keyIterator.hasNext()) {
             keyString = (String) keyIterator.next();

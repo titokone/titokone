@@ -207,7 +207,7 @@ public class FileHandler {
     public ResourceBundle loadResourceBundle(File rbFile)
             throws ResourceLoadFailedException {
 
-        Class theClass;
+        Class<?> theClass;
         Object translations;
         String className, errorMessage;
         String errorParams[] = new String[2];

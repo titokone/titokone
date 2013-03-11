@@ -24,14 +24,14 @@ public class Titokone {
 
     public static void main(String[] args) {
         Logger myLogger = Logger.getLogger(PACKAGE);
-        GUI gui;
 
         myLogger.setLevel(Level.WARNING); // By default we only show warnings.
 
         for (int i = 0; i < args.length; i++) {
             handleParameter(args[i]);
         }
-        gui = new GUI();
+        GUI gui = new GUI();
+        gui.start();        
     }
 
     private static void handleParameter(String parameter) {

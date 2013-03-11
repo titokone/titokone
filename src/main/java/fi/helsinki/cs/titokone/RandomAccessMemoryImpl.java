@@ -145,7 +145,6 @@ public class RandomAccessMemoryImpl
      *
      * @return An array containing all the memory lines.
      */
-    @SuppressWarnings("unchecked")
     public MemoryLine[] getMemoryLines() {
         return (MemoryLine[]) memory.clone();
     }

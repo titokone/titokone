@@ -34,9 +34,6 @@ import java.util.logging.Logger;
  */
 
 public class GUI extends JFrame implements ActionListener {
-
-    GUI thisGUI;
-
     GUIBrain guibrain;
 
     /**
@@ -302,9 +299,11 @@ public class GUI extends JFrame implements ActionListener {
 
 
     public GUI() {
-        thisGUI = this;
         logger = Logger.getLogger(getClass().getPackage().getName());
-        print("Initializing setRunningOptionsDialog...");
+    }
+    
+    public void start() {
+    	print("Initializing setRunningOptionsDialog...");
         setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
         setRunningOptionsDialog.addComponentListener(new ComponentListener() {
             public void componentShown(ComponentEvent e) {
@@ -399,7 +398,6 @@ public class GUI extends JFrame implements ActionListener {
 
 
         print("Complete!");
-
     }
 
 
@@ -1344,12 +1342,12 @@ public class GUI extends JFrame implements ActionListener {
 
     public String[] getCodeTableContents() {
 
-        Vector codeTableContents = ((DefaultTableModel) codeTable.getModel()).getDataVector();
+        Vector<?> codeTableContents = ((DefaultTableModel) codeTable.getModel()).getDataVector();
         String[] codeTableContentsString = new String[codeTableContents.size()];
 
         int i = 0;
-        for (Enumeration e = codeTableContents.elements(); e.hasMoreElements(); i++) {
-            codeTableContentsString[i] = (String) ((Vector) e.nextElement()).get(0);
+        for (Enumeration<?> e = codeTableContents.elements(); e.hasMoreElements(); i++) {
+            codeTableContentsString[i] = (String) ((Vector<?>) e.nextElement()).get(0);
         }
         return codeTableContentsString;
     }
@@ -2173,7 +2171,7 @@ public class GUI extends JFrame implements ActionListener {
         generalFileDialog.addChoosableFileFilter(K91FileFilter);
         generalFileDialog.setDialogTitle(new Message("Open a new " +
                 "file").toString());
-        return generalFileDialog.showOpenDialog(thisGUI);
+        return generalFileDialog.showOpenDialog(this);
     }
 
     /**
@@ -2187,7 +2185,7 @@ public class GUI extends JFrame implements ActionListener {
         generalFileDialog.setAcceptAllFileFilterUsed(true);
         generalFileDialog.setDialogTitle(new Message("Select default stdin " +
                 "file").toString());
-        return generalFileDialog.showOpenDialog(thisGUI);
+        return generalFileDialog.showOpenDialog(this);
     }
 
     /**
@@ -2201,7 +2199,7 @@ public class GUI extends JFrame implements ActionListener {
         generalFileDialog.setAcceptAllFileFilterUsed(true);
         generalFileDialog.setDialogTitle(new Message("Select default stdout " +
                 "file").toString());
-        return generalFileDialog.showOpenDialog(thisGUI);
+        return generalFileDialog.showOpenDialog(this);
     }
 
     /**
@@ -2216,7 +2214,7 @@ public class GUI extends JFrame implements ActionListener {
         generalFileDialog.setAcceptAllFileFilterUsed(false);
         generalFileDialog.setDialogTitle(new Message("Select language " +
                 "file").toString());
-        return generalFileDialog.showOpenDialog(thisGUI);
+        return generalFileDialog.showOpenDialog(this);
     }
 
     /**

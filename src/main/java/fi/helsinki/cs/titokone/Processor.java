@@ -603,6 +603,8 @@ public class Processor
                     throw id;
                 }
                 break;
+		default:
+			break;
         }
     }
 
@@ -688,6 +690,8 @@ public class Processor
             case SHRA: // SHRA
                 regs.setRegister(Rj, regs.getRegister(Rj) >> param);
                 break;
+		default:
+			break;
         }
 
         runDebugger.setALUResult(regs.getRegister(Rj));
@@ -810,6 +814,8 @@ public class Processor
                     setNewPC(param);
                 }
                 break;
+		default:
+			break;
         }
     }
 
@@ -852,6 +858,8 @@ public class Processor
                     --this.stack_size;
                 }
                 break;
+		default:
+			break;
         }
     }
 
@@ -905,6 +913,8 @@ public class Processor
                 regs.setRegister(Rj, sp - param);
                 stack_size = stack_size - param; // <-- by Kohahdus 2006-11-23
                 break;
+		default:
+			break;
         }
     }
 

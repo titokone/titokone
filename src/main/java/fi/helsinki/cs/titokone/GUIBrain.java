@@ -435,8 +435,8 @@ public class GUIBrain {
                 gui.updateReg(GUI.R7, newRegisterValues[7]);
                 gui.updateReg(GUI.PC, runinfo.getNewPC());
 
-                LinkedList changedMemoryLines = runinfo.getChangedMemoryLines();
-                Iterator changedMemoryLinesListIterator = changedMemoryLines.iterator();
+                LinkedList<?> changedMemoryLines = runinfo.getChangedMemoryLines();
+                Iterator<?> changedMemoryLinesListIterator = changedMemoryLines.iterator();
 
                 while (changedMemoryLinesListIterator.hasNext()) {
                     Object[] listItem = (Object[]) changedMemoryLinesListIterator.next();

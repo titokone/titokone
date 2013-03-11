@@ -105,7 +105,7 @@ public class RunInfo extends DebugInfo {
      * arrays, whose first element is a Integer and second a MemoryLine.
      * Integer tells the row where MemoryLine is in memory.
      */
-    LinkedList changedMemoryLines;
+    LinkedList<?> changedMemoryLines;
 
     /**
      * This constructor initializes the RunInfo and sets its starting values.
@@ -204,7 +204,7 @@ public class RunInfo extends DebugInfo {
 @param changedMemoryLines List of changed memory lines. List contains
 object arrays, whose first element is a Integer and second is a MemoryLine.
 Integer tells the row where MemoryLine is in memory. */
-    public void setChangedMemoryLines(LinkedList changedMemoryLines) {
+    public void setChangedMemoryLines(LinkedList<?> changedMemoryLines) {
         this.changedMemoryLines = changedMemoryLines;
     }
 
@@ -382,7 +382,7 @@ Integer tells the row where MemoryLine is in memory. */
 @return List of changed memory lines. List contains object arrays, whose
 first element is a Integer and second is a MemoryLine. Integer tells the
 row where MemoryLine is in memory. */
-    public LinkedList getChangedMemoryLines() {
+    public LinkedList<?> getChangedMemoryLines() {
         return changedMemoryLines;
     }
 
