@@ -5,11 +5,21 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.ttk91.*;
-
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Locale;
 import java.util.logging.Logger;
+
+import fi.helsinki.cs.ttk91.TTK91AddressOutOfBounds;
+import fi.helsinki.cs.ttk91.TTK91CompileException;
+import fi.helsinki.cs.ttk91.TTK91Cpu;
+import fi.helsinki.cs.ttk91.TTK91NoKbdData;
+import fi.helsinki.cs.ttk91.TTK91NoStdInData;
+import fi.helsinki.cs.ttk91.TTK91RuntimeException;
 
 
 /**
@@ -207,10 +217,10 @@ public class GUIBrain {
         int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
         gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
         gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
-        
+
         try {
-        	int base = currentSettings.getIntValue(Settings.BASE);
-        	gui.animator.setValueBase(ValueBase.getBase(base));
+        	ValueBase base = ValueBase.getBase(currentSettings.getIntValue(Settings.BASE));
+        	gui.animator.setValueBase(base);
         } catch(Exception e) {}
 
         int memorysize = currentSettings.getIntValue(Settings.MEMORY_SIZE);
@@ -229,7 +239,7 @@ public class GUIBrain {
         String language = currentSettings.getStrValue(Settings.UI_LANGUAGE);
 
         if (availableLanguages.containsKey(language)) {
-            Translator.setLocale((Locale) availableLanguages.get(language));
+            Translator.setLocale(availableLanguages.get(language));
             //gui.updateAllTexts();
         }
 
@@ -753,7 +763,7 @@ public class GUIBrain {
     public void menuSetLanguage(String language) {
 
         if (availableLanguages.containsKey(language)) {
-            Translator.setLocale((Locale) availableLanguages.get(language));
+            Translator.setLocale(availableLanguages.get(language));
             currentSettings.setValue(Settings.UI_LANGUAGE, language);
             saveSettings();
             gui.updateAllTexts();
