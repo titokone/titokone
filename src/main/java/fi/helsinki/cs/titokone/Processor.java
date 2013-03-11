@@ -105,10 +105,10 @@ public class Processor
      */
     private boolean[] sr = new boolean[11];
 
-    /*  if an interrupt has been flagged
-  this will be automatically cleared
-  when the processor does the jump to
-  the interrupt routine*/
+    /* if an interrupt has been flagged
+     * this will be automatically cleared
+     * when the processor does the jump to
+     *the interrupt routine */
     protected boolean interrupted = false;
 
     //Added by Harri Tuomikoski, 12.10.2004, Koskelo-project.
@@ -149,7 +149,7 @@ public class Processor
      */
     public void flagInterrupt(InterruptGenerator ig) {
         /*  set internal variable to flag interrupt
-            dont know if we could use sr[7] for this*/
+         * dont know if we could use sr[7] for this */
         interrupted = true;
     }
 
@@ -173,7 +173,7 @@ public class Processor
     }
 
     private void initDevices() {
-        /*  link pic to report it's interrupt to processor*/
+        /*  link pic to report it's interrupt to processor */
         pic.link(this);
         //!TBD combine below classes into a sensible stdout inner class
         // or two
@@ -241,8 +241,8 @@ public class Processor
             }
         };
         ram = mmu;
-        registerDevice(mmu);//dont register this if you want a passthrough
-        //stupid mmu
+        registerDevice(mmu); // Don't register this if you want a passthrough
+        /* Stupid MMU */
         registerDevice(pic);
         registerDevice(new UART(10)); //10 clocks per bit (fast!)
         registerDevice(new UART(10)); //another..
@@ -266,7 +266,7 @@ public class Processor
             for (IODevice iod : ioDevices) {
                 base += iod.getPortCount();
             }
-            /*  remap the device so it sees itself starting from 0*/
+            /*  remap the device so it sees itself starting from 0 */
             ioDevices.add(new AddressMappingIODevice(base, (IODevice) d));
         }
         if (d instanceof InterruptGenerator &&
@@ -274,7 +274,7 @@ public class Processor
             ((InterruptGenerator) d).link(pic);
             pic.add((InterruptGenerator) d);
         }
-        //handle MMAPDevices
+        // handle MMAPDevices
     }
 
     /**
@@ -284,7 +284,7 @@ public class Processor
         for (IODevice iod : ioDevices) {
             iod.reset();
         }
-        //MMAP devices
+        // MMAP devices
     }
 
     /**
@@ -297,7 +297,7 @@ public class Processor
                 iod.update();
             }
         }
-        //MMAP devices
+        // MMAP devices
         pic.update();
     }
 
@@ -464,25 +464,25 @@ public class Processor
 
             // cut up the command in IR
             Instruction insn = new Instruction(IR.getBinary());
-            int opcode = insn.getOpcode();                          // operation code
-            int Rj = insn.getRj() + TTK91Cpu.REG_R0;  // first operand (register 0..7)
-            int M = insn.getM();                      // memory addressing mode
-            int Ri = insn.getRi() + TTK91Cpu.REG_R0;  // index register
-            int ADDR = insn.getAddr();                     // address
+            int opcode = insn.getOpcode();            	// operation code
+            int Rj = insn.getRj() + TTK91Cpu.REG_R0;  	// first operand (register 0..7)
+            int M = insn.getM();                      	// memory addressing mode
+            int Ri = insn.getRi() + TTK91Cpu.REG_R0;	// index register
+            int ADDR = insn.getAddr();					// address
 
             runDebugger.runCommand(IR.getBinary());
 
             // fetch parameter from memory
             if (Ri != TTK91Cpu.REG_R0) {
-                ADDR += regs.getRegister(Ri);   // add indexing register Ri
+                ADDR += regs.getRegister(Ri);			// add indexing register Ri
             }
-            int param = ADDR;                               // constant value        
+            int param = ADDR;                           // constant value        
             if (M == 1) {
-                param = ram.getValue(ADDR);                 // one memory fetch
+                param = ram.getValue(ADDR);				// one memory fetch
                 runDebugger.setValueAtADDR(param);
             }
             if (M == 2) {
-                param = ram.getValue(param);                // two memory fetches
+                param = ram.getValue(param);          	// two memory fetches
                 runDebugger.setValueAtADDR(param);
                 param = ram.getValue(param);
                 runDebugger.setSecondFetchValue(param);

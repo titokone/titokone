@@ -269,8 +269,6 @@ public class GUI extends JFrame implements ActionListener {
 
     private static final int COMMENT_LIST_SIZE = 100;
 
-    private Logger logger;
-
     public static final String resourceHomeDir = "fi/helsinki/cs/titokone/";
     public static final String imgDir = "fi/helsinki/cs/titokone/img";
 
@@ -278,10 +276,9 @@ public class GUI extends JFrame implements ActionListener {
      * This is called when ActionEvent of some kind is fired.
      */
     public void actionPerformed(ActionEvent e) {
-
         /* This next if-statement is true,when user has pushed apply-button in
-           'set running options' dialog.
-        */
+         * 'set running options' dialog.
+         */
         if (e.getActionCommand().equals(GUIRunSettingsDialog.APPLY)) {
             guibrain.menuSetRunningOption(GUIBrain.LINE_BY_LINE, setRunningOptionsDialog.lineByLineCheckBox.isSelected());
             guibrain.menuSetRunningOption(GUIBrain.COMMENTED, setRunningOptionsDialog.showCommentsCheckBox.isSelected());
@@ -289,19 +286,17 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         /* And this if-statement is true,when user has pushed apply-button in
-           'set compiling options' dialog.
-        */
+         * 'set compiling options' dialog.
+         */
         else if (e.getActionCommand().equals(GUICompileSettingsDialog.APPLY)) {
             guibrain.menuSetCompilingOption(GUIBrain.PAUSED, setCompilingOptionsDialog.lineByLineCheckBox.isSelected());
             guibrain.menuSetCompilingOption(GUIBrain.COMMENTED, setCompilingOptionsDialog.showCommentsCheckBox.isSelected());
         }
     }
-
-
-    public GUI() {
-        logger = Logger.getLogger(getClass().getPackage().getName());
-    }
     
+    /**
+     * Starts the GUI for Titokone
+     */
     public void start() {
     	print("Initializing setRunningOptionsDialog...");
         setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
@@ -342,8 +337,6 @@ public class GUI extends JFrame implements ActionListener {
 
         print("Initializing GUI...");
         initGUI();
-
-
         initAnimator();
         initDisplay();
 
@@ -364,10 +357,8 @@ public class GUI extends JFrame implements ActionListener {
         rightSplitPane.setDividerLocation(0.5);
         setGUIView(1);
 
-
         print("Setting visible...");
         this.setVisible(true);
-
 
         print("Setting title...");
         setTitle("Titokone v1.300");
@@ -376,8 +367,7 @@ public class GUI extends JFrame implements ActionListener {
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
-        }
-        );
+        });
 
 
         try {
@@ -395,7 +385,6 @@ public class GUI extends JFrame implements ActionListener {
 
         print("Updating texts...");
         updateAllTexts();
-
 
         print("Complete!");
     }
@@ -430,6 +419,7 @@ public class GUI extends JFrame implements ActionListener {
             leftPanel.invalidate();
 
         }
+        
         activeView = view;
         mainSplitPane.setDividerLocation(0.5);
     }
@@ -440,7 +430,6 @@ public class GUI extends JFrame implements ActionListener {
      * (except registers table) are emptied and all their rows are unselected.
      */
     public void resetAll() {
-
         unselectAll();
         insertSymbolTable(null);
         //((DefaultListModel)commentList.getModel()).clear();
@@ -452,7 +441,6 @@ public class GUI extends JFrame implements ActionListener {
      * Unselects all selected rows in every table.
      */
     public void unselectAll() {
-
         codeTable.unselectAllRows();
         instructionsTable.unselectAllRows();
         dataTable.unselectAllRows();
@@ -1362,7 +1350,6 @@ public class GUI extends JFrame implements ActionListener {
      * main frame. This won't be accessed but once in the creator method.
      */
     private void initGUI() {
-
         codeTable = new JTableX(new DefaultTableModel(codeTableIdentifiers, 0));
         codeTable.setFont(tableFont);
         codeTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
