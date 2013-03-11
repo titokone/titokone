@@ -17,7 +17,6 @@ import java.util.*;
 public class Processor
         implements TTK91Cpu, Interruptable {
 
-
     /**
      * When SVC call is made PC points to this place.
      */
@@ -597,7 +596,7 @@ public class Processor
             case OUT: // OUT
                 try {
                     dev = getDevice(param);
-                    dev.setPort(param, regs.getRegister(Rj));
+                    dev.setPort(param, Rj);
                 } catch (TTK91RuntimeException id) {
                     status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
                     throw id;
