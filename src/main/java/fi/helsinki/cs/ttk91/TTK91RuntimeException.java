@@ -21,4 +21,13 @@ public class TTK91RuntimeException extends TTK91Exception {
 	public TTK91RuntimeException(String message) {
         super(message);
     }
+
+    public TTK91RuntimeException(Throwable cause) {
+        super(cause);
+    }
+
+    public TTK91RuntimeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }
