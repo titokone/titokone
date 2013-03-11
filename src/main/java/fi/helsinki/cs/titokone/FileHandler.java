@@ -20,10 +20,6 @@ import java.util.logging.Logger;
  */
 public class FileHandler {
     /**
-     * This logger will be used for logging the I/O activities.
-     */
-    private Logger logger;
-    /**
      * This class has its own logger.
      */
     public static String loggerName = "fi.helsinki.cs.titokone.filehandler";
@@ -95,13 +91,13 @@ public class FileHandler {
      *                     closing the stream.
      */
     public StringBuffer loadSettings(InputStream settingsStream)
-            throws IOException {
-        StringBuffer result;
-        BufferedReader reader;
+    		throws IOException {
+    	
         if (settingsStream == null) {
             return null;
         }
-        reader = new BufferedReader(new InputStreamReader(settingsStream));
+        
+        BufferedReader reader = new BufferedReader(new InputStreamReader(settingsStream));
         return loadReaderContentsToString(reader);
     }
 
@@ -179,12 +175,14 @@ public class FileHandler {
      */
     public void appendDataToStdOut(String dataItem, File stdoutFile)
             throws IOException {
-        boolean fileExisted = stdoutFile.exists();
+    	
+        if(!stdoutFile.exists())
+        	throw new IOException();
+        	
         // Open the file in append mode.
         BufferedWriter writer = new BufferedWriter(new FileWriter(stdoutFile,
                 true));
-        //if(fileExisted)
-        //  writer.newLine();
+
         writer.write(dataItem, 0, dataItem.length());
         writer.newLine(); // Add newlines to end instead of beginning.
         writer.flush();

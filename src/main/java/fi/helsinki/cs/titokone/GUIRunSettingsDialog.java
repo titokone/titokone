@@ -11,7 +11,11 @@ import java.awt.*;
 
 public class GUIRunSettingsDialog extends GUISettingsDialog {
 
-    public JCheckBox lineByLineCheckBox;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 914680842790217627L;
+	public JCheckBox lineByLineCheckBox;
     public JCheckBox showCommentsCheckBox;
     public JCheckBox showAnimationCheckBox;
 

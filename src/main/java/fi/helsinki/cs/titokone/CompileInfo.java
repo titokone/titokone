@@ -66,11 +66,6 @@ public class CompileInfo extends DebugInfo {
     private int symbolValue;
 
     /**
-     * This field contains the address of the symbol.
-     */
-    private int symbolAddress;
-
-    /**
      * This field contains information if a symbol was foud.
      */
     private boolean symbolFound;
@@ -94,7 +89,8 @@ public class CompileInfo extends DebugInfo {
     /**
      * This field is true if found label was defined before.
      */
-    private boolean labelDefined = false;
+    @SuppressWarnings("unused")
+	private boolean labelDefined = false;
 
     /**
      * This field contains value of the current label.

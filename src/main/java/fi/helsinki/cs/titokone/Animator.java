@@ -20,7 +20,12 @@ import java.io.IOException;
  */
 public class Animator extends JPanel implements Runnable {
 
-    private final static Font textFont = new Font("Arial", Font.BOLD, 16);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2401442068137343247L;
+
+	private final static Font textFont = new Font("Arial", Font.BOLD, 16);
 
     private final static int R0 = 0;
     private final static int R1 = 1;
@@ -333,7 +338,8 @@ public class Animator extends JPanel implements Runnable {
                         break;
 
                     case 4: // OUT
-                        int outValue = info.whatOUT()[1];
+                        @SuppressWarnings("unused")
+						int outValue = info.whatOUT()[1];
                         comment1 = new Message("Write value {0} from register R{1} to {2}.", new String[]{"" + value[Rj], "" + Rj, info.whatDevice()}).toString();
                         animateAnEvent(Rj, MBR);
                         animateAnEvent(MBR, EXTERNAL_DEVICE);

@@ -165,8 +165,8 @@ public class Binary {
 
         for (int j = i; j < areaLength; j++) {
             try {
-                Integer value = new Integer(b91[j]);
-            } catch (Exception e) {
+                new Integer(b91[j]);
+            } catch (NumberFormatException e) {
                 throw new ParseException(new Message("Invalid data on line: " +
                         "{0}",
                         "" + (i + 1)).toString(), i + 1);
@@ -193,8 +193,8 @@ public class Binary {
                     !s[0].equalsIgnoreCase("STDOUT")) {
 
                 try {
-                    Integer value = new Integer(s[1]);
-                } catch (Exception e) {
+                    new Integer(s[1]);
+                } catch (NumberFormatException e) {
                     throw new ParseException(new Message("Invalid symbol " +
                             "value on line: {0}"
                             , "" + (i + 1)).toString(),

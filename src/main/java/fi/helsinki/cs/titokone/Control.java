@@ -191,9 +191,8 @@ public class Control implements TTK91Core {
      */
     private void insertStdinToApplication(File applicationStdin)
             throws ParseException, IOException {
-        String contents, errorMessage, preparedStdinData;
+        String contents;
         File stdinFile = defaultStdInFile;
-        File[] appDefinitions;
         Logger logger;
 
         if (applicationStdin != null) {
@@ -556,7 +555,7 @@ public class Control implements TTK91Core {
      */
     public void setDefaultStdOut(File stdoutFile)
             throws IOException {
-        String errorMessage;
+    	
         defaultStdOutFile = stdoutFile;
         // Check whether we can really write to the file without writing
         // to it. (We just append, really.) TestAccess throws exceptions.
@@ -722,7 +721,7 @@ public class Control implements TTK91Core {
     }
 
     /**
-     * GUIBrain calls this when it has recieved the TTK91NoKbdData
+     * GUIBrain calls this when it has received the TTK91NoKbdData
      * exception. The input is passed on to the processor. Note that
      * primarily input is searched for in the Application instance.
      *
@@ -731,25 +730,4 @@ public class Control implements TTK91Core {
     public void keyboardInput(int inputValue) {
         processor.keyboardInput(inputValue);
     }
-
-    /**
-     * RunLine() calls this, when the processor wants to write a
-     * value to CRT.
-     *
-     * @param inputValue The input to CRT.
-     */
-    private void writeToCRT(int inputValue) {
-        application.writeToCrt(inputValue);
-    }
-
-    /**
-     * RunLine() calls this, when the processor wants to write a
-     * value to StdOut.
-     *
-     * @param inputValue The inpuit to StdOut.
-     */
-    private void writeToStdOut(int inputValue) {
-        application.writeToStdOut(inputValue);
-    }
-
 }

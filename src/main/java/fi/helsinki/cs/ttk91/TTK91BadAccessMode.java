@@ -12,7 +12,12 @@ package fi.helsinki.cs.ttk91;
  * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 public class TTK91BadAccessMode extends TTK91RuntimeException {
-    public TTK91BadAccessMode(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3627637104582348096L;
+
+	public TTK91BadAccessMode(String message) {
         super(message);
     }
 }

@@ -17,7 +17,11 @@ import java.util.logging.Logger;
 public class JTableX extends JTable {
 
 
-    //protected int selectedRow;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -7424739136090735650L;
+	//protected int selectedRow;
     protected int[] selectedRows = {0};
     protected boolean areRowsSelected = false;
     protected int tryCounter = 0;
@@ -36,7 +40,6 @@ public class JTableX extends JTable {
 
 
     public String getToolTipText(MouseEvent e) {
-        String tip = null;
         java.awt.Point p = e.getPoint();
         int index = columnModel.getColumnIndexAtX(p.x);
         int realIndex = columnModel.getColumn(index).getModelIndex();
@@ -53,7 +56,6 @@ public class JTableX extends JTable {
      * @return Lenght of text in pixels.
      */
     public int getTextLength(int row, int column) {
-
         Font tblFont = this.getFont();
         Graphics tblGraphics = this.getGraphics();
         FontMetrics tblFontMetrics = this.getFontMetrics(tblFont);

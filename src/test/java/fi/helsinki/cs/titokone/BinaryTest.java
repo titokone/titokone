@@ -265,8 +265,6 @@ public class BinaryTest extends TestCase {
         MemoryLine[] data = app.getInitialData();
         SymbolTable symtable = app.getSymbolTable();
 
-        int binary;
-        String sym;
         for (int i = 0; i < code.length; i++) {
             Assert.assertEquals(code[i].getBinary(), 0);
             Assert.assertEquals(code[i].getSymbolic(), "NOP");

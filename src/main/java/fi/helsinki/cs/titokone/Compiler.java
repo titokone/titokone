@@ -86,12 +86,6 @@ public class Compiler {
     private boolean firstRound;
 
     /**
-     * This field counts the number of actual command lines found
-     * during the first round.
-     */
-    private int commandLineCount;
-
-    /**
      * This array contains the code.  During the first round this
      * field holds the clean version of the code (stripped of
      * compiler commands like def, ds, dc etc.)
@@ -323,7 +317,6 @@ public class Compiler {
      */
     private CompileInfo firstRoundProcess(String line) throws TTK91CompileException {
         String[] lineTemp;
-        boolean nothingFound = true;
         String comment = "";
         String[] commentParameters;
         int intValue = 0;
@@ -340,10 +333,6 @@ public class Compiler {
         try {
 
             lineTemp = parseCompilerCommandLine(line);
-
-            // compiler command
-            boolean allCharsValid = true;
-            boolean atLeastOneNonNumber = false;
 
             if (invalidLabels.containsKey(lineTemp[0])) {
                 // not a valid label
@@ -522,7 +511,6 @@ public class Compiler {
             } else {
                 code.add(line);
                 if (!lineTemp[0].equals("")) {
-                    nothingFound = false;
                     labelFound = true;
                     // label found
 
@@ -559,7 +547,6 @@ public class Compiler {
                 } catch (NumberFormatException ne) {
                     // variable used
                     if (symbolicInterpreter.getRegisterId(lineTemp[4]) == -1) {
-                        nothingFound = false;
                         variableUsed = true;
                         compileDebugger.foundSymbol(lineTemp[4]);
                         if (!symbols.containsKey(lineTemp[4])) {
@@ -781,12 +768,11 @@ public class Compiler {
         String secondRegister = "";
         String address = "";
 
-        String comment;                // for exception
+        String comment;			// for exception
 
         String[] parsedLine;
         String wordTemp = "";
-        int nextToCheck = 0;        // for looping out the spacing
-        int fieldEnd = 0;        // searches the end of a field (' ', ',')
+        int fieldEnd = 0;		// searches the end of a field (' ', ',')
         boolean spaceBetweenMemorymodeAndAddress = false;
 
 

@@ -325,7 +325,8 @@ public class GUIBrain {
      * This method corresponds to the menu option File -> Run. It does
      * its work by calling runInstruction().
      */
-    public void menuRun() {
+    @SuppressWarnings("unused")
+	public void menuRun() {
         synchronized (lock) {
 
             threadRunning = true;

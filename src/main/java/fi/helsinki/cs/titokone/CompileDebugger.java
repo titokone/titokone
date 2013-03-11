@@ -19,22 +19,6 @@ public class CompileDebugger {
      */
     private CompileInfo info;
 
-    /**
-     * This field contains current phase of compilation.
-     */
-    private int phase;
-
-    /**
-     * This field contains current statusmessage.
-     */
-    private String statusMessage;
-
-    /**
-     * This field contains current comment. This string is created by
-     * debugger when its different methods are called.
-     */
-    private String comment;
-
 /*----------- Constructor -----------*/
 
     /**

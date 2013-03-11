@@ -14,7 +14,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Class GUI is namely the class that implements the Graphical User Interface.
@@ -34,7 +33,12 @@ import java.util.logging.Logger;
  */
 
 public class GUI extends JFrame implements ActionListener {
-    GUIBrain guibrain;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -1442519328337686535L;
+
+	GUIBrain guibrain;
 
     /**
      * This holds (@link rightSplitPane rightSplitPane) and
@@ -252,9 +256,6 @@ public class GUI extends JFrame implements ActionListener {
             OPEN_FILE_COMMAND = 7;
 
 
-    private int activeView = 0;
-
-
     private JFileChooser generalFileDialog;
 
     private GUIRunSettingsDialog setRunningOptionsDialog;
@@ -420,7 +421,6 @@ public class GUI extends JFrame implements ActionListener {
 
         }
         
-        activeView = view;
         mainSplitPane.setDividerLocation(0.5);
     }
 
@@ -488,7 +488,9 @@ public class GUI extends JFrame implements ActionListener {
         if (newValue == null) {
             return;
         }
-        DefaultTableModel registersTableModel = (DefaultTableModel) registersTable.getModel();
+        
+        @SuppressWarnings("unused")
+		DefaultTableModel registersTableModel = (DefaultTableModel) registersTable.getModel();
         registersTable.setValueAt("" + newValue.intValue(), reg, 1);
     }
 
@@ -1624,8 +1626,8 @@ public class GUI extends JFrame implements ActionListener {
 
         display = new Display();
         displayFrame = new JFrame();
-        displayFrame.setSize(scale * display.X, scale * display.Y);
-        displayFrame.setTitle(display.X + "x" + display.Y + " @" + display.DEFAULT_START);
+        displayFrame.setSize(scale * Display.X, scale * Display.Y);
+        displayFrame.setTitle(Display.X + "x" + Display.Y + " @" + Display.DEFAULT_START);
         displayFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         displayFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
@@ -1634,11 +1636,9 @@ public class GUI extends JFrame implements ActionListener {
             }
         });
 
-
         displayFrame.getContentPane().add(display);
 
         new Thread(display).start();
-
     }
 
     /**
@@ -1939,11 +1939,12 @@ public class GUI extends JFrame implements ActionListener {
         public void actionPerformed(ActionEvent e) {
             int rv = showSelectStdoutDialog();
             if (rv == JFileChooser.APPROVE_OPTION) {
-                JOptionPane confirmDialog = new JOptionPane();
+                @SuppressWarnings("unused")
+				JOptionPane confirmDialog = new JOptionPane();
                 String[] param = {(String) UIManager.get("OptionPane.yesButtonText"),
                         (String) UIManager.get("OptionPane.noButtonText")};
 
-                int rv2 = confirmDialog.showConfirmDialog(
+                int rv2 = JOptionPane.showConfirmDialog(
                         generalFileDialog,
                         new Message("Do you want to overwrite the file? Select {1} to append or {0} to overwrite.", param).toString(),
                         new Message("Overwrite?").toString(),

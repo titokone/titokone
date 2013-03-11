@@ -14,7 +14,11 @@ import java.awt.image.BufferedImage;
 // Display class was added by Toni Ruottu 8.4.2012
 
 public class Display extends JPanel implements Runnable {
-    static final int fontWidth = 5, fontHeight = 6;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 6026837088441700383L;
+	static final int fontWidth = 5, fontHeight = 6;
     static final int X = 160, Y = 120;
     static final int MARGIN = 50; //30 minimum real pixel margin on every side
     static final int DEFAULT_START = 0x2000;
@@ -53,7 +57,7 @@ public class Display extends JPanel implements Runnable {
     }
 
     public void setMem(TTK91Memory mem) {
-        this.mem = mem;
+        Display.mem = mem;
     }
 
     public void setUpdates(boolean updates) {
