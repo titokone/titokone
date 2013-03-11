@@ -15,4 +15,13 @@ public abstract class TTK91Exception extends Exception {
     public TTK91Exception(String message) {
         super(message);
     }
+
+    public TTK91Exception(Throwable cause) {
+        super(cause);
+    }
+
+    public TTK91Exception(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

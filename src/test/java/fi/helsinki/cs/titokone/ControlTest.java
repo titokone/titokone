@@ -104,14 +104,16 @@ public class ControlTest extends LoguserTestCase {
     }
 
     public void testLoad() throws TTK91RuntimeException {
+
         testCompile(); // to make sure internal state is right. This one works.
-        control.load();
+
         try {
-            control.writeToStdoutFile("text");
+            control.load();
             fail("Should not have been able to write to default stdout " +
                     "file /root/teststdin.\n");
-        } catch (TTK91FailedWrite err) {
-            assertEquals(teststdout + " (Access is denied)", err.getMessage());
+        } catch (TTK91NoStdInData err) {
+            assertNotNull(err.getCause());
+            assertTrue(err.getCause() instanceof IOException);
         }
         application.getSymbolTable().addDefinition("stdin", filename.getPath());
         control.load();
@@ -120,9 +122,9 @@ public class ControlTest extends LoguserTestCase {
         try {
             control.load();
             fail();
-        } catch (TTK91NoStdInData foo) {
-            assertEquals("STDIN data file unreadable: nonexistingfile (The system cannot find the file specified)",
-                    foo.getMessage());
+        } catch (TTK91NoStdInData err) {
+            assertNotNull(err.getCause());
+            assertTrue(err.getCause() instanceof IOException);
         }
         application.getSymbolTable().addDefinition("stdin", fiddlesticks.getPath());
         control.eraseMemory();
@@ -157,7 +159,7 @@ public class ControlTest extends LoguserTestCase {
             control.writeToStdoutFile("text");
             fail("Should have not been able to write to /root/foo1.\n");
         } catch (TTK91FailedWrite err) {
-            assertEquals(err.getMessage(), foo1 + " (Access is denied)");
+            // Expected exception
         }
     }
 

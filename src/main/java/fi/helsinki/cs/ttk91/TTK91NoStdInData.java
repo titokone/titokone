@@ -12,4 +12,13 @@ public class TTK91NoStdInData extends TTK91RuntimeException {
     public TTK91NoStdInData(String message) {
         super(message);
     }
+
+    public TTK91NoStdInData(Throwable cause) {
+        super(cause);
+    }
+
+    public TTK91NoStdInData(String message, Throwable cause) {
+        super(message, cause);
+    }
+
 }

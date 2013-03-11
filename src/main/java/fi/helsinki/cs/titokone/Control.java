@@ -124,8 +124,8 @@ public class Control implements TTK91Core {
      */
     public LoadInfo load()
             throws TTK91AddressOutOfBounds, TTK91NoStdInData {
-        String errorMessage = "";
-        boolean pendingException = false;
+        String errorMessage = null;
+        TTK91NoStdInData pendingException = null;
         File[] appDefinitions;
         LoadInfo result;
         pendingLoadInfo = null;
@@ -140,14 +140,14 @@ public class Control implements TTK91Core {
         }
         try {
             insertStdinToApplication(appDefinitions[DEF_STDIN_POS]);
-        } catch (IOException fileProblem) {
+        } catch (IOException ioe) {
             errorMessage = new Message("STDIN data file " +
                     "unreadable: {0}",
-                    fileProblem.getMessage()).toString();
+                    ioe.getMessage()).toString();
             // The exception will be thrown when everything else is 
             // finished; it can be ignored since it will be thrown later
             // again *if* someone tries to read the stdin data.
-            pendingException = true;
+            pendingException = new TTK91NoStdInData(errorMessage, ioe);
         } catch (ParseException dataInvalid) {
             errorMessage = new Message("STDIN data file contains " +
                     "invalid data: {0}",
@@ -155,14 +155,15 @@ public class Control implements TTK91Core {
             // The exception will be thrown when everything else is 
             // finished; it can be ignored since it will be thrown later
             // again *if* someone tries to read the stdin data.
-            pendingException = true;
+            pendingException = new TTK91NoStdInData(errorMessage, dataInvalid);
         }
         Loader loader = new Loader(processor);
         loader.setApplicationToLoad(application);
         result = loader.loadApplication();
-        if (pendingException) {
+
+        if (pendingException != null) {
             pendingLoadInfo = result;
-            throw new TTK91NoStdInData(errorMessage);
+            throw pendingException;
         }
         return result;
     }
