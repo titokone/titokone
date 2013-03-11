@@ -324,6 +324,11 @@ public class GUI extends JFrame implements ActionListener {
     public static final String imgDir = "fi/helsinki/cs/titokone/img";
 
     /**
+     * Base used for values shown by this GUI.
+     */
+    private ValueBase valueBase = ValueBase.DEC;
+
+    /**
      * This is called when ActionEvent of some kind is fired.
      */
     @Override
@@ -485,6 +490,14 @@ public class GUI extends JFrame implements ActionListener {
     }
 
     /**
+     * Set base used when drawing values on UI
+     * @param base used to convert register values etc.
+     */
+    public void setValueBase(ValueBase base) {
+    	valueBase = base;
+    }
+
+    /**
      * GUIBrain can call this method to reset GUI, which means that all tables
      * (except registers table) are emptied and all their rows are unselected.
      */
@@ -550,7 +563,7 @@ public class GUI extends JFrame implements ActionListener {
 
         @SuppressWarnings("unused")
 		DefaultTableModel registersTableModel = (DefaultTableModel) registersTable.getModel();
-        registersTable.setValueAt("" + newValue.intValue(), reg, 1);
+        registersTable.setValueAt(valueBase.toString(newValue.intValue()), reg, 1);
     }
 
 
@@ -888,7 +901,6 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         int numOfSymbols = symbolsAndValues.length;
-
         Object[][] tableContents = new Object[numOfSymbols][2];
         for (int row = 0; row < numOfSymbols; row++) {
             tableContents[row][0] = symbolsAndValues[row][NAME];
@@ -919,7 +931,7 @@ public class GUI extends JFrame implements ActionListener {
                value in GUI is not modified.
             */
             if (symbolValue != null) {
-                symbolTableModel.setValueAt(symbolValue, row.intValue(), 1);
+                symbolTableModel.setValueAt(valueBase.toString(symbolValue), row.intValue(), 1);
             }
         } else {
             /* symbolName is not in symbol table so now a new is needed
@@ -929,7 +941,7 @@ public class GUI extends JFrame implements ActionListener {
             if (symbolValue == null) {
                 data = new String[]{symbolName, ""};
             } else {
-                data = new String[]{symbolName, "" + symbolValue};
+                data = new String[]{symbolName, "" + valueBase.toString(symbolValue)};
             }
             tableModel.addRow(data);
 
@@ -1493,9 +1505,10 @@ public class GUI extends JFrame implements ActionListener {
         symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
         symbolTableScrollPane.setMinimumSize(new Dimension(200, 150));
 
+        String zero = valueBase.toString(0);
         String[][] regTableContents = new String[][]
-                {{"R0", "0"}, {"R1", "0"}, {"R2", "0"}, {"R3", "0"}, {"R4", "0"},
-                        {"R5", "0"}, {"SP", "0"}, {"FP", "0"}, {"PC", "0"}};
+                {{"R0", zero}, {"R1", zero}, {"R2", zero}, {"R3", zero}, {"R4", zero},
+                        {"R5", zero}, {"SP", zero}, {"FP", zero}, {"PC", zero}};
 
         registersTable = new JTableX(new DefaultTableModel(regTableContents, registersTableIdentifiers));
         registersTable.setEnabled(false);

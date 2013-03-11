@@ -134,11 +134,20 @@ public class LoadInfo extends DebugInfo {
         String[][] symbolsValues = new String[symbols.length][2];
         for (int i = 0; i < symbols.length; i++) {
             symbolsValues[i][0] = symbols[i];
-            symbolsValues[i][1] = "" + symbolTable.getSymbol(symbols[i]);
+            symbolsValues[i][1] = String.valueOf(symbolTable.getSymbol(symbols[i]));
         }
         return symbolsValues;
     }
 
+    public String[][] getSymbolTable(ValueBase base) {
+        String[] symbols = symbolTable.getAllSymbols();
+        String[][] symbolsValues = new String[symbols.length][2];
+        for (int i = 0; i < symbols.length; i++) {
+            symbolsValues[i][0] = symbols[i];
+            symbolsValues[i][1] = base.toString((symbolTable.getSymbol(symbols[i])));
+        }
+        return symbolsValues;
+    }
 
     /**
      * @return The value of the Stack pointer (SP) after the program is loaded into memory.

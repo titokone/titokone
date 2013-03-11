@@ -31,6 +31,7 @@ public enum ValueBase {
 	public String getName() { return name; }
 
 	public String toString(int value) {
+		// TODO - sign is shown after prefix
 		return prefix + Integer.toString(value, base) + suffix;
 	}
 

@@ -142,6 +142,10 @@ public class GUIBrain {
      */
     protected static boolean ENABLE_DATA_AREA_MARKUP = true;
 
+    /**
+     * Base used for values shown by this GUI.
+     */
+    private ValueBase valueBase = ValueBase.DEC;
 
     /**
      * This constructor sets up the GUIBrain instance. It calls private
@@ -219,9 +223,12 @@ public class GUIBrain {
         gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
 
         try {
-        	ValueBase base = ValueBase.getBase(currentSettings.getIntValue(Settings.BASE));
-        	gui.animator.setValueBase(base);
-        } catch(Exception e) {}
+        	valueBase = ValueBase.getBase(currentSettings.getIntValue(Settings.BASE));
+        	gui.animator.setValueBase(valueBase);
+        	gui.setValueBase(valueBase);
+        } catch(Exception e) {
+        	valueBase = ValueBase.DEC;
+        }
 
         int memorysize = currentSettings.getIntValue(Settings.MEMORY_SIZE);
         if (memorysize != Control.DEFAULT_MEMORY_SIZE) {
@@ -231,7 +238,6 @@ public class GUIBrain {
                 control.changeMemorySize(Control.DEFAULT_MEMORY_SIZE);
             }
         }
-
 
         availableLanguages = new Hashtable<String, Locale>();
         findAvailableLanguages();
@@ -243,13 +249,8 @@ public class GUIBrain {
             //gui.updateAllTexts();
         }
 
-
         noPauses = false;
         interruptSent = false;
-        // The settings have not really changed into anything
-        // interesting at this point.
-        //saveSettings();
-
         currentState = NONE;
     }
 
@@ -1258,7 +1259,7 @@ public class GUIBrain {
             gui.updateReg(GUI.SP, loadinfo.getSP());
             gui.updateReg(GUI.FP, loadinfo.getFP());
 
-            String[][] symbolsAndValues = loadinfo.getSymbolTable();
+            String[][] symbolsAndValues = loadinfo.getSymbolTable(valueBase);
             gui.insertSymbolTable(symbolsAndValues);
 
             int instructionsBinary[] = loadinfo.getBinaryCommands();
