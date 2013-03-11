@@ -5,7 +5,8 @@
 package fi.helsinki.cs.titokone;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 /**
@@ -53,6 +54,7 @@ public class Settings {
     public static final String STDOUT_USE = "Stdout use";
     public static final String STDOUT_PATH = "Stdout path";
     public static final String MEMORY_SIZE = "Memory size";
+    public static final String BASE = "Base number";
 
     /**
      * This constructor sets up a settings class with default values.
@@ -192,7 +194,7 @@ public class Settings {
      * This method returns all the keys defined here.
      */
     public String[] getKeys() {
-        return (String[]) settings.keySet().toArray(new String[0]);
+        return settings.keySet().toArray(new String[0]);
     }
 
     /**
@@ -201,14 +203,15 @@ public class Settings {
      *
      * @return String containing the non-fixed data in this class.
      */
-    public String toString() {
+    @Override
+	public String toString() {
         String keyString, valueString;
         StringBuffer result;
         Object value;
         Iterator<String> keyIterator = settings.keySet().iterator();
         result = new StringBuffer("");
         while (keyIterator.hasNext()) {
-            keyString = (String) keyIterator.next();
+            keyString = keyIterator.next();
             value = settings.get(keyString);
             try {
                 valueString = (String) settings.get(keyString);

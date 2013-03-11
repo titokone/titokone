@@ -5,13 +5,17 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.ttk91.TTK91Cpu;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import fi.helsinki.cs.ttk91.TTK91Cpu;
 
 
 /**
@@ -21,7 +25,7 @@ import java.io.IOException;
 public class Animator extends JPanel implements Runnable {
 
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -2401442068137343247L;
 
@@ -197,6 +201,11 @@ public class Animator extends JPanel implements Runnable {
     private int delay = 40;
 
     /**
+     * Base used for values shown by this GUI.
+     */
+    private ValueBase valueBase = ValueBase.DEC;
+
+    /**
      * Creats new animator.
      *
      * @throws IOException If there are problems reading background image throw IOException.
@@ -210,8 +219,17 @@ public class Animator extends JPanel implements Runnable {
         backgroundImage.createGraphics().drawImage(bi, 0, 0, null);
     }
 
-    public void paint(Graphics g) {
-        // copy backround image to dublebuffer
+    /**
+     * Set base used when drawing values on UI
+     * @param base used to convert register values etc.
+     */
+    public void setValueBase(ValueBase base) {
+    	valueBase = base;
+    }
+
+    @Override
+	public void paint(Graphics g) {
+        // copy background image to double buffer
         backgroundImage.copyData(doubleBuffer.getRaster());
 
         Graphics g2 = doubleBuffer.createGraphics();
@@ -226,7 +244,7 @@ public class Animator extends JPanel implements Runnable {
         // write values (registers, alu, control unit, mmu)
         for (int i = 0; i < whereWriteValueTo.length; i++) {
             if (i != SR) {
-                g2.drawString("" + value[i], whereWriteValueTo[i][0], whereWriteValueTo[i][1]);
+                g2.drawString(valueBase.toString(value[i]), whereWriteValueTo[i][0], whereWriteValueTo[i][1]);
             } else {
                 g2.drawString(SR_String, whereWriteValueTo[i][0], whereWriteValueTo[i][1]);
             }
@@ -251,7 +269,8 @@ public class Animator extends JPanel implements Runnable {
      * Animation is done in this run method. animate method awakes new thread
      * with this run method.
      */
-    public void run() {
+    @Override
+	public void run() {
         // Information about command cycle:
         // http://www.cs.helsinki.fi/u/kerola/tito/html/lu05_files/frame.html
         currentCommand = "";

@@ -66,7 +66,7 @@ public class CompileInfo extends DebugInfo {
     private int symbolValue;
 
     /**
-     * This field contains information if a symbol was foud.
+     * This field contains information if a symbol was found.
      */
     private boolean symbolFound;
 

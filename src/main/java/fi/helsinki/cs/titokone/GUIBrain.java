@@ -207,6 +207,11 @@ public class GUIBrain {
         int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
         gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
         gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
+        
+        try {
+        	int base = currentSettings.getIntValue(Settings.BASE);
+        	gui.animator.setValueBase(ValueBase.getBase(base));
+        } catch(Exception e) {}
 
         int memorysize = currentSettings.getIntValue(Settings.MEMORY_SIZE);
         if (memorysize != Control.DEFAULT_MEMORY_SIZE) {
