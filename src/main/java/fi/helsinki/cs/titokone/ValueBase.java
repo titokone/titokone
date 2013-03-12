@@ -31,7 +31,8 @@ public enum ValueBase {
 	public String getName() { return name; }
 
 	public String toString(int value) {
-		// TODO - sign is shown after prefix
+		if (value < 0 && this == ValueBase.HEX)
+			return prefix + Long.toString(value & 0xFFFFFFFFL, base) + suffix;
 		return prefix + Integer.toString(value, base) + suffix;
 	}
 
