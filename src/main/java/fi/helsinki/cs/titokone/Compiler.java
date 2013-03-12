@@ -44,13 +44,6 @@ public class Compiler {
     private int nextLine;
 
     /**
-     * This field holds all the valid symbols on a label.
-     */
-    private final String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyzåäö_";
-    private final int NOTVALID = -1;
-    private final int EMPTY = -1;
-
-    /**
      * Maximum value of the EQU and DC.
      */
     private final int MAXINT = 2147483647;
@@ -206,7 +199,6 @@ public class Compiler {
      *                               is finished.
      */
     public CompileInfo compileLine() throws TTK91CompileException {
-
         CompileInfo info;
 
         if (firstRound) {
@@ -327,10 +319,10 @@ public class Compiler {
 
         compileDebugger.setStatusMessage(new Message("First round of compilation.").toString());
 
-        /*
-                    The method first tries to parse a compilercommand (equ, dc, ds, def) from the line. If
-                    succesfull then Check whether name is valid and value correct.
-                    */
+        /* The method first tries to parse a compilercommand (equ, dc, ds, def)
+         * from the line. If successful then Check whether name is valid and
+         * value correct.
+         */
         try {
 
             lineTemp = parseCompilerCommandLine(line);
@@ -444,7 +436,6 @@ public class Compiler {
                 }
 
                 if (lineTemp[1].equals("dc")) {
-
                     compileDebugger.foundDC(lineTemp[0]);
 
                     if (symbols.containsKey(lineTemp[0])) {
@@ -493,16 +484,19 @@ public class Compiler {
                 }
             }
         } catch (TTK91CompileException e) {
-            /*
-                            This means that line is not a valid compiler command. Now we try to parse a valid ttk91-command
-                            from it. ParseLine return line as an array with label in position 0, opcode in 1, first register in
-                            2, addressingmode in 3, address in 4 and other register in position 5.
-
-                            However that is not all there is to it. Once a label is introduced it becomes unusable and
-                            cannot be defined twice, and address part must be within the limits.
-
-                            Address can be either a variable or a number and that must be noticed also.
-                            */
+            /* This means that line is not a valid compiler command. Now we try
+             * to parse a valid ttk91-command from it. ParseLine return line as
+             * an array with label in position 0, opcode in 1, first register in
+             * 2, addressingmode in 3, address in 4 and other register in
+             * position 5.
+             *
+             * However that is not all there is to it. Once a label is
+             * introduced it becomes unusable and cannot be defined twice, and
+             * address part must be within the limits.
+             *
+             * Address can be either a variable or a number and that must be
+             * noticed also.
+             */
 
             lineTemp = parseLine(line);
 
@@ -697,7 +691,6 @@ public class Compiler {
 
         compileDebugger.finalFirstPhase(newCode, data, newSymbolTable);
         return compileDebugger.lineCompiled();
-
     }
 
     /**
@@ -793,7 +786,6 @@ public class Compiler {
             return parsedLine;
         }
 
-
         String[] lineAsArray = symbolicOpcode.split("[ \t,]+");
         int lineAsArrayIndex = 0;
 
@@ -829,7 +821,7 @@ public class Compiler {
             throw new TTK91CompileException(comment);
         }
 
-        /*first register*/
+        /* first register */
         if (lineAsArrayIndex < lineAsArray.length) {
             // first register might end with a ','. Not when push Sp etc.
             if (lineAsArray[lineAsArrayIndex].charAt(
@@ -879,7 +871,7 @@ public class Compiler {
             }
         }
 
-        /*address and second register*/
+        /* address and second register */
         if (lineAsArrayIndex < lineAsArray.length) {
             if (lineAsArray[lineAsArrayIndex].indexOf("(") != -1) {
 
@@ -988,7 +980,7 @@ public class Compiler {
                 }
             } else {
                 if (opcode.equalsIgnoreCase("nop")) {
-                    // (do nothing)
+                    /* No operation (do nothing) */
                 } else {
                     if (opcode.equalsIgnoreCase("pop")) {
                         if (addressingMode.equals("@") ||
@@ -1032,14 +1024,13 @@ public class Compiler {
             }
 
             /* This one checks the length of the address String because
-                            Integer.parseInt(100000000000000) throws an exception.*/
+             * Integer.parseInt(100000000000000) throws an exception.*/
             if (isANumber) {
                 if (address.length() > String.valueOf(ADDRESSMIN).length() ||
                         Integer.parseInt(address) > ADDRESSMAX ||
                         Integer.parseInt(address) < ADDRESSMIN) {
                     comment = new Message("Compilation failed: {0}",
-                            new Message(
-                                    "invalid address value.").toString()).toString();
+                            new Message("invalid address value.").toString()).toString();
                     throw new TTK91CompileException(comment);
                 }
             }
@@ -1107,7 +1098,7 @@ public class Compiler {
         int intValue;
         String[] parsedLine;
 
-        String comment;                // for exception
+        String comment; // for exception
 
         /* preprosessing */
         line = line.toLowerCase();
@@ -1214,15 +1205,15 @@ public class Compiler {
      *         otherwise.
      */
     private boolean validLabelName(String labelName) {
-        // It must have one non-number. Valid characters are A-Ö, 0-9 and _.
-        // Test 1: the word contains one or more of the following:
-        // a-z, A-Z, _, 0-9, åäö, ÅÄÖ, in any order.
-        // Test 2: the word also contains one non-number (class \D
-        // means anything but 0-9) surrounded by any number of
-        // any character. All these 'anything buts' and 'anys' are
-        // also valid characters, since we check that in Test 1.
-        if (labelName.matches("[åäöÅÄÖ\\w]+") &&
-                labelName.matches(".*\\D.*")) {
+        /* It must have one non-number. Valid characters are A-Ö, 0-9 and _.
+         * Test 1: the word contains one or more of the following:
+         * a-z, A-Z, _, 0-9, åäö, ÅÄÖ, in any order.
+         * Test 2: the word also contains one non-number (class \D
+         * means anything but 0-9) surrounded by any number of
+         * any character. All these 'anything buts' and 'anys' are
+         * also valid characters, since we check that in Test 1.
+    	 */
+        if (labelName.matches("[åäöÅÄÖ\\w]+") && labelName.matches(".*\\D.*")) {
             return true;
         }
         return false;

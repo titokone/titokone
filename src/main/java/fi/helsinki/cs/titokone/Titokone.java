@@ -5,7 +5,9 @@
 
 package fi.helsinki.cs.titokone;
 
-import java.util.logging.*;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class is just a launcher for the actual program. It creates an instance
@@ -18,8 +20,6 @@ public class Titokone {
      * parameter is given to the application.
      */
     public static final int INVALID_PARAMETER = -1;
-
-
     private static final String PACKAGE = "fi.helsinki.cs.titokone";
 
     public static void main(String[] args) {
@@ -31,7 +31,12 @@ public class Titokone {
             handleParameter(args[i]);
         }
         GUI gui = new GUI();
-        gui.start();        
+        try {
+			gui.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(-2);
+		}
     }
 
     private static void handleParameter(String parameter) {
@@ -47,7 +52,6 @@ public class Titokone {
             showAvailableParameters();
             System.exit(INVALID_PARAMETER);
         }
-
     }
 
     private static void showAvailableParameters() {

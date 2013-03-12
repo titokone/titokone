@@ -552,7 +552,6 @@ public class GUIBrain {
             boolean compilingCompleted = false;
 
             do {
-
                 currentState = K91_COMPILING;
                 setGUICommandsForCurrentState();
 

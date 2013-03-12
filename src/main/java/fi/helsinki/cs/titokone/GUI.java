@@ -353,8 +353,9 @@ public class GUI extends JFrame implements ActionListener {
 
     /**
      * Starts the GUI for Titokone
+     * @throws IOException
      */
-    public void start() {
+    public void start() throws IOException {
     	print("Initializing setRunningOptionsDialog...");
         setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
         setRunningOptionsDialog.addComponentListener(new ComponentListener() {
@@ -1390,7 +1391,6 @@ public class GUI extends JFrame implements ActionListener {
 
 
     public String[] getCodeTableContents() {
-
         Vector<?> codeTableContents = ((DefaultTableModel) codeTable.getModel()).getDataVector();
         String[] codeTableContentsString = new String[codeTableContents.size()];
 
@@ -1398,6 +1398,7 @@ public class GUI extends JFrame implements ActionListener {
         for (Enumeration<?> e = codeTableContents.elements(); e.hasMoreElements(); i++) {
             codeTableContentsString[i] = (String) ((Vector<?>) e.nextElement()).get(0);
         }
+
         return codeTableContentsString;
     }
 
@@ -1609,12 +1610,8 @@ public class GUI extends JFrame implements ActionListener {
     }
 
 
-    private void initAnimator() {
-        try {
-            animator = new Animator();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+    private void initAnimator() throws IOException {
+        animator = new Animator();
 
         animatorFrame = new JFrame();
         animatorFrame.setSize(810, 636);
