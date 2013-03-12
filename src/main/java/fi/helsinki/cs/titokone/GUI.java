@@ -654,7 +654,7 @@ public class GUI extends JFrame implements ActionListener {
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
             tableContents[i][0] = String.valueOf(i);
-            tableContents[i][1] = String.valueOf(binaryCommand[i]);
+            tableContents[i][1] = valueBase.toString(binaryCommand[i]);
             tableContents[i][2] = symbolicCommand[i];
         }
 
@@ -705,12 +705,12 @@ public class GUI extends JFrame implements ActionListener {
         if (lineNumber < 0) {
             return false;
         } else if (lineNumber < instructionsTable.getRowCount()) {
-            ((DefaultTableModel) instructionsTable.getModel()).setValueAt(String.valueOf(binaryCommand), lineNumber, 1);
+            ((DefaultTableModel) instructionsTable.getModel()).setValueAt(valueBase.toString(binaryCommand), lineNumber, 1);
             ((DefaultTableModel) instructionsTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
             return true;
         } else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
             lineNumber = lineNumber - instructionsTable.getRowCount();
-            ((DefaultTableModel) dataTable.getModel()).setValueAt(String.valueOf(binaryCommand), lineNumber, 1);
+            ((DefaultTableModel) dataTable.getModel()).setValueAt(valueBase.toString(binaryCommand), lineNumber, 1);
             ((DefaultTableModel) dataTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
             return true;
         } else {
@@ -738,7 +738,7 @@ public class GUI extends JFrame implements ActionListener {
             return false;
         } else if (lineNumber < instructionsTable.getRowCount()) {
             DefaultTableModel instructionsTableModel = (DefaultTableModel) instructionsTable.getModel();
-            instructionsTableModel.setValueAt(String.valueOf(binaryCommand), lineNumber, 1);
+            instructionsTableModel.setValueAt(valueBase.toString(binaryCommand), lineNumber, 1);
             int newTextLength = instructionsTable.getTextLength(lineNumber, 1) + cellMargin;
 
             if (newTextLength > instructionsTable.getColumnModel().getColumn(1).getWidth()) {
@@ -787,7 +787,7 @@ public class GUI extends JFrame implements ActionListener {
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
             tableContents[i][0] = String.valueOf(i + instructionsTableRowCount);
-            tableContents[i][1] = String.valueOf(dataContents[i]);
+            tableContents[i][1] = dataContents[i];
             tableContents[i][2] = "";
         }
 
@@ -835,9 +835,9 @@ public class GUI extends JFrame implements ActionListener {
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
             tableContents[i][0] = String.valueOf(i + instructionsTableRowCount);
-            tableContents[i][1] = String.valueOf(data[i]);
+            tableContents[i][1] = valueBase.toString(data[i]);
             if (symbolic.length > i) {
-                tableContents[i][2] = String.valueOf(symbolic[i]);
+                tableContents[i][2] = symbolic[i];
             } else {
                 tableContents[i][2] = "";
             }

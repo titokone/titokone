@@ -664,7 +664,6 @@ public class GUIBrain {
                         }
                     }
                 }
-
             } while (interruptSent == false); // End of do-loop
 
             if (currentState == INTERRUPTED_WITH_PAUSE) {
