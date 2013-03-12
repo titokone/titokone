@@ -313,7 +313,7 @@ public class GUIBrain {
 
     public boolean enterInput(String input) {
         int inputValue;
-        String[] minAndMaxValues = {"" + MIN_KBD_VALUE, "" + MAX_KBD_VALUE};
+        String[] minAndMaxValues = {String.valueOf(MIN_KBD_VALUE), String.valueOf(MAX_KBD_VALUE)};
 
         try {
             inputValue = Integer.parseInt(input);

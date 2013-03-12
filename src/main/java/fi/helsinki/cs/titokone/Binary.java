@@ -82,7 +82,7 @@ public class Binary {
         } catch (Exception e) {
             throw new ParseException(new Message("Invalid code area value " +
                     "on line: {0}",
-                    "" + (i + 1)).toString(), i + 1);
+                    String.valueOf(i + 1)).toString(), i + 1);
         }
 
         lastCodeLine = y.intValue();
@@ -90,13 +90,11 @@ public class Binary {
         if (x.intValue() != 0 || x.intValue() > y.intValue() + 1) {
             throw new ParseException(new Message("Invalid code area " +
                     "length on line: {0}",
-                    "" + (i + 1)).toString(), i + 1);
+                    String.valueOf(i + 1)).toString(), i + 1);
         }
         int areaLength = y.intValue() + 1;
 
         i++;
-
-        //if(y.intValue()!=-1)
         if (areaLength != 0) {
             while (!b91[i].startsWith("_")) {
                 Integer j;
@@ -105,7 +103,7 @@ public class Binary {
                 } catch (Exception e) {
                     throw new ParseException(new Message("Invalid command on " +
                             "line: {0}",
-                            "" + (i + 1)).toString(),
+                            String.valueOf(i + 1)).toString(),
                             i + 1);
                 }
 
@@ -115,7 +113,7 @@ public class Binary {
                 if (s.equals("")) {
                     throw new ParseException(new Message("Invalid command on" +
                             " line: {0}",
-                            "" + (i + 1)).toString(),
+                            String.valueOf(i + 1)).toString(),
                             i + 1);
                 }
                 i++;
@@ -142,20 +140,20 @@ public class Binary {
         } catch (Exception e) {
             throw new ParseException(new Message("Invalid data area " +
                     "value on line: {0}",
-                    "" + (i + 1)).toString(), i + 1);
+                    String.valueOf(i + 1)).toString(), i + 1);
         }
 
         if (x.intValue() != lastCodeLine + 1) {
             throw new ParseException(new Message("Invalid data area " +
                     "value on line: {0}",
-                    "" + (i + 1)).toString(), i + 1);
+                    String.valueOf(i + 1)).toString(), i + 1);
         }
         if (x.intValue() > y.intValue() + 1)
 
         {
             throw new ParseException(new Message("Invalid data area " +
                     "length on line: {0}",
-                    "" + (i + 1)).toString(), i + 1);
+                    String.valueOf(i + 1)).toString(), i + 1);
         }
 
         areaLength = y.intValue() - x.intValue() + 1;
@@ -169,7 +167,7 @@ public class Binary {
             } catch (NumberFormatException e) {
                 throw new ParseException(new Message("Invalid data on line: " +
                         "{0}",
-                        "" + (i + 1)).toString(), i + 1);
+                        String.valueOf(i + 1)).toString(), i + 1);
             }
             i++;
         }
@@ -185,7 +183,7 @@ public class Binary {
             if (s.length != 2) {
                 throw new ParseException(new Message("Invalid symbol on " +
                         "line: {0}",
-                        "" + (i + 1)).toString(),
+                        String.valueOf(i + 1)).toString(),
                         i + 1);
             }
 
@@ -197,7 +195,7 @@ public class Binary {
                 } catch (NumberFormatException e) {
                     throw new ParseException(new Message("Invalid symbol " +
                             "value on line: {0}"
-                            , "" + (i + 1)).toString(),
+                            , String.valueOf(i + 1)).toString(),
                             i + 1);
                 }
             }
@@ -320,12 +318,12 @@ public class Binary {
 
         MemoryLine[] codeLines = new MemoryLine[code.size()];
         for (int j = 0; j < codeLines.length; j++) {
-            codeLines[j] = (MemoryLine) code.get(j);
+            codeLines[j] = code.get(j);
         }
 
         MemoryLine[] dataLines = new MemoryLine[data.size()];
         for (int j = 0; j < dataLines.length; j++) {
-            dataLines[j] = (MemoryLine) data.get(j);
+            dataLines[j] = data.get(j);
         }
         app = new Application(codeLines, dataLines, symbolTable);
         return app;
@@ -366,7 +364,8 @@ public class Binary {
      *
      * @return The String representation of this binary.
      */
-    public String toString() {
+    @Override
+	public String toString() {
 
         if (contents != null) {
             String[] temp = contents.split("\n");
@@ -405,15 +404,15 @@ public class Binary {
         s += System.getProperty("line.separator", "\n");
 
         if (data.length > 0) {
-            s += "" + code.length + " " + (length - 1);
+            s += String.valueOf(code.length) + " " + (length - 1);
         } else {
-            s += "" + code.length + " " + (code.length - 1);
+            s += String.valueOf(code.length) + " " + (code.length - 1);
         }
         s += System.getProperty("line.separator", "\n");
 
         if (data != null) {
             for (int i = 0; i < data.length; i++) {
-                s += "" + data[i].getBinary();
+                s += String.valueOf(data[i].getBinary());
                 s += System.getProperty("line.separator", "\n");
             }
         }
@@ -422,7 +421,7 @@ public class Binary {
 
         if (symNames != null) {
             for (int i = 0; i < symNames.length; i++) {
-                s += "" + symNames[i] + " " + symbol.getSymbol(symNames[i]);
+                s += String.valueOf(symNames[i]) + " " + symbol.getSymbol(symNames[i]);
                 s += System.getProperty("line.separator", "\n");
             }
         }

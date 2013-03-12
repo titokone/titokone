@@ -5,10 +5,31 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.titokone.devices.*;
-import fi.helsinki.cs.ttk91.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
-import java.util.*;
+import fi.helsinki.cs.titokone.devices.AddressMappingIODevice;
+import fi.helsinki.cs.titokone.devices.InvalidIODevice;
+import fi.helsinki.cs.titokone.devices.MMU;
+import fi.helsinki.cs.titokone.devices.Pic;
+import fi.helsinki.cs.titokone.devices.RTC;
+import fi.helsinki.cs.titokone.devices.RandomIODevice;
+import fi.helsinki.cs.titokone.devices.SID;
+import fi.helsinki.cs.titokone.devices.UART;
+import fi.helsinki.cs.titokone.devices.VIC;
+import fi.helsinki.cs.titokone.devices.ZeroIODevice;
+import fi.helsinki.cs.ttk91.OpCode;
+import fi.helsinki.cs.ttk91.TTK91AddressOutOfBounds;
+import fi.helsinki.cs.ttk91.TTK91BadAccessMode;
+import fi.helsinki.cs.ttk91.TTK91Cpu;
+import fi.helsinki.cs.ttk91.TTK91DivisionByZero;
+import fi.helsinki.cs.ttk91.TTK91IntegerOverflow;
+import fi.helsinki.cs.ttk91.TTK91InvalidOpCode;
+import fi.helsinki.cs.ttk91.TTK91Memory;
+import fi.helsinki.cs.ttk91.TTK91NoKbdData;
+import fi.helsinki.cs.ttk91.TTK91NoStdInData;
+import fi.helsinki.cs.ttk91.TTK91RuntimeException;
 
 /**
  * This class represents the processor. It can be told to run for one
@@ -146,7 +167,8 @@ public class Processor
      * be called on the "rising edge" of the interrupt. so if the
      * interrupt line stays high, this will not be retriggered.
      */
-    public void flagInterrupt(InterruptGenerator ig) {
+    @Override
+	public void flagInterrupt(InterruptGenerator ig) {
         /*  set internal variable to flag interrupt
          * dont know if we could use sr[7] for this */
         interrupted = true;
@@ -235,7 +257,8 @@ public class Processor
         registerDevice(new ZeroIODevice()); //here you can read zeroes
         registerDevice(new RandomIODevice()); //random numbers
         MMU mmu = new MMU() {
-            protected RandomAccessMemory getMem() {
+            @Override
+			protected RandomAccessMemory getMem() {
                 return physRam;
             }
         };
@@ -246,7 +269,8 @@ public class Processor
         registerDevice(new UART(10)); //10 clocks per bit (fast!)
         registerDevice(new UART(10)); //another..
         registerDevice(new VIC() {
-            public Display getDisplay() {
+            @Override
+			public Display getDisplay() {
                 return Processor.this.display;
             }
         }); //video
@@ -338,7 +362,8 @@ public class Processor
      * @param registerID Identifying number of the register.
      * @return Value of given register. Inproper value returns -1.
      */
-    public int getValueOf(int registerID) {
+    @Override
+	public int getValueOf(int registerID) {
         return regs.getRegister(registerID);
     }
 
@@ -358,7 +383,8 @@ public class Processor
      *
      * @return Current status of the Processor.
      */
-    public int getStatus() {
+    @Override
+	public int getStatus() {
         return status;
     }
 
@@ -386,7 +412,7 @@ public class Processor
             ram.setMemoryLine(rowNumber, inputLine);
         } catch (ArrayIndexOutOfBoundsException e) {
             errorMessage = new Message("Row number {0} is beyond memory " +
-                    "limits.", "" + rowNumber).toString();
+                    "limits.", String.valueOf(rowNumber)).toString();
             throw new TTK91AddressOutOfBounds(errorMessage);
 
         }
@@ -475,7 +501,7 @@ public class Processor
             if (Ri != TTK91Cpu.REG_R0) {
                 ADDR += regs.getRegister(Ri);			// add indexing register Ri
             }
-            int param = ADDR;                           // constant value        
+            int param = ADDR;                           // constant value
             if (M == 1) {
                 param = ram.getValue(ADDR);				// one memory fetch
                 runDebugger.setValueAtADDR(param);
@@ -513,7 +539,7 @@ public class Processor
                 svc(Rj, param);
             } else {
                 status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91InvalidOpCode(new Message(Processor.INVALID_OPCODE_MESSAGE, "" + opcode).toString());
+                throw new TTK91InvalidOpCode(new Message(Processor.INVALID_OPCODE_MESSAGE, String.valueOf(opcode)).toString());
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
@@ -1003,7 +1029,7 @@ public class Processor
      * Tests if given long value is acceptable int value.
      */
     private boolean isOverflow(long value) {
-        return (value > (long) Integer.MAX_VALUE || value < (long) Integer.MIN_VALUE);
+        return (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE);
     }
 
 

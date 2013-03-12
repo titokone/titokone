@@ -276,7 +276,7 @@ public class Animator extends JPanel implements Runnable {
         currentCommand = "";
 
         // animate instruction fetch
-        comment1 = new Message("Fetch the next instruction from memory slot {0} to IR and increase PC by one.", "" + value[PC]).toString();
+        comment1 = new Message("Fetch the next instruction from memory slot {0} to IR and increase PC by one.", valueBase.toString(value[PC])).toString();
         animateAnEvent(PC, MAR);
         animateAnEvent(PC, PC, value[PC] + 1);
         animateAnEvent(MAR, MEMORY);
@@ -310,7 +310,7 @@ public class Animator extends JPanel implements Runnable {
         if (memoryFetches == 1) {
             param = info.getValueAtADDR();
             whereIsSecondOperand = MBR;
-            comment1 = new Message("Fetch second operand from memory slot {0}.", "" + ADDR).toString();
+            comment1 = new Message("Fetch second operand from memory slot {0}.", valueBase.toString(ADDR)).toString();
             animateAnEvent(IR, MAR, ADDR);
             animateAnEvent(MAR, MEMORY);
             animateAnEvent(MEMORY, MBR, param);
@@ -318,12 +318,12 @@ public class Animator extends JPanel implements Runnable {
             param = info.getSecondFetchValue();
             whereIsSecondOperand = MBR;
             comment1 = new Message("Indirect memory accessing mode.").toString();
-            comment2 = new Message("1: Fetch indexing value from memory slot {0}.", "" + ADDR).toString();
+            comment2 = new Message("1: Fetch indexing value from memory slot {0}.", valueBase.toString(ADDR)).toString();
             animateAnEvent(IR, MAR, ADDR);
             animateAnEvent(MAR, MEMORY);
             animateAnEvent(MEMORY, MBR, info.getValueAtADDR());
             comment1 = new Message("Indirect memory accessing mode.").toString();
-            comment2 = new Message("2: Fetch second operand from memory slot {0}.", "" + value[MBR]).toString();
+            comment2 = new Message("2: Fetch second operand from memory slot {0}.", valueBase.toString(value[MBR])).toString();
             pause();
             animateAnEvent(MBR, MAR);
             animateAnEvent(MAR, MEMORY);
@@ -336,20 +336,20 @@ public class Animator extends JPanel implements Runnable {
             case RunDebugger.DATA_TRANSFER_OPERATION:
                 switch (opcode) {
                     case 1: // STORE
-                        comment1 = new Message("Write value {0} from register R{1} to memory slot {2}.", new String[]{"" + Rj_value, "" + Rj, "" + param}).toString();
+                        comment1 = new Message("Write value {0} from register R{1} to memory slot {2}.", new String[]{valueBase.toString(Rj_value), String.valueOf(Rj), valueBase.toString(param)}).toString();
                         animateAnEvent(whereIsSecondOperand, MAR, param);
                         animateAnEvent(Rj, MBR);
                         animateAnEvent(MBR, MEMORY);
                         break;
 
                     case 2: // LOAD
-                        comment1 = new Message("Load value {0} to register R{1}.", new String[]{"" + param, "" + Rj}).toString();
+                        comment1 = new Message("Load value {0} to register R{1}.", new String[]{valueBase.toString(param), String.valueOf(Rj)}).toString();
                         animateAnEvent(whereIsSecondOperand, Rj, param);
                         break;
 
                     case 3: // IN
                         int inValue = info.whatIN()[1];
-                        comment1 = new Message("Read value {0} from {1} to register R{2}.", new String[]{"" + inValue, info.whatDevice(), "" + Rj}).toString();
+                        comment1 = new Message("Read value {0} from {1} to register R{2}.", new String[]{valueBase.toString(inValue), info.whatDevice(), String.valueOf(Rj)}).toString();
                         animateAnEvent(whereIsSecondOperand, MAR);
                         animateAnEvent(MAR, EXTERNAL_DEVICE);
                         animateAnEvent(EXTERNAL_DEVICE, MBR, inValue);
@@ -359,7 +359,7 @@ public class Animator extends JPanel implements Runnable {
                     case 4: // OUT
                         @SuppressWarnings("unused")
 						int outValue = info.whatOUT()[1];
-                        comment1 = new Message("Write value {0} from register R{1} to {2}.", new String[]{"" + value[Rj], "" + Rj, info.whatDevice()}).toString();
+                        comment1 = new Message("Write value {0} from register R{1} to {2}.", new String[]{valueBase.toString(value[Rj]), String.valueOf(Rj), info.whatDevice()}).toString();
                         animateAnEvent(Rj, MBR);
                         animateAnEvent(MBR, EXTERNAL_DEVICE);
 
@@ -369,20 +369,20 @@ public class Animator extends JPanel implements Runnable {
                 break;
 
             case RunDebugger.ALU_OPERATION:
-                comment1 = new Message("Copy register R{0} to ALU IN1.", "" + Rj).toString();
+                comment1 = new Message("Copy register R{0} to ALU IN1.", String.valueOf(Rj)).toString();
                 animateAnEvent(Rj, ALU_IN1);
                 comment1 = new Message("Copy second operand to ALU IN2.").toString();
                 animateAnEvent(whereIsSecondOperand, ALU_IN2, param);
                 comment1 = new Message("ALU computes the result.").toString();
                 pause();
-                comment1 = new Message("Copy ALU result to register R{0}", "" + Rj).toString();
+                comment1 = new Message("Copy ALU result to register R{0}", String.valueOf(Rj)).toString();
                 value[ALU_OUT] = info.getALUResult();
                 animateAnEvent(ALU_OUT, Rj);
                 pause();
                 break;
 
             case RunDebugger.COMP_OPERATION:
-                comment1 = new Message("Copy register R{0} to ALU IN1.", "" + Rj).toString();
+                comment1 = new Message("Copy register R{0} to ALU IN1.", String.valueOf(Rj)).toString();
                 animateAnEvent(Rj, ALU_IN1);
                 comment1 = new Message("Copy second operand to ALU IN2.").toString();
                 animateAnEvent(whereIsSecondOperand, ALU_IN2, param);
@@ -425,13 +425,13 @@ public class Animator extends JPanel implements Runnable {
                     comment1 = new Message("Save new PC to TR").toString();
                     animateAnEvent(whereIsSecondOperand, TR, param);
 
-                    comment1 = new Message("Increase stack pointer R{0} by one and push PC to stack.", "" + Rj).toString();
+                    comment1 = new Message("Increase stack pointer R{0} by one and push PC to stack.", String.valueOf(Rj)).toString();
                     animateAnEvent(Rj, Rj, value[Rj] + 1);
                     animateAnEvent(Rj, MAR);
                     animateAnEvent(PC, MBR);
                     animateAnEvent(MBR, MEMORY);
 
-                    comment1 = new Message("Increase stack pointer R{0} by one and push FP to stack.", "" + Rj).toString();
+                    comment1 = new Message("Increase stack pointer R{0} by one and push FP to stack.", String.valueOf(Rj)).toString();
                     animateAnEvent(Rj, Rj, value[Rj] + 1);
                     animateAnEvent(Rj, MAR);
                     animateAnEvent(R7, MBR);
@@ -443,21 +443,21 @@ public class Animator extends JPanel implements Runnable {
                     comment1 = new Message("Update PC.").toString();
                     animateAnEvent(TR, PC);
                 } else if (opcode == 50) {
-                    comment1 = new Message("Pop PC from stack and decrease stack pointer R{0} by one.", "" + Rj).toString();
+                    comment1 = new Message("Pop PC from stack and decrease stack pointer R{0} by one.", String.valueOf(Rj)).toString();
                     animateAnEvent(Rj, MAR);
                     animateAnEvent(Rj, Rj, value[Rj] - 1);
                     animateAnEvent(MAR, MEMORY);
                     animateAnEvent(MEMORY, MBR, info.getNewPC());
                     animateAnEvent(MBR, PC);
 
-                    comment1 = new Message("Pop FP from stack and decrease stack pointer R{0} by one.", "" + Rj).toString();
+                    comment1 = new Message("Pop FP from stack and decrease stack pointer R{0} by one.", String.valueOf(Rj)).toString();
                     animateAnEvent(Rj, MAR);
                     animateAnEvent(Rj, Rj, value[Rj] - 1);
                     animateAnEvent(MAR, MEMORY);
                     animateAnEvent(MEMORY, MBR, regs[7]);
                     animateAnEvent(MBR, R7);
 
-                    comment1 = new Message("Decrease {0} parameters from stack pointer R{1}.", new String[]{"" + param, "" + Rj}).toString();
+                    comment1 = new Message("Decrease {0} parameters from stack pointer R{1}.", new String[]{String.valueOf(param), String.valueOf(Rj)}).toString();
                     animateAnEvent(Rj, Rj, regs[Rj]);
                 }
                 pause();
@@ -467,7 +467,7 @@ public class Animator extends JPanel implements Runnable {
                 int popValue;
                 switch (opcode) {
                     case 51: // PUSH
-                        comment1 = new Message("Increase stack pointer R{0} by one then write second operand to stack", "" + Rj).toString();
+                        comment1 = new Message("Increase stack pointer R{0} by one then write second operand to stack", String.valueOf(Rj)).toString();
                         animateAnEvent(Rj, Rj, value[Rj] + 1);
                         animateAnEvent(Rj, MAR);
                         animateAnEvent(whereIsSecondOperand, MBR);
@@ -475,7 +475,7 @@ public class Animator extends JPanel implements Runnable {
                         break;
 
                     case 52: // POP
-                        comment1 = new Message("Read value from stack to R{0} then decrease stack pointer R{1} by one.", new String[]{"" + Ri, "" + Rj}).toString();
+                        comment1 = new Message("Read value from stack to R{0} then decrease stack pointer R{1} by one.", new String[]{String.valueOf(Ri), String.valueOf(Rj)}).toString();
                         popValue = regs[Ri];    // popped value founds at destination register
                         if (Ri == Rj) {
                             popValue++;
@@ -489,7 +489,7 @@ public class Animator extends JPanel implements Runnable {
 
                     case 53: // PUSHR
                         for (int i = 0; i <= 6; i++) {
-                            comment1 = new Message("Increase stack pointer R{0} by one then write R{1} to stack.", new String[]{"" + Rj, "" + i}).toString();
+                            comment1 = new Message("Increase stack pointer R{0} by one then write R{1} to stack.", new String[]{String.valueOf(Rj), String.valueOf(i)}).toString();
                             animateAnEvent(Rj, Rj, value[Rj] + 1);
                             animateAnEvent(Rj, MAR);
                             animateAnEvent(i, MBR);
@@ -499,7 +499,7 @@ public class Animator extends JPanel implements Runnable {
 
                     case 54: // POPR
                         for (int i = 6; i >= 0; i--) {
-                            comment1 = new Message("Read value from stack then decrease stack pointer R{0} by one.", "" + Rj).toString();
+                            comment1 = new Message("Read value from stack then decrease stack pointer R{0} by one.", String.valueOf(Rj)).toString();
                             popValue = regs[i];    // popped value founds at destination register
                             if (i == Rj) {
                                 popValue += Rj + 1;

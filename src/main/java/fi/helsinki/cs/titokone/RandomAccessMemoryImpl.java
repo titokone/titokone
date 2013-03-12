@@ -5,9 +5,10 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.ttk91.*;
-
 import java.util.HashMap;
+
+import fi.helsinki.cs.ttk91.TTK91AddressOutOfBounds;
+import fi.helsinki.cs.ttk91.TTK91Memory;
 
 /**
  * This class represents the memory of a TTK-91 computer.
@@ -47,7 +48,8 @@ public class RandomAccessMemoryImpl
      *
      * @return Size of the memory.
      */
-    public int getSize() {
+    @Override
+	public int getSize() {
         return size;
     }
 
@@ -56,7 +58,8 @@ public class RandomAccessMemoryImpl
      *
      * @return Value of an indexed memory slot.
      */
-    public int getValue(int memorySlot) {
+    @Override
+	public int getValue(int memorySlot) {
         ++this.memory_references; //Added by HT, 12.10.2004, Koskelo-project
         return memory[memorySlot].getBinary();
     }
@@ -69,7 +72,8 @@ public class RandomAccessMemoryImpl
      *
      * @return The symboltable as a hashmap.
      */
-    public HashMap<String, Integer> getSymbolTable() {
+    @Override
+	public HashMap<String, Integer> getSymbolTable() {
         return symbols.toHashMap();
     }
 
@@ -78,7 +82,8 @@ public class RandomAccessMemoryImpl
      *
      * @return Memory dump in integer form.
      */
-    public int[] getMemory() {
+    @Override
+	public int[] getMemory() {
         int[] mem = new int[size];
         for (int i = 0; i < size; i++) {
             mem[i] = memory[i].getBinary();
@@ -91,7 +96,8 @@ public class RandomAccessMemoryImpl
      *
      * @return Code area dump in integer form.
      */
-    public int[] getCodeArea() {
+    @Override
+	public int[] getCodeArea() {
         int[] codeArea = new int[codeAreaSize];
         for (int i = 0; i < codeAreaSize; i++) {
             codeArea[i] = memory[i].getBinary();
@@ -104,7 +110,8 @@ public class RandomAccessMemoryImpl
      *
      * @return Data area dump in integer form.
      */
-    public int[] getDataArea() {
+    @Override
+	public int[] getDataArea() {
         int[] dataArea = new int[dataAreaSize];
         for (int i = 0; i < dataAreaSize; i++) {
             dataArea[i] = memory[i + codeAreaSize].getBinary();
@@ -117,7 +124,8 @@ public class RandomAccessMemoryImpl
      *
      * @return Size of the code area.
      */
-    public int getCodeAreaSize() {
+    @Override
+	public int getCodeAreaSize() {
         return codeAreaSize;
     }
 
@@ -126,7 +134,8 @@ public class RandomAccessMemoryImpl
      *
      * @return Size of the data area.
      */
-    public int getDataAreaSize() {
+    @Override
+	public int getDataAreaSize() {
         return dataAreaSize;
     }
 
@@ -136,7 +145,8 @@ public class RandomAccessMemoryImpl
      * @param index Index to memory.
      * @return Memory line at given slot.
      */
-    public MemoryLine getMemoryLine(int index) {
+    @Override
+	public MemoryLine getMemoryLine(int index) {
         return memory[index];
     }
 
@@ -145,8 +155,9 @@ public class RandomAccessMemoryImpl
      *
      * @return An array containing all the memory lines.
      */
-    public MemoryLine[] getMemoryLines() {
-        return (MemoryLine[]) memory.clone();
+    @Override
+	public MemoryLine[] getMemoryLines() {
+        return memory.clone();
     }
 
     /**
@@ -155,7 +166,8 @@ public class RandomAccessMemoryImpl
      *
      * @param symbols The new symboltable to store here.
      */
-    public void setSymbolTable(SymbolTable symbols) {
+    @Override
+	public void setSymbolTable(SymbolTable symbols) {
         if (symbols == null) {
             throw new IllegalArgumentException(new Message("Tried to set " +
                     "symbol table to " +
@@ -170,7 +182,8 @@ public class RandomAccessMemoryImpl
      * @param index      Index to memory.
      * @param memoryLine New memory line which will replace the old.
      */
-    public void setMemoryLine(int index, MemoryLine memoryLine)
+    @Override
+	public void setMemoryLine(int index, MemoryLine memoryLine)
             throws TTK91AddressOutOfBounds {
         String errorMessage;
         String[] errorParameters;
@@ -181,8 +194,8 @@ public class RandomAccessMemoryImpl
         }
         if (index > memory.length) {
             errorParameters = new String[2];
-            errorParameters[0] = "" + index;
-            errorParameters[1] = "" + memory.length;
+            errorParameters[0] = String.valueOf(index);
+            errorParameters[1] = String.valueOf(memory.length);
             errorMessage = new Message("Address {0} too large, memory size " +
                     "{1} (indexing starts at 0).",
                     errorParameters).toString();
@@ -190,7 +203,7 @@ public class RandomAccessMemoryImpl
         }
         if (index < 0) {
             errorMessage = new Message("Address {0} below zero.",
-                    "" + index).toString();
+                    String.valueOf(index)).toString();
             throw new TTK91AddressOutOfBounds(errorMessage);
 
         }
@@ -203,7 +216,8 @@ public class RandomAccessMemoryImpl
      *
      * @param size Size of the code area.
      */
-    public void setCodeAreaLength(int size) {
+    @Override
+	public void setCodeAreaLength(int size) {
         if (size < 0) {
             throw new IllegalArgumentException("Code area size cannot be negative.");
         }
@@ -218,7 +232,8 @@ public class RandomAccessMemoryImpl
      *
      * @param size Size of the data area.
      */
-    public void setDataAreaLength(int size) {
+    @Override
+	public void setDataAreaLength(int size) {
         if (size < 0) {
             throw new IllegalArgumentException("Data area size cannot be negative.");
         }
@@ -234,7 +249,8 @@ public class RandomAccessMemoryImpl
     /**
      * Return the number of data references made.
      */
-    public int getMemoryReferences() {
+    @Override
+	public int getMemoryReferences() {
         return memory_references - getCodeAreaSize() - getDataAreaSize();
 
     }//getMemoryReferences

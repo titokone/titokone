@@ -5,10 +5,11 @@
 
 package fi.helsinki.cs.titokone;
 
+import java.util.HashMap;
+import java.util.Vector;
+
 import fi.helsinki.cs.titokone.devices.DeviceNames;
 import fi.helsinki.cs.ttk91.TTK91CompileException;
-
-import java.util.*;
 
 /**
  * This class knows everything about the relation between symbolic
@@ -226,7 +227,7 @@ public class Compiler {
                 return null;
             } else {
                 compileDebugger.secondPhase(nextLine, source[nextLine]);
-                info = secondRoundProcess((String) code.get(nextLine));
+                info = secondRoundProcess(code.get(nextLine));
                 ++nextLine;
                 return info;
             }
@@ -251,7 +252,7 @@ public class Compiler {
             int symbolValue;
 
             for (int i = 0; i < symbolTable.size(); ++i) {
-                tempSTLine = (String[]) symbolTable.get(i);
+                tempSTLine = symbolTable.get(i);
                 symbolName = tempSTLine[0];
                 symbolValue = Integer.parseInt(tempSTLine[1]);
                 st.addSymbol(symbolName, symbolValue);
@@ -389,7 +390,7 @@ public class Compiler {
                     if (symbols.containsKey(lineTemp[0])) {
                         symbolTableEntry[0] = lineTemp[0];
                         symbolTableEntry[1] = lineTemp[2];
-                        symbolTable.set(((Integer) symbols.get(lineTemp[0])).intValue(),
+                        symbolTable.set(symbols.get(lineTemp[0]).intValue(),
                                 symbolTableEntry.clone());
                     } else {
                         symbols.put(lineTemp[0], new Integer(symbolTable.size()));
@@ -425,7 +426,7 @@ public class Compiler {
                         symbolTableEntry[0] = lineTemp[0];
                         symbolTableEntry[1] = lineTemp[1] + " " +
                                 lineTemp[2];
-                        symbolTable.set(((Integer) symbols.get(lineTemp[0])).intValue(),
+                        symbolTable.set(symbols.get(lineTemp[0]).intValue(),
                                 symbolTableEntry.clone()
                         );
 
@@ -451,7 +452,7 @@ public class Compiler {
                         symbolTableEntry[0] = lineTemp[0];
                         symbolTableEntry[1] = lineTemp[1] + " " +
                                 lineTemp[2];
-                        symbolTable.set(((Integer) symbols.get(lineTemp[0])).intValue(),
+                        symbolTable.set(symbols.get(lineTemp[0]).intValue(),
                                 symbolTableEntry.clone());
 
                     } else {
@@ -523,15 +524,13 @@ public class Compiler {
 
                         if (symbols.containsKey(lineTemp[0])) {
                             symbolTableEntry[0] = lineTemp[0];
-                            symbolTableEntry[1] = "" +
-                                    (code.size() - 1);
-                            symbolTable.set(((Integer) symbols.get(lineTemp[0])).intValue(),
+                            symbolTableEntry[1] = String.valueOf(code.size() - 1);
+                            symbolTable.set(symbols.get(lineTemp[0]).intValue(),
                                     symbolTableEntry.clone());
                         } else {
                             symbols.put(lineTemp[0], new Integer(symbolTable.size()));
                             symbolTableEntry[0] = lineTemp[0];
-                            symbolTableEntry[1] = "" +
-                                    (code.size() - 1);
+                            symbolTableEntry[1] = String.valueOf(code.size() - 1);
                             symbolTable.add(symbolTableEntry.clone());
                         }
 
@@ -561,8 +560,8 @@ public class Compiler {
                                 symbols.put(lineTemp[4],
                                         new Integer(symbolTable.size()));
                                 symbolTableEntry[0] = lineTemp[4];
-                                symbolTableEntry[1] = "" +
-                                        (Integer) invalidLabels.get(lineTemp[4]);
+                                symbolTableEntry[1] = String.valueOf(
+                                        invalidLabels.get(lineTemp[4]));
                                 symbolTable.add(symbolTableEntry.clone());
                             }
                         }
@@ -615,7 +614,7 @@ public class Compiler {
 
         String[] newCode = new String[code.size()];
         for (int i = 0; i < newCode.length; ++i) {
-            newCode[i] = (String) code.get(i);
+            newCode[i] = code.get(i);
         }
 
         String[] lineTemp;
@@ -627,7 +626,7 @@ public class Compiler {
                 "Initializing the second  round of compilation.").toString());
 
         for (int i = 0; i < symbolTable.size(); ++i) {
-            lineTemp = (String[]) symbolTable.get(i);
+            lineTemp = symbolTable.get(i);
             if (lineTemp[1].trim().length() >= 2) {
                 if (lineTemp[1].substring(0, 2).equalsIgnoreCase("ds")) {
                     dataAreaSize += Integer.parseInt(lineTemp[1].substring(3));
@@ -651,12 +650,12 @@ public class Compiler {
 
         // update variable values to symbolTable
         for (int i = 0; i < symbolTable.size(); ++i) {
-            lineTemp = (String[]) symbolTable.get(i);
+            lineTemp = symbolTable.get(i);
             if (lineTemp[1].trim().length() >= 2) {
                 if (lineTemp[1].substring(0, 2).equalsIgnoreCase("ds")) {
                     dsValue = Integer.parseInt(lineTemp[1].substring(3));
                     newSymbolTableLine[0] = lineTemp[0];
-                    newSymbolTableLine[1] = "" + nextMemorySlot;
+                    newSymbolTableLine[1] = String.valueOf(nextMemorySlot);
                     symbolTable.set(i, newSymbolTableLine.clone());
 
                     // Allaolevat rivit puukotti Jari S. 12.11.2005, sillä
@@ -667,7 +666,7 @@ public class Compiler {
                     nextMemorySlot += dsValue;
 
                     for (int j = 0; j < dsValue; ++j) {
-                        data[j + nextPosition] = "" + 0;
+                        data[j + nextPosition] = String.valueOf(0);
                     }
                     nextPosition += dsValue;
                 } else {
@@ -675,10 +674,10 @@ public class Compiler {
                         if (lineTemp[1].trim().length() > 2) {
                             data[nextPosition] = lineTemp[1].substring(3);
                         } else {
-                            data[nextPosition] = "" + 0;
+                            data[nextPosition] = String.valueOf(0);
                         }
                         newSymbolTableLine[0] = lineTemp[0];
-                        newSymbolTableLine[1] = "" + nextMemorySlot;
+                        newSymbolTableLine[1] = String.valueOf(nextMemorySlot);
                         symbolTable.set(i, newSymbolTableLine.clone());
                         ++nextMemorySlot;
                         ++nextPosition;
@@ -690,7 +689,7 @@ public class Compiler {
         // make new SymbolTable
         String[][] newSymbolTable = new String[symbolTable.size()][2];
         for (int i = 0; i < newSymbolTable.length; ++i) {
-            newSymbolTable[i] = (String[]) symbolTable.get(i);
+            newSymbolTable[i] = symbolTable.get(i);
         }
 
         // prepare for the second round.
@@ -723,16 +722,16 @@ public class Compiler {
         String[] lineTemp = parseLine(line);
         if (!lineTemp[4].equals("")) {
             try {
-                address = "" + Integer.parseInt(lineTemp[4]);
+                address = String.valueOf(Integer.parseInt(lineTemp[4]));
             } catch (NumberFormatException e) {
-                Object tempObject = symbolTable.get((((Integer) symbols.get(lineTemp[4]))).intValue());
+                Object tempObject = symbolTable.get(((symbols.get(lineTemp[4]))).intValue());
                 symbolTableEntry = (String[]) tempObject;
                 if (symbolTableEntry[1].equals("")) {
                     String missing = lineTemp[4];
                     comment = new Message("Missing referred label {0}", missing).toString();
                     throw new TTK91CompileException(comment);
                 }
-                address = (String) symbolTableEntry[1];
+                address = symbolTableEntry[1];
             }
         }
 
@@ -747,7 +746,7 @@ public class Compiler {
         codeMemoryLines[nextLine] = new MemoryLine(lineAsBinary, line);
 
         String binaryByPositions = new Instruction(lineAsBinary).toColonString();
-        String[] commentParameters = {line, "" + lineAsBinary, binaryByPositions};
+        String[] commentParameters = {line, String.valueOf(lineAsBinary), binaryByPositions};
         comment = new Message("{0} --> {1} ({2}) ", commentParameters).toString();
         compileDebugger.setComment(comment);
 
@@ -869,7 +868,7 @@ public class Compiler {
             if (lineAsArray[lineAsArrayIndex].charAt(0) == '=' ||
                     lineAsArray[lineAsArrayIndex].charAt(0) == '@') {
 
-                addressingMode = "" + lineAsArray[lineAsArrayIndex].charAt(0);
+                addressingMode = String.valueOf(lineAsArray[lineAsArrayIndex].charAt(0));
                 if (lineAsArray[lineAsArrayIndex].length() == 1) {
                     spaceBetweenMemorymodeAndAddress = true;
                     ++lineAsArrayIndex;
@@ -1035,7 +1034,7 @@ public class Compiler {
             /* This one checks the length of the address String because
                             Integer.parseInt(100000000000000) throws an exception.*/
             if (isANumber) {
-                if (address.length() > ("" + ADDRESSMIN).length() ||
+                if (address.length() > String.valueOf(ADDRESSMIN).length() ||
                         Integer.parseInt(address) > ADDRESSMAX ||
                         Integer.parseInt(address) < ADDRESSMIN) {
                     comment = new Message("Compilation failed: {0}",

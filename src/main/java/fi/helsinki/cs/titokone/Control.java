@@ -5,12 +5,27 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.ttk91.*;
-
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
+
+import fi.helsinki.cs.ttk91.TTK91AddressOutOfBounds;
+import fi.helsinki.cs.ttk91.TTK91Application;
+import fi.helsinki.cs.ttk91.TTK91CompileException;
+import fi.helsinki.cs.ttk91.TTK91CompileSource;
+import fi.helsinki.cs.ttk91.TTK91Core;
+import fi.helsinki.cs.ttk91.TTK91Cpu;
+import fi.helsinki.cs.ttk91.TTK91Exception;
+import fi.helsinki.cs.ttk91.TTK91ExecutionOverrun;
+import fi.helsinki.cs.ttk91.TTK91FailedWrite;
+import fi.helsinki.cs.ttk91.TTK91Memory;
+import fi.helsinki.cs.ttk91.TTK91NoKbdData;
+import fi.helsinki.cs.ttk91.TTK91NoStdInData;
+import fi.helsinki.cs.ttk91.TTK91OutOfMemory;
+import fi.helsinki.cs.ttk91.TTK91RuntimeException;
 
 /**
  * Control class offers the extenal interface to titokone. Using the
@@ -95,7 +110,8 @@ public class Control implements TTK91Core {
      * @throws TTK91Exception        Never in this implementation. (Except for
      *                               TTK91CompileExceptions, which inherit it.)
      */
-    public TTK91Application compile(TTK91CompileSource source)
+    @Override
+	public TTK91Application compile(TTK91CompileSource source)
             throws TTK91Exception, TTK91CompileException {
         compiler.compile(source.getSource());
         // Compile lines, basically ignoring the output, until no more
@@ -144,7 +160,7 @@ public class Control implements TTK91Core {
             errorMessage = new Message("STDIN data file " +
                     "unreadable: {0}",
                     ioe.getMessage()).toString();
-            // The exception will be thrown when everything else is 
+            // The exception will be thrown when everything else is
             // finished; it can be ignored since it will be thrown later
             // again *if* someone tries to read the stdin data.
             pendingException = new TTK91NoStdInData(errorMessage, ioe);
@@ -152,7 +168,7 @@ public class Control implements TTK91Core {
             errorMessage = new Message("STDIN data file contains " +
                     "invalid data: {0}",
                     dataInvalid.getMessage()).toString();
-            // The exception will be thrown when everything else is 
+            // The exception will be thrown when everything else is
             // finished; it can be ignored since it will be thrown later
             // again *if* someone tries to read the stdin data.
             pendingException = new TTK91NoStdInData(errorMessage, dataInvalid);
@@ -208,8 +224,8 @@ public class Control implements TTK91Core {
             return;
         }
         contents = fileHandler.loadStdIn(stdinFile).toString();
-        // We use a brutal way of testing the input in order to get 
-        // more detailed information on *where* the input fails. 
+        // We use a brutal way of testing the input in order to get
+        // more detailed information on *where* the input fails.
         // Otherwise, should use Application's static boolean checkInput().
         try {
             application.setStdIn(contents);
@@ -268,7 +284,8 @@ public class Control implements TTK91Core {
      *                               syntactically incorrect even if the file is not really needed.
      * @throws TTK91ExecutionOverrun if program overruns the limit set in steps
      */
-    public void run(TTK91Application app, int steps)
+    @Override
+	public void run(TTK91Application app, int steps)
             throws TTK91Exception, TTK91RuntimeException {
         String errorMessage = "";
         RunInfo info = null;
@@ -287,18 +304,18 @@ public class Control implements TTK91Core {
             load();
         } catch (TTK91NoStdInData stdinDataWillNotBeAvailable) {
             // Ignore it; we'll just see how it goes to run it.
-            // (On the other hand, TTK91AddressOutOfBounds thrown by 
+            // (On the other hand, TTK91AddressOutOfBounds thrown by
             // load() will be thrown upwards from here.)
         }
         // Run the program a line at a time until the counter becomes
         // equal to the step count. (The counter is incremented before
         // comparing to the steps variable.) If the steps was 0, run
-        // infinitely. 
+        // infinitely.
         if (steps < 0) {
             return;
         }
         counter = 1;
-        // We then always run at least one step; 0 steps would mean "run 
+        // We then always run at least one step; 0 steps would mean "run
         // infinitely".
         do {
             try {
@@ -333,7 +350,8 @@ public class Control implements TTK91Core {
      *
      * @return The reference to the RandomAccessMemory object.
      */
-    public TTK91Memory getMemory() {
+    @Override
+	public TTK91Memory getMemory() {
         return processor.getMemory();
     }
 
@@ -346,7 +364,8 @@ public class Control implements TTK91Core {
      *
      * @return The reference to the Processor object.
      */
-    public TTK91Cpu getCpu() {
+    @Override
+	public TTK91Cpu getCpu() {
         return processor;
     }
 
@@ -359,7 +378,8 @@ public class Control implements TTK91Core {
      * @return Returns the application in the form a string, which
      *         contains the binary code.
      */
-    public String getBinary(TTK91Application app) {
+    @Override
+	public String getBinary(TTK91Application app) {
         String errorMessage;
         try {
             return new Binary((Application) app).toString();
@@ -381,7 +401,8 @@ public class Control implements TTK91Core {
      * @param binary The binary to be compiled.
      * @return Returns a TTK91Application object of the binary string.
      */
-    public TTK91Application loadBinary(String binary)
+    @Override
+	public TTK91Application loadBinary(String binary)
             throws ParseException {
         // (Binary's methods may throw the ParseException.)
         return new Binary(binary).toApplication();
@@ -402,7 +423,7 @@ public class Control implements TTK91Core {
             // Translate the error message and store in the same variable.
             errorMessage = new Message("Memory size must be between 2^9 and " +
                     "2^16, a change to 2^{0} failed.",
-                    "" + powerOfTwo).toString();
+                    String.valueOf(powerOfTwo)).toString();
             throw new IllegalArgumentException(errorMessage);
         }
         processor = new Processor((int) Math.pow(2, powerOfTwo));
@@ -453,7 +474,7 @@ public class Control implements TTK91Core {
         try {
             info = processor.runLine();
             if (info != null) {
-                // OutData becomes an array where slot 0 is the device 
+                // OutData becomes an array where slot 0 is the device
                 // number and slot 1 the value written there.
                 outData = info.whatOUT();
                 if (info.isExternalOp() && outData != null) {
@@ -462,7 +483,7 @@ public class Control implements TTK91Core {
                     }
                     if (outData[0] == Processor.STDOUT) {
                         application.writeToStdOut(outData[1]);
-                        writeToStdoutFile("" + outData[1]);
+                        writeToStdoutFile(String.valueOf(outData[1]));
                     }
                 }
             }
@@ -492,7 +513,7 @@ public class Control implements TTK91Core {
             throws TTK91FailedWrite {
         Logger logger = Logger.getLogger(getClass().getPackage().getName());
         // The default stdout file is set at the constructor and may
-        // be null. If the application does not set it either, we 
+        // be null. If the application does not set it either, we
         // interpret it as the stdout file being disabled.
         if (currentStdOutFile == null) {
             logger.info(new Message("No STDOUT file set, not writing to " +
@@ -556,7 +577,7 @@ public class Control implements TTK91Core {
      */
     public void setDefaultStdOut(File stdoutFile)
             throws IOException {
-    	
+
         defaultStdOutFile = stdoutFile;
         // Check whether we can really write to the file without writing
         // to it. (We just append, really.) TestAccess throws exceptions.
