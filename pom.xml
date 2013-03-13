@@ -36,11 +36,20 @@
         <maven>2.2.1</maven>
     </prerequisites>
 
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>onejar-maven-plugin.googlecode.com</id>
+			<url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
+		</pluginRepository>
+	</pluginRepositories>
+
     <dependencies>
 		<dependency>
 			<groupId>net.sourceforge.argparse4j</groupId>
 			<artifactId>argparse4j</artifactId>
 			<version>0.4.0</version>
+			<scope>compile</scope>
 		</dependency>
 
         <!-- Testing -->
@@ -140,6 +149,22 @@
                     <pushChanges>false</pushChanges>
                 </configuration>
             </plugin>
+
+			<plugin>
+				<groupId>org.dstovall</groupId>
+				<artifactId>onejar-maven-plugin</artifactId>
+				<version>1.3.0</version>
+				<executions>
+					<execution>
+						<configuration>
+							<mainClass>fi.helsinki.cs.titokone.Titokone</mainClass>
+						</configuration>
+						<goals>
+							<goal>one-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
         </plugins>
     </build>
