@@ -206,14 +206,17 @@ public class GUIBrain {
             logger.info(e.getMessage());
         }
 
+        /* Runmode settings */
         int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
-        gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, (runmode & COMMENTED) != 0);
-        gui.setSelected(GUI.OPTION_RUNNING_PAUSED, (runmode & PAUSED) != 0);
-        gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, (runmode & ANIMATED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_commented, (runmode & COMMENTED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_paused, (runmode & PAUSED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_animated, (runmode & ANIMATED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_turbo, (runmode & TURBO) != 0);
 
+        /* Compile options */
         int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
-        gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
-        gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
+        gui.setSelected(GUI.GUIOptions.compiling_commented, (compilemode & COMMENTED) != 0);
+        gui.setSelected(GUI.GUIOptions.compiling_paused, (compilemode & PAUSED) != 0);
 
         try {
         	valueBase = ValueBase.getBase(currentSettings.getIntValue(Settings.BASE));
@@ -800,9 +803,9 @@ public class GUIBrain {
      */
     public void refreshRunningOptions() {
         int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
-        gui.setSelected(GUI.OPTION_RUNNING_PAUSED, (runmode & PAUSED) != 0);
-        gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, (runmode & COMMENTED) != 0);
-        gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, (runmode & ANIMATED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_paused, (runmode & PAUSED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_commented, (runmode & COMMENTED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_animated, (runmode & ANIMATED) != 0);
     }
 
     public void menuSetRunningOption(int option, boolean b) {
@@ -834,13 +837,13 @@ public class GUIBrain {
 
         switch (option) {
         case LINE_BY_LINE: // Synonym for case PAUSED:
-            gui.setSelected(GUI.OPTION_RUNNING_PAUSED, b);
+            gui.setSelected(GUI.GUIOptions.compiling_paused, b);
             break;
         case COMMENTED:
-            gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, b);
+            gui.setSelected(GUI.GUIOptions.running_commented, b);
             break;
         case ANIMATED:
-            gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, b);
+            gui.setSelected(GUI.GUIOptions.running_animated, b);
             if (b == true && (currentState == B91_RUNNING
                     || currentState == B91_PAUSED
                     || currentState == B91_WAIT_FOR_KBD)) {
@@ -869,8 +872,8 @@ public class GUIBrain {
      */
     public void refreshCompilingOptions() {
         int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
-        gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
-        gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
+        gui.setSelected(GUI.GUIOptions.compiling_paused, (compilemode & PAUSED) != 0);
+        gui.setSelected(GUI.GUIOptions.compiling_commented, (compilemode & COMMENTED) != 0);
     }
 
 
@@ -893,10 +896,10 @@ public class GUIBrain {
 
         switch (option) {
             case PAUSED:
-                gui.setSelected(GUI.OPTION_COMPILING_PAUSED, b);
+                gui.setSelected(GUI.GUIOptions.compiling_paused, b);
                 break;
             case COMMENTED:
-                gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, b);
+                gui.setSelected(GUI.GUIOptions.compiling_commented, b);
                 break;
         }
     }

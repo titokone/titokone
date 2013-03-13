@@ -340,6 +340,7 @@ public class GUI extends JFrame implements ActionListener {
             guibrain.menuSetRunningOption(GUIBrain.LINE_BY_LINE, setRunningOptionsDialog.lineByLineCheckBox.isSelected());
             guibrain.menuSetRunningOption(GUIBrain.COMMENTED, setRunningOptionsDialog.showCommentsCheckBox.isSelected());
             guibrain.menuSetRunningOption(GUIBrain.ANIMATED, setRunningOptionsDialog.showAnimationCheckBox.isSelected());
+            guibrain.menuSetRunningOption(GUIBrain.TURBO, setRunningOptionsDialog.turboModeCheckBox.isSelected());
         }
 
         /* And this if-statement is true,when user has pushed apply-button in
@@ -1047,58 +1048,45 @@ public class GUI extends JFrame implements ActionListener {
         setEnabled(command, false);
     }
 
-
     /**
-     * paused compiling - used in setSelected() method
+     * GUI run and compiler options.
      */
-    public static final short OPTION_COMPILING_PAUSED = 0;
-    /**
-     * commented compiling - used in setSelected() method
-     */
-    public static final short OPTION_COMPILING_COMMENTED = 1;
-    /**
-     * paused running - used in setSelected() method
-     */
-    public static final short OPTION_RUNNING_PAUSED = 2;
-    /**
-     * commented running - used in setSelected() method
-     */
-    public static final short OPTION_RUNNING_COMMENTED = 3;
-    /**
-     * animated running - used in setSelected() method
-     */
-    public static final short OPTION_RUNNING_ANIMATED = 4;
-
+    public enum GUIOptions {
+    	compiling_paused,
+    	compiling_commented,
+    	running_paused,
+    	running_commented,
+    	running_animated,
+    	running_turbo;
+    }
 
     /**
      * Sets a certain option selected or unselected in GUI. Note that this doesn't
      * take any position on what the options does. GUIBrain uses this method to
      * to synchronize GUI for settings loaded from settings file.
      */
-    public void setSelected(short option, boolean b) {
+    public void setSelected(GUIOptions option, boolean b) {
         switch (option) {
-            case OPTION_COMPILING_PAUSED:
+            case compiling_paused:
                 setCompilingOptionsDialog.lineByLineCheckBox.setSelected(b);
                 break;
-            case OPTION_COMPILING_COMMENTED:
+            case compiling_commented:
                 setCompilingOptionsDialog.showCommentsCheckBox.setSelected(b);
                 break;
-            case OPTION_RUNNING_PAUSED:
+            case running_paused:
                 lineByLineToggleButton.setSelected(b);
                 setRunningOptionsDialog.lineByLineCheckBox.setSelected(b);
-                //if(!b)
-                //  setSelected(OPTION_RUNNING_ANIMATED, false);
                 break;
-            case OPTION_RUNNING_COMMENTED:
+            case running_commented:
                 showCommentsToggleButton.setSelected(b);
                 setRunningOptionsDialog.showCommentsCheckBox.setSelected(b);
                 break;
-            case OPTION_RUNNING_ANIMATED:
+            case running_animated:
                 showAnimationToggleButton.setSelected(b);
                 setRunningOptionsDialog.showAnimationCheckBox.setSelected(b);
-                //if(b)
-                //  setSelected(OPTION_RUNNING_PAUSED, true);
                 break;
+            case running_turbo:
+            	setRunningOptionsDialog.turboModeCheckBox.setSelected(b);
         }
     }
 
