@@ -395,6 +395,7 @@ public class GUIBrain {
 
                 			/* Set state of Titokone to pause */
                 			currentState = B91_PAUSED;
+                			noPauses = false;
                 			setGUICommandsForCurrentState();
                             waitForContinueTask();
                 		}
@@ -743,6 +744,9 @@ public class GUIBrain {
             currentState = NONE;
             setGUICommandsForCurrentState();
             display.setMem(control.getPhysicalMemory());
+
+            /* Clear all breakpoints */
+            breakpoints.clear();
         }//lock
     }
 
