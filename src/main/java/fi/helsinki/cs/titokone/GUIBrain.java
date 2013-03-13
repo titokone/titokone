@@ -145,7 +145,6 @@ public class GUIBrain {
      * initialization functions, including findAvailableLanguages().
      */
     public GUIBrain(GUI gui, Animator animator, Display display) {
-
         this.gui = gui;
 
         logger = Logger.getLogger(getClass().getPackage().getName());
@@ -337,7 +336,6 @@ public class GUIBrain {
      * This method corresponds to the menu option File -> Run. It does
      * its work by calling runInstruction().
      */
-    @SuppressWarnings("unused")
 	public void menuRun() {
         synchronized (lock) {
             threadRunning = true;
@@ -902,14 +900,6 @@ public class GUIBrain {
                 gui.setSelected(GUI.GUIOptions.compiling_commented, b);
                 break;
         }
-    }
-
-
-    public void menuAbout() {
-    }
-
-
-    public void menuManual() {
     }
 
 
