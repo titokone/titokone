@@ -9,6 +9,14 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.ArgumentAction;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
+
 /**
  * This class is just a launcher for the actual program. It creates an instance
  * GUI and initiates a debugger, which is accessed all over the program in order
@@ -27,9 +35,24 @@ public class Titokone {
 
         myLogger.setLevel(Level.WARNING); // By default we only show warnings.
 
-        for (int i = 0; i < args.length; i++) {
-            handleParameter(args[i]);
-        }
+		Namespace ns = null;
+		
+		ArgumentParser parser = ArgumentParsers.newArgumentParser("Titokone")
+				.defaultHelp(true)
+				.description("A TTK-91 machine language simulator.");
+		parser.addArgument("-v", "--verbosity")
+				.choices("info", "fine", "finer").setDefault("info")
+				.help("Specify verbosity level");
+
+		try {
+			ns = parser.parseArgs(args);
+		} catch (ArgumentParserException e) {
+			parser.handleError(e);
+			System.exit(1);
+		}
+
+		handleParameters(ns);
+
         GUI gui = new GUI();
         try {
 			gui.start();
@@ -39,28 +62,17 @@ public class Titokone {
 		}
     }
 
-    private static void handleParameter(String parameter) {
+    private static void handleParameters(Namespace ns) {
+		String verbosity = ns.getString("verbosity");
         Logger myLogger = Logger.getLogger(PACKAGE);
-        if (parameter.equals("-v")) {
+		
+        if (verbosity.equals("info")) {
             myLogger.setLevel(Level.INFO);
-        } else if (parameter.equals("-vv")) {
+        } else if (verbosity.equals("fine")) {
             myLogger.setLevel(Level.FINE);
-        } else if (parameter.equals("-vvv")) {
+        } else if (verbosity.equals("finer")) {
             myLogger.setLevel(Level.FINER);
-        } else {
-            System.err.println("Sorry, parameter '" + parameter + "' is unknown.");
-            showAvailableParameters();
-            System.exit(INVALID_PARAMETER);
         }
-    }
-
-    private static void showAvailableParameters() {
-        String lbrk = System.getProperty("line.separator");
-        System.err.println("Available parameters are:" + lbrk +
-                "-v\tShows 'info' level logging messages. (Default " +
-                "level is 'warning'.)" + lbrk +
-                "-vv\tShows 'fine' level logging messages." + lbrk +
-                "-vvv\tShows 'finer' level logging messages." + lbrk);
     }
 }
 
