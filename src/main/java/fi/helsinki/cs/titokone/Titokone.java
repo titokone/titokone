@@ -65,11 +65,23 @@ public class Titokone {
 			e.printStackTrace();
 			System.exit(-2);
 		}
+
+		handleFileParameter(ns.getString("file"), gui);
+
     }
+
+	private static void handleFileParameter(String filepath, GUI gui) {
+		if (filepath == null) {
+			return;
+		}
+
+		File codefile = new File(filepath);
+		gui.guibrain.menuOpenFile(codefile);
+	}
 
     private static void handleParameters(Namespace ns, GUI gui) {
 		String verbosity = ns.getString("verbosity");
-		String filepath	= ns.getString("file");
+		String filepath = ns.getString("file");
         Logger myLogger = Logger.getLogger(PACKAGE);
 		
         if (verbosity.equals("info")) {
@@ -84,15 +96,14 @@ public class Titokone {
 			return;
 		}
 
+		// check if the file exists before we start the GUI
+		// because otherwise the user would see the window open before
+		// program termination
 		File codefile = new File(filepath);
 		if (!codefile.exists()) {
 			System.err.println("Cannot find file " + filepath + "! Aborting...");
 			System.exit(INVALID_PARAMETER);
-			return;
 		}
-
-		// guibrain is not yet initialized so we can't call it
-		//gui.guibrain.menuOpenFile(codefile);
     }
 }
 
