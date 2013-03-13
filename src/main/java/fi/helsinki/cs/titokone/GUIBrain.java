@@ -344,9 +344,7 @@ public class GUIBrain {
     @SuppressWarnings("unused")
 	public void menuRun() {
         synchronized (lock) {
-
             threadRunning = true;
-
             interruptSent = false;
             noPauses = false;
 
@@ -430,12 +428,14 @@ public class GUIBrain {
 
                 gui.updateStatusBar(runinfo.getComments());
 
-                // If the command wrote something to screen, we'll deal with
-                // the actual writing. STDOUT writes are dealt with in Control.
+                /* If the command wrote something to screen, we'll deal with
+                 * the actual writing. STDOUT writes are dealt with in Control.
+                 */
                 if (runinfo.isExternalOp() && runinfo.whatOUT() != null) {
-                    // We use a Processor constant to check what device we are
-                    // writing to. CRT happens to be 0 now, but it might not be
-                    // "in the future".
+                    /* We use a Processor constant to check what device we are
+                     * writing to. CRT happens to be 0 now, but it might not be
+                     * "in the future".
+                     */
                     if (runinfo.whatOUT()[0] == Processor.CRT) {
                         gui.addOutputData(runinfo.whatOUT()[1]);
                     }
@@ -468,18 +468,7 @@ public class GUIBrain {
                     currentState = B91_PAUSED;
                     setGUICommandsForCurrentState();
                     waitForContinueTask();
-
-                } else {
-                    try {
-                        if (SLOWDOWN > 0) {
-                            lock.wait(SLOWDOWN);
-                        }
-                    } catch (InterruptedException e) {
-                        System.out.println("InterruptedException in menuRun()");
-                    }
-
                 }
-
             } while (interruptSent == false); // End of do-while -loop
 
             if (currentState == INTERRUPTED_WITH_PAUSE) {
@@ -523,32 +512,31 @@ public class GUIBrain {
      */
     public void menuCompile() {
         synchronized (lock) {
-
             threadRunning = true;
-
             interruptSent = false;
             noPauses = false;
 
             currentState = K91_COMPILING;
             setGUICommandsForCurrentState();
 
-            /* compileinfo is set to null now. Null as CompileInfo object means also that
-               compilation has finished successfully. We may think that if no line was
-               compiled then it would mean a successful compilation as well, so this isn't
-               in contradiction to that anyway.
-               Really this is set to null because we need compileinfo to be initialized somehow
-               in compileLine() methods try-catch clause a few lines below.
-            */
+            /* compileinfo is set to null now. Null as CompileInfo object means
+             * also that compilation has finished successfully. We may think
+             * that if no line was compiled then it would mean a successful
+             * compilation as well, so this isn't in contradiction to that
+             * anyway. Really this is set to null because we need compileinfo
+             * to be initialized somehow in compileLine() methods try-catch
+             * clause a few lines below.
+             */
             CompileInfo compileinfo = null;
 
             int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
             int phase;
 
             /* This will be set to true once the compilation succeeds. The value
-               of this variable will be used in case of an interrupted compilation
-               or if an error occurs, when menuCompile() has to decide whether to
-               change back to pre-compilation-started state or not.
-            */
+             * of this variable will be used in case of an interrupted
+             * compilation or if an error occurs, when menuCompile() has to
+             * decide whether to change back to pre-compilation-started state or not.
+             */
             boolean compilingCompleted = false;
 
             do {
@@ -559,15 +547,15 @@ public class GUIBrain {
                     compileinfo = control.compileLine();
                 } catch (TTK91CompileException e) {
                     /* This section is executed if an error occured during compilation. First
-                       we preset errorLine and phase to what they would be, if there hasn't
-                       been any compileinfo before.
-                    */
+                     * we preset errorLine and phase to what they would be, if there hasn't
+                     * been any compileinfo before.
+                     */
                     int errorLine = 0;
                     phase = CompileInfo.FIRST_ROUND;
 
                     /* Then we check if there has been some compileinfos before and set errorLine
-                       and phase accordingly if positive.
-                    */
+                     * and phase accordingly if positive.
+                     */
                     if (compileinfo != null) {
                         errorLine = compileinfo.getLineNumber() + 1;
                         phase = compileinfo.getPhase();
@@ -611,15 +599,9 @@ public class GUIBrain {
                         currentState = K91_PAUSED;
                         setGUICommandsForCurrentState();
                         waitForContinueTask();
-                    } else {
-                        try {
-                            lock.wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
-                        } catch (InterruptedException e) {
-                            System.out.println("InterruptedException in menuRun()");
-                        }
                     }
                 }
-            } while (interruptSent == false); // End of do-loop
+            } while (interruptSent == false);
 
             if (currentState == INTERRUPTED_WITH_PAUSE) {
                 setGUICommandsForCurrentState();
@@ -669,10 +651,11 @@ public class GUIBrain {
         interruptCurrentTasks(true);
         synchronized (lock) {
 
-            /* If there's no other thread running, then waiting for continueTask would
-               be futile, since no one will ever notify this method to continue exectution.
-               Actually, running waitForContinueTask() would mean dead lock then.
-            */
+            /* If there's no other thread running, then waiting for continueTask
+             * would be futile, since no one will ever notify this method to
+             * continue execution. Actually, running waitForContinueTask()
+             * would mean dead lock then.
+             */
             if (threadRunning == true) {
                 waitForContinueTask();
             }
@@ -726,7 +709,7 @@ public class GUIBrain {
 
 
     /**
-     * This method correspods as well to the menu option Option -> Set language.
+     * This method corresponds as well to the menu option Option -> Set language.
      * This version is called, if user has chosen an external language file.
      *
      * @param languageFile The language file. This must be class-file that
@@ -742,8 +725,6 @@ public class GUIBrain {
                 System.out.println(e.getMessage());
                 return;
             }
-            //currentSettings.setValue(Settings.UI_LANGUAGE, language);
-            //control.saveSettings(currentSettings.toString(), settingsFile);
             gui.updateAllTexts();
         }
     }
@@ -829,9 +810,10 @@ public class GUIBrain {
         int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
         boolean adjustAnimationOff = false, adjustLineByLineOn = false;
 
-        // First, update running mode. If the option LINE_BY_LINE was turned
-        // off, turn ANIMATED off. If the option ANIMATED was turned on,
-        // turn LINE_BY_LINE on.
+        /* First, update running mode. If the option LINE_BY_LINE was turned
+         * off, turn ANIMATED off. If the option ANIMATED was turned on,
+         * turn LINE_BY_LINE on.
+         */
         if (((runmode & option) != 0) == b) {
             // do nothing
         } else if ((runmode & option) != 0) {
@@ -852,33 +834,33 @@ public class GUIBrain {
         saveSettings();
 
         switch (option) {
-            case LINE_BY_LINE: // Synonym for case PAUSED:
-                gui.setSelected(GUI.OPTION_RUNNING_PAUSED, b);
-                break;
-            case COMMENTED:
-                gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, b);
-                break;
-            case ANIMATED:
-                gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, b);
-                if (b == true && (currentState == B91_RUNNING
-                        || currentState == B91_PAUSED
-                        || currentState == B91_WAIT_FOR_KBD)) {
-                    gui.showAnimator();
-                } else {
-                    gui.hideAnimator();
-                }
-                break;
+        case LINE_BY_LINE: // Synonym for case PAUSED:
+            gui.setSelected(GUI.OPTION_RUNNING_PAUSED, b);
+            break;
+        case COMMENTED:
+            gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, b);
+            break;
+        case ANIMATED:
+            gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, b);
+            if (b == true && (currentState == B91_RUNNING
+                    || currentState == B91_PAUSED
+                    || currentState == B91_WAIT_FOR_KBD)) {
+                gui.showAnimator();
+            } else {
+                gui.hideAnimator();
+            }
+            break;
         }
-        // Finally, we repeat the process to a) turn animation off if line-by-line
-        // running was turned off, and b) turn line-by-line running on if animation
-        // was turned on. Note the lack of infinite looping which we are proud of.
+        /* Finally, we repeat the process to a) turn animation off if line-by-line
+         * running was turned off, and b) turn line-by-line running on if animation
+         * was turned on. Note the lack of infinite looping which we are proud of.
+         */
         if (adjustAnimationOff) {
             menuSetRunningOption(ANIMATED, false);
         }
         if (adjustLineByLineOn) {
             menuSetRunningOption(LINE_BY_LINE, true);
         }
-
     }
 
 
@@ -978,6 +960,7 @@ public class GUIBrain {
         synchronized (lock) {
             lock.notify();
         }
+
         return;
     }
 
@@ -992,6 +975,7 @@ public class GUIBrain {
         synchronized (lock) {
             lock.notify();
         }
+
         return;
     }
 
@@ -1003,7 +987,6 @@ public class GUIBrain {
      * in a thread of its own. eg. by calling new GUIThreader()
      */
     public void waitForContinueTask() {
-
         synchronized (lock) {
             try {
                 lock.wait();
@@ -1011,6 +994,7 @@ public class GUIBrain {
                 System.out.println("InterruptedException");
             }
         }
+
         return;
     }
 
@@ -1219,10 +1203,11 @@ public class GUIBrain {
             String instructionsSymbolic[] = loadinfo.getSymbolicCommands();
 
             int dataBinary[] = loadinfo.getData(); // Full memory excepting code area.
-            // The symbolic data depends on two things: The Loader should add
-            // symbolic versions of the initial data area, and the RandomAccessMemory
-            // should add NOPs on 0 lines. The latter does not currently happen,
-            // but can be changed if it is deemed better.
+            /* The symbolic data depends on two things: The Loader should add
+             * symbolic versions of the initial data area, and the
+             * RandomAccessMemory should add NOPs on 0 lines. The latter does
+             * not currently happen, but can be changed if it is deemed better.
+             */
             String dataSymbolic[];
             // Only show symbolic forms of the initial data area, not below it?
             if (GUIBrain.ENABLE_DATA_AREA_MARKUP) {
@@ -1336,10 +1321,10 @@ public class GUIBrain {
             String[] languageFileRow = languageFileContents.split("\n|\r|\r\n");
 
             /* Split each row of language.cfg into separate strings and
-               tokenize these strings by a colon. If there are two or three
-               tokens on each row, then everything goes well. Otherwise
-               the language.cfg is not a proper language file for this program.
-            */
+             * tokenize these strings by a colon. If there are two or three
+             * tokens on each row, then everything goes well. Otherwise
+             * the language.cfg is not a proper language file for this program.
+             */
             for (int i = 0; i < languageFileRow.length; i++) {
                 String[] token = languageFileRow[i].split("=");
                 if (token.length != 2) {

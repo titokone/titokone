@@ -547,24 +547,7 @@ public class GUI extends JFrame implements ActionListener {
      * @param newValue The new value.
      */
     public void updateReg(short reg, int newValue) {
-        updateReg(reg, new Integer(newValue));
-    }
-
-
-    /**
-     * Updates a register value.
-     *
-     * @param reg      The register to be updated.
-     * @param newValue The new value.
-     */
-    public void updateReg(short reg, Integer newValue) {
-        if (newValue == null) {
-            return;
-        }
-
-        @SuppressWarnings("unused")
-		DefaultTableModel registersTableModel = (DefaultTableModel) registersTable.getModel();
-        registersTable.setValueAt(valueBase.toString(newValue.intValue()), reg, 1);
+        registersTable.setValueAt(valueBase.toString(newValue), reg, 1);
     }
 
 
