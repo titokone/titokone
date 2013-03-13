@@ -607,51 +607,6 @@ public class GUIBrain {
                     compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
                     phase = compileinfo.getPhase();
 
-                    if (phase == CompileInfo.FIRST_ROUND) {
-                        if (compileinfo.getSymbolFound()) {
-                            String symbolName = compileinfo.getSymbolName();
-                            Integer symbolValue = null;
-                            if (compileinfo.getSymbolDefined()) {
-                                symbolValue = new Integer(compileinfo.getSymbolValue());
-                            }
-                            //gui.updateRowInSymbolTable(symbolName, symbolValue);
-                        }
-                        if (compileinfo.getLabelFound()) {
-                            String symbolName = compileinfo.getLabelName();
-                            Integer symbolValue = new Integer(compileinfo.getLabelValue());
-                            //gui.updateRowInSymbolTable(symbolName, symbolValue);
-                        }
-
-                        //gui.selectLine(compileinfo.getLineNumber(), GUI.CODE_TABLE);
-                    } else if (phase == CompileInfo.FINALIZING_FIRST_ROUND) {
-                        String[][] symbolTable = compileinfo.getSymbolTable();
-                        if (symbolTable != null) {
-                            for (int i = 0; i < symbolTable.length; i++) {
-                                String symbolName = symbolTable[i][0];
-                                Integer symbolValue = null;
-                                try {
-                                    symbolValue = new Integer(symbolTable[i][1]);
-                                } catch (NumberFormatException e) {
-                                }
-                                //gui.updateRowInSymbolTable(symbolName, symbolValue);
-                            }
-                        }
-
-                        String[] newInstructionsContents = compileinfo.getInstructions();
-                        String[] newDataContents = compileinfo.getData();
-                        //gui.insertToInstructionsTable(newInstructionsContents);
-                        //gui.insertToDataTable(newDataContents);
-                        gui.setGUIView(3);
-
-                    } else if (phase == CompileInfo.SECOND_ROUND) {
-                        int line = compileinfo.getLineNumber();
-                        int binary = compileinfo.getLineBinary();
-                        //gui.updateInstructionsAndDataTableLine(line, binary);
-                        //gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
-                    }
-
-                    //gui.repaint();
-
                     if (((compilemode & PAUSED) != 0) && !comments.equals("") && noPauses == false) {
                         currentState = K91_PAUSED;
                         setGUICommandsForCurrentState();
