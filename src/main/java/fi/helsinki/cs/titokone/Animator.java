@@ -283,7 +283,6 @@ public class Animator extends JPanel implements Runnable {
         animateAnEvent(MEMORY, MBR, info.getBinary());
         animateAnEvent(MBR, IR);
         currentCommand = info.getLineContents(); //+ "   (" + info.getColonString() + ")";
-        pause();
 
         int opcode = info.getBinary() >>> 24;
         int Rj = info.getFirstOperand();
@@ -297,7 +296,6 @@ public class Animator extends JPanel implements Runnable {
         // if NOP interrupt immediately
         if (opcode == 0) {
             comment1 = new Message("No-operation command completed.").toString();
-            pause();
             isAnimating = executeAnimationImmediately = false;
             return;
         }
@@ -324,7 +322,6 @@ public class Animator extends JPanel implements Runnable {
             animateAnEvent(MEMORY, MBR, info.getValueAtADDR());
             comment1 = new Message("Indirect memory accessing mode.").toString();
             comment2 = new Message("2: Fetch second operand from memory slot {0}.", valueBase.toString(value[MBR])).toString();
-            pause();
             animateAnEvent(MBR, MAR);
             animateAnEvent(MAR, MEMORY);
             animateAnEvent(MEMORY, MBR, param);
@@ -365,7 +362,6 @@ public class Animator extends JPanel implements Runnable {
 
                         break;
                 }
-                pause();
                 break;
 
             case RunDebugger.ALU_OPERATION:
@@ -374,11 +370,11 @@ public class Animator extends JPanel implements Runnable {
                 comment1 = new Message("Copy second operand to ALU IN2.").toString();
                 animateAnEvent(whereIsSecondOperand, ALU_IN2, param);
                 comment1 = new Message("ALU computes the result.").toString();
-                pause();
+
                 comment1 = new Message("Copy ALU result to register R{0}", String.valueOf(Rj)).toString();
                 value[ALU_OUT] = info.getALUResult();
                 animateAnEvent(ALU_OUT, Rj);
-                pause();
+
                 break;
 
             case RunDebugger.COMP_OPERATION:
@@ -388,7 +384,7 @@ public class Animator extends JPanel implements Runnable {
                 animateAnEvent(whereIsSecondOperand, ALU_IN2, param);
                 comment1 = new Message("ALU computes the comparison result.").toString();
                 comment2 = new Message("0=greater, 1=equals, 2=less").toString();
-                pause();
+
                 value[ALU_OUT] = info.getCompareStatus();
                 comment1 = new Message("Set comparison result to SR").toString();
                 animateAnEvent(ALU_OUT, SR);
@@ -406,7 +402,6 @@ public class Animator extends JPanel implements Runnable {
                         SR_String = "0   0   0...";
                         break;
                 }
-                pause();
                 comment2 = "";
                 break;
 
@@ -417,7 +412,6 @@ public class Animator extends JPanel implements Runnable {
                     comment1 = new Message("Branching command - branching condition is true, so update PC.").toString();
                     animateAnEvent(whereIsSecondOperand, PC, param);
                 }
-                pause();
                 break;
 
             case RunDebugger.SUB_OPERATION:
@@ -460,7 +454,6 @@ public class Animator extends JPanel implements Runnable {
                     comment1 = new Message("Decrease {0} parameters from stack pointer R{1}.", new String[]{String.valueOf(param), String.valueOf(Rj)}).toString();
                     animateAnEvent(Rj, Rj, regs[Rj]);
                 }
-                pause();
                 break;
 
             case RunDebugger.STACK_OPERATION:
@@ -513,12 +506,11 @@ public class Animator extends JPanel implements Runnable {
                         }
                         break;
                 }
-                pause();
                 break;
 
             case RunDebugger.SVC_OPERATION:
                 comment1 = new Message("Supervisor call to operating system's services.").toString();
-                pause();
+
                 // update possibly changed registers
                 for (int i = 0; i < 8; i++) {
                     value[i] = regs[i];
@@ -691,18 +683,6 @@ public class Animator extends JPanel implements Runnable {
 
     private void animateAnEvent(int from, int to) {
         animateAnEvent(from, to, value[from]);
-    }
-
-    private void pause() {
-        if (executeAnimationImmediately) {
-            return;
-        }
-
-        /*
-         pause is disabled, because there is no need for pausing(?)
-         repaint();
-         try {Thread.sleep(3000);} catch (Exception e) {}
-         */
     }
 
     public static void main(String[] args) throws IOException {
