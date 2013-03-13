@@ -37,14 +37,6 @@ public class GUIBrain {
 
     //lock object to avoid locking externally
     protected Object lock = new Object();
-    /**
-     * This variable can be set to e.g. 70 to slow down the GUI on
-     * compilation and runtime for overly fast machines. It should
-     * preferrably be completely replaced with a user-selectable option,
-     * however. The value should be at minimum 0.
-     */
-    private final int SLOWDOWN = 0;
-
 
     /**
      * This field contains the languages available, with the long,
@@ -81,6 +73,7 @@ public class GUIBrain {
     public static final int LINE_BY_LINE = 2;
     public static final int PAUSED = 2;
     public static final int ANIMATED = 4;
+    public static final int FAST_RUN = 8;
 
     /**
      * This field is set when menuInterrupt is called, and all continuous
@@ -383,7 +376,10 @@ public class GUIBrain {
                 setGUICommandsForCurrentState();
 
                 int nextLine = ((Processor) control.getCpu()).getValueOf(TTK91Cpu.CU_PC_CURRENT);
-                gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
+
+                if ((runmode & FAST_RUN) == 0) {
+                	gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
+                }
 
                 runmode = currentSettings.getIntValue(Settings.RUN_MODE);
 
@@ -426,7 +422,9 @@ public class GUIBrain {
                 animator.stopAnimation();
                 animator.animate(runinfo);
 
-                gui.updateStatusBar(runinfo.getComments());
+                if ((runmode & FAST_RUN) == 0) {
+                	gui.updateStatusBar(runinfo.getComments());
+                }
 
                 /* If the command wrote something to screen, we'll deal with
                  * the actual writing. STDOUT writes are dealt with in Control.
@@ -441,16 +439,18 @@ public class GUIBrain {
                     }
                 }
 
-                int[] newRegisterValues = runinfo.getRegisters();
-                gui.updateReg(GUI.R0, newRegisterValues[0]);
-                gui.updateReg(GUI.R1, newRegisterValues[1]);
-                gui.updateReg(GUI.R2, newRegisterValues[2]);
-                gui.updateReg(GUI.R3, newRegisterValues[3]);
-                gui.updateReg(GUI.R4, newRegisterValues[4]);
-                gui.updateReg(GUI.R5, newRegisterValues[5]);
-                gui.updateReg(GUI.R6, newRegisterValues[6]);
-                gui.updateReg(GUI.R7, newRegisterValues[7]);
-                gui.updateReg(GUI.PC, runinfo.getNewPC());
+                if ((runmode & FAST_RUN) == 0) {
+	                int[] newRegisterValues = runinfo.getRegisters();
+	                gui.updateReg(GUI.R0, newRegisterValues[0]);
+	                gui.updateReg(GUI.R1, newRegisterValues[1]);
+	                gui.updateReg(GUI.R2, newRegisterValues[2]);
+	                gui.updateReg(GUI.R3, newRegisterValues[3]);
+	                gui.updateReg(GUI.R4, newRegisterValues[4]);
+	                gui.updateReg(GUI.R5, newRegisterValues[5]);
+	                gui.updateReg(GUI.R6, newRegisterValues[6]);
+	                gui.updateReg(GUI.R7, newRegisterValues[7]);
+	                gui.updateReg(GUI.PC, runinfo.getNewPC());
+                }
 
                 LinkedList<?> changedMemoryLines = runinfo.getChangedMemoryLines();
                 Iterator<?> changedMemoryLinesListIterator = changedMemoryLines.iterator();
@@ -698,7 +698,6 @@ public class GUIBrain {
      *                 from getAvailableLanguages() method.
      */
     public void menuSetLanguage(String language) {
-
         if (availableLanguages.containsKey(language)) {
             Translator.setLocale(availableLanguages.get(language));
             currentSettings.setValue(Settings.UI_LANGUAGE, language);
@@ -716,7 +715,6 @@ public class GUIBrain {
      *                     extends ListResourceBundle.
      */
     public void menuSetLanguage(File languageFile) {
-
         if (languageFile.exists()) {
             try {
                 Translator.setLocale(Locale.CHINESE, control.loadLanguageFile(languageFile));
