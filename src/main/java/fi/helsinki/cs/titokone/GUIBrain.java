@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Locale;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 
 import fi.helsinki.cs.ttk91.TTK91AddressOutOfBounds;
@@ -46,7 +47,6 @@ public class GUIBrain {
 
     private Control control;
 
-
     /**
      * This field namely stores the current settings and everytime a setting
      * is changed, this is informed about it. When a GUIBrain object is created,
@@ -56,10 +56,8 @@ public class GUIBrain {
      */
     private Settings currentSettings;
 
-
     private Animator animator;
     private Display display;
-
 
     private GUI gui;
 
@@ -73,6 +71,7 @@ public class GUIBrain {
     public static final int PAUSED = 2;
     public static final int ANIMATED = 4;
     public static final int TURBO = 8;
+    public static final int BREAKPOINTS = 16;
 
     /**
      * This field is set when menuInterrupt is called, and all continuous
@@ -92,9 +91,7 @@ public class GUIBrain {
      */
     private boolean noPauses;
 
-
     private boolean threadRunning;
-
 
     /**
      * Keeps track of the state of this program. It can be NONE, B91_NOT_RUNNING,
@@ -102,7 +99,6 @@ public class GUIBrain {
      * or K91_PAUSED.
      */
     private short currentState;
-
 
     /**
      * These fields are used to set the current state of program. It's stored into
@@ -138,6 +134,11 @@ public class GUIBrain {
      * Base used for values shown by this GUI.
      */
     private ValueBase valueBase = ValueBase.DEC;
+
+    /**
+     * Breakpoints are stored in this TreeMap during execution.
+     */
+    private TreeMap<Integer, Boolean> breakpoints = new TreeMap<Integer, Boolean>();
 
     /**
      * This constructor sets up the GUIBrain instance. It calls private
@@ -210,6 +211,7 @@ public class GUIBrain {
         gui.setSelected(GUI.GUIOptions.running_paused, (runmode & PAUSED) != 0);
         gui.setSelected(GUI.GUIOptions.running_animated, (runmode & ANIMATED) != 0);
         gui.setSelected(GUI.GUIOptions.running_turbo, (runmode & TURBO) != 0);
+        gui.setSelected(GUI.GUIOptions.running_breakpoints, (runmode & BREAKPOINTS) != 0);
 
         /* Compile options */
         int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
@@ -375,17 +377,33 @@ public class GUIBrain {
              * during the execution in turbo mode. */
             ArrayList<Object[]> turboChangedMemory = new ArrayList<Object[]>();
 
+            int nextLine;
             do {
                 currentState = B91_RUNNING;
                 setGUICommandsForCurrentState();
+                runmode = currentSettings.getIntValue(Settings.RUN_MODE);
 
-                int nextLine = ((Processor) control.getCpu()).getValueOf(TTK91Cpu.CU_PC_CURRENT);
+                nextLine = ((Processor) control.getCpu()).getValueOf(TTK91Cpu.CU_PC_CURRENT);
+
+                /* Check if there is a breakpoint for the next line */
+                if ((runmode & BREAKPOINTS) != 0) {
+                	Boolean bp = breakpoints.get(nextLine);
+                	if (bp != null) {
+                		if (bp == true) {
+                			gui.addComment("Breakpoint at line: " + nextLine);
+                			gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
+
+                			/* Set state of Titokone to pause */
+                			currentState = B91_PAUSED;
+                			setGUICommandsForCurrentState();
+                            waitForContinueTask();
+                		}
+                	}
+                }
 
                 if ((runmode & TURBO) == 0) {
                 	gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
                 }
-
-                runmode = currentSettings.getIntValue(Settings.RUN_MODE);
 
                 try {
                     runinfo = control.runLine();
@@ -505,6 +523,38 @@ public class GUIBrain {
             MemoryLine contents = (MemoryLine) listItem[1];
             gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
     	}
+		changedMemoryLines.clear();
+	}
+
+	/**
+	 * Adds a breakpoint.
+	 * @param line in memory.
+	 * @param enabled state of the breakpoint.
+	 */
+	public void setBreakpoint(int line, boolean enabled) {
+		String bpt = (enabled) ? "*" : "_";
+
+		breakpoints.put(line, enabled);
+		gui.updateInstructionsTableLineNumberIndicator(line, bpt);
+	}
+
+	/**
+	 * Get breakpoint state.
+	 * @param line of the breakpoint.
+	 * @return true if breakpoint is enabled; false if breakpoint is disabled;
+	 * null if breakpoint does not exist.
+	 */
+	public Boolean getBreakpoint(int line) {
+		return breakpoints.get(line);
+	}
+
+	/**
+	 * Removes a breakpoint.
+	 * @param line where to remove from.
+	 */
+	public void removeBreakpoint(int line) {
+		breakpoints.remove(line);
+		gui.updateInstructionsTableLineNumberIndicator(line, "");
 	}
 
     /**
@@ -816,6 +866,8 @@ public class GUIBrain {
         gui.setSelected(GUI.GUIOptions.running_paused, (runmode & PAUSED) != 0);
         gui.setSelected(GUI.GUIOptions.running_commented, (runmode & COMMENTED) != 0);
         gui.setSelected(GUI.GUIOptions.running_animated, (runmode & ANIMATED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_turbo, (runmode & TURBO) != 0);
+        gui.setSelected(GUI.GUIOptions.running_breakpoints, (runmode & BREAKPOINTS) != 0);
     }
 
     public void menuSetRunningOption(int option, boolean b) {
@@ -862,6 +914,12 @@ public class GUIBrain {
                 gui.hideAnimator();
             }
             break;
+        case TURBO:
+        	gui.setSelected(GUI.GUIOptions.running_turbo, b);
+        	break;
+        case BREAKPOINTS:
+        	gui.setSelected(GUI.GUIOptions.running_breakpoints, b);
+        	break;
         }
         /* Finally, we repeat the process to a) turn animation off if line-by-line
          * running was turned off, and b) turn line-by-line running on if animation

@@ -49,6 +49,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -137,6 +138,11 @@ public class GUI extends JFrame implements ActionListener {
     JTableX instructionsTable;
     //Object[] instructionsTableIdentifiers = {"Line", "Binary command", "Symbolic command"};
     Object[] instructionsTableIdentifiers = {"", "", ""};
+
+    /**
+     * Breakpoint popup menu.
+     */
+    JPopupMenu breakpointPopupMenu = new JPopupMenu();
 
     /**
      * This holds (@link dataTable dataTable).
@@ -341,6 +347,7 @@ public class GUI extends JFrame implements ActionListener {
             guibrain.menuSetRunningOption(GUIBrain.COMMENTED, setRunningOptionsDialog.showCommentsCheckBox.isSelected());
             guibrain.menuSetRunningOption(GUIBrain.ANIMATED, setRunningOptionsDialog.showAnimationCheckBox.isSelected());
             guibrain.menuSetRunningOption(GUIBrain.TURBO, setRunningOptionsDialog.turboModeCheckBox.isSelected());
+            guibrain.menuSetRunningOption(GUIBrain.BREAKPOINTS, setRunningOptionsDialog.breakpointsCheckBox.isSelected());
         }
 
         /* And this if-statement is true,when user has pushed apply-button in
@@ -686,9 +693,10 @@ public class GUI extends JFrame implements ActionListener {
     public boolean updateInstructionsAndDataTableLine(int lineNumber,
     		int binaryCommand, String symbolicCommand) {
 
-        if (lineNumber < 0) {
+        if (lineNumber < 0)
             return false;
-        } else if (lineNumber < instructionsTable.getRowCount()) {
+
+        if (lineNumber < instructionsTable.getRowCount()) {
             ((DefaultTableModel) instructionsTable.getModel()).setValueAt(valueBase.toString(binaryCommand), lineNumber, 1);
             ((DefaultTableModel) instructionsTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
             return true;
@@ -697,61 +705,21 @@ public class GUI extends JFrame implements ActionListener {
             ((DefaultTableModel) dataTable.getModel()).setValueAt(valueBase.toString(binaryCommand), lineNumber, 1);
             ((DefaultTableModel) dataTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
+    public boolean updateInstructionsTableLineNumberIndicator(int lineNumber, String additionalData) {
+    	if (lineNumber < 0)
+    		return false;
 
-    /**
-     * Functionality of this method is otherwise similar to updateInstructionsAndDataTableLine(int,int,String),
-     * but this one doesn't change the third column. This version is useful during compilation, where
-     * the contents of the third column are set, but the second column is empty at first and as the compilation
-     * goes on, it's contents are updated.
-     *
-     * @param lineNumber    The line number of the row to update. Lines 0...N are rows in instructionsTable
-     *                      and lines N+1...N+P are rows in dataTable, where N is the row count of
-     *                      instructionsTable and P is the row count of dataTable.
-     * @param binaryCommand The content of the node in the second column.
-     * @return True if the operation was successful.
-     *         False is there's was no such line as lineNumber.
-     */
-    public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryCommand) {
+    	if (lineNumber < instructionsTable.getRowCount()) {
+    		((DefaultTableModel) instructionsTable.getModel()).setValueAt(additionalData + lineNumber, lineNumber, 0);
+    	}
 
-        if (lineNumber < 0) {
-            return false;
-        } else if (lineNumber < instructionsTable.getRowCount()) {
-            DefaultTableModel instructionsTableModel = (DefaultTableModel) instructionsTable.getModel();
-            instructionsTableModel.setValueAt(valueBase.toString(binaryCommand), lineNumber, 1);
-            int newTextLength = instructionsTable.getTextLength(lineNumber, 1) + cellMargin;
-
-            if (newTextLength > instructionsTable.getColumnModel().getColumn(1).getWidth()) {
-                instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
-                dataTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
-            }
-
-            validate();
-
-            return true;
-        } else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
-            lineNumber = lineNumber - instructionsTable.getRowCount();
-            DefaultTableModel dataTableModel = (DefaultTableModel) dataTable.getModel();
-            dataTableModel.setValueAt(String.valueOf(binaryCommand), lineNumber, 1);
-            int newTextLength = dataTable.getTextLength(lineNumber, 1) + cellMargin;
-
-            if (newTextLength > dataTable.getColumnModel().getColumn(1).getWidth()) {
-                instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
-                dataTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
-            }
-
-            validate();
-
-            return true;
-        } else {
-            return false;
-        }
+    	return false;
     }
-
 
     /**
      * Inserts data into data table. Parameter dataContents is inserted into the
@@ -1057,7 +1025,8 @@ public class GUI extends JFrame implements ActionListener {
     	running_paused,
     	running_commented,
     	running_animated,
-    	running_turbo;
+    	running_turbo,
+    	running_breakpoints;
     }
 
     /**
@@ -1087,6 +1056,10 @@ public class GUI extends JFrame implements ActionListener {
                 break;
             case running_turbo:
             	setRunningOptionsDialog.turboModeCheckBox.setSelected(b);
+            	break;
+            case running_breakpoints:
+            	setRunningOptionsDialog.breakpointsCheckBox.setSelected(b);
+            	break;
         }
     }
 
@@ -1376,7 +1349,6 @@ public class GUI extends JFrame implements ActionListener {
 
 // Private methods. ---------------------------------------------------
 
-
     /**
      * This is just a private assistance method for the creator. This prepares
      * all the graphical tables,lists and such as well as puts them into the
@@ -1404,11 +1376,65 @@ public class GUI extends JFrame implements ActionListener {
         codeTableScrollPane = new JScrollPane(codeTable);
         codeTableScrollPane.setForeground(Color.black);
 
+        /* Create menu items for Breakpoint popup menu */
+        JMenuItem setBreakpointMI = new JMenuItem("Set breakpoint");
+        setBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.setBreakpoint(instructionsTable.getSelectedRow(), true);
+          }
+        });
+        JMenuItem disableBreakpointMI = new JMenuItem("Disable breakpoint");
+        disableBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.setBreakpoint(instructionsTable.getSelectedRow(), false);
+          }
+        });
+        JMenuItem removeBreakpointMI = new JMenuItem("Remove breakpoint");
+        removeBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.removeBreakpoint(instructionsTable.getSelectedRow());
+          }
+        });
+
+        breakpointPopupMenu.add(setBreakpointMI);
+        breakpointPopupMenu.add(disableBreakpointMI);
+        breakpointPopupMenu.add(removeBreakpointMI);
+
         instructionsTable = new JTableX(new DefaultTableModel(instructionsTableIdentifiers, 0));
         instructionsTable.setFont(tableFont);
         instructionsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         instructionsTable.setEnabled(false);
         instructionsTable.setToolTipTextForColumns(new String[]{"Line", "Numeric value", "Symbolic content"});
+        instructionsTable.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		this.handlePopup(e);
+        	}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                this.handlePopup(e);
+            }
+
+            private void handlePopup(MouseEvent e) {
+            	int r = instructionsTable.rowAtPoint(e.getPoint());
+                if (r >= 0 && r < instructionsTable.getRowCount()) {
+                	instructionsTable.setRowSelectionInterval(r, r);
+                } else {
+                	instructionsTable.clearSelection();
+                }
+
+                int rowindex = instructionsTable.getSelectedRow();
+                if (rowindex < 0)
+                    return;
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
+                    breakpointPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+            });
         instructionsTableScrollPane = new JScrollPane(instructionsTable);
 
         dataTable = new JTableX(new DefaultTableModel(dataTableIdentifiers, 0));

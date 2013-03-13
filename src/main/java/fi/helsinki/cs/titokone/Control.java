@@ -28,7 +28,7 @@ import fi.helsinki.cs.ttk91.TTK91OutOfMemory;
 import fi.helsinki.cs.ttk91.TTK91RuntimeException;
 
 /**
- * Control class offers the extenal interface to titokone. Using the
+ * Control class offers the external interface to titokone. Using the
  * methods of this class one can compile and emulate the execution
  * process of a ttk91-program from a text file or straight from a
  * string object, which contain symbolic ttk91 machine code, A

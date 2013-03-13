@@ -40,16 +40,13 @@ public class Binary {
         BinaryInterpreter bini = new BinaryInterpreter();
         this.contents = contents;
 
-        //split contents into a b91 array where deliminiter is line separator
-
-        //String[] b91=contents.split(System.getProperty("line.separator",
-        //					       "\n"));
-
-        //This split trusts that FileHandler returns strings splitted with
-        //\n.
+        /* split contents into a b91 array where deliminiter is line separator
+         * This split trusts that FileHandler returns strings splitted with
+         * \n.
+         */
         String[] b91 = contents.split("\n");
 
-        //Trim all spaces and whitespaces from aray
+        // Trim all spaces and whitespace from array
         for (int i = 0; i < b91.length; i++) {
             b91[i] = b91[i].trim();
         }
@@ -209,7 +206,7 @@ public class Binary {
         }
 
         int EOF = i; //line containing ___end___, following lines should
-        i++;       //contain only whitespaces
+        i++;       //contain only whitespace
 
         while (i < b91.length) {
 

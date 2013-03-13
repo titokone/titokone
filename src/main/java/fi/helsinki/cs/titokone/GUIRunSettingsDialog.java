@@ -25,6 +25,7 @@ public class GUIRunSettingsDialog extends GUISettingsDialog {
     public JCheckBox showCommentsCheckBox;
     public JCheckBox showAnimationCheckBox;
     public JCheckBox turboModeCheckBox;
+    public JCheckBox breakpointsCheckBox;
 
     GUI ownerGUI;
 
@@ -63,6 +64,9 @@ public class GUIRunSettingsDialog extends GUISettingsDialog {
         turboModeCheckBox = new JCheckBox("Turbo mode");
         turboModeCheckBox.addChangeListener(stateChangeListener);
 
+        breakpointsCheckBox = new JCheckBox("Breakpoints");
+        breakpointsCheckBox.addChangeListener(stateChangeListener);
+
         getContentPane().setLayout(new BorderLayout());
 
         JPanel checkBoxPanel = new JPanel(new GridLayout(3, 1));
@@ -71,6 +75,7 @@ public class GUIRunSettingsDialog extends GUISettingsDialog {
         checkBoxPanel.add(showCommentsCheckBox);
         checkBoxPanel.add(showAnimationCheckBox);
         checkBoxPanel.add(turboModeCheckBox);
+        checkBoxPanel.add(breakpointsCheckBox);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(applyButton);
@@ -102,6 +107,7 @@ public class GUIRunSettingsDialog extends GUISettingsDialog {
         showCommentsCheckBox.setText(new Message("Show extra comments while executing").toString());
         showAnimationCheckBox.setText(new Message("Show animation while executing").toString());
         turboModeCheckBox.setText(new Message("Turbo mode").toString());
+        breakpointsCheckBox.setText(new Message("Enable breakpoints").toString());
         applyButton.setText(new Message("Apply").toString());
         closeButton.setText(new Message("Close").toString());
         pack();

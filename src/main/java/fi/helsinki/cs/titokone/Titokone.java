@@ -9,10 +9,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.impl.Arguments;
-import net.sourceforge.argparse4j.inf.ArgumentAction;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.ArgumentParserException;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -36,7 +33,7 @@ public class Titokone {
         myLogger.setLevel(Level.WARNING); // By default we only show warnings.
 
 		Namespace ns = null;
-		
+
 		ArgumentParser parser = ArgumentParsers.newArgumentParser("Titokone")
 				.defaultHelp(true)
 				.description("A TTK-91 machine language simulator.");
@@ -65,7 +62,7 @@ public class Titokone {
     private static void handleParameters(Namespace ns) {
 		String verbosity = ns.getString("verbosity");
         Logger myLogger = Logger.getLogger(PACKAGE);
-		
+
         if (verbosity.equals("info")) {
             myLogger.setLevel(Level.INFO);
         } else if (verbosity.equals("fine")) {
