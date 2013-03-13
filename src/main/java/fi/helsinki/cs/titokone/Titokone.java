@@ -5,6 +5,7 @@
 
 package fi.helsinki.cs.titokone;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,6 +41,9 @@ public class Titokone {
 		ArgumentParser parser = ArgumentParsers.newArgumentParser("Titokone")
 				.defaultHelp(true)
 				.description("A TTK-91 machine language simulator.");
+		parser.addArgument("file")
+				.nargs("?")	// input file is optional
+				.help("file to open");
 		parser.addArgument("-v", "--verbosity")
 				.choices("info", "fine", "finer").setDefault("info")
 				.help("Specify verbosity level");
@@ -48,12 +52,13 @@ public class Titokone {
 			ns = parser.parseArgs(args);
 		} catch (ArgumentParserException e) {
 			parser.handleError(e);
-			System.exit(1);
+			System.exit(INVALID_PARAMETER);
 		}
 
-		handleParameters(ns);
-
         GUI gui = new GUI();
+
+		handleParameters(ns, gui);
+		
         try {
 			gui.start();
 		} catch (IOException e) {
@@ -62,8 +67,9 @@ public class Titokone {
 		}
     }
 
-    private static void handleParameters(Namespace ns) {
+    private static void handleParameters(Namespace ns, GUI gui) {
 		String verbosity = ns.getString("verbosity");
+		String filepath	= ns.getString("file");
         Logger myLogger = Logger.getLogger(PACKAGE);
 		
         if (verbosity.equals("info")) {
@@ -73,6 +79,20 @@ public class Titokone {
         } else if (verbosity.equals("finer")) {
             myLogger.setLevel(Level.FINER);
         }
+
+		if (filepath == null) {
+			return;
+		}
+
+		File codefile = new File(filepath);
+		if (!codefile.exists()) {
+			System.err.println("Cannot find file " + filepath + "! Aborting...");
+			System.exit(INVALID_PARAMETER);
+			return;
+		}
+
+		// guibrain is not yet initialized so we can't call it
+		//gui.guibrain.menuOpenFile(codefile);
     }
 }
 
