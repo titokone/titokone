@@ -73,7 +73,7 @@ public class GUIBrain {
     public static final int LINE_BY_LINE = 2;
     public static final int PAUSED = 2;
     public static final int ANIMATED = 4;
-    public static final int FAST_RUN = 8;
+    public static final int TURBO = 8;
 
     /**
      * This field is set when menuInterrupt is called, and all continuous
@@ -377,7 +377,7 @@ public class GUIBrain {
 
                 int nextLine = ((Processor) control.getCpu()).getValueOf(TTK91Cpu.CU_PC_CURRENT);
 
-                if ((runmode & FAST_RUN) == 0) {
+                if ((runmode & TURBO) == 0) {
                 	gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
                 }
 
@@ -419,11 +419,9 @@ public class GUIBrain {
                     }
                 }
 
-                animator.stopAnimation();
-                animator.animate(runinfo);
-
-                if ((runmode & FAST_RUN) == 0) {
-                	gui.updateStatusBar(runinfo.getComments());
+                if ((runmode & ANIMATED) != 0) {
+                	animator.stopAnimation();
+                	animator.animate(runinfo);
                 }
 
                 /* If the command wrote something to screen, we'll deal with
@@ -439,7 +437,10 @@ public class GUIBrain {
                     }
                 }
 
-                if ((runmode & FAST_RUN) == 0) {
+                /* Update GUI if not in TURBO mode */
+                if ((runmode & TURBO) == 0) {
+                	gui.updateStatusBar(runinfo.getComments());
+
 	                int[] newRegisterValues = runinfo.getRegisters();
 	                gui.updateReg(GUI.R0, newRegisterValues[0]);
 	                gui.updateReg(GUI.R1, newRegisterValues[1]);
