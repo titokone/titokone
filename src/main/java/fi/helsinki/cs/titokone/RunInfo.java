@@ -5,7 +5,7 @@
 
 package fi.helsinki.cs.titokone;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 
 /**
@@ -105,7 +105,7 @@ public class RunInfo extends DebugInfo {
      * arrays, whose first element is a Integer and second a MemoryLine.
      * Integer tells the row where MemoryLine is in memory.
      */
-    LinkedList<?> changedMemoryLines;
+    ArrayList<Object[]> changedMemoryLines;
 
     /**
      * This constructor initializes the RunInfo and sets its starting values.
@@ -200,11 +200,12 @@ public class RunInfo extends DebugInfo {
         this.valueAtADDR = value;
     }
 
-    /* Sets changed memory lines.
-@param changedMemoryLines List of changed memory lines. List contains
-object arrays, whose first element is a Integer and second is a MemoryLine.
-Integer tells the row where MemoryLine is in memory. */
-    public void setChangedMemoryLines(LinkedList<?> changedMemoryLines) {
+    /** Sets changed memory lines.
+     * @param changedMemoryLines List of changed memory lines. List contains
+     * object arrays, whose first element is a Integer and second is a MemoryLine.
+     * Integer tells the row where MemoryLine is in memory.
+     */
+    public void setChangedMemoryLines(ArrayList<Object[]> changedMemoryLines) {
         this.changedMemoryLines = changedMemoryLines;
     }
 
@@ -382,7 +383,7 @@ Integer tells the row where MemoryLine is in memory. */
 @return List of changed memory lines. List contains object arrays, whose
 first element is a Integer and second is a MemoryLine. Integer tells the
 row where MemoryLine is in memory. */
-    public LinkedList<?> getChangedMemoryLines() {
+    public ArrayList<Object[]> getChangedMemoryLines() {
         return changedMemoryLines;
     }
 

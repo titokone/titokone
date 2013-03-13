@@ -5,7 +5,7 @@
 
 package fi.helsinki.cs.titokone;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  * This class produces objects describing what has changed due to the last
@@ -97,7 +97,7 @@ public class RunDebugger {
     /**
      * List of changed memory lines
      */
-    private LinkedList<Object[]> changedMemoryLines = new LinkedList<Object[]>();
+    private ArrayList<Object[]> changedMemoryLines = new ArrayList<Object[]>();
     /**
      * Compare bit tells compare status of status register.
      * 0 - greater, 1 - equal, 2 - less.
@@ -341,7 +341,7 @@ public class RunDebugger {
         this.setComments();
         info.setChangedMemoryLines(changedMemoryLines);
         info.setCompareOperation(compareBit);
-        changedMemoryLines = new LinkedList<Object[]>();
+        changedMemoryLines = new ArrayList<Object[]>();
         return info;
     }
 }

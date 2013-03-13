@@ -8,9 +8,8 @@ package fi.helsinki.cs.titokone;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Locale;
 import java.util.logging.Logger;
 
@@ -372,6 +371,10 @@ public class GUIBrain {
                 gui.showAnimator();
             }
 
+            /* For keeping track of all the memory lines that have been changed
+             * during the execution in turbo mode. */
+            ArrayList<Object[]> turboChangedMemory = new ArrayList<Object[]>();
+
             do {
                 currentState = B91_RUNNING;
                 setGUICommandsForCurrentState();
@@ -452,16 +455,10 @@ public class GUIBrain {
 	                gui.updateReg(GUI.R6, newRegisterValues[6]);
 	                gui.updateReg(GUI.R7, newRegisterValues[7]);
 	                gui.updateReg(GUI.PC, runinfo.getNewPC());
-                }
 
-                LinkedList<?> changedMemoryLines = runinfo.getChangedMemoryLines();
-                Iterator<?> changedMemoryLinesListIterator = changedMemoryLines.iterator();
-
-                while (changedMemoryLinesListIterator.hasNext()) {
-                    Object[] listItem = (Object[]) changedMemoryLinesListIterator.next();
-                    int line = ((Integer) listItem[0]).intValue();
-                    MemoryLine contents = (MemoryLine) listItem[1];
-                    gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
+	                updateChangedMemoryLines(runinfo.getChangedMemoryLines());
+                } else {
+                	turboChangedMemory.addAll(runinfo.getChangedMemoryLines());
                 }
 
                 gui.repaint();
@@ -472,6 +469,9 @@ public class GUIBrain {
                     waitForContinueTask();
                 }
             } while (interruptSent == false); // End of do-while -loop
+            if ((runmode & TURBO) != 0) {
+            	updateChangedMemoryLines(turboChangedMemory);
+            }
 
             if (currentState == INTERRUPTED_WITH_PAUSE) {
                 setGUICommandsForCurrentState();
@@ -494,6 +494,18 @@ public class GUIBrain {
             continueTask();
         }
     }
+
+	/**
+	 * Updates changed memory lines to the GUI.
+	 * @param runinfo
+	 */
+	private void updateChangedMemoryLines(ArrayList<Object[]> changedMemoryLines) {
+		for (Object[] listItem : changedMemoryLines) {
+    		int line = ((Integer) listItem[0]).intValue();
+            MemoryLine contents = (MemoryLine) listItem[1];
+            gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
+    	}
+	}
 
     /**
      * This method is used to save the source after it has been
