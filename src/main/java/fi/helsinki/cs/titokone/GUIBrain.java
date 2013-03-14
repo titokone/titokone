@@ -402,7 +402,7 @@ public class GUIBrain {
                 	}
                 }
 
-                if ((runmode & TURBO) == 0 || noPauses == false) {
+                if ((runmode & TURBO) == 0 || (noPauses == false && (runmode & LINE_BY_LINE) != 0)) {
                 	gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
                 }
 
@@ -461,7 +461,7 @@ public class GUIBrain {
                 }
 
                 /* Update GUI if not in TURBO mode */
-                if ((runmode & TURBO) == 0 || noPauses == false) {
+                if ((runmode & TURBO) == 0 || (noPauses == false && (runmode & LINE_BY_LINE) != 0)) {
                 	gui.updateStatusBar(runinfo.getComments());
 
 	                int[] newRegisterValues = runinfo.getRegisters();
