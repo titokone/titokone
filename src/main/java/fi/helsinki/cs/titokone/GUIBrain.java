@@ -378,6 +378,13 @@ public class GUIBrain {
              * during the execution in turbo mode. */
             ArrayList<SimpleEntry<Integer, MemoryLine>> turboChangedMemory = new ArrayList<SimpleEntry<Integer, MemoryLine>>();
 
+            if (!control.isApplicationLoaded()) {
+            	String errorMessage = new Message("There is no application " +
+            			"available to run from!").toString();
+            	gui.addComment(errorMessage);
+            	return;
+            }
+
             int nextLine;
             do {
                 currentState = B91_RUNNING;

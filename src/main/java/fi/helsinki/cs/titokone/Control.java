@@ -453,24 +453,23 @@ public class Control implements TTK91Core {
         return info;
     }
 
+    public boolean isApplicationLoaded() {
+    	if (application != null)
+    		return true;
+    	return false;
+    }
+
     /**
      * This runs one next line of the program that is currently
      * loaded into the TTK91's memory.
      *
      * @return Returns RunInfo object of the last line executed.
      */
-    public RunInfo runLine()
-            throws TTK91RuntimeException {
+    public RunInfo runLine() throws TTK91RuntimeException {
         RunInfo info;
         int data;
         int[] outData;
-        String errorMessage;
 
-        if (application == null) {
-            errorMessage = new Message("There is no application available " +
-                    "to run from!").toString();
-            throw new IllegalStateException(errorMessage);
-        }
         try {
             info = processor.runLine();
             if (info != null) {
