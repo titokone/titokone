@@ -488,8 +488,6 @@ public class GUIBrain {
                 	turboChangedMemory.addAll(runinfo.getChangedMemoryLines());
                 }
 
-                gui.repaint();
-
                 if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
                     currentState = B91_PAUSED;
                     setGUICommandsForCurrentState();
