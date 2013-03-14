@@ -140,11 +140,6 @@ public class GUI extends JFrame implements ActionListener {
     Object[] instructionsTableIdentifiers = {"", "", ""};
 
     /**
-     * Breakpoint popup menu.
-     */
-    JPopupMenu breakpointPopupMenu = new JPopupMenu();
-
-    /**
      * This holds (@link dataTable dataTable).
      */
     JScrollPane dataTableScrollPane;
@@ -251,7 +246,12 @@ public class GUI extends JFrame implements ActionListener {
 
     JLabel statusBar;
 
+    /**
+     * Breakpoint popup menu.
+     */
+    JPopupMenu breakpointPopupMenu;
     JPopupMenu dataTablePopupMenu;
+    JPopupMenu commentListPopupMenu;
 
     JMenu fileMenu;
     JMenuItem openFile;
@@ -1376,65 +1376,7 @@ public class GUI extends JFrame implements ActionListener {
         codeTableScrollPane = new JScrollPane(codeTable);
         codeTableScrollPane.setForeground(Color.black);
 
-        /* Create menu items for Breakpoint popup menu */
-        JMenuItem setBreakpointMI = new JMenuItem("Set breakpoint");
-        setBreakpointMI.addActionListener(new ActionListener() {
-          @Override
-		public void actionPerformed(ActionEvent event) {
-        	  guibrain.setBreakpoint(instructionsTable.getSelectedRow(), true);
-          }
-        });
-        JMenuItem disableBreakpointMI = new JMenuItem("Disable breakpoint");
-        disableBreakpointMI.addActionListener(new ActionListener() {
-          @Override
-		public void actionPerformed(ActionEvent event) {
-        	  guibrain.setBreakpoint(instructionsTable.getSelectedRow(), false);
-          }
-        });
-        JMenuItem removeBreakpointMI = new JMenuItem("Remove breakpoint");
-        removeBreakpointMI.addActionListener(new ActionListener() {
-          @Override
-		public void actionPerformed(ActionEvent event) {
-        	  guibrain.removeBreakpoint(instructionsTable.getSelectedRow());
-          }
-        });
-
-        breakpointPopupMenu.add(setBreakpointMI);
-        breakpointPopupMenu.add(disableBreakpointMI);
-        breakpointPopupMenu.add(removeBreakpointMI);
-
-        instructionsTable = new JTableX(new DefaultTableModel(instructionsTableIdentifiers, 0));
-        instructionsTable.setFont(tableFont);
-        instructionsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        instructionsTable.setEnabled(false);
-        instructionsTable.setToolTipTextForColumns(new String[]{"Line", "Numeric value", "Symbolic content"});
-        instructionsTable.addMouseListener(new MouseAdapter() {
-        	@Override
-        	public void mousePressed(MouseEvent e) {
-        		this.handlePopup(e);
-        	}
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                this.handlePopup(e);
-            }
-
-            private void handlePopup(MouseEvent e) {
-            	int r = instructionsTable.rowAtPoint(e.getPoint());
-                if (r >= 0 && r < instructionsTable.getRowCount()) {
-                	instructionsTable.setRowSelectionInterval(r, r);
-                } else {
-                	instructionsTable.clearSelection();
-                }
-
-                int rowindex = instructionsTable.getSelectedRow();
-                if (rowindex < 0)
-                    return;
-                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
-                    breakpointPopupMenu.show(e.getComponent(), e.getX(), e.getY());
-                }
-            }
-            });
+        createInstructionsTable();
         instructionsTableScrollPane = new JScrollPane(instructionsTable);
 
         dataTable = new JTableX(new DefaultTableModel(dataTableIdentifiers, 0));
@@ -1448,7 +1390,6 @@ public class GUI extends JFrame implements ActionListener {
         dataTable.setDoubleBuffered(true);
         dataTableScrollPane.setDoubleBuffered(true);
 
-        dataTablePopupMenu = new JPopupMenu();
         JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem("Show symbolic", true);
         menuItem.addActionListener(new ActionListener() {
             @Override
@@ -1464,6 +1405,7 @@ public class GUI extends JFrame implements ActionListener {
                 }
             }
         });
+        dataTablePopupMenu = new JPopupMenu();
         dataTablePopupMenu.add(menuItem);
 
 
@@ -1492,8 +1434,6 @@ public class GUI extends JFrame implements ActionListener {
         dataAndInstructionsTableSplitPane.setOneTouchExpandable(true);
 
         statusBar = new JLabel();
-        commentList = new JList(new DefaultListModel());
-        ((DefaultListModel) commentList.getModel()).ensureCapacity(COMMENT_LIST_SIZE);
 
         symbolTable = new JTableX(new DefaultTableModel(new String[]{"", ""}, 0));
         symbolTable.setEnabled(false);
@@ -1569,11 +1509,7 @@ public class GUI extends JFrame implements ActionListener {
         upperRightPanel.add(symbolTableScrollPane, BorderLayout.CENTER);
         upperRightPanel.add(ioPanel, BorderLayout.WEST);
 
-        commentListScrollPane = new JScrollPane(commentList);
-        commentListScrollPane.setPreferredSize(new Dimension(1, 50));
-        commentList.setDoubleBuffered(true);
-        commentListScrollPane.setDoubleBuffered(true);
-
+        createCommentList();
         rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, commentListScrollPane);
         rightSplitPane.setResizeWeight(0.5);
 
@@ -1594,6 +1530,109 @@ public class GUI extends JFrame implements ActionListener {
 
     }
 
+    private void createInstructionsTable() {
+        breakpointPopupMenu = new JPopupMenu();
+
+    	/* Create menu items for Breakpoint popup menu */
+        JMenuItem setBreakpointMI = new JMenuItem("Set breakpoint");
+        setBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.setBreakpoint(instructionsTable.getSelectedRow(), true);
+          }
+        });
+        JMenuItem disableBreakpointMI = new JMenuItem("Disable breakpoint");
+        disableBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.setBreakpoint(instructionsTable.getSelectedRow(), false);
+          }
+        });
+        JMenuItem removeBreakpointMI = new JMenuItem("Remove breakpoint");
+        removeBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.removeBreakpoint(instructionsTable.getSelectedRow());
+          }
+        });
+
+        breakpointPopupMenu.add(setBreakpointMI);
+        breakpointPopupMenu.add(disableBreakpointMI);
+        breakpointPopupMenu.add(removeBreakpointMI);
+
+        instructionsTable = new JTableX(new DefaultTableModel(instructionsTableIdentifiers, 0));
+        instructionsTable.setFont(tableFont);
+        instructionsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        instructionsTable.setEnabled(false);
+        instructionsTable.setToolTipTextForColumns(new String[]{"Line", "Numeric value", "Symbolic content"});
+        instructionsTable.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		this.showPopup(e);
+        	}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                this.showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+            	int r = instructionsTable.rowAtPoint(e.getPoint());
+                if (r >= 0 && r < instructionsTable.getRowCount()) {
+                	instructionsTable.setRowSelectionInterval(r, r);
+                } else {
+                	instructionsTable.clearSelection();
+                }
+
+                int rowindex = instructionsTable.getSelectedRow();
+                if (rowindex < 0)
+                    return;
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
+                    breakpointPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+            });
+    }
+
+    private void createCommentList() {
+    	commentList = new JList(new DefaultListModel());
+        ((DefaultListModel) commentList.getModel()).ensureCapacity(COMMENT_LIST_SIZE);
+    	commentListScrollPane = new JScrollPane(commentList);
+        commentListScrollPane.setPreferredSize(new Dimension(1, 50));
+        commentList.setDoubleBuffered(true);
+        commentListScrollPane.setDoubleBuffered(true);
+
+        commentListPopupMenu = new JPopupMenu();
+
+        JMenuItem clearCommentListMI = new JMenuItem("Clear");
+        clearCommentListMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  DefaultListModel commentListModel = (DefaultListModel) commentList.getModel();
+        	  commentListModel.clear();
+          }
+        });
+
+        commentListPopupMenu.add(clearCommentListMI);
+
+        commentList.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		this.showPopup(e);
+        	}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                this.showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+            	if (e.isPopupTrigger()) {
+            		commentListPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+            });
+    }
 
     private void enterInput() {
         String input;
