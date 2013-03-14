@@ -5,6 +5,7 @@
 
 package fi.helsinki.cs.titokone;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 
 /**
@@ -97,7 +98,7 @@ public class RunDebugger {
     /**
      * List of changed memory lines
      */
-    private ArrayList<Object[]> changedMemoryLines = new ArrayList<Object[]>();
+    private ArrayList<SimpleEntry<Integer, MemoryLine>> changedMemoryLines = new ArrayList<SimpleEntry<Integer, MemoryLine>>();
     /**
      * Compare bit tells compare status of status register.
      * 0 - greater, 1 - equal, 2 - less.
@@ -195,9 +196,9 @@ public class RunDebugger {
      * @param changedMemoryLine The changed memory line.
      */
     public void addChangedMemoryLine(int row, MemoryLine changedMemoryLine) {
-        Object[] entry = new Object[2];
-        entry[0] = new Integer(row);
-        entry[1] = changedMemoryLine;
+    	SimpleEntry<Integer, MemoryLine> entry;
+    	entry = new SimpleEntry<Integer, MemoryLine>(row, changedMemoryLine);
+
         changedMemoryLines.add(entry);
     }
 
@@ -341,7 +342,7 @@ public class RunDebugger {
         this.setComments();
         info.setChangedMemoryLines(changedMemoryLines);
         info.setCompareOperation(compareBit);
-        changedMemoryLines = new ArrayList<Object[]>();
+        changedMemoryLines = new ArrayList<SimpleEntry<Integer, MemoryLine>>();
         return info;
     }
 }

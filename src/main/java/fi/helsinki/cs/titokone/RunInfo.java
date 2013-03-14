@@ -5,6 +5,7 @@
 
 package fi.helsinki.cs.titokone;
 
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 
 
@@ -105,7 +106,7 @@ public class RunInfo extends DebugInfo {
      * arrays, whose first element is a Integer and second a MemoryLine.
      * Integer tells the row where MemoryLine is in memory.
      */
-    ArrayList<Object[]> changedMemoryLines;
+    ArrayList<SimpleEntry<Integer, MemoryLine>> changedMemoryLines;
 
     /**
      * This constructor initializes the RunInfo and sets its starting values.
@@ -205,7 +206,7 @@ public class RunInfo extends DebugInfo {
      * object arrays, whose first element is a Integer and second is a MemoryLine.
      * Integer tells the row where MemoryLine is in memory.
      */
-    public void setChangedMemoryLines(ArrayList<Object[]> changedMemoryLines) {
+    public void setChangedMemoryLines(ArrayList<SimpleEntry<Integer, MemoryLine>> changedMemoryLines) {
         this.changedMemoryLines = changedMemoryLines;
     }
 
@@ -383,7 +384,7 @@ public class RunInfo extends DebugInfo {
 @return List of changed memory lines. List contains object arrays, whose
 first element is a Integer and second is a MemoryLine. Integer tells the
 row where MemoryLine is in memory. */
-    public ArrayList<Object[]> getChangedMemoryLines() {
+    public ArrayList<SimpleEntry<Integer, MemoryLine>> getChangedMemoryLines() {
         return changedMemoryLines;
     }
 

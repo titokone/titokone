@@ -8,6 +8,7 @@ package fi.helsinki.cs.titokone;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Locale;
@@ -375,7 +376,7 @@ public class GUIBrain {
 
             /* For keeping track of all the memory lines that have been changed
              * during the execution in turbo mode. */
-            ArrayList<Object[]> turboChangedMemory = new ArrayList<Object[]>();
+            ArrayList<SimpleEntry<Integer, MemoryLine>> turboChangedMemory = new ArrayList<SimpleEntry<Integer, MemoryLine>>();
 
             int nextLine;
             do {
@@ -525,10 +526,10 @@ public class GUIBrain {
 	 * Updates changed memory lines to the GUI.
 	 * @param runinfo
 	 */
-	private void updateChangedMemoryLines(ArrayList<Object[]> changedMemoryLines) {
-		for (Object[] listItem : changedMemoryLines) {
-    		int line = ((Integer) listItem[0]).intValue();
-            MemoryLine contents = (MemoryLine) listItem[1];
+	private void updateChangedMemoryLines(ArrayList<SimpleEntry<Integer, MemoryLine>> changedMemoryLines) {
+		for (SimpleEntry<Integer, MemoryLine> entry : changedMemoryLines) {
+    		int line = entry.getKey();
+            MemoryLine contents = entry.getValue();
             gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
     	}
 		changedMemoryLines.clear();
