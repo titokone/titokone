@@ -437,32 +437,19 @@ public class GUIBrain {
                     break;
                 }
 
-                if ((runmode & COMMENTED) != 0) {
-                    if (runinfo.getComments() != null) {
-                        gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
-                    }
-                }
-
-                if ((runmode & ANIMATED) != 0) {
-                	animator.stopAnimation();
-                	animator.animate(runinfo);
-                }
-
-                /* If the command wrote something to screen, we'll deal with
-                 * the actual writing. STDOUT writes are dealt with in Control.
-                 */
-                if (runinfo.isExternalOp() && runinfo.whatOUT() != null) {
-                    /* We use a Processor constant to check what device we are
-                     * writing to. CRT happens to be 0 now, but it might not be
-                     * "in the future".
-                     */
-                    if (runinfo.whatOUT()[0] == Processor.CRT) {
-                        gui.addOutputData(runinfo.whatOUT()[1]);
-                    }
-                }
-
                 /* Update GUI if not in TURBO mode */
                 if ((runmode & TURBO) == 0 || (noPauses == false && (runmode & LINE_BY_LINE) != 0)) {
+                	if ((runmode & COMMENTED) != 0) {
+                        if (runinfo.getComments() != null) {
+                            gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
+                        }
+                    }
+
+                    if ((runmode & ANIMATED) != 0) {
+                    	animator.stopAnimation();
+                    	animator.animate(runinfo);
+                    }
+
                 	gui.updateStatusBar(runinfo.getComments());
 
 	                int[] newRegisterValues = runinfo.getRegisters();
@@ -486,6 +473,19 @@ public class GUIBrain {
                 } else {
                 	/* Update screen later to make the program run faster */
                 	turboChangedMemory.addAll(runinfo.getChangedMemoryLines());
+                }
+
+                /* If the command wrote something to screen, we'll deal with
+                 * the actual writing. STDOUT writes are dealt with in Control.
+                 */
+                if (runinfo.isExternalOp() && runinfo.whatOUT() != null) {
+                    /* We use a Processor constant to check what device we are
+                     * writing to. CRT happens to be 0 now, but it might not be
+                     * "in the future".
+                     */
+                    if (runinfo.whatOUT()[0] == Processor.CRT) {
+                        gui.addOutputData(runinfo.whatOUT()[1]);
+                    }
                 }
 
                 if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
