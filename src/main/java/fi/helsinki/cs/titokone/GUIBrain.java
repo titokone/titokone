@@ -402,7 +402,7 @@ public class GUIBrain {
                 	}
                 }
 
-                if ((runmode & TURBO) == 0) {
+                if ((runmode & TURBO) == 0 || noPauses == false) {
                 	gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
                 }
 
@@ -461,7 +461,7 @@ public class GUIBrain {
                 }
 
                 /* Update GUI if not in TURBO mode */
-                if ((runmode & TURBO) == 0) {
+                if ((runmode & TURBO) == 0 || noPauses == false) {
                 	gui.updateStatusBar(runinfo.getComments());
 
 	                int[] newRegisterValues = runinfo.getRegisters();
@@ -475,8 +475,15 @@ public class GUIBrain {
 	                gui.updateReg(GUI.R7, newRegisterValues[7]);
 	                gui.updateReg(GUI.PC, runinfo.getNewPC());
 
+	                /* If we are stepping the code now for example because of a
+	                 * breakpoint we most likely want to update the memory
+	                 * contents shown on the table but we must first commit
+	                 * changes made before the current operation. */
+	                if ((runmode & TURBO) == 0)
+	                	updateChangedMemoryLines(turboChangedMemory);
 	                updateChangedMemoryLines(runinfo.getChangedMemoryLines());
                 } else {
+                	/* Update screen later to make the program run faster */
                 	turboChangedMemory.addAll(runinfo.getChangedMemoryLines());
                 }
 
