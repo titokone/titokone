@@ -407,6 +407,12 @@ public class GUIBrain {
                 	gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
                 }
 
+                if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
+                    currentState = B91_PAUSED;
+                    setGUICommandsForCurrentState();
+                    waitForContinueTask();
+                }
+
                 try {
                     runinfo = control.runLine();
                     if (runinfo == null) {
@@ -486,12 +492,6 @@ public class GUIBrain {
                     if (runinfo.whatOUT()[0] == Processor.CRT) {
                         gui.addOutputData(runinfo.whatOUT()[1]);
                     }
-                }
-
-                if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
-                    currentState = B91_PAUSED;
-                    setGUICommandsForCurrentState();
-                    waitForContinueTask();
                 }
             } while (interruptSent == false); // End of do-while -loop
             if ((runmode & TURBO) != 0) {
