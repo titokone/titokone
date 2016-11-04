@@ -149,23 +149,7 @@
                     <pushChanges>false</pushChanges>
                 </configuration>
             </plugin>
-
-			<plugin>
-				<groupId>org.dstovall</groupId>
-				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.3.0</version>
-				<executions>
-					<execution>
-						<configuration>
-							<mainClass>fi.helsinki.cs.titokone.Titokone</mainClass>
-						</configuration>
-						<goals>
-							<goal>one-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
+            
         </plugins>
     </build>
 
