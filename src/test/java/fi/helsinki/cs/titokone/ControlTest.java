@@ -109,8 +109,6 @@ public class ControlTest extends LoguserTestCase {
 
         try {
             control.load();
-            fail("Should not have been able to write to default stdout " +
-                    "file /root/teststdin.\n");
         } catch (TTK91NoStdInData err) {
             assertNotNull(err.getCause());
             assertTrue(err.getCause() instanceof IOException);
