@@ -99,6 +99,8 @@ public class UART
                     remotePort = value;
                     state = CommandState.Normal;
                     return;
+			default:
+				break;
             }
             if (n == 0) {
                 if (!outFull()) {

@@ -5,7 +5,8 @@
 
 package fi.helsinki.cs.titokone;
 
-import java.util.LinkedList;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 
 /**
  * This class produces objects describing what has changed due to the last
@@ -97,7 +98,7 @@ public class RunDebugger {
     /**
      * List of changed memory lines
      */
-    private LinkedList<Object[]> changedMemoryLines = new LinkedList<Object[]>();
+    private ArrayList<SimpleEntry<Integer, MemoryLine>> changedMemoryLines = new ArrayList<SimpleEntry<Integer, MemoryLine>>();
     /**
      * Compare bit tells compare status of status register.
      * 0 - greater, 1 - equal, 2 - less.
@@ -195,9 +196,9 @@ public class RunDebugger {
      * @param changedMemoryLine The changed memory line.
      */
     public void addChangedMemoryLine(int row, MemoryLine changedMemoryLine) {
-        Object[] entry = new Object[2];
-        entry[0] = new Integer(row);
-        entry[1] = changedMemoryLine;
+    	SimpleEntry<Integer, MemoryLine> entry;
+    	entry = new SimpleEntry<Integer, MemoryLine>(row, changedMemoryLine);
+
         changedMemoryLines.add(entry);
     }
 
@@ -314,7 +315,7 @@ public class RunDebugger {
             param[0] = parameters[0];
             param[1] = parameters[1];
             param[2] = parameters[2];
-            param[3] = "" + this.deviceValue;
+            param[3] = String.valueOf(this.deviceValue);
 
             info.setComments(new Message("{0}{1} Indexing {2}, " + memoryComment + ", value {3}.", param).toString());
         } else {
@@ -341,7 +342,7 @@ public class RunDebugger {
         this.setComments();
         info.setChangedMemoryLines(changedMemoryLines);
         info.setCompareOperation(compareBit);
-        changedMemoryLines = new LinkedList<Object[]>();
+        changedMemoryLines = new ArrayList<SimpleEntry<Integer, MemoryLine>>();
         return info;
     }
 }

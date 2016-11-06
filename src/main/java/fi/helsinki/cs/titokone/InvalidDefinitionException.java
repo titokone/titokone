@@ -10,6 +10,11 @@ package fi.helsinki.cs.titokone;
  */
 public class InvalidDefinitionException extends InvalidSymbolException {
     /**
+	 * 
+	 */
+	private static final long serialVersionUID = 3847334956491503166L;
+
+	/**
      * This constructor sets up an instance of the class.
      *
      * @param message The message to describe the problem more

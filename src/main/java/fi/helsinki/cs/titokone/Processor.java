@@ -5,10 +5,31 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.titokone.devices.*;
-import fi.helsinki.cs.ttk91.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
-import java.util.*;
+import fi.helsinki.cs.titokone.devices.AddressMappingIODevice;
+import fi.helsinki.cs.titokone.devices.InvalidIODevice;
+import fi.helsinki.cs.titokone.devices.MMU;
+import fi.helsinki.cs.titokone.devices.Pic;
+import fi.helsinki.cs.titokone.devices.RTC;
+import fi.helsinki.cs.titokone.devices.RandomIODevice;
+import fi.helsinki.cs.titokone.devices.SID;
+import fi.helsinki.cs.titokone.devices.UART;
+import fi.helsinki.cs.titokone.devices.VIC;
+import fi.helsinki.cs.titokone.devices.ZeroIODevice;
+import fi.helsinki.cs.ttk91.OpCode;
+import fi.helsinki.cs.ttk91.TTK91AddressOutOfBounds;
+import fi.helsinki.cs.ttk91.TTK91BadAccessMode;
+import fi.helsinki.cs.ttk91.TTK91Cpu;
+import fi.helsinki.cs.ttk91.TTK91DivisionByZero;
+import fi.helsinki.cs.ttk91.TTK91IntegerOverflow;
+import fi.helsinki.cs.ttk91.TTK91InvalidOpCode;
+import fi.helsinki.cs.ttk91.TTK91Memory;
+import fi.helsinki.cs.ttk91.TTK91NoKbdData;
+import fi.helsinki.cs.ttk91.TTK91NoStdInData;
+import fi.helsinki.cs.ttk91.TTK91RuntimeException;
 
 /**
  * This class represents the processor. It can be told to run for one
@@ -16,7 +37,6 @@ import java.util.*;
  */
 public class Processor
         implements TTK91Cpu, Interruptable {
-
 
     /**
      * When SVC call is made PC points to this place.
@@ -105,10 +125,10 @@ public class Processor
      */
     private boolean[] sr = new boolean[11];
 
-    /*  if an interrupt has been flagged
-  this will be automatically cleared
-  when the processor does the jump to
-  the interrupt routine*/
+    /* if an interrupt has been flagged
+     * this will be automatically cleared
+     * when the processor does the jump to
+     *the interrupt routine */
     protected boolean interrupted = false;
 
     //Added by Harri Tuomikoski, 12.10.2004, Koskelo-project.
@@ -147,9 +167,10 @@ public class Processor
      * be called on the "rising edge" of the interrupt. so if the
      * interrupt line stays high, this will not be retriggered.
      */
-    public void flagInterrupt(InterruptGenerator ig) {
+    @Override
+	public void flagInterrupt(InterruptGenerator ig) {
         /*  set internal variable to flag interrupt
-            dont know if we could use sr[7] for this*/
+         * dont know if we could use sr[7] for this */
         interrupted = true;
     }
 
@@ -173,7 +194,7 @@ public class Processor
     }
 
     private void initDevices() {
-        /*  link pic to report it's interrupt to processor*/
+        /*  link pic to report it's interrupt to processor */
         pic.link(this);
         //!TBD combine below classes into a sensible stdout inner class
         // or two
@@ -236,18 +257,20 @@ public class Processor
         registerDevice(new ZeroIODevice()); //here you can read zeroes
         registerDevice(new RandomIODevice()); //random numbers
         MMU mmu = new MMU() {
-            protected RandomAccessMemory getMem() {
+            @Override
+			protected RandomAccessMemory getMem() {
                 return physRam;
             }
         };
         ram = mmu;
-        registerDevice(mmu);//dont register this if you want a passthrough
-        //stupid mmu
+        registerDevice(mmu); // Don't register this if you want a passthrough
+        /* Stupid MMU */
         registerDevice(pic);
         registerDevice(new UART(10)); //10 clocks per bit (fast!)
         registerDevice(new UART(10)); //another..
         registerDevice(new VIC() {
-            public Display getDisplay() {
+            @Override
+			public Display getDisplay() {
                 return Processor.this.display;
             }
         }); //video
@@ -266,7 +289,7 @@ public class Processor
             for (IODevice iod : ioDevices) {
                 base += iod.getPortCount();
             }
-            /*  remap the device so it sees itself starting from 0*/
+            /*  remap the device so it sees itself starting from 0 */
             ioDevices.add(new AddressMappingIODevice(base, (IODevice) d));
         }
         if (d instanceof InterruptGenerator &&
@@ -274,7 +297,7 @@ public class Processor
             ((InterruptGenerator) d).link(pic);
             pic.add((InterruptGenerator) d);
         }
-        //handle MMAPDevices
+        // handle MMAPDevices
     }
 
     /**
@@ -284,7 +307,7 @@ public class Processor
         for (IODevice iod : ioDevices) {
             iod.reset();
         }
-        //MMAP devices
+        // MMAP devices
     }
 
     /**
@@ -297,7 +320,7 @@ public class Processor
                 iod.update();
             }
         }
-        //MMAP devices
+        // MMAP devices
         pic.update();
     }
 
@@ -339,7 +362,8 @@ public class Processor
      * @param registerID Identifying number of the register.
      * @return Value of given register. Inproper value returns -1.
      */
-    public int getValueOf(int registerID) {
+    @Override
+	public int getValueOf(int registerID) {
         return regs.getRegister(registerID);
     }
 
@@ -359,7 +383,8 @@ public class Processor
      *
      * @return Current status of the Processor.
      */
-    public int getStatus() {
+    @Override
+	public int getStatus() {
         return status;
     }
 
@@ -387,7 +412,7 @@ public class Processor
             ram.setMemoryLine(rowNumber, inputLine);
         } catch (ArrayIndexOutOfBoundsException e) {
             errorMessage = new Message("Row number {0} is beyond memory " +
-                    "limits.", "" + rowNumber).toString();
+                    "limits.", String.valueOf(rowNumber)).toString();
             throw new TTK91AddressOutOfBounds(errorMessage);
 
         }
@@ -464,25 +489,25 @@ public class Processor
 
             // cut up the command in IR
             Instruction insn = new Instruction(IR.getBinary());
-            int opcode = insn.getOpcode();                          // operation code
-            int Rj = insn.getRj() + TTK91Cpu.REG_R0;  // first operand (register 0..7)
-            int M = insn.getM();                      // memory addressing mode
-            int Ri = insn.getRi() + TTK91Cpu.REG_R0;  // index register
-            int ADDR = insn.getAddr();                     // address
+            int opcode = insn.getOpcode();            	// operation code
+            int Rj = insn.getRj() + TTK91Cpu.REG_R0;  	// first operand (register 0..7)
+            int M = insn.getM();                      	// memory addressing mode
+            int Ri = insn.getRi() + TTK91Cpu.REG_R0;	// index register
+            int ADDR = insn.getAddr();					// address
 
             runDebugger.runCommand(IR.getBinary());
 
             // fetch parameter from memory
             if (Ri != TTK91Cpu.REG_R0) {
-                ADDR += regs.getRegister(Ri);   // add indexing register Ri
+                ADDR += regs.getRegister(Ri);			// add indexing register Ri
             }
-            int param = ADDR;                               // constant value        
+            int param = ADDR;                           // constant value
             if (M == 1) {
-                param = ram.getValue(ADDR);                 // one memory fetch
+                param = ram.getValue(ADDR);				// one memory fetch
                 runDebugger.setValueAtADDR(param);
             }
             if (M == 2) {
-                param = ram.getValue(param);                // two memory fetches
+                param = ram.getValue(param);          	// two memory fetches
                 runDebugger.setValueAtADDR(param);
                 param = ram.getValue(param);
                 runDebugger.setSecondFetchValue(param);
@@ -514,7 +539,7 @@ public class Processor
                 svc(Rj, param);
             } else {
                 status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
-                throw new TTK91InvalidOpCode(new Message(Processor.INVALID_OPCODE_MESSAGE, "" + opcode).toString());
+                throw new TTK91InvalidOpCode(new Message(Processor.INVALID_OPCODE_MESSAGE, String.valueOf(opcode)).toString());
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
@@ -597,12 +622,14 @@ public class Processor
             case OUT: // OUT
                 try {
                     dev = getDevice(param);
-                    dev.setPort(param, regs.getRegister(Rj));
+                    dev.setPort(param, Rj);
                 } catch (TTK91RuntimeException id) {
                     status = TTK91Cpu.STATUS_ABNORMAL_EXIT;
                     throw id;
                 }
                 break;
+		default:
+			break;
         }
     }
 
@@ -688,6 +715,8 @@ public class Processor
             case SHRA: // SHRA
                 regs.setRegister(Rj, regs.getRegister(Rj) >> param);
                 break;
+		default:
+			break;
         }
 
         runDebugger.setALUResult(regs.getRegister(Rj));
@@ -810,6 +839,8 @@ public class Processor
                     setNewPC(param);
                 }
                 break;
+		default:
+			break;
         }
     }
 
@@ -852,6 +883,8 @@ public class Processor
                     --this.stack_size;
                 }
                 break;
+		default:
+			break;
         }
     }
 
@@ -905,6 +938,8 @@ public class Processor
                 regs.setRegister(Rj, sp - param);
                 stack_size = stack_size - param; // <-- by Kohahdus 2006-11-23
                 break;
+		default:
+			break;
         }
     }
 
@@ -994,7 +1029,7 @@ public class Processor
      * Tests if given long value is acceptable int value.
      */
     private boolean isOverflow(long value) {
-        return (value > (long) Integer.MAX_VALUE || value < (long) Integer.MIN_VALUE);
+        return (value > Integer.MAX_VALUE || value < Integer.MIN_VALUE);
     }
 
 

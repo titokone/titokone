@@ -1,2 +1,7 @@
 /target/
 *.b91
+
+# Ignore Eclipse project files
+.project
+.metadata/
+.settings/

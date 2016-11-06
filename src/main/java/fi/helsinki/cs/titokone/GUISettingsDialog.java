@@ -13,7 +13,13 @@ import java.awt.event.*;
 
 public class GUISettingsDialog extends JDialog {
 
-    protected JButton applyButton, closeButton;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -4283844011006967621L;
+
+
+	protected JButton applyButton, closeButton;
 
     protected GUISettingsDialog(Frame ownerFrame, boolean modal) {
         super(ownerFrame, modal);

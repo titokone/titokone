@@ -12,7 +12,12 @@ package fi.helsinki.cs.ttk91;
  * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 public class TTK91FailedWrite extends TTK91RuntimeException {
-    public TTK91FailedWrite(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5414386577905633533L;
+
+	public TTK91FailedWrite(String message) {
         super(message);
     }
 }

@@ -31,8 +31,9 @@ public class Registers {
         if (index != -1) {
             return registerValues[index];
         } else {
-            throw new IllegalArgumentException(new Message("Unknown registerId: {0}",
-                    "" + registerId).toString());
+            throw new IllegalArgumentException(
+            		new Message("Unknown registerId: {0}",
+                    String.valueOf(registerId)).toString());
         }
     }
 
@@ -47,8 +48,9 @@ public class Registers {
         if (index != -1) {
             return registerValues[index];
         } else {
-            throw new IllegalArgumentException(new Message("Unknown registerName: {0}",
-                    "" + registerName).toString());
+            throw new IllegalArgumentException(
+            		new Message("Unknown registerName: {0}",
+            		String.valueOf(registerName)).toString());
         }
     }
 
@@ -63,8 +65,9 @@ public class Registers {
         if (index != -1) {
             registerValues[index] = value;
         } else {
-            throw new IllegalArgumentException(new Message("Unknown registerId: {0}",
-                    "" + registerId).toString());
+            throw new IllegalArgumentException(
+            		new Message("Unknown registerId: {0}",
+            		String.valueOf(registerId)).toString());
         }
     }
 
@@ -79,8 +82,9 @@ public class Registers {
         if (index != -1) {
             registerValues[index] = value;
         } else {
-            throw new IllegalArgumentException(new Message("Unknown registerName: {0}",
-                    "" + registerName).toString());
+            throw new IllegalArgumentException(
+            		new Message("Unknown registerName: {0}",
+            		String.valueOf(registerName)).toString());
         }
     }
 

@@ -79,15 +79,15 @@ public class Loader {
 
         int i;
         for (i = 0; i < code.length; i++) {
-            processor.memoryInput(i, code[i]);   //May throw TTK91AddressOutOfBounds, but it's just thrown
-        }                                      //backwards
+            processor.memoryInput(i, code[i]); // May throw TTK91AddressOutOfBounds, but it's just thrown
+        }                                      // backwards
 
         for (int j = 0; j < data.length; j++) {
-            processor.memoryInput(i + j, data[j]); //May throw TTK91AddressOutOfBounds, but it's just thrown
-        }                                      //backwards
+            processor.memoryInput(i + j, data[j]); // May throw TTK91AddressOutOfBounds, but it's just thrown
+        }                                          // backwards
 
-        messageParameters[0] = "" + FP;
-        messageParameters[1] = "" + SP;
+        messageParameters[0] = String.valueOf(FP);
+        messageParameters[1] = String.valueOf(SP);
 
         MemoryLine[] wholeMemoryDump = ((RandomAccessMemory) processor.getPhysicalMemory()).getMemoryLines();
         int wholeDataAreaLength = wholeMemoryDump.length - code.length;

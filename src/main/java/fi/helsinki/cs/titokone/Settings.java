@@ -5,7 +5,8 @@
 package fi.helsinki.cs.titokone;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.logging.Logger;
 
 /**
@@ -53,6 +54,7 @@ public class Settings {
     public static final String STDOUT_USE = "Stdout use";
     public static final String STDOUT_PATH = "Stdout path";
     public static final String MEMORY_SIZE = "Memory size";
+    public static final String BASE = "Base number";
 
     /**
      * This constructor sets up a settings class with default values.
@@ -192,7 +194,7 @@ public class Settings {
      * This method returns all the keys defined here.
      */
     public String[] getKeys() {
-        return (String[]) settings.keySet().toArray(new String[0]);
+        return settings.keySet().toArray(new String[0]);
     }
 
     /**
@@ -201,19 +203,20 @@ public class Settings {
      *
      * @return String containing the non-fixed data in this class.
      */
-    public String toString() {
+    @Override
+	public String toString() {
         String keyString, valueString;
         StringBuffer result;
         Object value;
-        Iterator keyIterator = settings.keySet().iterator();
+        Iterator<String> keyIterator = settings.keySet().iterator();
         result = new StringBuffer("");
         while (keyIterator.hasNext()) {
-            keyString = (String) keyIterator.next();
+            keyString = keyIterator.next();
             value = settings.get(keyString);
             try {
                 valueString = (String) settings.get(keyString);
             } catch (ClassCastException mustBeAnIntegerThen) {
-                valueString = "" + ((Integer) value).intValue();
+                valueString = ((Integer) value).toString();
             }
             result.append(keyString + " " + KEY_VALUE_SEPARATOR + " " +
                     valueString + System.getProperty("line.separator",
@@ -256,7 +259,7 @@ public class Settings {
                 // string.
                 if (parts.length < 2) {
                     // Log where we failed and on what.
-                    parameters[0] = "" + (i + 1);
+                    parameters[0] = String.valueOf(i + 1);
                     parameters[1] = line;
                     errorMessage = new Message("Syntax error on line {0}, " +
                             "which was: \"{1}\".",
@@ -273,8 +276,8 @@ public class Settings {
                 }
             }
         }
-        parameters[0] = "" + rows.length;
-        parameters[1] = "" + settings.size();
+        parameters[0] = String.valueOf(rows.length);
+        parameters[1] = String.valueOf(settings.size());
         logger = Logger.getLogger(this.getClass().getPackage().getName());
         logger.info(new Message("Settings successfully parsed, lines: " +
                 "{0}, unique keys found: {1}.",

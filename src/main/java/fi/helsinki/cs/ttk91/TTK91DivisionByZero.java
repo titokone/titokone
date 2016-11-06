@@ -12,7 +12,12 @@ package fi.helsinki.cs.ttk91;
  * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 public class TTK91DivisionByZero extends TTK91RuntimeException {
-    public TTK91DivisionByZero(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3469501783104969979L;
+
+	public TTK91DivisionByZero(String message) {
         super(message);
     }
 }

@@ -5,9 +5,9 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.titokone.devices.DeviceNames;
-
 import java.util.HashMap;
+
+import fi.helsinki.cs.titokone.devices.DeviceNames;
 
 /**
  * This class contains the information to translate a command in
@@ -199,7 +199,7 @@ calls the getParameterString to sort out the rest of the binary.*/
         //get opcode and get its name and return it
         Integer opcode = new Integer(command >> 24);
         if (commands.get(opcode) != null) {
-            String s = "" + opcode;
+            String s = String.valueOf(opcode);
             return s;
         }
         return null;
@@ -300,7 +300,7 @@ calls the getParameterString to sort out the rest of the binary.*/
 
         i = StringUtils.binaryToInt(binaryString, true);
 
-        String s = "" + i;
+        String s = String.valueOf(i);
         return s;
 
     }

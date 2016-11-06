@@ -23,7 +23,6 @@ public class StubTranslations extends ListResourceBundle {
 
     private final String[][] contents;
 
-    @SuppressWarnings("UnusedDeclaration")
     public StubTranslations() {
         this(DEFAULT_TRANSLATION);
     }

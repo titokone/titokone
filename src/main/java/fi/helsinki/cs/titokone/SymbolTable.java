@@ -50,9 +50,9 @@ public class SymbolTable {
      * @return An Array that contains all the defined symbols.
      */
     public String[] getAllSymbols() {
-        Set keySet = symbols.keySet();
+        Set<String> keySet = symbols.keySet();
         String[] keys = new String[keySet.size()];
-        Iterator keyIt = keySet.iterator();
+        Iterator<String> keyIt = keySet.iterator();
         int i = 0;
         while (keyIt.hasNext()) {
             keys[i++] = (String) keyIt.next();
@@ -117,9 +117,9 @@ public class SymbolTable {
      *         to them.
      */
     public String[] getAllDefinitions() {
-        Set definitionSet = definitions.keySet();
+        Set<String> definitionSet = definitions.keySet();
         String[] defs = new String[definitionSet.size()];
-        Iterator defIt = definitionSet.iterator();
+        Iterator<String> defIt = definitionSet.iterator();
         int i = 0;
         while (defIt.hasNext()) {
             defs[i++] = (String) defIt.next();

@@ -5,15 +5,27 @@
 
 package fi.helsinki.cs.titokone;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.awt.GridLayout;
+
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JPanel;
 
 
 public class GUIRunSettingsDialog extends GUISettingsDialog {
 
-    public JCheckBox lineByLineCheckBox;
+    /**
+	 *
+	 */
+	private static final long serialVersionUID = 914680842790217627L;
+	public JCheckBox lineByLineCheckBox;
     public JCheckBox showCommentsCheckBox;
     public JCheckBox showAnimationCheckBox;
+    public JCheckBox turboModeCheckBox;
+    public JCheckBox breakpointsCheckBox;
 
     GUI ownerGUI;
 
@@ -42,10 +54,18 @@ public class GUIRunSettingsDialog extends GUISettingsDialog {
 
         lineByLineCheckBox = new JCheckBox("Execute line by line");
         lineByLineCheckBox.addChangeListener(stateChangeListener);
+
         showCommentsCheckBox = new JCheckBox("Show comments");
         showCommentsCheckBox.addChangeListener(stateChangeListener);
+
         showAnimationCheckBox = new JCheckBox("Show animation");
         showAnimationCheckBox.addChangeListener(stateChangeListener);
+
+        turboModeCheckBox = new JCheckBox("Turbo mode");
+        turboModeCheckBox.addChangeListener(stateChangeListener);
+
+        breakpointsCheckBox = new JCheckBox("Breakpoints");
+        breakpointsCheckBox.addChangeListener(stateChangeListener);
 
         getContentPane().setLayout(new BorderLayout());
 
@@ -54,6 +74,8 @@ public class GUIRunSettingsDialog extends GUISettingsDialog {
         checkBoxPanel.add(lineByLineCheckBox);
         checkBoxPanel.add(showCommentsCheckBox);
         checkBoxPanel.add(showAnimationCheckBox);
+        checkBoxPanel.add(turboModeCheckBox);
+        checkBoxPanel.add(breakpointsCheckBox);
 
         JPanel buttonPanel = new JPanel(new FlowLayout());
         buttonPanel.add(applyButton);
@@ -65,10 +87,10 @@ public class GUIRunSettingsDialog extends GUISettingsDialog {
         pack();
 
         setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-
     }
 
-    protected void checkCorrespondance(JCheckBox changee) {
+    @Override
+	protected void checkCorrespondance(JCheckBox changee) {
         if (changee.isSelected()) {// Something was selected: animator -> line-by-line?
             if (showAnimationCheckBox.isSelected() && !lineByLineCheckBox.isSelected()) {
                 lineByLineCheckBox.setSelected(true);
@@ -84,6 +106,8 @@ public class GUIRunSettingsDialog extends GUISettingsDialog {
         lineByLineCheckBox.setText(new Message("Execute code line by line").toString());
         showCommentsCheckBox.setText(new Message("Show extra comments while executing").toString());
         showAnimationCheckBox.setText(new Message("Show animation while executing").toString());
+        turboModeCheckBox.setText(new Message("Turbo mode").toString());
+        breakpointsCheckBox.setText(new Message("Enable breakpoints").toString());
         applyButton.setText(new Message("Apply").toString());
         closeButton.setText(new Message("Close").toString());
         pack();

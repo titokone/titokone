@@ -5,16 +5,66 @@
 
 package fi.helsinki.cs.titokone;
 
-import javax.swing.*;
-import javax.swing.border.*;
-import javax.swing.event.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.File;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
+import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Class GUI is namely the class that implements the Graphical User Interface.
@@ -34,10 +84,12 @@ import java.util.logging.Logger;
  */
 
 public class GUI extends JFrame implements ActionListener {
+    /**
+	 *
+	 */
+	private static final long serialVersionUID = -1442519328337686535L;
 
-    GUI thisGUI;
-
-    GUIBrain guibrain;
+	GUIBrain guibrain;
 
     /**
      * This holds (@link rightSplitPane rightSplitPane) and
@@ -194,7 +246,12 @@ public class GUI extends JFrame implements ActionListener {
 
     JLabel statusBar;
 
+    /**
+     * Breakpoint popup menu.
+     */
+    JPopupMenu breakpointPopupMenu;
     JPopupMenu dataTablePopupMenu;
+    JPopupMenu commentListPopupMenu;
 
     JMenu fileMenu;
     JMenuItem openFile;
@@ -255,9 +312,6 @@ public class GUI extends JFrame implements ActionListener {
             OPEN_FILE_COMMAND = 7;
 
 
-    private int activeView = 0;
-
-
     private JFileChooser generalFileDialog;
 
     private GUIRunSettingsDialog setRunningOptionsDialog;
@@ -272,69 +326,83 @@ public class GUI extends JFrame implements ActionListener {
 
     private static final int COMMENT_LIST_SIZE = 100;
 
-    private Logger logger;
-
     public static final String resourceHomeDir = "fi/helsinki/cs/titokone/";
     public static final String imgDir = "fi/helsinki/cs/titokone/img";
 
     /**
+     * Base used for values shown by this GUI.
+     */
+    private ValueBase valueBase = ValueBase.DEC;
+
+    /**
      * This is called when ActionEvent of some kind is fired.
      */
-    public void actionPerformed(ActionEvent e) {
-
+    @Override
+	public void actionPerformed(ActionEvent e) {
         /* This next if-statement is true,when user has pushed apply-button in
-           'set running options' dialog.
-        */
+         * 'set running options' dialog.
+         */
         if (e.getActionCommand().equals(GUIRunSettingsDialog.APPLY)) {
             guibrain.menuSetRunningOption(GUIBrain.LINE_BY_LINE, setRunningOptionsDialog.lineByLineCheckBox.isSelected());
             guibrain.menuSetRunningOption(GUIBrain.COMMENTED, setRunningOptionsDialog.showCommentsCheckBox.isSelected());
             guibrain.menuSetRunningOption(GUIBrain.ANIMATED, setRunningOptionsDialog.showAnimationCheckBox.isSelected());
+            guibrain.menuSetRunningOption(GUIBrain.TURBO, setRunningOptionsDialog.turboModeCheckBox.isSelected());
+            guibrain.menuSetRunningOption(GUIBrain.BREAKPOINTS, setRunningOptionsDialog.breakpointsCheckBox.isSelected());
         }
 
         /* And this if-statement is true,when user has pushed apply-button in
-           'set compiling options' dialog.
-        */
+         * 'set compiling options' dialog.
+         */
         else if (e.getActionCommand().equals(GUICompileSettingsDialog.APPLY)) {
             guibrain.menuSetCompilingOption(GUIBrain.PAUSED, setCompilingOptionsDialog.lineByLineCheckBox.isSelected());
             guibrain.menuSetCompilingOption(GUIBrain.COMMENTED, setCompilingOptionsDialog.showCommentsCheckBox.isSelected());
         }
     }
 
-
-    public GUI() {
-        thisGUI = this;
-        logger = Logger.getLogger(getClass().getPackage().getName());
-        print("Initializing setRunningOptionsDialog...");
+    /**
+     * Starts the GUI for Titokone
+     * @throws IOException
+     */
+    public void start() throws IOException {
+    	print("Initializing setRunningOptionsDialog...");
         setRunningOptionsDialog = new GUIRunSettingsDialog(this, false);
         setRunningOptionsDialog.addComponentListener(new ComponentListener() {
-            public void componentShown(ComponentEvent e) {
+            @Override
+			public void componentShown(ComponentEvent e) {
             }
 
-            public void componentHidden(ComponentEvent e) {
+            @Override
+			public void componentHidden(ComponentEvent e) {
                 guibrain.refreshRunningOptions();
             }
 
-            public void componentMoved(ComponentEvent e) {
+            @Override
+			public void componentMoved(ComponentEvent e) {
             }
 
-            public void componentResized(ComponentEvent e) {
+            @Override
+			public void componentResized(ComponentEvent e) {
             }
         });
 
         print("Initializing setCompilingOptionsDialog...");
         setCompilingOptionsDialog = new GUICompileSettingsDialog(this, false);
         setCompilingOptionsDialog.addComponentListener(new ComponentListener() {
-            public void componentShown(ComponentEvent e) {
+            @Override
+			public void componentShown(ComponentEvent e) {
             }
 
-            public void componentHidden(ComponentEvent e) {
+            @Override
+			public void componentHidden(ComponentEvent e) {
                 guibrain.refreshCompilingOptions();
             }
 
-            public void componentMoved(ComponentEvent e) {
+            @Override
+			public void componentMoved(ComponentEvent e) {
             }
 
-            public void componentResized(ComponentEvent e) {
+            @Override
+			public void componentResized(ComponentEvent e) {
             }
         });
 
@@ -343,8 +411,6 @@ public class GUI extends JFrame implements ActionListener {
 
         print("Initializing GUI...");
         initGUI();
-
-
         initAnimator();
         initDisplay();
 
@@ -365,20 +431,18 @@ public class GUI extends JFrame implements ActionListener {
         rightSplitPane.setDividerLocation(0.5);
         setGUIView(1);
 
-
         print("Setting visible...");
         this.setVisible(true);
-
 
         print("Setting title...");
         setTitle("Titokone v1.300");
 
         addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent e) {
+            @Override
+			public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
-        }
-        );
+        });
 
 
         try {
@@ -397,9 +461,7 @@ public class GUI extends JFrame implements ActionListener {
         print("Updating texts...");
         updateAllTexts();
 
-
         print("Complete!");
-
     }
 
 
@@ -432,17 +494,23 @@ public class GUI extends JFrame implements ActionListener {
             leftPanel.invalidate();
 
         }
-        activeView = view;
+
         mainSplitPane.setDividerLocation(0.5);
     }
 
+    /**
+     * Set base used when drawing values on UI
+     * @param base used to convert register values etc.
+     */
+    public void setValueBase(ValueBase base) {
+    	valueBase = base;
+    }
 
     /**
      * GUIBrain can call this method to reset GUI, which means that all tables
      * (except registers table) are emptied and all their rows are unselected.
      */
     public void resetAll() {
-
         unselectAll();
         insertSymbolTable(null);
         //((DefaultListModel)commentList.getModel()).clear();
@@ -454,7 +522,6 @@ public class GUI extends JFrame implements ActionListener {
      * Unselects all selected rows in every table.
      */
     public void unselectAll() {
-
         codeTable.unselectAllRows();
         instructionsTable.unselectAllRows();
         dataTable.unselectAllRows();
@@ -488,29 +555,14 @@ public class GUI extends JFrame implements ActionListener {
      * @param newValue The new value.
      */
     public void updateReg(short reg, int newValue) {
-        updateReg(reg, new Integer(newValue));
+        registersTable.setValueAt(valueBase.toString(newValue), reg, 1);
     }
 
 
     /**
-     * Updates a register value.
-     *
-     * @param reg      The register to be updated.
-     * @param newValue The new value.
-     */
-    public void updateReg(short reg, Integer newValue) {
-        if (newValue == null) {
-            return;
-        }
-        DefaultTableModel registersTableModel = (DefaultTableModel) registersTable.getModel();
-        registersTable.setValueAt("" + newValue.intValue(), reg, 1);
-    }
-
-
-    /**
-     * Inserts data into code table. The data must be provided as a String-array, where
-     * one element corresponds to one line of original data. One element will be shown
-     * as one row in GUI.
+     * Inserts data into code table. The data must be provided as a
+     * String-array, where one element corresponds to one line of original data.
+     * One element will be shown as one row in GUI.
      *
      * @param src The data to be shown and one element corresponds to one line.
      */
@@ -534,11 +586,12 @@ public class GUI extends JFrame implements ActionListener {
 
 
     /**
-     * Inserts data to instructionsTable. The data must be provided so that the dimension
-     * of both parameter is same. If they aren't, then false is returned and no insertion
-     * made. The second column will be filled with binaryCommand's contents and the third
-     * column with symbolicCommand's contents. The first column will contain line numbers
-     * which are 0...N, where N is size of the table.
+     * Inserts data to instructionsTable. The data must be provided so that the
+     * dimension of both parameter is same. If they aren't, then false is
+     * returned and no insertion made. The second column will be filled with
+     * binaryCommand's contents and the third column with symbolicCommand's
+     * contents. The first column will contain line numbers which are 0...N,
+     * where N is size of the table.
      *
      * @param binaryCommand   Contents of the second column.
      * @param symbolicCommand Contents of the third column.
@@ -553,7 +606,7 @@ public class GUI extends JFrame implements ActionListener {
         int rows = binaryCommand.length;
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
-            tableContents[i][0] = "" + i;
+            tableContents[i][0] = String.valueOf(i);
             tableContents[i][1] = binaryCommand[i];
             tableContents[i][2] = symbolicCommand[i];
         }
@@ -573,8 +626,9 @@ public class GUI extends JFrame implements ActionListener {
 
 
     /**
-     * Functionality of this method is exactly similar to insertToInstructionsTable(String[],String[]),
-     * but here the first parameter's type is int[]. That's for convenience, because otherwise
+     * Functionality of this method is exactly similar to
+     * insertToInstructionsTable(String[],String[]), but here the first
+     * parameter's type is int[]. That's for convenience, because otherwise
      * it would require an additional for-loop to convert int[] to String[].
      *
      * @param binaryCommand   Contents of the second column.
@@ -590,8 +644,8 @@ public class GUI extends JFrame implements ActionListener {
         int rows = binaryCommand.length;
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
-            tableContents[i][0] = "" + i;
-            tableContents[i][1] = "" + binaryCommand[i];
+            tableContents[i][0] = String.valueOf(i);
+            tableContents[i][1] = valueBase.toString(binaryCommand[i]);
             tableContents[i][2] = symbolicCommand[i];
         }
 
@@ -609,8 +663,9 @@ public class GUI extends JFrame implements ActionListener {
 
 
     /**
-     * Functionality of this method is exactly similar to insertToInstructionsTable(String[],String[]),
-     * but here the first parameter would be an array of empty Strings. Thus the second column
+     * Functionality of this method is exactly similar to
+     * insertToInstructionsTable(String[],String[]), but here the first
+     * parameter would be an array of empty Strings. Thus the second column
      * will empty after calling this method.
      *
      * @param symbolicCommand Contents of the third column.
@@ -624,10 +679,10 @@ public class GUI extends JFrame implements ActionListener {
 
 
     /**
-     * Updates contents of a line in either instructions table or data table. Parameter lineNumber
-     * decides which one to update - lines 0...N are rows in instructionsTable and lines N+1...N+P
-     * are rows in dataTable, where N is the row count of instructionsTable and P is the row count
-     * of dataTable.
+     * Updates contents of a line in either instructions table or data table.
+     * Parameter lineNumber decides which one to update - lines 0...N are rows
+     * in instructionsTable and lines N+1...N+P are rows in dataTable, where N
+     * is the row count of instructionsTable and P is the row count of dataTable.
      *
      * @param lineNumber      The line number of the row to update. Lines 0...N are rows in instructionsTable
      *                        and lines N+1...N+P are rows in dataTable, where N is the row count of
@@ -635,74 +690,36 @@ public class GUI extends JFrame implements ActionListener {
      * @param binaryCommand   The content of the node in the second column.
      * @param symbolicCommand The content of the node in the third column.
      */
-    public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryCommand, String symbolicCommand) {
+    public boolean updateInstructionsAndDataTableLine(int lineNumber,
+    		int binaryCommand, String symbolicCommand) {
 
-        if (lineNumber < 0) {
+        if (lineNumber < 0)
             return false;
-        } else if (lineNumber < instructionsTable.getRowCount()) {
-            ((DefaultTableModel) instructionsTable.getModel()).setValueAt("" + binaryCommand, lineNumber, 1);
+
+        if (lineNumber < instructionsTable.getRowCount()) {
+            ((DefaultTableModel) instructionsTable.getModel()).setValueAt(valueBase.toString(binaryCommand), lineNumber, 1);
             ((DefaultTableModel) instructionsTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
             return true;
         } else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
             lineNumber = lineNumber - instructionsTable.getRowCount();
-            ((DefaultTableModel) dataTable.getModel()).setValueAt("" + binaryCommand, lineNumber, 1);
+            ((DefaultTableModel) dataTable.getModel()).setValueAt(valueBase.toString(binaryCommand), lineNumber, 1);
             ((DefaultTableModel) dataTable.getModel()).setValueAt(symbolicCommand, lineNumber, 2);
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
+    public boolean updateInstructionsTableLineNumberIndicator(int lineNumber, String additionalData) {
+    	if (lineNumber < 0)
+    		return false;
 
-    /**
-     * Functionality of this method is otherwise similar to updateInstructionsAndDataTableLine(int,int,String),
-     * but this one doesn't change the third column. This version is useful during compilation, where
-     * the contents of the third column are set, but the second column is empty at first and as the compilation
-     * goes on, it's contents are updated.
-     *
-     * @param lineNumber    The line number of the row to update. Lines 0...N are rows in instructionsTable
-     *                      and lines N+1...N+P are rows in dataTable, where N is the row count of
-     *                      instructionsTable and P is the row count of dataTable.
-     * @param binaryCommand The content of the node in the second column.
-     * @return True if the operation was successful.
-     *         False is there's was no such line as lineNumber.
-     */
-    public boolean updateInstructionsAndDataTableLine(int lineNumber, int binaryCommand) {
+    	if (lineNumber < instructionsTable.getRowCount()) {
+    		((DefaultTableModel) instructionsTable.getModel()).setValueAt(additionalData + lineNumber, lineNumber, 0);
+    	}
 
-        if (lineNumber < 0) {
-            return false;
-        } else if (lineNumber < instructionsTable.getRowCount()) {
-            DefaultTableModel instructionsTableModel = (DefaultTableModel) instructionsTable.getModel();
-            instructionsTableModel.setValueAt("" + binaryCommand, lineNumber, 1);
-            int newTextLength = instructionsTable.getTextLength(lineNumber, 1) + cellMargin;
-
-            if (newTextLength > instructionsTable.getColumnModel().getColumn(1).getWidth()) {
-                instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
-                dataTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
-            }
-
-            validate();
-
-            return true;
-        } else if (lineNumber < instructionsTable.getRowCount() + dataTable.getRowCount()) {
-            lineNumber = lineNumber - instructionsTable.getRowCount();
-            DefaultTableModel dataTableModel = (DefaultTableModel) dataTable.getModel();
-            dataTableModel.setValueAt("" + binaryCommand, lineNumber, 1);
-            int newTextLength = dataTable.getTextLength(lineNumber, 1) + cellMargin;
-
-            if (newTextLength > dataTable.getColumnModel().getColumn(1).getWidth()) {
-                instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
-                dataTable.getColumnModel().getColumn(1).setPreferredWidth(newTextLength);
-            }
-
-            validate();
-
-            return true;
-        } else {
-            return false;
-        }
+    	return false;
     }
-
 
     /**
      * Inserts data into data table. Parameter dataContents is inserted into the
@@ -721,8 +738,8 @@ public class GUI extends JFrame implements ActionListener {
 
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
-            tableContents[i][0] = "" + (i + instructionsTableRowCount);
-            tableContents[i][1] = "" + dataContents[i];
+            tableContents[i][0] = String.valueOf(i + instructionsTableRowCount);
+            tableContents[i][1] = dataContents[i];
             tableContents[i][2] = "";
         }
 
@@ -769,10 +786,10 @@ public class GUI extends JFrame implements ActionListener {
 
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
-            tableContents[i][0] = "" + (i + instructionsTableRowCount);
-            tableContents[i][1] = "" + data[i];
+            tableContents[i][0] = String.valueOf(i + instructionsTableRowCount);
+            tableContents[i][1] = valueBase.toString(data[i]);
             if (symbolic.length > i) {
-                tableContents[i][2] = "" + symbolic[i];
+                tableContents[i][2] = symbolic[i];
             } else {
                 tableContents[i][2] = "";
             }
@@ -804,18 +821,17 @@ public class GUI extends JFrame implements ActionListener {
 
 
     /**
-     * Inserts symbols and their values into symbol table. A symbol's name is given
-     * in symbolsAndValues[x][0] and its value in symbolsAndValues[x][1]. This method
-     * first makes the table and its HashMap empty and then enters the symbol and
-     * the values into both the table and its HashMap.
+     * Inserts symbols and their values into symbol table. A symbol's name is
+     * given in symbolsAndValues[x][0] and its value in symbolsAndValues[x][1].
+     * This method first makes the table and its HashMap empty and then enters
+     * the symbol and the values into both the table and its HashMap.
      *
-     * @param symbolsAndValues A symbol's name is given in symbolsAndValues[x][0] and
-     *                         its value in symbolsAndValues[x][1].
-     *                         This can be null, in which case symbol table will be
-     *                         set empty.
-     * @return Returns false if parameter is not of correct form. It MUST be of such
-     *         type where the size of the second dimension is precisely two.
-     *         It can however be null, which means an empty symbol table.
+     * @param symbolsAndValues A symbol's name is given in
+     * symbolsAndValues[x][0] and its value in symbolsAndValues[x][1].
+     * This can be null, in which case symbol table will be set empty.
+     * @return Returns false if parameter is not of correct form. It MUST be of
+     * such type where the size of the second dimension is precisely two.
+     * It can however be null, which means an empty symbol table.
      */
     public boolean insertSymbolTable(String[][] symbolsAndValues) {
 
@@ -838,8 +854,6 @@ public class GUI extends JFrame implements ActionListener {
         }
 
         int numOfSymbols = symbolsAndValues.length;
-
-
         Object[][] tableContents = new Object[numOfSymbols][2];
         for (int row = 0; row < numOfSymbols; row++) {
             tableContents[row][0] = symbolsAndValues[row][NAME];
@@ -860,7 +874,7 @@ public class GUI extends JFrame implements ActionListener {
         /* Object row tells the row in GUI's symbol table, where symbolName has been
            saved or it's null if it hasn't been saved there yet.
         */
-        Integer row = (Integer) symbolsHashMap.get(symbolName);
+        Integer row = symbolsHashMap.get(symbolName);
         DefaultTableModel symbolTableModel = (DefaultTableModel) symbolTable.getModel();
 
         if (row != null) {
@@ -870,7 +884,7 @@ public class GUI extends JFrame implements ActionListener {
                value in GUI is not modified.
             */
             if (symbolValue != null) {
-                symbolTableModel.setValueAt(symbolValue, row.intValue(), 1);
+                symbolTableModel.setValueAt(valueBase.toString(symbolValue), row.intValue(), 1);
             }
         } else {
             /* symbolName is not in symbol table so now a new is needed
@@ -880,7 +894,7 @@ public class GUI extends JFrame implements ActionListener {
             if (symbolValue == null) {
                 data = new String[]{symbolName, ""};
             } else {
-                data = new String[]{symbolName, "" + symbolValue};
+                data = new String[]{symbolName, valueBase.toString(symbolValue)};
             }
             tableModel.addRow(data);
 
@@ -915,19 +929,6 @@ public class GUI extends JFrame implements ActionListener {
      */
     public void addOutputData(int outputValue) {
         outputTextArea.insert(outputValue + "\n", 0);
-
-        /*      // This commented code implements this method in a way that it adds a new row
-                // at the end of the TextArea. It's not removed since it may be useful.
-
-        outputTextArea.append(outputValue + "\n");
-        int height = outputTextArea.getHeight();
-        int viewHeight = (int)outputScrollPane.getHeight();
-        int newY = 0;
-        if (height-viewHeight > 0) {
-          newY = height-viewHeight+3;
-        }
-        outputScrollPane.getViewport().setViewPosition(new Point(0, newY));
-        */
     }
 
 
@@ -941,48 +942,53 @@ public class GUI extends JFrame implements ActionListener {
      */
     public void setEnabled(short command, boolean b) {
         switch (command) {
-            case RUN_COMMAND:
-                runMenuItem.setEnabled(b);
-                runButton.setEnabled(b);
-                break;
-            case STOP_COMMAND:
-                stopMenuItem.setEnabled(b);
-                stopButton.setEnabled(b);
-                break;
-            case COMPILE_COMMAND:
-                compileMenuItem.setEnabled(b);
-                compileButton.setEnabled(b);
-                break;
-            case CONTINUE_COMMAND:
-                continueMenuItem.setEnabled(b);
-                continueButton.setEnabled(b);
-                animatorContinueButton.setEnabled(b);
-                break;
-            case CONTINUE_WITHOUT_PAUSES_COMMAND:
-                continueToEndMenuItem.setEnabled(b);
-                continueToEndButton.setEnabled(b);
-                break;
-            case INPUT_FIELD:
-                enterNumberLabel.setEnabled(b);
-                inputField.setEnabled(b);
-                enterNumberButton.setEnabled(b);
-                inputField.setText("");
-                if (b) {
-                    inputPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "KBD"));
-                    instructionsTable.setSelectionBackground(Color.yellow);
-                }
-                if (!b) {
-                    inputPanel.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.gray), "KBD"));
-                    instructionsTable.setSelectionBackground(registersTable.getSelectionBackground());
-                }
+        case RUN_COMMAND:
+            runMenuItem.setEnabled(b);
+            runButton.setEnabled(b);
+            break;
+        case STOP_COMMAND:
+            stopMenuItem.setEnabled(b);
+            stopButton.setEnabled(b);
+            break;
+        case COMPILE_COMMAND:
+            compileMenuItem.setEnabled(b);
+            compileButton.setEnabled(b);
+            break;
+        case CONTINUE_COMMAND:
+            continueMenuItem.setEnabled(b);
+            continueButton.setEnabled(b);
+            animatorContinueButton.setEnabled(b);
+            break;
+        case CONTINUE_WITHOUT_PAUSES_COMMAND:
+            continueToEndMenuItem.setEnabled(b);
+            continueToEndButton.setEnabled(b);
+            break;
+        case INPUT_FIELD:
+            enterNumberLabel.setEnabled(b);
+            inputField.setEnabled(b);
+            enterNumberButton.setEnabled(b);
+            inputField.setText("");
+            if (b) {
+                inputPanel.setBorder(BorderFactory.createTitledBorder
+                		(BorderFactory.createLineBorder(Color.red), "KBD"));
 
-                break;
-            case CODE_TABLE_EDITING:
-                codeTable.setEnabled(b);
-                break;
-            case OPEN_FILE_COMMAND:
-                openFile.setEnabled(b);
-                openFileButton.setEnabled(b);
+                instructionsTable.setSelectionBackground(Color.yellow);
+            }
+            if (!b) {
+                inputPanel.setBorder(BorderFactory.createTitledBorder(
+                		BorderFactory.createLineBorder(Color.gray), "KBD"));
+
+                instructionsTable.setSelectionBackground(
+                		registersTable.getSelectionBackground());
+            }
+
+            break;
+        case CODE_TABLE_EDITING:
+            codeTable.setEnabled(b);
+            break;
+        case OPEN_FILE_COMMAND:
+            openFile.setEnabled(b);
+            openFileButton.setEnabled(b);
         }
     }
 
@@ -990,9 +996,9 @@ public class GUI extends JFrame implements ActionListener {
     /**
      * Enables a command.
      *
-     * @param command The command to be enabled. It can be RUN_COMMAND, STOP_COMMAND,
-     *                COMPILE_COMMAND, CONTINUE_COMMAND, CONTINUE_WITHOUT_PAUSES_COMMAND
-     *                INPUT_FIELD.
+     * @param command The command to be enabled. It can be RUN_COMMAND,
+     * STOP_COMMAND, COMPILE_COMMAND, CONTINUE_COMMAND,
+     * CONTINUE_WITHOUT_PAUSES_COMMAND INPUT_FIELD.
      */
     public void enable(short command) {
         setEnabled(command, true);
@@ -1002,66 +1008,58 @@ public class GUI extends JFrame implements ActionListener {
     /**
      * Disables a command.
      *
-     * @param command The command to be Disabled. It can be RUN_COMMAND, STOP_COMMAND,
-     *                COMPILE_COMMAND, CONTINUE_COMMAND, CONTINUE_WITHOUT_PAUSES_COMMAND
-     *                INPUT_FIELD.
+     * @param command The command to be Disabled. It can be RUN_COMMAND,
+     * STOP_COMMAND, COMPILE_COMMAND, CONTINUE_COMMAND,
+     * CONTINUE_WITHOUT_PAUSES_COMMAND INPUT_FIELD.
      */
     public void disable(short command) {
         setEnabled(command, false);
     }
 
-
     /**
-     * paused compiling - used in setSelected() method
+     * GUI run and compiler options.
      */
-    public static final short OPTION_COMPILING_PAUSED = 0;
-    /**
-     * commented compiling - used in setSelected() method
-     */
-    public static final short OPTION_COMPILING_COMMENTED = 1;
-    /**
-     * paused running - used in setSelected() method
-     */
-    public static final short OPTION_RUNNING_PAUSED = 2;
-    /**
-     * commented running - used in setSelected() method
-     */
-    public static final short OPTION_RUNNING_COMMENTED = 3;
-    /**
-     * animated running - used in setSelected() method
-     */
-    public static final short OPTION_RUNNING_ANIMATED = 4;
-
+    public enum GUIOptions {
+    	compiling_paused,
+    	compiling_commented,
+    	running_paused,
+    	running_commented,
+    	running_animated,
+    	running_turbo,
+    	running_breakpoints;
+    }
 
     /**
      * Sets a certain option selected or unselected in GUI. Note that this doesn't
      * take any position on what the options does. GUIBrain uses this method to
      * to synchronize GUI for settings loaded from settings file.
      */
-    public void setSelected(short option, boolean b) {
+    public void setSelected(GUIOptions option, boolean b) {
         switch (option) {
-            case OPTION_COMPILING_PAUSED:
+            case compiling_paused:
                 setCompilingOptionsDialog.lineByLineCheckBox.setSelected(b);
                 break;
-            case OPTION_COMPILING_COMMENTED:
+            case compiling_commented:
                 setCompilingOptionsDialog.showCommentsCheckBox.setSelected(b);
                 break;
-            case OPTION_RUNNING_PAUSED:
+            case running_paused:
                 lineByLineToggleButton.setSelected(b);
                 setRunningOptionsDialog.lineByLineCheckBox.setSelected(b);
-                //if(!b)
-                //  setSelected(OPTION_RUNNING_ANIMATED, false);
                 break;
-            case OPTION_RUNNING_COMMENTED:
+            case running_commented:
                 showCommentsToggleButton.setSelected(b);
                 setRunningOptionsDialog.showCommentsCheckBox.setSelected(b);
                 break;
-            case OPTION_RUNNING_ANIMATED:
+            case running_animated:
                 showAnimationToggleButton.setSelected(b);
                 setRunningOptionsDialog.showAnimationCheckBox.setSelected(b);
-                //if(b)
-                //  setSelected(OPTION_RUNNING_PAUSED, true);
                 break;
+            case running_turbo:
+            	setRunningOptionsDialog.turboModeCheckBox.setSelected(b);
+            	break;
+            case running_breakpoints:
+            	setRunningOptionsDialog.breakpointsCheckBox.setSelected(b);
+            	break;
         }
     }
 
@@ -1102,37 +1100,31 @@ public class GUI extends JFrame implements ActionListener {
         JTableX activeTable = null;
 
         switch (table) {
-            case CODE_TABLE:
+        case CODE_TABLE:
+	        /* Check if there's no such line */
+	        if (line >= codeTable.getRowCount() || line < 0) {
+	            return;
+	        }
+	        activeScrollPane = codeTableScrollPane;
+	        activeTable = codeTable;
+	        break;
+        case INSTRUCTIONS_AND_DATA_TABLE:
+            /* Check if there's no such line */
+            if (line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) || line < 0) {
+                return;
+            }
 
-                /* Check if there's no such line */
-                if (line >= codeTable.getRowCount() || line < 0) {
-                    return;
-                }
-                activeScrollPane = codeTableScrollPane;
-                activeTable = codeTable;
-                break;
-
-
-            case INSTRUCTIONS_AND_DATA_TABLE:
-
-                /* Check if there's no such line */
-                if (line >= (instructionsTable.getRowCount() + dataTable.getRowCount()) || line < 0) {
-                    return;
-                }
-
-                if (line < instructionsTable.getRowCount()) {
-                    activeScrollPane = instructionsTableScrollPane;
-                    activeTable = instructionsTable;
-                } else {
-                    activeScrollPane = dataTableScrollPane;
-                    activeTable = dataTable;
-                    line -= instructionsTable.getRowCount();
-                }
-                break;
-
-
-            default:
-                break;
+            if (line < instructionsTable.getRowCount()) {
+                activeScrollPane = instructionsTableScrollPane;
+                activeTable = instructionsTable;
+            } else {
+                activeScrollPane = dataTableScrollPane;
+                activeTable = dataTable;
+                line -= instructionsTable.getRowCount();
+            }
+            break;
+        default:
+            break;
         }
 
         if (activeScrollPane == null || activeTable == null) {
@@ -1141,7 +1133,6 @@ public class GUI extends JFrame implements ActionListener {
 
         int tableViewHeight = activeScrollPane.getHeight() - activeTable.getTableHeader().getHeight();
         int y;
-
         if (tableViewHeight > activeTable.getHeight()) {
             y = 0;
         } else {
@@ -1149,11 +1140,12 @@ public class GUI extends JFrame implements ActionListener {
             y = (y < 0) ? 0 : y;
             if (y + tableViewHeight > activeTable.getHeight()) {
                 y = activeTable.getHeight() - tableViewHeight + activeTable.getRowMargin() + 2;
-                // XXX: I don't know where that number 2 comes from, but I included it there, because the viewport
-                // doesn't go to exactly right place without it. Otherwise it'd be misplaced by two pixels. :)
+                /* XXX: I don't know where that number 2 comes from, but I
+                 * included it there, because the viewport  doesn't go to
+                 * exactly right place without it. Otherwise it'd be misplaced
+                 * by two pixels. :) */
             }
         }
-
         activeScrollPane.getViewport().setViewPosition(new Point(0, y));
     }
 
@@ -1343,20 +1335,19 @@ public class GUI extends JFrame implements ActionListener {
 
 
     public String[] getCodeTableContents() {
-
-        Vector codeTableContents = ((DefaultTableModel) codeTable.getModel()).getDataVector();
+        Vector<?> codeTableContents = ((DefaultTableModel) codeTable.getModel()).getDataVector();
         String[] codeTableContentsString = new String[codeTableContents.size()];
 
         int i = 0;
-        for (Enumeration e = codeTableContents.elements(); e.hasMoreElements(); i++) {
-            codeTableContentsString[i] = (String) ((Vector) e.nextElement()).get(0);
+        for (Enumeration<?> e = codeTableContents.elements(); e.hasMoreElements(); i++) {
+            codeTableContentsString[i] = (String) ((Vector<?>) e.nextElement()).get(0);
         }
+
         return codeTableContentsString;
     }
 
 
 // Private methods. ---------------------------------------------------
-
 
     /**
      * This is just a private assistance method for the creator. This prepares
@@ -1364,17 +1355,18 @@ public class GUI extends JFrame implements ActionListener {
      * main frame. This won't be accessed but once in the creator method.
      */
     private void initGUI() {
-
         codeTable = new JTableX(new DefaultTableModel(codeTableIdentifiers, 0));
         codeTable.setFont(tableFont);
         codeTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         codeTable.setEnabled(false);
         codeTable.setShowGrid(false);
         ((DefaultCellEditor) codeTable.getDefaultEditor(codeTable.getColumnClass(0))).addCellEditorListener(new CellEditorListener() {
-            public void editingCanceled(ChangeEvent e) {
+            @Override
+			public void editingCanceled(ChangeEvent e) {
             }
 
-            public void editingStopped(ChangeEvent e) {
+            @Override
+			public void editingStopped(ChangeEvent e) {
                 codeTable.getColumnModel().getColumn(0).setPreferredWidth(codeTable.getMaxTextLengthInColumn(0));
                 guibrain.saveSource();
             }
@@ -1384,11 +1376,7 @@ public class GUI extends JFrame implements ActionListener {
         codeTableScrollPane = new JScrollPane(codeTable);
         codeTableScrollPane.setForeground(Color.black);
 
-        instructionsTable = new JTableX(new DefaultTableModel(instructionsTableIdentifiers, 0));
-        instructionsTable.setFont(tableFont);
-        instructionsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
-        instructionsTable.setEnabled(false);
-        instructionsTable.setToolTipTextForColumns(new String[]{"Line", "Numeric value", "Symbolic content"});
+        createInstructionsTable();
         instructionsTableScrollPane = new JScrollPane(instructionsTable);
 
         dataTable = new JTableX(new DefaultTableModel(dataTableIdentifiers, 0));
@@ -1402,10 +1390,10 @@ public class GUI extends JFrame implements ActionListener {
         dataTable.setDoubleBuffered(true);
         dataTableScrollPane.setDoubleBuffered(true);
 
-        dataTablePopupMenu = new JPopupMenu();
         JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem("Show symbolic", true);
         menuItem.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 if (((JCheckBoxMenuItem) e.getSource()).getState()) {
                     int maxTextLength = (dataTable.getMaxTextLengthInColumn(2) > instructionsTable.getMaxTextLengthInColumn(2)) ?
                             (dataTable.getMaxTextLengthInColumn(2) + cellMargin) :
@@ -1417,15 +1405,18 @@ public class GUI extends JFrame implements ActionListener {
                 }
             }
         });
+        dataTablePopupMenu = new JPopupMenu();
         dataTablePopupMenu.add(menuItem);
 
 
         MouseListener dataTablePopupListener = new MouseAdapter() {
-            public void mousePressed(MouseEvent e) {
+            @Override
+			public void mousePressed(MouseEvent e) {
                 maybeShowPopup(e);
             }
 
-            public void mouseReleased(MouseEvent e) {
+            @Override
+			public void mouseReleased(MouseEvent e) {
                 maybeShowPopup(e);
             }
 
@@ -1443,8 +1434,6 @@ public class GUI extends JFrame implements ActionListener {
         dataAndInstructionsTableSplitPane.setOneTouchExpandable(true);
 
         statusBar = new JLabel();
-        commentList = new JList(new DefaultListModel());
-        ((DefaultListModel) commentList.getModel()).ensureCapacity(COMMENT_LIST_SIZE);
 
         symbolTable = new JTableX(new DefaultTableModel(new String[]{"", ""}, 0));
         symbolTable.setEnabled(false);
@@ -1454,9 +1443,10 @@ public class GUI extends JFrame implements ActionListener {
         symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
         symbolTableScrollPane.setMinimumSize(new Dimension(200, 150));
 
+        String zero = valueBase.toString(0);
         String[][] regTableContents = new String[][]
-                {{"R0", "0"}, {"R1", "0"}, {"R2", "0"}, {"R3", "0"}, {"R4", "0"},
-                        {"R5", "0"}, {"SP", "0"}, {"FP", "0"}, {"PC", "0"}};
+                {{"R0", zero}, {"R1", zero}, {"R2", zero}, {"R3", zero}, {"R4", zero},
+                        {"R5", zero}, {"SP", zero}, {"FP", zero}, {"PC", zero}};
 
         registersTable = new JTableX(new DefaultTableModel(regTableContents, registersTableIdentifiers));
         registersTable.setEnabled(false);
@@ -1482,16 +1472,19 @@ public class GUI extends JFrame implements ActionListener {
 
         inputField = new JTextField(11);
         inputField.addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent e) {
+            @Override
+			public void keyPressed(KeyEvent e) {
             }
 
-            public void keyReleased(KeyEvent e) {
+            @Override
+			public void keyReleased(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     enterInput();
                 }
             }
 
-            public void keyTyped(KeyEvent e) {
+            @Override
+			public void keyTyped(KeyEvent e) {
             }
         });
 
@@ -1516,42 +1509,7 @@ public class GUI extends JFrame implements ActionListener {
         upperRightPanel.add(symbolTableScrollPane, BorderLayout.CENTER);
         upperRightPanel.add(ioPanel, BorderLayout.WEST);
 
-        commentListScrollPane = new JScrollPane(commentList);
-        commentListScrollPane.setPreferredSize(new Dimension(1, 50));
-        commentList.setDoubleBuffered(true);
-        commentListScrollPane.setDoubleBuffered(true);
-
-        /*commentList.addListSelectionListener( new ListSelectionListener() {
-         public void valueChanged( ListSelectionEvent e ) {
-           JList src = (JList)(e.getSource());
-           String str = (String)src.getSelectedValue();
-
-           if (str != null) {
-             Integer line = null;
-             int i = 1;
-             while (true) {
-               try {
-                 line = new Integer(str.substring(0,i));
-
-               }
-               catch (NumberFormatException excp) {
-                 break;
-               }
-               catch (IndexOutOfBoundsException excp2) {
-                 break;
-               }
-               i++;
-             }
-
-             if (line != null) {
-               if (activeView == 3) {
-                 centerToLine(line.intValue(),INSTRUCTIONS_AND_DATA_TABLE);
-               }
-             }
-           }
-         }
-       } );*/
-
+        createCommentList();
         rightSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upperRightPanel, commentListScrollPane);
         rightSplitPane.setResizeWeight(0.5);
 
@@ -1572,6 +1530,109 @@ public class GUI extends JFrame implements ActionListener {
 
     }
 
+    private void createInstructionsTable() {
+        breakpointPopupMenu = new JPopupMenu();
+
+    	/* Create menu items for Breakpoint popup menu */
+        JMenuItem setBreakpointMI = new JMenuItem("Set breakpoint");
+        setBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.setBreakpoint(instructionsTable.getSelectedRow(), true);
+          }
+        });
+        JMenuItem disableBreakpointMI = new JMenuItem("Disable breakpoint");
+        disableBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.setBreakpoint(instructionsTable.getSelectedRow(), false);
+          }
+        });
+        JMenuItem removeBreakpointMI = new JMenuItem("Remove breakpoint");
+        removeBreakpointMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  guibrain.removeBreakpoint(instructionsTable.getSelectedRow());
+          }
+        });
+
+        breakpointPopupMenu.add(setBreakpointMI);
+        breakpointPopupMenu.add(disableBreakpointMI);
+        breakpointPopupMenu.add(removeBreakpointMI);
+
+        instructionsTable = new JTableX(new DefaultTableModel(instructionsTableIdentifiers, 0));
+        instructionsTable.setFont(tableFont);
+        instructionsTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        instructionsTable.setEnabled(false);
+        instructionsTable.setToolTipTextForColumns(new String[]{"Line", "Numeric value", "Symbolic content"});
+        instructionsTable.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		this.showPopup(e);
+        	}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                this.showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+            	int r = instructionsTable.rowAtPoint(e.getPoint());
+                if (r >= 0 && r < instructionsTable.getRowCount()) {
+                	instructionsTable.setRowSelectionInterval(r, r);
+                } else {
+                	instructionsTable.clearSelection();
+                }
+
+                int rowindex = instructionsTable.getSelectedRow();
+                if (rowindex < 0)
+                    return;
+                if (e.isPopupTrigger() && e.getComponent() instanceof JTable ) {
+                    breakpointPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+            });
+    }
+
+    private void createCommentList() {
+    	commentList = new JList(new DefaultListModel());
+        ((DefaultListModel) commentList.getModel()).ensureCapacity(COMMENT_LIST_SIZE);
+    	commentListScrollPane = new JScrollPane(commentList);
+        commentListScrollPane.setPreferredSize(new Dimension(1, 50));
+        commentList.setDoubleBuffered(true);
+        commentListScrollPane.setDoubleBuffered(true);
+
+        commentListPopupMenu = new JPopupMenu();
+
+        JMenuItem clearCommentListMI = new JMenuItem("Clear");
+        clearCommentListMI.addActionListener(new ActionListener() {
+          @Override
+		public void actionPerformed(ActionEvent event) {
+        	  DefaultListModel commentListModel = (DefaultListModel) commentList.getModel();
+        	  commentListModel.clear();
+          }
+        });
+
+        commentListPopupMenu.add(clearCommentListMI);
+
+        commentList.addMouseListener(new MouseAdapter() {
+        	@Override
+        	public void mousePressed(MouseEvent e) {
+        		this.showPopup(e);
+        	}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                this.showPopup(e);
+            }
+
+            private void showPopup(MouseEvent e) {
+            	if (e.isPopupTrigger()) {
+            		commentListPopupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+            });
+    }
 
     private void enterInput() {
         String input;
@@ -1585,13 +1646,8 @@ public class GUI extends JFrame implements ActionListener {
     }
 
 
-    private void initAnimator() {
-
-        try {
-            animator = new Animator();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+    private void initAnimator() throws IOException {
+        animator = new Animator();
 
         animatorFrame = new JFrame();
         animatorFrame.setSize(810, 636);
@@ -1606,7 +1662,8 @@ public class GUI extends JFrame implements ActionListener {
 
         animatorSpeedSlider.setPaintLabels(true);
         animatorSpeedSlider.addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e) {
+            @Override
+			public void stateChanged(ChangeEvent e) {
                 int speed = ANIMATOR_SPEED_MAX - animatorSpeedSlider.getValue();
                 animator.setAnimationDelay(speed);
             }
@@ -1631,7 +1688,6 @@ public class GUI extends JFrame implements ActionListener {
         animatorPanel.add(animatorToolBarPanel, BorderLayout.NORTH);
 
         animatorFrame.getContentPane().add(animatorPanel);
-
     }
 
     private void initDisplay() {
@@ -1639,21 +1695,20 @@ public class GUI extends JFrame implements ActionListener {
 
         display = new Display();
         displayFrame = new JFrame();
-        displayFrame.setSize(scale * display.X, scale * display.Y);
-        displayFrame.setTitle(display.X + "x" + display.Y + " @" + display.DEFAULT_START);
+        displayFrame.setSize(scale * Display.X, scale * Display.Y);
+        displayFrame.setTitle(Display.X + "x" + Display.Y + " @" + Display.DEFAULT_START);
         displayFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         displayFrame.addWindowListener(new WindowAdapter() {
-            public void windowClosing(WindowEvent we) {
+            @Override
+			public void windowClosing(WindowEvent we) {
                 display.setUpdates(false);
                 showDisplayToggleButton.setSelected(false);
             }
         });
 
-
         displayFrame.getContentPane().add(display);
 
         new Thread(display).start();
-
     }
 
     /**
@@ -1662,7 +1717,6 @@ public class GUI extends JFrame implements ActionListener {
      * @param destFrame The frame the menu bar will be inserted.
      */
     private void insertMenuBar(JFrame destFrame) {
-
         JMenuBar mainMenuBar = new JMenuBar();
         fileMenu = new JMenu("File");
         openFile = fileMenu.add("Open");
@@ -1761,10 +1815,7 @@ public class GUI extends JFrame implements ActionListener {
      * This creates the toolbar of this program and returns it.
      */
     private JToolBar makeToolBar() {
-
-        JToolBar toolbar;
-
-        toolbar = new JToolBar("Toolbar");
+        JToolBar toolbar = new JToolBar("Toolbar");
 
         openFileButton = new JButton();
         try {
@@ -1894,25 +1945,29 @@ public class GUI extends JFrame implements ActionListener {
         continueToEndButton.addActionListener(continueToEndCommandActionListener);
         stopButton.addActionListener(stopCommandActionListener);
         lineByLineToggleButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 boolean b = ((JToggleButton) e.getSource()).isSelected();
                 guibrain.menuSetRunningOption(GUIBrain.LINE_BY_LINE, b);
             }
         });
         showCommentsToggleButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 boolean b = ((JToggleButton) e.getSource()).isSelected();
                 guibrain.menuSetRunningOption(GUIBrain.COMMENTED, b);
             }
         });
         showAnimationToggleButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 boolean b = ((JToggleButton) e.getSource()).isSelected();
                 guibrain.menuSetRunningOption(GUIBrain.ANIMATED, b);
             }
         });
         showDisplayToggleButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
+            @Override
+			public void actionPerformed(ActionEvent e) {
                 boolean b = ((JToggleButton) e.getSource()).isSelected();
                 display.setUpdates(b);
                 displayFrame.setVisible(b);
@@ -1924,13 +1979,13 @@ public class GUI extends JFrame implements ActionListener {
 
 
 /* Next comes ActionListeners that are used with buttons and menuitems in this
-   program. Their names are informative enough to tell which objects they are 
+   program. Their names are informative enough to tell which objects they are
    intended to listen.
 */
 
     private ActionListener openCommandActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-
+        @Override
+		public void actionPerformed(ActionEvent e) {
             int rv = showOpenFileDialog();
 
             if (rv == JFileChooser.APPROVE_OPTION) {
@@ -1941,8 +1996,8 @@ public class GUI extends JFrame implements ActionListener {
     };
 
     private ActionListener selectStdinFileActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-
+        @Override
+		public void actionPerformed(ActionEvent e) {
             int rv = showSelectStdinDialog();
             if (rv == JFileChooser.APPROVE_OPTION) {
                 guibrain.menuSetStdin(generalFileDialog.getSelectedFile());
@@ -1951,14 +2006,16 @@ public class GUI extends JFrame implements ActionListener {
     };
 
     private ActionListener selectStdoutFileActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             int rv = showSelectStdoutDialog();
             if (rv == JFileChooser.APPROVE_OPTION) {
-                JOptionPane confirmDialog = new JOptionPane();
+                @SuppressWarnings("unused")
+				JOptionPane confirmDialog = new JOptionPane();
                 String[] param = {(String) UIManager.get("OptionPane.yesButtonText"),
                         (String) UIManager.get("OptionPane.noButtonText")};
 
-                int rv2 = confirmDialog.showConfirmDialog(
+                int rv2 = JOptionPane.showConfirmDialog(
                         generalFileDialog,
                         new Message("Do you want to overwrite the file? Select {1} to append or {0} to overwrite.", param).toString(),
                         new Message("Overwrite?").toString(),
@@ -1976,70 +2033,74 @@ public class GUI extends JFrame implements ActionListener {
     };
 
     private ActionListener compileCommandActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             new Thread(new GUIThreader(GUIThreader.TASK_COMPILE, guibrain)).start();
         }
     };
 
     private ActionListener runCommandActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             new Thread(new GUIThreader(GUIThreader.TASK_RUN, guibrain)).start();
         }
     };
 
     private ActionListener continueCommandActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             new Thread(new GUIThreader(GUIThreader.TASK_CONTINUE, guibrain)).start();
         }
     };
 
 
     private ActionListener continueToEndCommandActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-
+        @Override
+		public void actionPerformed(ActionEvent e) {
             guibrain.continueTaskWithoutPauses();
         }
     };
 
     private ActionListener setRunningOptionsCommandActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-
+        @Override
+		public void actionPerformed(ActionEvent e) {
             setRunningOptionsDialog.setVisible(true);
         }
     };
 
     private ActionListener setCompilingOptionsCommandActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-
+        @Override
+		public void actionPerformed(ActionEvent e) {
             setCompilingOptionsDialog.setVisible(true);
         }
     };
 
     private ActionListener stopCommandActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             guibrain.menuInterrupt(false);
             //new Thread(new GUIThreader(GUIThreader.TASK_STOP, guibrain)).start();
         }
     };
 
     private ActionListener eraseMemoryActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             guibrain.menuEraseMemory();
         }
     };
 
     private ActionListener setLanguageActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             String language = ((JMenuItem) e.getSource()).getText();
             guibrain.menuSetLanguage(language);
         }
     };
 
     private ActionListener selectLanguageFromFileActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-            //openFileDialog.resetChoosableFileFilters();
-            //openFileDialog.setAcceptAllFileFilterUsed(true);
-
+        @Override
+		public void actionPerformed(ActionEvent e) {
             int rv = showSelectLanguageFileDialog();
             if (rv == JFileChooser.APPROVE_OPTION) {
                 guibrain.menuSetLanguage(generalFileDialog.getSelectedFile());
@@ -2048,19 +2109,22 @@ public class GUI extends JFrame implements ActionListener {
     };
 
     private ActionListener aboutActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             aboutDialog.setVisible(true);
         }
     };
 
     private ActionListener manualActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             manualDialog.setVisible(true);
         }
     };
 
     private ActionListener enterNumberButtonActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             enterInput();
 
 
@@ -2068,15 +2132,16 @@ public class GUI extends JFrame implements ActionListener {
     };
 
     private ActionListener quitActionListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             guibrain.menuExit();
             System.exit(0);
         }
     };
 
     /* Instances of this class will be created for Options -> Set Memory Size
-       menu's menuitems.
-    */
+     *  menu's menuitems.
+     */
     private class SetMemSizeActionListener implements ActionListener {
         private int memsize;
 
@@ -2084,16 +2149,16 @@ public class GUI extends JFrame implements ActionListener {
             this.memsize = memsize;
         }
 
-        public void actionPerformed(ActionEvent e) {
+        @Override
+		public void actionPerformed(ActionEvent e) {
             guibrain.menuSetMemorySize(memsize);
         }
-    }
-
-    ;
+    };
 
 
     private FileFilter B91FileFilter = new FileFilter() {
-        public boolean accept(File f) {
+        @Override
+		public boolean accept(File f) {
             if (f.isDirectory()) {
                 return true;
             }
@@ -2109,14 +2174,16 @@ public class GUI extends JFrame implements ActionListener {
             return false;
         }
 
-        public String getDescription() {
+        @Override
+		public String getDescription() {
             return new Message("B91 binary").toString();
         }
     };
 
 
     private FileFilter K91FileFilter = new FileFilter() {
-        public boolean accept(File f) {
+        @Override
+		public boolean accept(File f) {
             if (f.isDirectory()) {
                 return true;
             }
@@ -2132,13 +2199,15 @@ public class GUI extends JFrame implements ActionListener {
             return false;
         }
 
-        public String getDescription() {
+        @Override
+		public String getDescription() {
             return new Message("K91 source").toString();
         }
     };
 
     private FileFilter classFileFilter = new FileFilter() {
-        public boolean accept(File f) {
+        @Override
+		public boolean accept(File f) {
             if (f.isDirectory()) {
                 return true;
             }
@@ -2154,7 +2223,8 @@ public class GUI extends JFrame implements ActionListener {
             return false;
         }
 
-        public String getDescription() {
+        @Override
+		public String getDescription() {
             return new Message("Class file").toString();
         }
     };
@@ -2173,7 +2243,7 @@ public class GUI extends JFrame implements ActionListener {
         generalFileDialog.addChoosableFileFilter(K91FileFilter);
         generalFileDialog.setDialogTitle(new Message("Open a new " +
                 "file").toString());
-        return generalFileDialog.showOpenDialog(thisGUI);
+        return generalFileDialog.showOpenDialog(this);
     }
 
     /**
@@ -2187,7 +2257,7 @@ public class GUI extends JFrame implements ActionListener {
         generalFileDialog.setAcceptAllFileFilterUsed(true);
         generalFileDialog.setDialogTitle(new Message("Select default stdin " +
                 "file").toString());
-        return generalFileDialog.showOpenDialog(thisGUI);
+        return generalFileDialog.showOpenDialog(this);
     }
 
     /**
@@ -2201,7 +2271,7 @@ public class GUI extends JFrame implements ActionListener {
         generalFileDialog.setAcceptAllFileFilterUsed(true);
         generalFileDialog.setDialogTitle(new Message("Select default stdout " +
                 "file").toString());
-        return generalFileDialog.showOpenDialog(thisGUI);
+        return generalFileDialog.showOpenDialog(this);
     }
 
     /**
@@ -2216,7 +2286,7 @@ public class GUI extends JFrame implements ActionListener {
         generalFileDialog.setAcceptAllFileFilterUsed(false);
         generalFileDialog.setDialogTitle(new Message("Select language " +
                 "file").toString());
-        return generalFileDialog.showOpenDialog(thisGUI);
+        return generalFileDialog.showOpenDialog(this);
     }
 
     /**
@@ -2228,4 +2298,4 @@ public class GUI extends JFrame implements ActionListener {
         System.out.println(message);
     }
 
-} 
+}
