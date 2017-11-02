@@ -1049,13 +1049,24 @@ public class Compiler {
             /* This one checks the length of the address String because
                             Integer.parseInt(100000000000000) throws an exception.*/
             if (isANumber) {
-                if (address.length() > ("" + ADDRESSMIN).length() ||
-                        Integer.parseInt(address) > ADDRESSMAX ||
-                        Integer.parseInt(address) < ADDRESSMIN) {
-                    comment = new Message("Compilation failed: {0}",
-                            new Message(
-                                    "invalid address value.").toString()).toString();
-                    throw new TTK91CompileException(comment);
+                if (addressingMode.equals("=")) {
+                    if (address.length() > ("" + MININT).length() ||
+                            Long.parseLong(address) > MAXINT ||
+                            Long.parseLong(address) < MININT) {
+                        comment = new Message("Compilation failed: {0}",
+                                new Message(
+                                        "invalid value {0}.", address).toString()).toString();
+                        throw new TTK91CompileException(comment);
+                    }
+                } else {
+                    if (address.length() > ("" + ADDRESSMIN).length() ||
+                            Integer.parseInt(address) > ADDRESSMAX ||
+                            Integer.parseInt(address) < ADDRESSMIN) {
+                        comment = new Message("Compilation failed: {0}",
+                                new Message(
+                                        "invalid address value.").toString()).toString();
+                        throw new TTK91CompileException(comment);
+                    }
                 }
             }
         }
