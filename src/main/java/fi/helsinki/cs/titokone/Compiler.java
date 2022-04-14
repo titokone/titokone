@@ -959,6 +959,13 @@ public class Compiler {
                                 lineAsArray[lineAsArrayIndex].indexOf("(") + 1,
                                 lineAsArray[lineAsArrayIndex].indexOf(")")
                         );
+
+                        if (symbolicInterpreter.getRegisterId(secondRegister) == -1) {
+                            comment = new Message("Compilation failed: {0}",
+                                    new Message("invalid register {0}.",
+                                            secondRegister).toString()).toString();
+                            throw new TTK91CompileException(comment);
+                        }
                     }
                 }
             }
