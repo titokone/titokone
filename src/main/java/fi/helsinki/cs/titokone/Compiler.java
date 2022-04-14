@@ -868,12 +868,11 @@ public class Compiler {
         }
 
 
-        // Now supports addressing mode LOAD/STORE R1, (R2),
-        // which is equal to LOAD/STORE R1, 0(R2).
+        // Now supports addressing mode LOAD R1, (R2),
+        // which is equal to LOAD R1, 0(R2).
         // 5.10.2004, Tom Bertell
         if (lineAsArrayIndex < lineAsArray.length) {
-            if (lineAsArray[lineAsArrayIndex].charAt(0) == '(' &&
-                    (opcode.equalsIgnoreCase("store") || opcode.equalsIgnoreCase("load"))) {
+            if (lineAsArray[lineAsArrayIndex].charAt(0) == '(') {
                 lineAsArray[lineAsArrayIndex] = '0' + lineAsArray[lineAsArrayIndex];
             }
         }
