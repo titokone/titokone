@@ -867,16 +867,6 @@ public class Compiler {
             }
         }
 
-
-        // Now supports addressing mode LOAD R1, (R2),
-        // which is equal to LOAD R1, 0(R2).
-        // 5.10.2004, Tom Bertell
-        if (lineAsArrayIndex < lineAsArray.length) {
-            if (lineAsArray[lineAsArrayIndex].charAt(0) == '(') {
-                lineAsArray[lineAsArrayIndex] = '0' + lineAsArray[lineAsArrayIndex];
-            }
-        }
-
         /* addressingMode */
         if (lineAsArrayIndex < lineAsArray.length) {
             if (lineAsArray[lineAsArrayIndex].charAt(0) == '=' ||
@@ -914,6 +904,12 @@ public class Compiler {
                                 addressingMode.length(),
                                 lineAsArray[lineAsArrayIndex].indexOf("(")
                         );
+                    }
+
+                    // if there was no address before parentheses, it's the same as having 0 there
+                    // LOAD R1, (R2)
+                    if (address.isEmpty()) {
+                        address = "0";
                     }
 
                     secondRegister = lineAsArray[lineAsArrayIndex].substring(
