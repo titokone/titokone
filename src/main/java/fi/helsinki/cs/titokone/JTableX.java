@@ -5,16 +5,26 @@
 
 package fi.helsinki.cs.titokone;
 
-import java.awt.*;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.event.MouseEvent;
-import javax.swing.*;
-import javax.swing.table.*;
+
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 /**
  * This class is basically just normal JTable with added functionality.
  */
 public class JTableX extends JTable {
-
+    /**
+	 *
+	 */
+	private static final long serialVersionUID = -7424739136090735650L;
+    protected int[] selectedRows = {0};
+    protected boolean areRowsSelected = false;
+    protected int tryCounter = 0;
     protected String[] columnToolTips;
 
     public JTableX(TableModel dm) {
@@ -27,16 +37,13 @@ public class JTableX extends JTable {
         columnToolTips = toolTips;
     }
 
-
     @Override
     public String getToolTipText(MouseEvent e) {
-        String tip = null;
         java.awt.Point p = e.getPoint();
         int index = columnModel.getColumnIndexAtX(p.x);
         int realIndex = columnModel.getColumn(index).getModelIndex();
         return columnToolTips[realIndex];
     }
-
 
     /**
      * Returns the length of text in pixels in certain cell. The font and its
@@ -47,7 +54,6 @@ public class JTableX extends JTable {
      * @return Length of text in pixels.
      */
     public int getTextLength(int row, int column) {
-
         Font tblFont = this.getFont();
         Graphics tblGraphics = this.getGraphics();
         FontMetrics tblFontMetrics = this.getFontMetrics(tblFont);
@@ -61,7 +67,6 @@ public class JTableX extends JTable {
         int textLength = (int) (tblFontMetrics.getStringBounds(cellValue, tblGraphics).getWidth()) + 1;
 
         return textLength + 2 * marginLength;
-
     }
 
     /**
@@ -82,16 +87,6 @@ public class JTableX extends JTable {
                 maxLength = str.length();
                 rowForMaxLength = i;
             }
-
-            /*int lngth = 0;
-
-            if (str.length > 2)
-              lngth = getTextLength(i, column);
-
-
-            if (lngth > maxLength) {
-              maxLength = lngth;
-            }*/
         }
         return getRowCount() != 0 ? getTextLength(rowForMaxLength, column) : 0;
     }

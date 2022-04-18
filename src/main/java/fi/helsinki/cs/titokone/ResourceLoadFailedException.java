@@ -10,7 +10,12 @@ package fi.helsinki.cs.titokone;
  * from a file and instantiating it has failed.
  */
 public class ResourceLoadFailedException extends Exception {
-    public ResourceLoadFailedException(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 9214486168502350614L;
+
+	public ResourceLoadFailedException(String message) {
         super(message);
     }
 }

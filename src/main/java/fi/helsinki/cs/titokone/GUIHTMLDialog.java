@@ -15,7 +15,11 @@ import java.net.URL;
 
 public class GUIHTMLDialog extends JDialog {
 
-    JEditorPane contents;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 247650514876787731L;
+	JEditorPane contents;
     JScrollPane contentsScrollPane;
 
     String pathToURL;

@@ -5,11 +5,22 @@
 
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.ttk91.*;
-
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Locale;
+import java.util.TreeMap;
 import java.util.logging.Logger;
+
+import fi.helsinki.cs.ttk91.TTK91AddressOutOfBounds;
+import fi.helsinki.cs.ttk91.TTK91CompileException;
+import fi.helsinki.cs.ttk91.TTK91Cpu;
+import fi.helsinki.cs.ttk91.TTK91NoKbdData;
+import fi.helsinki.cs.ttk91.TTK91NoStdInData;
+import fi.helsinki.cs.ttk91.TTK91RuntimeException;
 
 
 /**
@@ -27,14 +38,6 @@ public class GUIBrain {
 
     //lock object to avoid locking externally
     protected Object lock = new Object();
-    /**
-     * This variable can be set to e.g. 70 to slow down the GUI on
-     * compilation and runtime for overly fast machines. It should
-     * preferrably be completely replaced with a user-selectable option,
-     * however. The value should be at minimum 0.
-     */
-    private final int SLOWDOWN = 0;
-
 
     /**
      * This field contains the languages available, with the long,
@@ -45,7 +48,6 @@ public class GUIBrain {
 
     private Control control;
 
-
     /**
      * This field namely stores the current settings and everytime a setting
      * is changed, this is informed about it. When a GUIBrain object is created,
@@ -55,10 +57,8 @@ public class GUIBrain {
      */
     private Settings currentSettings;
 
-
     private Animator animator;
     private Display display;
-
 
     private GUI gui;
 
@@ -71,6 +71,8 @@ public class GUIBrain {
     public static final int LINE_BY_LINE = 2;
     public static final int PAUSED = 2;
     public static final int ANIMATED = 4;
+    public static final int TURBO = 8;
+    public static final int BREAKPOINTS = 16;
 
     /**
      * This field is set when menuInterrupt is called, and all continuous
@@ -90,9 +92,7 @@ public class GUIBrain {
      */
     private boolean noPauses;
 
-
     private boolean threadRunning;
-
 
     /**
      * Keeps track of the state of this program. It can be NONE, B91_NOT_RUNNING,
@@ -100,7 +100,6 @@ public class GUIBrain {
      * or K91_PAUSED.
      */
     private short currentState;
-
 
     /**
      * These fields are used to set the current state of program. It's stored into
@@ -132,13 +131,21 @@ public class GUIBrain {
      */
     protected static boolean ENABLE_DATA_AREA_MARKUP = true;
 
+    /**
+     * Base used for values shown by this GUI.
+     */
+    private ValueBase valueBase = ValueBase.DEC;
+
+    /**
+     * Breakpoints are stored in this TreeMap during execution.
+     */
+    private TreeMap<Integer, Boolean> breakpoints = new TreeMap<Integer, Boolean>();
 
     /**
      * This constructor sets up the GUIBrain instance. It calls private
      * initialization functions, including findAvailableLanguages().
      */
     public GUIBrain(GUI gui, Animator animator, Display display) {
-
         this.gui = gui;
 
         logger = Logger.getLogger(getClass().getPackage().getName());
@@ -199,14 +206,26 @@ public class GUIBrain {
             logger.info(e.getMessage());
         }
 
+        /* Runmode settings */
         int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
-        gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, (runmode & COMMENTED) != 0);
-        gui.setSelected(GUI.OPTION_RUNNING_PAUSED, (runmode & PAUSED) != 0);
-        gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, (runmode & ANIMATED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_commented, (runmode & COMMENTED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_paused, (runmode & PAUSED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_animated, (runmode & ANIMATED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_turbo, (runmode & TURBO) != 0);
+        gui.setSelected(GUI.GUIOptions.running_breakpoints, (runmode & BREAKPOINTS) != 0);
 
+        /* Compile options */
         int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
-        gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
-        gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
+        gui.setSelected(GUI.GUIOptions.compiling_commented, (compilemode & COMMENTED) != 0);
+        gui.setSelected(GUI.GUIOptions.compiling_paused, (compilemode & PAUSED) != 0);
+
+        try {
+        	valueBase = ValueBase.getBase(currentSettings.getIntValue(Settings.BASE));
+        	gui.animator.setValueBase(valueBase);
+        	gui.setValueBase(valueBase);
+        } catch(Exception e) {
+        	valueBase = ValueBase.DEC;
+        }
 
         int memorysize = currentSettings.getIntValue(Settings.MEMORY_SIZE);
         if (memorysize != Control.DEFAULT_MEMORY_SIZE) {
@@ -217,24 +236,18 @@ public class GUIBrain {
             }
         }
 
-
         availableLanguages = new Hashtable<String, Locale>();
         findAvailableLanguages();
 
         String language = currentSettings.getStrValue(Settings.UI_LANGUAGE);
 
         if (availableLanguages.containsKey(language)) {
-            Translator.setLocale((Locale) availableLanguages.get(language));
+            Translator.setLocale(availableLanguages.get(language));
             //gui.updateAllTexts();
         }
 
-
         noPauses = false;
         interruptSent = false;
-        // The settings have not really changed into anything
-        // interesting at this point.
-        //saveSettings();
-
         currentState = NONE;
     }
 
@@ -297,7 +310,7 @@ public class GUIBrain {
 
     public boolean enterInput(String input) {
         int inputValue;
-        String[] minAndMaxValues = {"" + MIN_KBD_VALUE, "" + MAX_KBD_VALUE};
+        String[] minAndMaxValues = {String.valueOf(MIN_KBD_VALUE), String.valueOf(MAX_KBD_VALUE)};
 
         try {
             inputValue = Integer.parseInt(input);
@@ -325,11 +338,9 @@ public class GUIBrain {
      * This method corresponds to the menu option File -> Run. It does
      * its work by calling runInstruction().
      */
-    public void menuRun() {
+	public void menuRun() {
         synchronized (lock) {
-
             threadRunning = true;
-
             interruptSent = false;
             noPauses = false;
 
@@ -363,14 +374,51 @@ public class GUIBrain {
                 gui.showAnimator();
             }
 
+            /* For keeping track of all the memory lines that have been changed
+             * during the execution in turbo mode. */
+            ArrayList<SimpleEntry<Integer, MemoryLine>> turboChangedMemory = new ArrayList<SimpleEntry<Integer, MemoryLine>>();
+
+            if (!control.isApplicationLoaded()) {
+            	String errorMessage = new Message("There is no application " +
+            			"available to run from!").toString();
+            	gui.addComment(errorMessage);
+            	return;
+            }
+
+            int nextLine;
             do {
                 currentState = B91_RUNNING;
                 setGUICommandsForCurrentState();
-
-                int nextLine = ((Processor) control.getCpu()).getValueOf(TTK91Cpu.CU_PC_CURRENT);
-                gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
-
                 runmode = currentSettings.getIntValue(Settings.RUN_MODE);
+
+                nextLine = ((Processor) control.getCpu()).getValueOf(TTK91Cpu.CU_PC_CURRENT);
+
+                /* Check if there is a breakpoint for the next line */
+                if ((runmode & BREAKPOINTS) != 0) {
+                	Boolean bp = breakpoints.get(nextLine);
+                	if (bp != null) {
+                		if (bp == true) {
+                			gui.addComment("Breakpoint at line: " + nextLine);
+                			gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
+
+                			/* Set state of Titokone to pause */
+                			currentState = B91_PAUSED;
+                			noPauses = false;
+                			setGUICommandsForCurrentState();
+                            waitForContinueTask();
+                		}
+                	}
+                }
+
+                if ((runmode & TURBO) == 0 || (noPauses == false && (runmode & LINE_BY_LINE) != 0)) {
+                	gui.selectLine(nextLine, GUI.INSTRUCTIONS_AND_DATA_TABLE);
+                }
+
+                if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
+                    currentState = B91_PAUSED;
+                    setGUICommandsForCurrentState();
+                    waitForContinueTask();
+                }
 
                 try {
                     runinfo = control.runLine();
@@ -402,68 +450,60 @@ public class GUIBrain {
                     break;
                 }
 
-                if ((runmode & COMMENTED) != 0) {
-                    if (runinfo.getComments() != null) {
-                        gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
+                /* Update GUI if not in TURBO mode */
+                if ((runmode & TURBO) == 0 || (noPauses == false && (runmode & LINE_BY_LINE) != 0)) {
+                	if ((runmode & COMMENTED) != 0) {
+                        if (runinfo.getComments() != null) {
+                            gui.addComment(runinfo.getLineNumber() + ": " + runinfo.getComments());
+                        }
                     }
+
+                    if ((runmode & ANIMATED) != 0) {
+                    	animator.stopAnimation();
+                    	animator.animate(runinfo);
+                    }
+
+                	gui.updateStatusBar(runinfo.getComments());
+
+	                int[] newRegisterValues = runinfo.getRegisters();
+	                gui.updateReg(GUI.R0, newRegisterValues[0]);
+	                gui.updateReg(GUI.R1, newRegisterValues[1]);
+	                gui.updateReg(GUI.R2, newRegisterValues[2]);
+	                gui.updateReg(GUI.R3, newRegisterValues[3]);
+	                gui.updateReg(GUI.R4, newRegisterValues[4]);
+	                gui.updateReg(GUI.R5, newRegisterValues[5]);
+	                gui.updateReg(GUI.R6, newRegisterValues[6]);
+	                gui.updateReg(GUI.R7, newRegisterValues[7]);
+	                gui.updateReg(GUI.PC, runinfo.getNewPC());
+
+	                /* If we are stepping the code now for example because of a
+	                 * breakpoint we most likely want to update the memory
+	                 * contents shown on the table but we must first commit
+	                 * changes made before the current operation. */
+	                if ((runmode & TURBO) == 0)
+	                	updateChangedMemoryLines(turboChangedMemory);
+	                updateChangedMemoryLines(runinfo.getChangedMemoryLines());
+                } else {
+                	/* Update screen later to make the program run faster */
+                	turboChangedMemory.addAll(runinfo.getChangedMemoryLines());
                 }
 
-                animator.stopAnimation();
-                animator.animate(runinfo);
-
-                gui.updateStatusBar(runinfo.getComments());
-
-                // If the command wrote something to screen, we'll deal with
-                // the actual writing. STDOUT writes are dealt with in Control.
+                /* If the command wrote something to screen, we'll deal with
+                 * the actual writing. STDOUT writes are dealt with in Control.
+                 */
                 if (runinfo.isExternalOp() && runinfo.whatOUT() != null) {
-                    // We use a Processor constant to check what device we are
-                    // writing to. CRT happens to be 0 now, but it might not be
-                    // "in the future".
+                    /* We use a Processor constant to check what device we are
+                     * writing to. CRT happens to be 0 now, but it might not be
+                     * "in the future".
+                     */
                     if (runinfo.whatOUT()[0] == Processor.CRT) {
                         gui.addOutputData(runinfo.whatOUT()[1]);
                     }
                 }
-
-                int[] newRegisterValues = runinfo.getRegisters();
-                gui.updateReg(GUI.R0, newRegisterValues[0]);
-                gui.updateReg(GUI.R1, newRegisterValues[1]);
-                gui.updateReg(GUI.R2, newRegisterValues[2]);
-                gui.updateReg(GUI.R3, newRegisterValues[3]);
-                gui.updateReg(GUI.R4, newRegisterValues[4]);
-                gui.updateReg(GUI.R5, newRegisterValues[5]);
-                gui.updateReg(GUI.R6, newRegisterValues[6]);
-                gui.updateReg(GUI.R7, newRegisterValues[7]);
-                gui.updateReg(GUI.PC, runinfo.getNewPC());
-
-                LinkedList changedMemoryLines = runinfo.getChangedMemoryLines();
-                Iterator changedMemoryLinesListIterator = changedMemoryLines.iterator();
-
-                while (changedMemoryLinesListIterator.hasNext()) {
-                    Object[] listItem = (Object[]) changedMemoryLinesListIterator.next();
-                    int line = ((Integer) listItem[0]).intValue();
-                    MemoryLine contents = (MemoryLine) listItem[1];
-                    gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
-                }
-
-                gui.repaint();
-
-                if ((runmode & LINE_BY_LINE) != 0 && noPauses == false) {
-                    currentState = B91_PAUSED;
-                    setGUICommandsForCurrentState();
-                    waitForContinueTask();
-
-                } else {
-                    try {
-                        if (SLOWDOWN > 0) {
-                            lock.wait(SLOWDOWN);
-                        }
-                    } catch (InterruptedException e) {
-                        System.out.println("InterruptedException in menuRun()");
-                    }
-
-                }
-
             } while (interruptSent == false); // End of do-while -loop
+            if ((runmode & TURBO) != 0) {
+            	updateChangedMemoryLines(turboChangedMemory);
+            }
 
             if (currentState == INTERRUPTED_WITH_PAUSE) {
                 setGUICommandsForCurrentState();
@@ -487,6 +527,50 @@ public class GUIBrain {
         }
     }
 
+	/**
+	 * Updates changed memory lines to the GUI.
+	 * @param runinfo
+	 */
+	private void updateChangedMemoryLines(ArrayList<SimpleEntry<Integer, MemoryLine>> changedMemoryLines) {
+		for (SimpleEntry<Integer, MemoryLine> entry : changedMemoryLines) {
+    		int line = entry.getKey();
+            MemoryLine contents = entry.getValue();
+            gui.updateInstructionsAndDataTableLine(line, contents.getBinary(), contents.getSymbolic());
+    	}
+		changedMemoryLines.clear();
+	}
+
+	/**
+	 * Adds a breakpoint.
+	 * @param line in memory.
+	 * @param enabled state of the breakpoint.
+	 */
+	public void setBreakpoint(int line, boolean enabled) {
+		String bpt = (enabled) ? "*" : "_";
+
+		breakpoints.put(line, enabled);
+		gui.updateInstructionsTableLineNumberIndicator(line, bpt);
+	}
+
+	/**
+	 * Get breakpoint state.
+	 * @param line of the breakpoint.
+	 * @return true if breakpoint is enabled; false if breakpoint is disabled;
+	 * null if breakpoint does not exist.
+	 */
+	public Boolean getBreakpoint(int line) {
+		return breakpoints.get(line);
+	}
+
+	/**
+	 * Removes a breakpoint.
+	 * @param line where to remove from.
+	 */
+	public void removeBreakpoint(int line) {
+		breakpoints.remove(line);
+		gui.updateInstructionsTableLineNumberIndicator(line, "");
+	}
+
     /**
      * This method is used to save the source after it has been
      * modified in the code window.
@@ -506,36 +590,34 @@ public class GUIBrain {
      */
     public void menuCompile() {
         synchronized (lock) {
-
             threadRunning = true;
-
             interruptSent = false;
             noPauses = false;
 
             currentState = K91_COMPILING;
             setGUICommandsForCurrentState();
 
-            /* compileinfo is set to null now. Null as CompileInfo object means also that
-               compilation has finished successfully. We may think that if no line was
-               compiled then it would mean a successful compilation as well, so this isn't
-               in contradiction to that anyway.
-               Really this is set to null because we need compileinfo to be initialized somehow
-               in compileLine() methods try-catch clause a few lines below.
-            */
+            /* compileinfo is set to null now. Null as CompileInfo object means
+             * also that compilation has finished successfully. We may think
+             * that if no line was compiled then it would mean a successful
+             * compilation as well, so this isn't in contradiction to that
+             * anyway. Really this is set to null because we need compileinfo
+             * to be initialized somehow in compileLine() methods try-catch
+             * clause a few lines below.
+             */
             CompileInfo compileinfo = null;
 
             int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
             int phase;
 
             /* This will be set to true once the compilation succeeds. The value
-               of this variable will be used in case of an interrupted compilation
-               or if an error occurs, when menuCompile() has to decide whether to
-               change back to pre-compilation-started state or not.
-            */
+             * of this variable will be used in case of an interrupted
+             * compilation or if an error occurs, when menuCompile() has to
+             * decide whether to change back to pre-compilation-started state or not.
+             */
             boolean compilingCompleted = false;
 
             do {
-
                 currentState = K91_COMPILING;
                 setGUICommandsForCurrentState();
 
@@ -543,15 +625,15 @@ public class GUIBrain {
                     compileinfo = control.compileLine();
                 } catch (TTK91CompileException e) {
                     /* This section is executed if an error occured during compilation. First
-                       we preset errorLine and phase to what they would be, if there hasn't
-                       been any compileinfo before.
-                    */
+                     * we preset errorLine and phase to what they would be, if there hasn't
+                     * been any compileinfo before.
+                     */
                     int errorLine = 0;
                     phase = CompileInfo.FIRST_ROUND;
 
                     /* Then we check if there has been some compileinfos before and set errorLine
-                       and phase accordingly if positive.
-                    */
+                     * and phase accordingly if positive.
+                     */
                     if (compileinfo != null) {
                         errorLine = compileinfo.getLineNumber() + 1;
                         phase = compileinfo.getPhase();
@@ -591,65 +673,13 @@ public class GUIBrain {
                     compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
                     phase = compileinfo.getPhase();
 
-                    if (phase == CompileInfo.FIRST_ROUND) {
-                        if (compileinfo.getSymbolFound()) {
-                            String symbolName = compileinfo.getSymbolName();
-                            Integer symbolValue = null;
-                            if (compileinfo.getSymbolDefined()) {
-                                symbolValue = new Integer(compileinfo.getSymbolValue());
-                            }
-                            gui.updateRowInSymbolTable(symbolName, symbolValue);
-                        }
-                        if (compileinfo.getLabelFound()) {
-                            String symbolName = compileinfo.getLabelName();
-                            Integer symbolValue = new Integer(compileinfo.getLabelValue());
-                            gui.updateRowInSymbolTable(symbolName, symbolValue);
-                        }
-
-                        gui.selectLine(compileinfo.getLineNumber(), GUI.CODE_TABLE);
-                    } else if (phase == CompileInfo.FINALIZING_FIRST_ROUND) {
-                        String[][] symbolTable = compileinfo.getSymbolTable();
-                        if (symbolTable != null) {
-                            for (int i = 0; i < symbolTable.length; i++) {
-                                String symbolName = symbolTable[i][0];
-                                Integer symbolValue = null;
-                                try {
-                                    symbolValue = new Integer(symbolTable[i][1]);
-                                } catch (NumberFormatException e) {
-                                }
-                                gui.updateRowInSymbolTable(symbolName, symbolValue);
-                            }
-                        }
-
-                        String[] newInstructionsContents = compileinfo.getInstructions();
-                        String[] newDataContents = compileinfo.getData();
-                        gui.insertToInstructionsTable(newInstructionsContents);
-                        gui.insertToDataTable(newDataContents);
-                        gui.setGUIView(3);
-
-                    } else if (phase == CompileInfo.SECOND_ROUND) {
-                        int line = compileinfo.getLineNumber();
-                        int binary = compileinfo.getLineBinary();
-                        gui.updateInstructionsAndDataTableLine(line, binary);
-                        gui.selectLine(compileinfo.getLineNumber(), GUI.INSTRUCTIONS_AND_DATA_TABLE);
-                    }
-
-                    gui.repaint();
-
                     if (((compilemode & PAUSED) != 0) && !comments.equals("") && noPauses == false) {
                         currentState = K91_PAUSED;
                         setGUICommandsForCurrentState();
                         waitForContinueTask();
-                    } else {
-                        try {
-                            lock.wait(SLOWDOWN + 1); // Add 1 to avoid the special meaning of 0.
-                        } catch (InterruptedException e) {
-                            System.out.println("InterruptedException in menuRun()");
-                        }
                     }
                 }
-
-            } while (interruptSent == false); // End of do-loop
+            } while (interruptSent == false);
 
             if (currentState == INTERRUPTED_WITH_PAUSE) {
                 setGUICommandsForCurrentState();
@@ -699,10 +729,11 @@ public class GUIBrain {
         interruptCurrentTasks(true);
         synchronized (lock) {
 
-            /* If there's no other thread running, then waiting for continueTask would
-               be futile, since no one will ever notify this method to continue exectution.
-               Actually, running waitForContinueTask() would mean dead lock then.
-            */
+            /* If there's no other thread running, then waiting for continueTask
+             * would be futile, since no one will ever notify this method to
+             * continue execution. Actually, running waitForContinueTask()
+             * would mean dead lock then.
+             */
             if (threadRunning == true) {
                 waitForContinueTask();
             }
@@ -726,6 +757,9 @@ public class GUIBrain {
             currentState = NONE;
             setGUICommandsForCurrentState();
             display.setMem(control.getPhysicalMemory());
+
+            /* Clear all breakpoints */
+            breakpoints.clear();
         }//lock
     }
 
@@ -745,9 +779,8 @@ public class GUIBrain {
      *                 from getAvailableLanguages() method.
      */
     public void menuSetLanguage(String language) {
-
         if (availableLanguages.containsKey(language)) {
-            Translator.setLocale((Locale) availableLanguages.get(language));
+            Translator.setLocale(availableLanguages.get(language));
             currentSettings.setValue(Settings.UI_LANGUAGE, language);
             saveSettings();
             gui.updateAllTexts();
@@ -756,14 +789,13 @@ public class GUIBrain {
 
 
     /**
-     * This method correspods as well to the menu option Option -> Set language.
+     * This method corresponds as well to the menu option Option -> Set language.
      * This version is called, if user has chosen an external language file.
      *
      * @param languageFile The language file. This must be class-file that
      *                     extends ListResourceBundle.
      */
     public void menuSetLanguage(File languageFile) {
-
         if (languageFile.exists()) {
             try {
                 Translator.setLocale(Locale.CHINESE, control.loadLanguageFile(languageFile));
@@ -772,8 +804,6 @@ public class GUIBrain {
                 System.out.println(e.getMessage());
                 return;
             }
-            //currentSettings.setValue(Settings.UI_LANGUAGE, language);
-            //control.saveSettings(currentSettings.toString(), settingsFile);
             gui.updateAllTexts();
         }
     }
@@ -850,18 +880,21 @@ public class GUIBrain {
      */
     public void refreshRunningOptions() {
         int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
-        gui.setSelected(GUI.OPTION_RUNNING_PAUSED, (runmode & PAUSED) != 0);
-        gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, (runmode & COMMENTED) != 0);
-        gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, (runmode & ANIMATED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_paused, (runmode & PAUSED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_commented, (runmode & COMMENTED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_animated, (runmode & ANIMATED) != 0);
+        gui.setSelected(GUI.GUIOptions.running_turbo, (runmode & TURBO) != 0);
+        gui.setSelected(GUI.GUIOptions.running_breakpoints, (runmode & BREAKPOINTS) != 0);
     }
 
     public void menuSetRunningOption(int option, boolean b) {
         int runmode = currentSettings.getIntValue(Settings.RUN_MODE);
         boolean adjustAnimationOff = false, adjustLineByLineOn = false;
 
-        // First, update running mode. If the option LINE_BY_LINE was turned
-        // off, turn ANIMATED off. If the option ANIMATED was turned on,
-        // turn LINE_BY_LINE on.
+        /* First, update running mode. If the option LINE_BY_LINE was turned
+         * off, turn ANIMATED off. If the option ANIMATED was turned on,
+         * turn LINE_BY_LINE on.
+         */
         if (((runmode & option) != 0) == b) {
             // do nothing
         } else if ((runmode & option) != 0) {
@@ -882,33 +915,39 @@ public class GUIBrain {
         saveSettings();
 
         switch (option) {
-            case LINE_BY_LINE: // Synonym for case PAUSED:
-                gui.setSelected(GUI.OPTION_RUNNING_PAUSED, b);
-                break;
-            case COMMENTED:
-                gui.setSelected(GUI.OPTION_RUNNING_COMMENTED, b);
-                break;
-            case ANIMATED:
-                gui.setSelected(GUI.OPTION_RUNNING_ANIMATED, b);
-                if (b == true && (currentState == B91_RUNNING
-                        || currentState == B91_PAUSED
-                        || currentState == B91_WAIT_FOR_KBD)) {
-                    gui.showAnimator();
-                } else {
-                    gui.hideAnimator();
-                }
-                break;
+        case LINE_BY_LINE: // Synonym for case PAUSED:
+            gui.setSelected(GUI.GUIOptions.compiling_paused, b);
+            break;
+        case COMMENTED:
+            gui.setSelected(GUI.GUIOptions.running_commented, b);
+            break;
+        case ANIMATED:
+            gui.setSelected(GUI.GUIOptions.running_animated, b);
+            if (b == true && (currentState == B91_RUNNING
+                    || currentState == B91_PAUSED
+                    || currentState == B91_WAIT_FOR_KBD)) {
+                gui.showAnimator();
+            } else {
+                gui.hideAnimator();
+            }
+            break;
+        case TURBO:
+        	gui.setSelected(GUI.GUIOptions.running_turbo, b);
+        	break;
+        case BREAKPOINTS:
+        	gui.setSelected(GUI.GUIOptions.running_breakpoints, b);
+        	break;
         }
-        // Finally, we repeat the process to a) turn animation off if line-by-line
-        // running was turned off, and b) turn line-by-line running on if animation
-        // was turned on. Note the lack of infinite looping which we are proud of.
+        /* Finally, we repeat the process to a) turn animation off if line-by-line
+         * running was turned off, and b) turn line-by-line running on if animation
+         * was turned on. Note the lack of infinite looping which we are proud of.
+         */
         if (adjustAnimationOff) {
             menuSetRunningOption(ANIMATED, false);
         }
         if (adjustLineByLineOn) {
             menuSetRunningOption(LINE_BY_LINE, true);
         }
-
     }
 
 
@@ -918,8 +957,8 @@ public class GUIBrain {
      */
     public void refreshCompilingOptions() {
         int compilemode = currentSettings.getIntValue(Settings.COMPILE_MODE);
-        gui.setSelected(GUI.OPTION_COMPILING_PAUSED, (compilemode & PAUSED) != 0);
-        gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, (compilemode & COMMENTED) != 0);
+        gui.setSelected(GUI.GUIOptions.compiling_paused, (compilemode & PAUSED) != 0);
+        gui.setSelected(GUI.GUIOptions.compiling_commented, (compilemode & COMMENTED) != 0);
     }
 
 
@@ -942,20 +981,12 @@ public class GUIBrain {
 
         switch (option) {
             case PAUSED:
-                gui.setSelected(GUI.OPTION_COMPILING_PAUSED, b);
+                gui.setSelected(GUI.GUIOptions.compiling_paused, b);
                 break;
             case COMMENTED:
-                gui.setSelected(GUI.OPTION_COMPILING_COMMENTED, b);
+                gui.setSelected(GUI.GUIOptions.compiling_commented, b);
                 break;
         }
-    }
-
-
-    public void menuAbout() {
-    }
-
-
-    public void menuManual() {
     }
 
 
@@ -1008,6 +1039,7 @@ public class GUIBrain {
         synchronized (lock) {
             lock.notify();
         }
+
         return;
     }
 
@@ -1022,6 +1054,7 @@ public class GUIBrain {
         synchronized (lock) {
             lock.notify();
         }
+
         return;
     }
 
@@ -1033,7 +1066,6 @@ public class GUIBrain {
      * in a thread of its own. eg. by calling new GUIThreader()
      */
     public void waitForContinueTask() {
-
         synchronized (lock) {
             try {
                 lock.wait();
@@ -1041,6 +1073,7 @@ public class GUIBrain {
                 System.out.println("InterruptedException");
             }
         }
+
         return;
     }
 
@@ -1242,17 +1275,18 @@ public class GUIBrain {
             gui.updateReg(GUI.SP, loadinfo.getSP());
             gui.updateReg(GUI.FP, loadinfo.getFP());
 
-            String[][] symbolsAndValues = loadinfo.getSymbolTable();
+            String[][] symbolsAndValues = loadinfo.getSymbolTable(valueBase);
             gui.insertSymbolTable(symbolsAndValues);
 
             int instructionsBinary[] = loadinfo.getBinaryCommands();
             String instructionsSymbolic[] = loadinfo.getSymbolicCommands();
 
             int dataBinary[] = loadinfo.getData(); // Full memory excepting code area.
-            // The symbolic data depends on two things: The Loader should add
-            // symbolic versions of the initial data area, and the RandomAccessMemory
-            // should add NOPs on 0 lines. The latter does not currently happen,
-            // but can be changed if it is deemed better.
+            /* The symbolic data depends on two things: The Loader should add
+             * symbolic versions of the initial data area, and the
+             * RandomAccessMemory should add NOPs on 0 lines. The latter does
+             * not currently happen, but can be changed if it is deemed better.
+             */
             String dataSymbolic[];
             // Only show symbolic forms of the initial data area, not below it?
             if (GUIBrain.ENABLE_DATA_AREA_MARKUP) {
@@ -1366,10 +1400,10 @@ public class GUIBrain {
             String[] languageFileRow = languageFileContents.split("\n|\r|\r\n");
 
             /* Split each row of language.cfg into separate strings and
-               tokenize these strings by a colon. If there are two or three
-               tokens on each row, then everything goes well. Otherwise
-               the language.cfg is not a proper language file for this program.
-            */
+             * tokenize these strings by a colon. If there are two or three
+             * tokens on each row, then everything goes well. Otherwise
+             * the language.cfg is not a proper language file for this program.
+             */
             for (int i = 0; i < languageFileRow.length; i++) {
                 String[] token = languageFileRow[i].split("=");
                 if (token.length != 2) {

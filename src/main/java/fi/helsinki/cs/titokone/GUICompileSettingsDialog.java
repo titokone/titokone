@@ -11,7 +11,11 @@ import java.awt.*;
 
 public class GUICompileSettingsDialog extends GUISettingsDialog {
 
-    public JCheckBox lineByLineCheckBox;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -9056188206733221429L;
+	public JCheckBox lineByLineCheckBox;
     public JCheckBox showCommentsCheckBox;
 
     public static String APPLY = "GUICompileSettingsDialog_Apply";

@@ -10,7 +10,6 @@ import java.util.ListResourceBundle;
 /**
  * This class is the stub tester for the Translator class.
  */
-@SuppressWarnings("UnusedDeclaration")
 public class StubTranslations_fi extends ListResourceBundle {
 
     private final String[][] contents = {

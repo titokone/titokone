@@ -11,7 +11,12 @@ package fi.helsinki.cs.ttk91;
  */
 public class TTK91ExecutionOverrun extends TTK91RuntimeException {
 
-    public TTK91ExecutionOverrun(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6601519372758412513L;
+
+	public TTK91ExecutionOverrun(String message) {
         super(message);
     }
 

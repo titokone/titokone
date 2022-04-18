@@ -5,10 +5,11 @@
 
 package fi.helsinki.cs.titokone;
 
+import java.util.HashMap;
+import java.util.Vector;
+
 import fi.helsinki.cs.titokone.devices.DeviceNames;
 import fi.helsinki.cs.ttk91.TTK91CompileException;
-
-import java.util.*;
 
 /**
  * This class knows everything about the relation between symbolic
@@ -41,13 +42,6 @@ public class Compiler {
      * This field tells the next line to be checked.
      */
     private int nextLine;
-
-    /**
-     * This field holds all the valid symbols on a label.
-     */
-    private final String VALIDLABELCHARS = "0123456789abcdefghijklmnopqrstuvwxyzåäö_";
-    private final int NOTVALID = -1;
-    private final int EMPTY = -1;
 
     /**
      * Maximum value of the EQU and DC.
@@ -84,12 +78,6 @@ public class Compiler {
      * by compileLine().
      */
     private boolean firstRound;
-
-    /**
-     * This field counts the number of actual command lines found
-     * during the first round.
-     */
-    private int commandLineCount;
 
     /**
      * This array contains the code.  During the first round this
@@ -211,7 +199,6 @@ public class Compiler {
      *                               is finished.
      */
     public CompileInfo compileLine() throws TTK91CompileException {
-
         CompileInfo info;
 
         if (firstRound) {
@@ -232,7 +219,7 @@ public class Compiler {
                 return null;
             } else {
                 compileDebugger.secondPhase(nextLine, source[nextLine]);
-                info = secondRoundProcess((String) code.get(nextLine));
+                info = secondRoundProcess(code.get(nextLine));
                 ++nextLine;
                 return info;
             }
@@ -257,7 +244,7 @@ public class Compiler {
             int symbolValue;
 
             for (int i = 0; i < symbolTable.size(); ++i) {
-                tempSTLine = (String[]) symbolTable.get(i);
+                tempSTLine = symbolTable.get(i);
                 symbolName = tempSTLine[0];
                 symbolValue = Integer.parseInt(tempSTLine[1]);
                 st.addSymbol(symbolName, symbolValue);
@@ -323,7 +310,6 @@ public class Compiler {
      */
     private CompileInfo firstRoundProcess(String line) throws TTK91CompileException {
         String[] lineTemp;
-        boolean nothingFound = true;
         String comment = "";
         String[] commentParameters;
         int intValue = 0;
@@ -333,17 +319,13 @@ public class Compiler {
 
         compileDebugger.setStatusMessage(new Message("First round of compilation.").toString());
 
-        /*
-                    The method first tries to parse a compilercommand (equ, dc, ds, def) from the line. If
-                    succesfull then Check whether name is valid and value correct.
-                    */
+        /* The method first tries to parse a compilercommand (equ, dc, ds, def)
+         * from the line. If successful then Check whether name is valid and
+         * value correct.
+         */
         try {
 
             lineTemp = parseCompilerCommandLine(line);
-
-            // compiler command
-            boolean allCharsValid = true;
-            boolean atLeastOneNonNumber = false;
 
             if (invalidLabels.containsKey(lineTemp[0])) {
                 // not a valid label
@@ -400,7 +382,7 @@ public class Compiler {
                     if (symbols.containsKey(lineTemp[0])) {
                         symbolTableEntry[0] = lineTemp[0];
                         symbolTableEntry[1] = lineTemp[2];
-                        symbolTable.set(((Integer) symbols.get(lineTemp[0])).intValue(),
+                        symbolTable.set(symbols.get(lineTemp[0]).intValue(),
                                 symbolTableEntry.clone());
                     } else {
                         symbols.put(lineTemp[0], new Integer(symbolTable.size()));
@@ -436,7 +418,7 @@ public class Compiler {
                         symbolTableEntry[0] = lineTemp[0];
                         symbolTableEntry[1] = lineTemp[1] + " " +
                                 lineTemp[2];
-                        symbolTable.set(((Integer) symbols.get(lineTemp[0])).intValue(),
+                        symbolTable.set(symbols.get(lineTemp[0]).intValue(),
                                 symbolTableEntry.clone()
                         );
 
@@ -454,7 +436,6 @@ public class Compiler {
                 }
 
                 if (lineTemp[1].equals("dc")) {
-
                     compileDebugger.foundDC(lineTemp[0]);
 
                     if (symbols.containsKey(lineTemp[0])) {
@@ -462,7 +443,7 @@ public class Compiler {
                         symbolTableEntry[0] = lineTemp[0];
                         symbolTableEntry[1] = lineTemp[1] + " " +
                                 lineTemp[2];
-                        symbolTable.set(((Integer) symbols.get(lineTemp[0])).intValue(),
+                        symbolTable.set(symbols.get(lineTemp[0]).intValue(),
                                 symbolTableEntry.clone());
 
                     } else {
@@ -503,16 +484,19 @@ public class Compiler {
                 }
             }
         } catch (TTK91CompileException e) {
-            /*
-                            This means that line is not a valid compiler command. Now we try to parse a valid ttk91-command
-                            from it. ParseLine return line as an array with label in position 0, opcode in 1, first register in
-                            2, addressingmode in 3, address in 4 and other register in position 5.
-
-                            However that is not all there is to it. Once a label is introduced it becomes unusable and
-                            cannot be defined twice, and address part must be within the limits.
-
-                            Address can be either a variable or a number and that must be noticed also.
-                            */
+            /* This means that line is not a valid compiler command. Now we try
+             * to parse a valid ttk91-command from it. ParseLine return line as
+             * an array with label in position 0, opcode in 1, first register in
+             * 2, addressingmode in 3, address in 4 and other register in
+             * position 5.
+             *
+             * However that is not all there is to it. Once a label is
+             * introduced it becomes unusable and cannot be defined twice, and
+             * address part must be within the limits.
+             *
+             * Address can be either a variable or a number and that must be
+             * noticed also.
+             */
 
             lineTemp = parseLine(line);
 
@@ -522,7 +506,6 @@ public class Compiler {
             } else {
                 code.add(line);
                 if (!lineTemp[0].equals("")) {
-                    nothingFound = false;
                     labelFound = true;
                     // label found
 
@@ -535,15 +518,13 @@ public class Compiler {
 
                         if (symbols.containsKey(lineTemp[0])) {
                             symbolTableEntry[0] = lineTemp[0];
-                            symbolTableEntry[1] = "" +
-                                    (code.size() - 1);
-                            symbolTable.set(((Integer) symbols.get(lineTemp[0])).intValue(),
+                            symbolTableEntry[1] = String.valueOf(code.size() - 1);
+                            symbolTable.set(symbols.get(lineTemp[0]).intValue(),
                                     symbolTableEntry.clone());
                         } else {
                             symbols.put(lineTemp[0], new Integer(symbolTable.size()));
                             symbolTableEntry[0] = lineTemp[0];
-                            symbolTableEntry[1] = "" +
-                                    (code.size() - 1);
+                            symbolTableEntry[1] = String.valueOf(code.size() - 1);
                             symbolTable.add(symbolTableEntry.clone());
                         }
 
@@ -559,7 +540,6 @@ public class Compiler {
                 } catch (NumberFormatException ne) {
                     // variable used
                     if (symbolicInterpreter.getRegisterId(lineTemp[4]) == -1) {
-                        nothingFound = false;
                         variableUsed = true;
                         compileDebugger.foundSymbol(lineTemp[4]);
                         if (!symbols.containsKey(lineTemp[4])) {
@@ -574,8 +554,8 @@ public class Compiler {
                                 symbols.put(lineTemp[4],
                                         new Integer(symbolTable.size()));
                                 symbolTableEntry[0] = lineTemp[4];
-                                symbolTableEntry[1] = "" +
-                                        (Integer) invalidLabels.get(lineTemp[4]);
+                                symbolTableEntry[1] = String.valueOf(
+                                        invalidLabels.get(lineTemp[4]));
                                 symbolTable.add(symbolTableEntry.clone());
                             }
                         }
@@ -628,7 +608,7 @@ public class Compiler {
 
         String[] newCode = new String[code.size()];
         for (int i = 0; i < newCode.length; ++i) {
-            newCode[i] = (String) code.get(i);
+            newCode[i] = code.get(i);
         }
 
         String[] lineTemp;
@@ -640,7 +620,7 @@ public class Compiler {
                 "Initializing the second  round of compilation.").toString());
 
         for (int i = 0; i < symbolTable.size(); ++i) {
-            lineTemp = (String[]) symbolTable.get(i);
+            lineTemp = symbolTable.get(i);
             if (lineTemp[1].trim().length() >= 2) {
                 if (lineTemp[1].substring(0, 2).equalsIgnoreCase("ds")) {
                     dataAreaSize += Integer.parseInt(lineTemp[1].substring(3));
@@ -664,12 +644,12 @@ public class Compiler {
 
         // update variable values to symbolTable
         for (int i = 0; i < symbolTable.size(); ++i) {
-            lineTemp = (String[]) symbolTable.get(i);
+            lineTemp = symbolTable.get(i);
             if (lineTemp[1].trim().length() >= 2) {
                 if (lineTemp[1].substring(0, 2).equalsIgnoreCase("ds")) {
                     dsValue = Integer.parseInt(lineTemp[1].substring(3));
                     newSymbolTableLine[0] = lineTemp[0];
-                    newSymbolTableLine[1] = "" + nextMemorySlot;
+                    newSymbolTableLine[1] = String.valueOf(nextMemorySlot);
                     symbolTable.set(i, newSymbolTableLine.clone());
 
                     // Allaolevat rivit puukotti Jari S. 12.11.2005, sillä
@@ -680,7 +660,7 @@ public class Compiler {
                     nextMemorySlot += dsValue;
 
                     for (int j = 0; j < dsValue; ++j) {
-                        data[j + nextPosition] = "" + 0;
+                        data[j + nextPosition] = String.valueOf(0);
                     }
                     nextPosition += dsValue;
                 } else {
@@ -688,10 +668,10 @@ public class Compiler {
                         if (lineTemp[1].trim().length() > 2) {
                             data[nextPosition] = lineTemp[1].substring(3);
                         } else {
-                            data[nextPosition] = "" + 0;
+                            data[nextPosition] = String.valueOf(0);
                         }
                         newSymbolTableLine[0] = lineTemp[0];
-                        newSymbolTableLine[1] = "" + nextMemorySlot;
+                        newSymbolTableLine[1] = String.valueOf(nextMemorySlot);
                         symbolTable.set(i, newSymbolTableLine.clone());
                         ++nextMemorySlot;
                         ++nextPosition;
@@ -703,7 +683,7 @@ public class Compiler {
         // make new SymbolTable
         String[][] newSymbolTable = new String[symbolTable.size()][2];
         for (int i = 0; i < newSymbolTable.length; ++i) {
-            newSymbolTable[i] = (String[]) symbolTable.get(i);
+            newSymbolTable[i] = symbolTable.get(i);
         }
 
         // prepare for the second round.
@@ -711,7 +691,6 @@ public class Compiler {
 
         compileDebugger.finalFirstPhase(newCode, data, newSymbolTable);
         return compileDebugger.lineCompiled();
-
     }
 
     /**
@@ -736,16 +715,16 @@ public class Compiler {
         String[] lineTemp = parseLine(line);
         if (!lineTemp[4].equals("")) {
             try {
-                address = "" + Integer.parseInt(lineTemp[4]);
+                address = String.valueOf(Integer.parseInt(lineTemp[4]));
             } catch (NumberFormatException e) {
-                Object tempObject = symbolTable.get((((Integer) symbols.get(lineTemp[4]))).intValue());
+                Object tempObject = symbolTable.get(((symbols.get(lineTemp[4]))).intValue());
                 symbolTableEntry = (String[]) tempObject;
                 if (symbolTableEntry[1].equals("")) {
                     String missing = lineTemp[4];
                     comment = new Message("Missing referred label {0}", missing).toString();
                     throw new TTK91CompileException(comment);
                 }
-                address = (String) symbolTableEntry[1];
+                address = symbolTableEntry[1];
             }
         }
 
@@ -760,7 +739,7 @@ public class Compiler {
         codeMemoryLines[nextLine] = new MemoryLine(lineAsBinary, line);
 
         String binaryByPositions = new Instruction(lineAsBinary).toColonString();
-        String[] commentParameters = {line, "" + lineAsBinary, binaryByPositions};
+        String[] commentParameters = {line, String.valueOf(lineAsBinary), binaryByPositions};
         comment = new Message("{0} --> {1} ({2}) ", commentParameters).toString();
         compileDebugger.setComment(comment);
 
@@ -781,12 +760,11 @@ public class Compiler {
         String secondRegister = "";
         String address = "";
 
-        String comment;                // for exception
+        String comment;			// for exception
 
         String[] parsedLine;
         String wordTemp = "";
-        int nextToCheck = 0;        // for looping out the spacing
-        int fieldEnd = 0;        // searches the end of a field (' ', ',')
+        int fieldEnd = 0;		// searches the end of a field (' ', ',')
         boolean spaceBetweenMemorymodeAndAddress = false;
 
 
@@ -807,7 +785,6 @@ public class Compiler {
             }
             return parsedLine;
         }
-
 
         String[] lineAsArray = symbolicOpcode.split("[ \t,]+");
         int lineAsArrayIndex = 0;
@@ -844,7 +821,7 @@ public class Compiler {
             throw new TTK91CompileException(comment);
         }
 
-        /*first register*/
+        /* first register */
         if (lineAsArrayIndex < lineAsArray.length) {
             // first register might end with a ','. Not when push Sp etc.
             if (lineAsArray[lineAsArrayIndex].charAt(
@@ -883,7 +860,7 @@ public class Compiler {
             if (lineAsArray[lineAsArrayIndex].charAt(0) == '=' ||
                     lineAsArray[lineAsArrayIndex].charAt(0) == '@') {
 
-                addressingMode = "" + lineAsArray[lineAsArrayIndex].charAt(0);
+                addressingMode = String.valueOf(lineAsArray[lineAsArrayIndex].charAt(0));
                 if (lineAsArray[lineAsArrayIndex].length() == 1) {
                     spaceBetweenMemorymodeAndAddress = true;
                     ++lineAsArrayIndex;
@@ -894,7 +871,7 @@ public class Compiler {
             }
         }
 
-        /*address and second register*/
+        /* address and second register */
         if (lineAsArrayIndex < lineAsArray.length) {
             if (lineAsArray[lineAsArrayIndex].indexOf("(") != -1) {
 
@@ -1003,7 +980,7 @@ public class Compiler {
                 }
             } else {
                 if (opcode.equalsIgnoreCase("nop")) {
-                    // (do nothing)
+                    /* No operation (do nothing) */
                 } else {
                     if (opcode.equalsIgnoreCase("pop")) {
                         if (addressingMode.equals("@") ||
@@ -1047,14 +1024,13 @@ public class Compiler {
             }
 
             /* This one checks the length of the address String because
-                            Integer.parseInt(100000000000000) throws an exception.*/
+             * Integer.parseInt(100000000000000) throws an exception.*/
             if (isANumber) {
-                if (address.length() > ("" + ADDRESSMIN).length() ||
+                if (address.length() > String.valueOf(ADDRESSMIN).length() ||
                         Integer.parseInt(address) > ADDRESSMAX ||
                         Integer.parseInt(address) < ADDRESSMIN) {
                     comment = new Message("Compilation failed: {0}",
-                            new Message(
-                                    "invalid address value.").toString()).toString();
+                            new Message("invalid address value.").toString()).toString();
                     throw new TTK91CompileException(comment);
                 }
             }
@@ -1122,7 +1098,7 @@ public class Compiler {
         int intValue;
         String[] parsedLine;
 
-        String comment;                // for exception
+        String comment; // for exception
 
         /* preprosessing */
         line = line.toLowerCase();
@@ -1229,15 +1205,15 @@ public class Compiler {
      *         otherwise.
      */
     private boolean validLabelName(String labelName) {
-        // It must have one non-number. Valid characters are A-Ö, 0-9 and _.
-        // Test 1: the word contains one or more of the following:
-        // a-z, A-Z, _, 0-9, åäö, ÅÄÖ, in any order.
-        // Test 2: the word also contains one non-number (class \D
-        // means anything but 0-9) surrounded by any number of
-        // any character. All these 'anything buts' and 'anys' are
-        // also valid characters, since we check that in Test 1.
-        if (labelName.matches("[åäöÅÄÖ\\w]+") &&
-                labelName.matches(".*\\D.*")) {
+        /* It must have one non-number. Valid characters are A-Ö, 0-9 and _.
+         * Test 1: the word contains one or more of the following:
+         * a-z, A-Z, _, 0-9, åäö, ÅÄÖ, in any order.
+         * Test 2: the word also contains one non-number (class \D
+         * means anything but 0-9) surrounded by any number of
+         * any character. All these 'anything buts' and 'anys' are
+         * also valid characters, since we check that in Test 1.
+    	 */
+        if (labelName.matches("[åäöÅÄÖ\\w]+") && labelName.matches(".*\\D.*")) {
             return true;
         }
         return false;

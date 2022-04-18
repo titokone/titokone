@@ -4,9 +4,11 @@
 // The license text is at http://www.gnu.org/licenses/lgpl-2.1.html
 package fi.helsinki.cs.titokone;
 
-import fi.helsinki.cs.ttk91.*;
-
 import java.util.logging.Logger;
+
+import fi.helsinki.cs.ttk91.TTK91Application;
+import fi.helsinki.cs.ttk91.TTK91NoKbdData;
+import fi.helsinki.cs.ttk91.TTK91NoStdInData;
 
 /**
  * This class represents a compiled TTK-91-application. It also contains
@@ -117,7 +119,7 @@ public class Application implements TTK91Application {
      *         no code area.
      */
     public MemoryLine[] getCode() {
-        return (MemoryLine[]) code.clone();
+        return code.clone();
     }
 
     /**
@@ -132,7 +134,7 @@ public class Application implements TTK91Application {
      *         no initial data area.
      */
     public MemoryLine[] getInitialData() {
-        return (MemoryLine[]) initialData.clone();
+        return initialData.clone();
     }
 
     /**
@@ -154,7 +156,7 @@ public class Application implements TTK91Application {
      * @param line A new line to "write to the screen".
      */
     public void writeToCrt(int line) {
-        crt += "" + line + System.getProperty("line.separator", "\n");
+        crt += String.valueOf(line) + System.getProperty("line.separator", "\n");
     }
 
     /**
@@ -165,7 +167,7 @@ public class Application implements TTK91Application {
      * @param line A new line to "write to the file".
      */
     public void writeToStdOut(int line) {
-        stdout += "" + line + System.getProperty("line.separator", "\n");
+        stdout += String.valueOf(line) + System.getProperty("line.separator", "\n");
     }
 
     /**
@@ -182,7 +184,7 @@ public class Application implements TTK91Application {
      */
     public int readNextFromKbd() throws TTK91NoKbdData {
         Logger logger;
-        String[] messageParams = {"" + kbdpointer, "" + kbdcontent.length};
+        String[] messageParams = {String.valueOf(kbdpointer), String.valueOf(kbdcontent.length)};
 
         if (kbdpointer >= kbdcontent.length) {
             logger = Logger.getLogger(this.getClass().getPackage().getName());
@@ -212,8 +214,8 @@ public class Application implements TTK91Application {
      */
     public int readNextFromStdIn() throws TTK91NoStdInData {
         Logger logger;
-        String[] messageParams = {"" + stdinpointer,
-                "" + stdincontent.length};
+        String[] messageParams = {String.valueOf(stdinpointer),
+                String.valueOf(stdincontent.length)};
         if (stdinpointer >= stdincontent.length) {
             logger = Logger.getLogger(this.getClass().getPackage().getName());
             logger.fine(new Message("Application has no more stdin data, read: " +
@@ -260,7 +262,8 @@ public class Application implements TTK91Application {
      * @return What the application printed to a file during its last run,
      *         delimited with System.getProperty("line.separator", "\n").
      */
-    public String readStdOut() {
+    @Override
+	public String readStdOut() {
         String result = stdout;
         stdout = "";
         return result;
@@ -273,7 +276,8 @@ public class Application implements TTK91Application {
      * @return What the application printed to screen during its last
      *         run, delimited with System.getProperty("line.separator", "\n").
      */
-    public String readCrt() {
+    @Override
+	public String readCrt() {
         String result = crt;
         crt = "";
         return result;
@@ -289,7 +293,8 @@ public class Application implements TTK91Application {
      *              thereof.
      * @throws IllegalArgumentException If the input string is not valid.
      */
-    public void setKbd(String input) {
+    @Override
+	public void setKbd(String input) {
         String errorMessage;
         String[] logMessageParams = {input, ""};
         String[] pieces;
@@ -308,7 +313,7 @@ public class Application implements TTK91Application {
                 kbdcontent[i] = Integer.parseInt(pieces[i]);
             }
             logger = Logger.getLogger(this.getClass().getPackage().getName());
-            logMessageParams[1] = "" + kbdcontent.length;
+            logMessageParams[1] = String.valueOf(kbdcontent.length);
             logger.fine(new Message("Accepted \"{0}\" as keyboard input, " +
                     "tokens found: {1}.",
                     logMessageParams).toString());
@@ -325,7 +330,8 @@ public class Application implements TTK91Application {
      *              ' ', ',', '.', ':', ';' or any-length combination thereof.
      * @throws IllegalArgumentException If the input string is not valid.
      */
-    public void setStdIn(String input) {
+    @Override
+	public void setStdIn(String input) {
         String errorMessage;
         String[] logMessageParams = {input, ""};
         String[] pieces;
@@ -344,7 +350,7 @@ public class Application implements TTK91Application {
                 stdincontent[i] = Integer.parseInt(pieces[i]);
             }
             logger = Logger.getLogger(this.getClass().getPackage().getName());
-            logMessageParams[1] = "" + stdincontent.length;
+            logMessageParams[1] = String.valueOf(stdincontent.length);
             logger.fine(new Message("Accepted \"{0}\" as stdin input, " +
                     "tokens found: {1}.",
                     logMessageParams).toString());

@@ -53,6 +53,8 @@ public abstract class VIC
                 case SetMode:
                     d.setMode(value);
                     break;
+			default:
+				break;
             }
             state = State.Normal;
             return;

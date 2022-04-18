@@ -12,7 +12,12 @@ package fi.helsinki.cs.ttk91;
  * See separate documentation in yhteisapi.pdf in the javadoc root.
  */
 public class TTK91InvalidDevice extends TTK91RuntimeException {
-    public TTK91InvalidDevice(String message) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 5199333463071028191L;
+
+	public TTK91InvalidDevice(String message) {
         super(message);
     }
 }

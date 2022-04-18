@@ -5,7 +5,15 @@
 
 package fi.helsinki.cs.titokone;
 
-import java.util.logging.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 
 /**
  * This class is just a launcher for the actual program. It creates an instance
@@ -18,45 +26,81 @@ public class Titokone {
      * parameter is given to the application.
      */
     public static final int INVALID_PARAMETER = -1;
-
-
     private static final String PACKAGE = "fi.helsinki.cs.titokone";
 
     public static void main(String[] args) {
         Logger myLogger = Logger.getLogger(PACKAGE);
-        GUI gui;
 
         myLogger.setLevel(Level.WARNING); // By default we only show warnings.
 
-        for (int i = 0; i < args.length; i++) {
-            handleParameter(args[i]);
-        }
-        gui = new GUI();
+		Namespace ns = null;
+
+		ArgumentParser parser = ArgumentParsers.newArgumentParser("Titokone")
+				.defaultHelp(true)
+				.description("A TTK-91 machine language simulator.");
+		parser.addArgument("file")
+				.nargs("?")	// input file is optional
+				.help("file to open");
+		parser.addArgument("-v", "--verbosity")
+				.choices("info", "fine", "finer").setDefault("info")
+				.help("Specify verbosity level");
+
+		try {
+			ns = parser.parseArgs(args);
+		} catch (ArgumentParserException e) {
+			parser.handleError(e);
+			System.exit(INVALID_PARAMETER);
+		}
+
+        GUI gui = new GUI();
+
+		handleParameters(ns, gui);
+		
+        try {
+			gui.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+			System.exit(-2);
+		}
+
+		handleFileParameter(ns.getString("file"), gui);
+
     }
 
-    private static void handleParameter(String parameter) {
+	private static void handleFileParameter(String filepath, GUI gui) {
+		if (filepath == null) {
+			return;
+		}
+
+		File codefile = new File(filepath);
+		gui.guibrain.menuOpenFile(codefile);
+	}
+
+    private static void handleParameters(Namespace ns, GUI gui) {
+		String verbosity = ns.getString("verbosity");
+		String filepath = ns.getString("file");
         Logger myLogger = Logger.getLogger(PACKAGE);
-        if (parameter.equals("-v")) {
+
+        if (verbosity.equals("info")) {
             myLogger.setLevel(Level.INFO);
-        } else if (parameter.equals("-vv")) {
+        } else if (verbosity.equals("fine")) {
             myLogger.setLevel(Level.FINE);
-        } else if (parameter.equals("-vvv")) {
+        } else if (verbosity.equals("finer")) {
             myLogger.setLevel(Level.FINER);
-        } else {
-            System.err.println("Sorry, parameter '" + parameter + "' is unknown.");
-            showAvailableParameters();
-            System.exit(INVALID_PARAMETER);
         }
 
-    }
+		if (filepath == null) {
+			return;
+		}
 
-    private static void showAvailableParameters() {
-        String lbrk = System.getProperty("line.separator");
-        System.err.println("Available parameters are:" + lbrk +
-                "-v\tShows 'info' level logging messages. (Default " +
-                "level is 'warning'.)" + lbrk +
-                "-vv\tShows 'fine' level logging messages." + lbrk +
-                "-vvv\tShows 'finer' level logging messages." + lbrk);
+		// check if the file exists before we start the GUI
+		// because otherwise the user would see the window open before
+		// program termination
+		File codefile = new File(filepath);
+		if (!codefile.exists()) {
+			System.err.println("Cannot find file " + filepath + "! Aborting...");
+			System.exit(INVALID_PARAMETER);
+		}
     }
 }
 
