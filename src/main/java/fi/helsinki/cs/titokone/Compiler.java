@@ -844,17 +844,6 @@ public class Compiler {
             }
         }
 
-
-        // Now supports addressing mode LOAD/STORE R1, (R2),
-        // which is equal to LOAD/STORE R1, 0(R2).
-        // 5.10.2004, Tom Bertell
-        if (lineAsArrayIndex < lineAsArray.length) {
-            if (lineAsArray[lineAsArrayIndex].charAt(0) == '(' &&
-                    (opcode.equalsIgnoreCase("store") || opcode.equalsIgnoreCase("load"))) {
-                lineAsArray[lineAsArrayIndex] = '0' + lineAsArray[lineAsArrayIndex];
-            }
-        }
-
         /* addressingMode */
         if (lineAsArrayIndex < lineAsArray.length) {
             if (lineAsArray[lineAsArrayIndex].charAt(0) == '=' ||
@@ -892,6 +881,12 @@ public class Compiler {
                                 addressingMode.length(),
                                 lineAsArray[lineAsArrayIndex].indexOf("(")
                         );
+                    }
+
+                    // if there was no address before parentheses, it's the same as having 0 there
+                    // LOAD R1, (R2)
+                    if (address.isEmpty()) {
+                        address = "0";
                     }
 
                     secondRegister = lineAsArray[lineAsArrayIndex].substring(
@@ -937,6 +932,13 @@ public class Compiler {
                                 lineAsArray[lineAsArrayIndex].indexOf("(") + 1,
                                 lineAsArray[lineAsArrayIndex].indexOf(")")
                         );
+
+                        if (symbolicInterpreter.getRegisterId(secondRegister) == -1) {
+                            comment = new Message("Compilation failed: {0}",
+                                    new Message("invalid register {0}.",
+                                            secondRegister).toString()).toString();
+                            throw new TTK91CompileException(comment);
+                        }
                     }
                 }
             }
