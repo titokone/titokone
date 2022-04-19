@@ -22,8 +22,8 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git://github.com/orfjackal/titokone.git</connection>
-        <url>https://github.com/orfjackal/titokone</url>
+        <connection>scm:git:git://github.com/titokone/titokone.git</connection>
+        <url>https://github.com/titokone/titokone</url>
         <tag>HEAD</tag>
     </scm>
 
