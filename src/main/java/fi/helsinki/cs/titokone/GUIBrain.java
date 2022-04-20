@@ -1100,15 +1100,15 @@ public class GUIBrain {
      * key, if they cannot be obtained from settingsFile.
      */
     private void getCurrentSettings() throws IOException {
-        String defaultStdinFile = System.getProperty("user.dir") + "/stdin";
-        String defaultStdinPath = "absolute";
-        String defaultStdoutFile = System.getProperty("user.dir") + "/stdout";
-        String defaultStdoutPath = "absolute";
-        String defaultStdoutUse = "overwrite";
+        String defaultStdinFile = "stdin";
+        String defaultStdinPath = "relative";
+        String defaultStdoutFile = "stdout";
+        String defaultStdoutPath = "relative";
+        String defaultStdoutUse = "append";
         int defaultMemorySize = Control.DEFAULT_MEMORY_SIZE;
         String defaultUILanguage = "English";
-        int defaultRunningMode = 0;
-        int defaultCompilingMode = 0;
+        int defaultRunningMode = 3;
+        int defaultCompilingMode = 1;
         boolean useDefaultSettings = false;
         InputStream defaultSettingsStream = null;
 
