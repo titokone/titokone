@@ -2239,8 +2239,8 @@ public class GUI extends JFrame implements ActionListener {
      */
     private int showOpenFileDialog() {
         generalFileDialog.setAcceptAllFileFilterUsed(false);
-        generalFileDialog.addChoosableFileFilter(B91FileFilter);
         generalFileDialog.addChoosableFileFilter(K91FileFilter);
+        generalFileDialog.addChoosableFileFilter(B91FileFilter);
         generalFileDialog.setDialogTitle(new Message("Open a new " +
                 "file").toString());
         return generalFileDialog.showOpenDialog(this);
