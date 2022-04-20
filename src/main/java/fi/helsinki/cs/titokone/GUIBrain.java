@@ -1107,7 +1107,7 @@ public class GUIBrain {
         String defaultStdoutUse = "append";
         int defaultMemorySize = Control.DEFAULT_MEMORY_SIZE;
         String defaultUILanguage = "English";
-        int defaultRunningMode = 3;
+        int defaultRunningMode = 19;
         int defaultCompilingMode = 1;
         boolean useDefaultSettings = false;
         InputStream defaultSettingsStream = null;
