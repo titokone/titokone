@@ -1109,6 +1109,7 @@ public class GUIBrain {
         String defaultUILanguage = "English";
         int defaultRunningMode = 19;
         int defaultCompilingMode = 1;
+        int defaultBaseNumber = 10;
         boolean useDefaultSettings = false;
         InputStream defaultSettingsStream = null;
 
@@ -1227,6 +1228,12 @@ public class GUIBrain {
             currentSettings.getIntValue(Settings.COMPILE_MODE);
         } catch (Exception e) {
             currentSettings.setValue(Settings.COMPILE_MODE, defaultCompilingMode);
+        }
+
+        try {
+            currentSettings.getIntValue(Settings.BASE);
+        } catch (Exception e) {
+            currentSettings.setValue(Settings.BASE, defaultBaseNumber);
         }
     }
 
