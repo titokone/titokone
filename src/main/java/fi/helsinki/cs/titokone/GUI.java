@@ -440,7 +440,7 @@ public class GUI extends JFrame implements ActionListener {
         this.setVisible(true);
 
         print("Setting title...");
-        setTitle("Titokone v1.310");
+        setTitle("Titokone v1.400");
 
         addWindowListener(new WindowAdapter() {
             @Override

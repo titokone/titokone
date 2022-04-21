@@ -1,3 +1,14 @@
+Muutosloki v1.400
+================
+Lisätty tuki kantaluvun vaihtamiselle
+Lisätty tuki breakpointeille
+Lisätty turbo-tila, jossa koodi suoritetaan nopeammin
+Lisätty käyttöjärjestelmän tekoa helpottavia ominaisuuksia, kuten keskeytykset ja uusia IO-laitteita
+Suorituksen aikana korostettuna näkyy nyt seuraava eikä edellinen käsky
+Paljon bugikorjauksia ja nopeutuksia
+
+(Tuupertunut, 21.4.2022)
+
 ================
 charmap
 20 high 32 wide chardisplay
@@ -269,7 +280,7 @@ Suorituksen alussa näkyvä data-alue ei näytä näitä alustuksia.
 Raportoikaa muut uudet piirteet/ongelmat minulle, kiitos.
 Teemu Kerola
 -----------------bugeja.. 
--display pitais piilottaa jos alle x muistia tai sitten pist�� se raa-asti
+-display pitais piilottaa jos alle x muistia tai sitten pist�� se raa-asti
  toleroimaan muistin puutetta
 
 Exception in thread "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: 2 >= 2
