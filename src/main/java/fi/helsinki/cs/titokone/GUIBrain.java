@@ -227,6 +227,8 @@ public class GUIBrain {
         	valueBase = ValueBase.DEC;
         }
 
+        gui.initRegTable();
+
         int memorysize = currentSettings.getIntValue(Settings.MEMORY_SIZE);
         if (memorysize != Control.DEFAULT_MEMORY_SIZE) {
             try {

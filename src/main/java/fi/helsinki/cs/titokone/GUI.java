@@ -547,6 +547,27 @@ public class GUI extends JFrame implements ActionListener {
     }
 
 
+    private static final int lineColumnSize = 50;
+    private static final int numericValueColumnSize = 100;
+    private static final int binaryLineColumnSize = 100;
+    private static final int binaryNumericValueColumnSize = 250;
+    private static final int cellMargin = 6;
+
+
+    public void initRegTable() {
+        String zero = valueBase.toString(0);
+        String[][] regTableContents = new String[][]
+                {{"R0", zero}, {"R1", zero}, {"R2", zero}, {"R3", zero}, {"R4", zero},
+                        {"R5", zero}, {"SP", zero}, {"FP", zero}, {"PC", zero}};
+
+        DefaultTableModel registersTableModel = (DefaultTableModel) registersTable.getModel();
+        registersTableModel.setDataVector(regTableContents, registersTableIdentifiers);
+        registersTable.getColumnModel().getColumn(0).setPreferredWidth(40);
+        registersTable.getColumnModel().getColumn(1).setPreferredWidth(valueBase == ValueBase.BIN ? binaryNumericValueColumnSize : numericValueColumnSize);
+        registersTableScrollPane.setPreferredSize(new Dimension((valueBase == ValueBase.BIN ? binaryNumericValueColumnSize : numericValueColumnSize) + 40, 150));
+    }
+
+
     /**
      * Updates a value of a register in registersTable.
      *
@@ -580,51 +601,6 @@ public class GUI extends JFrame implements ActionListener {
     }
 
 
-    private static final int lineColumnSize = 50;
-    private static final int numericValueColumnSize = 100;
-    private static final int cellMargin = 6;
-
-
-    /**
-     * Inserts data to instructionsTable. The data must be provided so that the
-     * dimension of both parameter is same. If they aren't, then false is
-     * returned and no insertion made. The second column will be filled with
-     * binaryCommand's contents and the third column with symbolicCommand's
-     * contents. The first column will contain line numbers which are 0...N,
-     * where N is size of the table.
-     *
-     * @param binaryCommand   Contents of the second column.
-     * @param symbolicCommand Contents of the third column.
-     * @return True if operation was successful.
-     *         False if the dimension of the parameters is not same.
-     */
-    public boolean insertToInstructionsTable(String[] binaryCommand, String[] symbolicCommand) {
-
-        if (binaryCommand.length != symbolicCommand.length) {
-            return false;
-        }
-        int rows = binaryCommand.length;
-        Object[][] tableContents = new Object[rows][3];
-        for (int i = 0; i < rows; i++) {
-            tableContents[i][0] = String.valueOf(i);
-            tableContents[i][1] = binaryCommand[i];
-            tableContents[i][2] = symbolicCommand[i];
-        }
-
-        DefaultTableModel instructionsTableModel = (DefaultTableModel) instructionsTable.getModel();
-        instructionsTableModel.setDataVector(tableContents, instructionsTableIdentifiers);
-        instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(lineColumnSize);
-        instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(numericValueColumnSize);
-        if (rows > 0) {
-            instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
-        } else {
-            instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(0);
-        }
-        //instructionsTable.validate();
-        return true;
-    }
-
-
     /**
      * Functionality of this method is exactly similar to
      * insertToInstructionsTable(String[],String[]), but here the first
@@ -644,37 +620,21 @@ public class GUI extends JFrame implements ActionListener {
         int rows = binaryCommand.length;
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
-            tableContents[i][0] = String.valueOf(i);
+            tableContents[i][0] = valueBase.toString(i);
             tableContents[i][1] = valueBase.toString(binaryCommand[i]);
             tableContents[i][2] = symbolicCommand[i];
         }
 
         DefaultTableModel instructionsTableModel = (DefaultTableModel) instructionsTable.getModel();
         instructionsTableModel.setDataVector(tableContents, instructionsTableIdentifiers);
-        instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(lineColumnSize);
-        instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(numericValueColumnSize);
+        instructionsTable.getColumnModel().getColumn(0).setPreferredWidth(valueBase == ValueBase.BIN ? binaryLineColumnSize : lineColumnSize);
+        instructionsTable.getColumnModel().getColumn(1).setPreferredWidth(valueBase == ValueBase.BIN ? binaryNumericValueColumnSize : numericValueColumnSize);
         if (rows > 0) {
             instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTable.getMaxTextLengthInColumn(2) + cellMargin);
         } else {
             instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(0);
         }
         return true;
-    }
-
-
-    /**
-     * Functionality of this method is exactly similar to
-     * insertToInstructionsTable(String[],String[]), but here the first
-     * parameter would be an array of empty Strings. Thus the second column
-     * will empty after calling this method.
-     *
-     * @param symbolicCommand Contents of the third column.
-     * @return True if operation was successful.
-     *         False if the dimension of the parameters is not same.
-     */
-    public boolean insertToInstructionsTable(String[] symbolicCommand) {
-        String[] empty = new String[symbolicCommand.length];
-        return insertToInstructionsTable(empty, symbolicCommand);
     }
 
 
@@ -715,57 +675,10 @@ public class GUI extends JFrame implements ActionListener {
     		return false;
 
     	if (lineNumber < instructionsTable.getRowCount()) {
-    		((DefaultTableModel) instructionsTable.getModel()).setValueAt(additionalData + lineNumber, lineNumber, 0);
+    		((DefaultTableModel) instructionsTable.getModel()).setValueAt(additionalData + valueBase.toString(lineNumber), lineNumber, 0);
     	}
 
     	return false;
-    }
-
-    /**
-     * Inserts data into data table. Parameter dataContents is inserted into the
-     * second column and the third column will be left empty. The first column holds
-     * numbers, which are line numbers. They will be calculated so that the first
-     * element will be one greater than the last element of instructionsTable. Because
-     * of this, this method should only be called AFTER calling insertToInstructionsTable()
-     * or otherwise line numbers will not be correct.
-     *
-     * @param dataContents Contents of the second column.
-     */
-    public void insertToDataTable(String[] dataContents) {
-
-        int rows = dataContents.length;
-        int instructionsTableRowCount = instructionsTable.getRowCount();
-
-        Object[][] tableContents = new Object[rows][3];
-        for (int i = 0; i < rows; i++) {
-            tableContents[i][0] = String.valueOf(i + instructionsTableRowCount);
-            tableContents[i][1] = dataContents[i];
-            tableContents[i][2] = "";
-        }
-
-        DefaultTableModel dataTableModel = (DefaultTableModel) dataTable.getModel();
-        dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
-
-        dataTable.getColumnModel().getColumn(0).setPreferredWidth(lineColumnSize);
-        dataTable.getColumnModel().getColumn(1).setPreferredWidth(numericValueColumnSize);
-
-        int instructionsTableMaxTextLength = instructionsTable.getMaxTextLengthInColumn(2);
-
-        int dataTableMaxTextLength;
-        if (rows > 0) {
-            dataTableMaxTextLength = dataTable.getMaxTextLengthInColumn(2);
-        } else {
-            dataTableMaxTextLength = 0;
-        }
-
-        if (instructionsTableMaxTextLength > dataTableMaxTextLength) {
-            instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTableMaxTextLength + cellMargin);
-            dataTable.getColumnModel().getColumn(2).setPreferredWidth(instructionsTableMaxTextLength + cellMargin);
-        } else {
-            instructionsTable.getColumnModel().getColumn(2).setPreferredWidth(dataTableMaxTextLength + cellMargin);
-            dataTable.getColumnModel().getColumn(2).setPreferredWidth(dataTableMaxTextLength + cellMargin);
-        }
-
     }
 
 
@@ -786,7 +699,7 @@ public class GUI extends JFrame implements ActionListener {
 
         Object[][] tableContents = new Object[rows][3];
         for (int i = 0; i < rows; i++) {
-            tableContents[i][0] = String.valueOf(i + instructionsTableRowCount);
+            tableContents[i][0] = valueBase.toString(i + instructionsTableRowCount);
             tableContents[i][1] = valueBase.toString(data[i]);
             if (symbolic.length > i) {
                 tableContents[i][2] = symbolic[i];
@@ -798,8 +711,8 @@ public class GUI extends JFrame implements ActionListener {
         DefaultTableModel dataTableModel = (DefaultTableModel) dataTable.getModel();
         dataTableModel.setDataVector(tableContents, dataTableIdentifiers);
 
-        dataTable.getColumnModel().getColumn(0).setPreferredWidth(lineColumnSize);
-        dataTable.getColumnModel().getColumn(1).setPreferredWidth(numericValueColumnSize);
+        dataTable.getColumnModel().getColumn(0).setPreferredWidth(valueBase == ValueBase.BIN ? binaryLineColumnSize : lineColumnSize);
+        dataTable.getColumnModel().getColumn(1).setPreferredWidth(valueBase == ValueBase.BIN ? binaryNumericValueColumnSize : numericValueColumnSize);
 
         int instructionsTableMaxTextLength = instructionsTable.getMaxTextLengthInColumn(2);
 
@@ -1443,19 +1356,11 @@ public class GUI extends JFrame implements ActionListener {
         symbolTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Symbol table"));
         symbolTableScrollPane.setMinimumSize(new Dimension(200, 150));
 
-        String zero = valueBase.toString(0);
-        String[][] regTableContents = new String[][]
-                {{"R0", zero}, {"R1", zero}, {"R2", zero}, {"R3", zero}, {"R4", zero},
-                        {"R5", zero}, {"SP", zero}, {"FP", zero}, {"PC", zero}};
-
-        registersTable = new JTableX(new DefaultTableModel(regTableContents, registersTableIdentifiers));
+        registersTable = new JTableX(new DefaultTableModel(registersTableIdentifiers, 0));
         registersTable.setEnabled(false);
         registersTable.setFont(tableFont);
         registersTable.setRowSelectionAllowed(false);
-        registersTable.getColumnModel().getColumn(0).setMinWidth(1);
-        registersTable.getColumnModel().getColumn(0).setPreferredWidth(registersTable.getMaxTextLengthInColumn(0) + cellMargin);
         registersTableScrollPane = new JScrollPane(registersTable);
-        registersTableScrollPane.setPreferredSize(new Dimension(140, 150));
         registersTableScrollPane.setBorder(BorderFactory.createTitledBorder(blacklined, "Registers"));
 
         ioPanel = new JPanel(new BorderLayout());

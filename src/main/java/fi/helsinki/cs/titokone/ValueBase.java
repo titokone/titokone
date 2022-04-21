@@ -31,7 +31,7 @@ public enum ValueBase {
 	public String getName() { return name; }
 
 	public String toString(int value) {
-		if (this == ValueBase.HEX)
+		if (this == ValueBase.HEX || this == ValueBase.BIN)
 			return prefix + Long.toString(value & 0xFFFFFFFFL, base) + suffix;
 		return prefix + Integer.toString(value, base) + suffix;
 	}
