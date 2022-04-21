@@ -234,6 +234,7 @@ public class Translations_en extends ListResourceBundle {
             {"Exit", null},
             {"Options", null},
             {"Set memory size", null},
+            {"Set base number", null},
             {"Help", null},
             {"Manual", null},
             {"About", null},
@@ -246,6 +247,10 @@ public class Translations_en extends ListResourceBundle {
             {"Select from a file...", null},
             {"en/manual.html", null},
             {"en/about.html", null},
+
+            {"Binary (2)", null},
+            {"Decimal (10)", null},
+            {"Hexadecimal (16)", null},
 
             {"Line", null},
             {"Numeric value", null},

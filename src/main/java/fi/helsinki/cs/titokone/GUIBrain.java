@@ -876,6 +876,19 @@ public class GUIBrain {
     }
 
 
+    public void menuSetBaseNumber(ValueBase base) {
+        gui.animator.setValueBase(base);
+        gui.setValueBase(base);
+        valueBase = base;
+
+        currentSettings.setValue(Settings.BASE, base.getBase());
+        saveSettings();
+        
+        menuEraseMemory();
+        gui.initRegTable();
+    }
+
+
     /**
      * This methods refreshes GUI so that it shows running options as they
      * are declared currently.

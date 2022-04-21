@@ -256,6 +256,7 @@ public class Translations_fi extends ListResourceBundle {
             {"Exit", "Poistu ohjelmasta"},
             {"Options", "Asetukset"},
             {"Set memory size", "Aseta muistin koko"},
+            {"Set base number", "Aseta kantaluku"},
             {"Help", "Apua"},
             {"Manual", "Ohjeet"},
             {"About", "Tietoja ohjelmasta"},
@@ -266,6 +267,10 @@ public class Translations_fi extends ListResourceBundle {
             {"Select default stdout file", "Valitse oletus-stdout-tiedosto"},
             {"Set language", "Aseta kieli"},
             {"Select from a file...", "Valitse tiedostosta..."},
+
+            {"Binary (2)", "Binääri (2)"},
+            {"Decimal (10)", "Desimaali (10)"},
+            {"Hexadecimal (16)", "Heksadesimaali (16)"},
 
             {"Line", "Rivi"},
             {"Numeric value", "Numeromuoto"},

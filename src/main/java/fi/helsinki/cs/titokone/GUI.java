@@ -265,12 +265,17 @@ public class GUI extends JFrame implements ActionListener {
 
     JMenu optionsMenu;
     JMenu setMemSize;
+    JMenu setBaseNumber;
     JMenu configureFileSystem;
     JMenuItem selectDefaultStdinFile;
     JMenuItem selectDefaultStdoutFile;
     JMenuItem setCompilingOptions;
     JMenuItem setRunningOptions;
     JMenuItem selectLanguageFromFile;
+
+    JMenuItem setBase2;
+    JMenuItem setBase10;
+    JMenuItem setBase16;
 
     JMenu setLanguage;
 
@@ -1154,6 +1159,7 @@ public class GUI extends JFrame implements ActionListener {
         quit.setText(new Message("Exit").toString());
         optionsMenu.setText(new Message("Options").toString());
         setMemSize.setText(new Message("Set memory size").toString());
+        setBaseNumber.setText(new Message("Set base number").toString());
         helpMenu.setText(new Message("Help").toString());
         manual.setText(new Message("Manual").toString());
         about.setText(new Message("About").toString());
@@ -1164,6 +1170,10 @@ public class GUI extends JFrame implements ActionListener {
         selectDefaultStdoutFile.setText(new Message("Select default stdout file").toString());
         setLanguage.setText(new Message("Set language").toString());
         selectLanguageFromFile.setText(new Message("Select from a file...").toString());
+
+        setBase2.setText(new Message("Binary (2)").toString());
+        setBase10.setText(new Message("Decimal (10)").toString());
+        setBase16.setText(new Message("Hexadecimal (16)").toString());
 
         instructionsTable.setToolTipTextForColumns(new String[]{
                 new Message("Line").toString(),
@@ -1648,6 +1658,13 @@ public class GUI extends JFrame implements ActionListener {
         JMenuItem setMemTo65536 = setMemSize.add("65536");
         optionsMenu.add(setMemSize);
 
+
+        setBaseNumber = new JMenu("Set base number");
+        setBase2 = setBaseNumber.add("Binary (2)");
+        setBase10 = setBaseNumber.add("Decimal (10)");
+        setBase16 = setBaseNumber.add("Hexadecimal (16)");
+        optionsMenu.add(setBaseNumber);
+
         configureFileSystem = new JMenu("Configure file system");
         selectDefaultStdinFile = configureFileSystem.add("Select default stdin file");
         selectDefaultStdoutFile = configureFileSystem.add("Select default stdout file");
@@ -1711,6 +1728,9 @@ public class GUI extends JFrame implements ActionListener {
         about.addActionListener(aboutActionListener);
         manual.addActionListener(manualActionListener);
         quit.addActionListener(quitActionListener);
+        setBase2.addActionListener(new SetBaseNumberActionListener(ValueBase.BIN));
+        setBase10.addActionListener(new SetBaseNumberActionListener(ValueBase.DEC));
+        setBase16.addActionListener(new SetBaseNumberActionListener(ValueBase.HEX));
 
 
     }
@@ -2057,6 +2077,19 @@ public class GUI extends JFrame implements ActionListener {
         @Override
 		public void actionPerformed(ActionEvent e) {
             guibrain.menuSetMemorySize(memsize);
+        }
+    };
+
+    private class SetBaseNumberActionListener implements ActionListener {
+        private ValueBase base;
+
+        public SetBaseNumberActionListener(ValueBase base) {
+            this.base = base;
+        }
+
+        @Override
+		public void actionPerformed(ActionEvent e) {
+            guibrain.menuSetBaseNumber(base);
         }
     };
 
